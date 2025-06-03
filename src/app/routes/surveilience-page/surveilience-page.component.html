@@ -1,0 +1,81 @@
+
+    <div class="row mb-2 mt-2 d-flex">
+        <div class="col-md-9">
+<div class="card" style="height: 320px;">
+    <div class="card-body" >
+       <app-mapview  ></app-mapview>
+ 
+</div>
+</div>
+</div>
+<div class="col-md-3">
+    <div class="card">
+        <div class="card-body">
+
+            <app-weekly-overview></app-weekly-overview>
+            </div>
+            </div>
+            </div>
+
+</div>
+
+<div class="row  d-flex align-items-stretch">
+    <div class="col-md-7">
+<div class="card">
+<div class="card-body">
+ <div class="d-flex justify-content-between"><h6> Live Feed</h6> 
+    <button mat-icon-button><mat-icon>more_horiz</mat-icon></button>
+    <!-- <button class="btn btn-outline-light btn-sm text-dark"><mat-icon>more_horiz</mat-icon></button> -->
+</div>  
+<div class="row">
+    <div class="col-md-6">
+        <div class="row  position-relative mb-3" style="height: 140px;">
+            <div class="actionClose"><img src="assets/img/Delete-Circle.png"></div>
+            <div class="actionShare"><img src="assets/img/Share-Link.png"/></div>
+            <div class="actionMaximize"><img src="assets/img/Minimize-2.png"></div>
+          
+                <img src="assets/img/camera3.jpg" alt="" class="h-100">
+                    
+        </div>
+        <div class="row">
+            <div class="col-md-6 position-relative"> <div class="actionClose"><img src="assets/img/Delete-Circle.png"></div>
+            <div class="actionShare"><img src="assets/img/Share-Link.png"/></div>
+            <div class="actionMaximize"><img src="assets/img/Minimize-2.png"></div>
+                <img src="assets/img/camera3.jpg" alt="" class="img-fluid w-100">
+                    </div>
+                    <div class="col-md-6 position-relative"> <div class="actionClose"><img src="assets/img/Delete-Circle.png"></div>
+                    <div class="actionShare"><img src="assets/img/Share-Link.png"/></div>
+                    <div class="actionMaximize"><img src="assets/img/Minimize-2.png"></div>
+                        <img src="assets/img/camera3.jpg" alt="" class="img-fluid w-100">
+                            </div>
+        </div>
+
+    </div>
+    <div class="col-md-6 position-relative">
+        <div class="actionClose"><img src="assets/img/Delete-Circle.png"></div>
+        <div class="actionShare"><img src="assets/img/Share-Link.png"/></div>
+        <div class="actionMaximize"><img src="assets/img/Minimize-2.png"></div>
+<img src="assets/img/camera3.jpg" alt="" class="img-fluid w-100 h-100">
+    </div>
+</div> 
+    </div>
+    <div class="d-flex justify-content-center"><button mat-raised-button class="btn-primary mb-2 w-25" [routerLink]="['/camera']">See More</button></div>
+</div></div>
+
+<div class="col-md-3">
+    <div class="card">
+    <div class="card-body">
+        <h6>Device Health</h6>
+        <app-device-health></app-device-health>
+        </div>
+    </div>
+</div>
+
+    <div class="col-md-2">
+        <div class="card">
+        <div class="card-body">
+            <h6>Alerts & <br/>Notification</h6>
+            <app-notification></app-notification>
+            </div>
+        </div></div>
+        </div>

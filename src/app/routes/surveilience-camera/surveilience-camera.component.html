@@ -1,0 +1,60 @@
+<div class="row">
+    <div class="col-md-3">
+        <div class="card mt-1">
+            <div class="card-body">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-icon matPrefix>search</mat-icon>
+                    <input matInput placeholder="Placeholder"> 
+                    <mat-icon matSuffix>filter_list</mat-icon>
+                </mat-form-field> 
+
+                <mat-accordion class="mt-1">
+                   
+                    <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
+                      <mat-expansion-panel-header>
+                        <mat-panel-title> Bhandup </mat-panel-title>
+                        
+                      </mat-expansion-panel-header>
+                      @for (location of locations; track location) {
+                      <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
+                        <mat-expansion-panel-header>
+                          <mat-panel-title> {{location.name}} </mat-panel-title>
+                          
+                        </mat-expansion-panel-header>
+                       
+                                      <p *ngFor="let c of location.cam" class="m-0 ms-2 mb-1">{{c}}</p> 
+                              
+  
+  
+                      </mat-expansion-panel>
+                    }
+
+                    </mat-expansion-panel>
+                  </mat-accordion>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="row">
+           <div *ngFor="let cam of camera" class="col-md-6 mt-1 mb-1">
+                <div class="card" [ngClass]="{ fullscreen: cam.expanded }">
+                <div class="card-body">  
+                <div class="title d-flex align-items-start justify-content-between mb-1">
+                    <span>
+                        {{cam.name}}
+                    </span>
+                    <span class="actions">
+                        <a class="me-1"><img src="assets/img/Share-Link.png"/></a>
+                        <a class="me-1" (click)="toggleExpand(cam)"> <img src="assets/img/Minimize-2.png"></a>
+                        <a><img src="assets/img/Delete-Circle.png"></a>
+                    </span>
+                </div>
+                <div>
+                    <img [src]="cam.img" alt="" class="img-fluid w-100">
+                </div>
+            </div>
+        </div>
+            </div>
+        </div>
+    </div>
+</div>

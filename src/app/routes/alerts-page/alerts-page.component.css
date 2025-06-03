@@ -1,0 +1,29 @@
+.card{border-radius: 16px;}
+.card-body{ overflow: hidden; padding: 15px;}
+.material-icons {font-size: 18px}
+h6 small{font-size: 12px; font-weight: normal;}
+.due{color: #FB3B52;}
+.dueDay{color: #878787;}
+
+.mat-mdc-list-item-icon {
+    color: rgba(0, 0, 0, 0.54);
+    background-color: var(--Primary-primary-50);
+    border-radius: 8px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+  }
+  .mdc-list-item--with-leading-icon .mdc-list-item__start {
+    margin-left: 0px;
+    margin-right: 8px;
+}
+.mdc-list-item {
+    padding-right: 0;
+}
+.mat-mdc-list-item.mdc-list-item--with-leading-icon.mdc-list-item--with-two-lines {
+    height: 60px;
+}
+.mdc-list {padding-top: 0; height: 300px; overflow-y: auto;}
+.redAlert{height: 11px; width: 46px; border-radius: 0 25px 25px 0; background-color: #FF5757; margin-left: -14px;}
+.orangeAlert{height: 11px; width: 46px; border-radius: 0 25px 25px 0; background-color: #FA9824; margin-left: -14px;}
+.normalAlert{height: 11px; width: 46px; border-radius: 0 25px 25px 0; background-color:transparent; margin-left: -14px;}

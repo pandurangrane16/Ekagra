@@ -1,0 +1,20 @@
+
+.mat-mdc-list-item-icon {
+    color: rgba(0, 0, 0, 0.54);
+    background-color: var(--Primary-primary-50);
+    border-radius: 8px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+  }
+  .mdc-list-item--with-leading-icon .mdc-list-item__start {
+    margin-left: 0px;
+    margin-right: 8px;
+}
+.mdc-list-item {
+    padding-right: 0;
+}
+.mat-mdc-list-item.mdc-list-item--with-leading-icon.mdc-list-item--with-two-lines {
+    height: 60px;
+}
+.mdc-list {padding-top: 0; height: 300px; overflow-y: auto;}

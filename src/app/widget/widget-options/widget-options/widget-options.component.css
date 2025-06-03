@@ -1,0 +1,61 @@
+:host{
+    position: absolute;
+    z-index: 2;
+    background: whitesmoke;
+    color: black;
+    top: 0;
+    left: 0;
+    border-radius: inherit;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    --mat-standard-button-toggle-height: 24px;
+    --mat-standard-button-toggle-label-text-size: 12px;
+    font-size: 12px;
+    }
+
+    :host > div{
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+    .closeBtn{
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+    .move-forward{
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: -5px;
+    }
+    .move-backward{
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: -5px;
+    }
+    .remove-widget{
+        position: absolute;
+        top: 0;
+        left: 0;
+        color: red;
+    }
+    .material-icons {font-size: 20px;}
+.mat-mdc-icon-button.mat-mdc-button-base {
+    --mdc-icon-button-state-layer-size: 36px;
+    width: var(--mdc-icon-button-state-layer-size);
+    height: var(--mdc-icon-button-state-layer-size);
+    padding: 8px;
+}
+.mat-icon {
+    height: 20px;
+    width: 20px;
+}
+
+::ng-deep span.mat-button-toggle-label-content{padding-left:8px!important; padding-right:8px!important; padding: 0 8px;}

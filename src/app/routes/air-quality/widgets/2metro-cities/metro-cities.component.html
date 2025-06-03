@@ -1,0 +1,11 @@
+<highcharts-chart
+  *ngIf="Highcharts && chartOptions"
+  [Highcharts]="Highcharts"
+  [options]="chartOptions"
+  style="width: 100%; height: 250px; display: block;">
+</highcharts-chart>
+<div class="gauge-center-label d-flex flex-column"><span  [innerHTML]="gaugeValue" class="mb-1"></span>
+  
+  <small> Hazardous   </small></div>
+ <div class="d-flex justify-content-between" style="margin-top: -25px;"><small> Temp. <span [innerHTML]="tempValue">26 </span>°C </small> <small>Hum.<span [innerHTML]="humValue"> 23</span> %</small> </div>
+  <div class="d-flex justify-content-center mt-1"><button mat-raised-button class="btn-primary mb-2 w-75">Details</button></div>

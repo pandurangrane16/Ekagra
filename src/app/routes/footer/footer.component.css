@@ -1,0 +1,9 @@
+.text-right{text-align: right;}
+.clientlogo{width: 180px;}
+.CMSlogo{ margin-left: 16px;}
+@media only screen and (max-width: 600px) {
+.clientlogo{width: 100px;}
+.CMSlogo{width: 60px;}
+.copyright{font-size: 8px;}
+
+}

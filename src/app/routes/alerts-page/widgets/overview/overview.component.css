@@ -1,0 +1,32 @@
+.chart-values {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+    display: flex;
+   justify-content: center;
+  }
+  .chart-values div{
+border-right: 1px solid #efefef;
+padding: 0 10px;
+  }
+  .chart-values div:last-child{border-right: none;}
+  .gauge-center-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    font-weight: bold;
+    color: #080808;
+    text-align: center;
+    pointer-events: none; 
+    margin-bottom: 10px;
+    width: 80px;
+  }
+  .gauge-center-label small{
+    font-size: 12px;
+    font-weight: normal;
+    color: #878787;
+    line-height: 14px;
+
+  }

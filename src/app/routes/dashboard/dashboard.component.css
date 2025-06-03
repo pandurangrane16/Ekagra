@@ -1,0 +1,27 @@
+.dashboard-widgets{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    grid-auto-rows: 95px;
+}
+.header{display: flex; justify-content: space-between; align-items: center; }
+.mat-mdc-raised-button {--mdc-protected-button-container-shape:25px;}
+
+.cdk-drop-list-dragging{
+    opacity: 0.5;
+    border-left: 5px solid #000;
+    padding-left: 8px;
+}
+.mdc-button{min-width:inherit ;}
+
+.mat-mdc-raised-button>.mat-icon {
+    --mat-protected-button-icon-spacing: 0;
+    margin-right: var(--mat-protected-button-icon-spacing, 0);
+    margin-left: var(--mat-protected-button-icon-offset, -4px);
+}
+.addWidgetBtn{position: fixed;
+    right: 3px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 9;
+}

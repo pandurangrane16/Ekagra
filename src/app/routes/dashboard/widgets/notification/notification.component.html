@@ -1,0 +1,11 @@
+<mat-list role="list" class="notify">
+  @for (alert of alertsData; track alert) {
+    <mat-list-item>
+        <mat-icon matListItemIcon> <img src="{{alert.img}}" alt=""/></mat-icon>
+      <div matListItemTitle>{{alert.name}}</div>
+      <div matListItemLine>{{alert.updated}}</div>
+    </mat-list-item>
+  }
+  </mat-list>
+  
+  <!-- <span > <img src="{{alert.img}}" alt=""/></span> -->

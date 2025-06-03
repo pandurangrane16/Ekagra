@@ -1,0 +1,118 @@
+<div class="row mb-2 mt-2 d-flex">
+    <div class="col-md-9">
+<div class="card" style="height: 300px;">
+<div class="card-body" >
+    <div class="row">
+        <div class="col-md-3">
+            <h6 class="mb-0">Mumbai City</h6>
+<div class="d-flex flex-column align-items-start mt-2">
+   <div class="aqi d-flex flex-column"><small class="mb-2">Live AQI</small> 135</div>
+  
+   <div class="w-75 mx-auto  mb-4">
+   <app-mumbai-air></app-mumbai-air>
+   </div>
+<small class="moreInfo">Currently, Mumbai<span class="dark"> 197ths rank</span> <br/>
+    among the most polluted cities globally</small>
+</div>
+        </div>
+        <div class="col-md-9">
+                        
+            <app-mapview></app-mapview></div>
+    </div>
+   
+
+</div>
+</div>
+
+<div class="row mt-2">
+    <div class="col-md-4">
+<div class="card">
+    <div class="card-body">
+        <h6>Weather Forecast</h6> 
+        <button mat-icon-button class="mapMenu" appearance="outline"><mat-icon>more_horiz</mat-icon></button>
+        <app-forecast/>
+    </div>
+</div>
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body px-4" style="padding-bottom: 30px;">
+               <h6> AQI Scale</h6>
+               <div class="d-flex justify-content-between"><span>PM10 :  136 µg/m³</span><span>PM2.5 :  53 µg/m³</span></div>
+                <app-aqi></app-aqi>
+               
+            </div>
+        </div>
+
+        <div class="card mt-2">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-content-center"><h6>Major Air Pollutants<br/>
+                    
+                <small class="font-normal">Mumbai</small>
+                </h6> 
+                <button mat-icon-button class="mapMenu" appearance="outline"><mat-icon>more_horiz</mat-icon></button></div>
+                <app-pollutants></app-pollutants>
+            </div>
+        </div>
+
+    </div>
+    
+</div>
+
+</div>
+<div class="col-md-3">
+<div class="card">
+    <div class="card-body">
+        <h6>
+            Historic Air Quality Graph Mumbai
+        </h6>
+        <mat-form-field class="w-75">
+           
+            <mat-date-range-input [rangePicker]="picker">
+              <input matStartDate placeholder="Start date">
+              <input matEndDate placeholder="End date">
+            </mat-date-range-input>
+            <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker">
+                <mat-icon matDatepickerToggleIcon>unfold_more</mat-icon>
+            </mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+          </mat-form-field>
+          <div class="d-flex justify-content-between">
+
+            <mat-form-field>
+                <mat-select placeholder="AQI - IN">
+                    <mat-option value="volvo">AQI - IN</mat-option >
+                        <mat-option value="saab">Saab</mat-option >
+                        <mat-option value="mercedes">Mercedes</mat-option >
+                        <mat-option value="audi">Audi</mat-option >
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field>
+                <mat-select placeholder="24 hours">
+                    <mat-option value="volvo">24 hours</mat-option >
+                        <mat-option value="saab">12 hours</mat-option >
+                        <mat-option value="mercedes">8 hours</mat-option >
+                        <mat-option value="audi">4 hours</mat-option >
+                </mat-select>
+              </mat-form-field>
+          </div>
+<app-historic></app-historic>
+    </div>
+</div>
+
+
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <span> <h6>India's Metro Cities</h6> <small> Air Quality Index</small></span> 
+           
+            <div class="text-right d-flex justify-content-end"><span class="dot"></span><span class="dot"></span><span class="dot active"></span></div>
+        </div>
+          <app-metro-cities></app-metro-cities>
+           
+        </div>
+    </div>
+
+    </div>
+</div>

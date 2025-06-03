@@ -1,0 +1,31 @@
+<router-outlet *ngIf="routes.url.includes('login')"></router-outlet>
+<div class="app-container"   *ngIf="!routes.url.includes('login')"  [ngClass]="parentClass">
+  <div class="position-relative">
+    <app-header (eventChange)="onChange($event)"  [event]="event">
+
+    </app-header>
+    <app-sidenav
+      (sidebarToggle)="onSidebarToggle()"
+      [event]="event"
+      (eventChange)="onChange($event)"
+    >
+    </app-sidenav>
+    <!-- <a
+      class="sidebar-toggle-btn"
+      [ngClass]="{ 'sidebar-collapsed': isSidebarCollapsed }"
+      (click)="onSidebarToggle()"
+    >
+      
+      <img src="assets/img/logo2.png" alt="" *ngIf="isSidebarCollapsed">
+    </a> -->
+    
+  </div>
+
+  <main class="mb-2"  [ngClass]="headerService.shift120 ? 'content' : 'content shift120'" >
+    
+      <router-outlet></router-outlet>
+   
+  </main>
+  <app-footer [ngClass]="headerService.shift120 ? 'content' : 'content shift120'" ></app-footer>
+</div>
+

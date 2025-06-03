@@ -1,0 +1,15 @@
+<highcharts-chart 
+  [Highcharts]="Highcharts"
+  [options]="chartOptions"
+
+  style="width: 100%; min-height: 200px; display: block;"
+></highcharts-chart>
+
+
+<div >
+  <ul style="list-style: none;">
+    <li *ngFor="let serie of jsonData.data; index as i;" class="d-flex justify-content-between">
+      <label class="d-flex align-items-center"><span [ngStyle]="{'width': '10px', 'height': '10px','border-radius': '25px', 'background-color': serie.color, 'display':'block'}"></span>  &nbsp;{{serie.name}} </label><span class="me-2"> {{serie.y}} % </span>
+    </li>
+  </ul>
+</div>

@@ -1,0 +1,47 @@
+.card{border-radius: 16px;}
+.card-body{ overflow: hidden; padding: 15px;}
+.material-icons {font-size: 18px}
+.earning{font-size: 48px; font-weight: 900; color: black; font-family: poppins; margin: 40px 0;}
+span{color: #6E6E6E;}
+.border-bottom{ border-bottom: 1px solid #ccc;}
+.mapMenu{ position: absolute; right: 20px; top:20px; border: 1px solid #E0E0E0;
+    --mdc-icon-button-state-layer-size: 36px;
+    line-height:48px; border-radius: 8px!important; padding: 0;
+}
+.mapMenu .mat-mdc-button-persistent-ripple {
+    border-radius: 8px;
+}
+:ng-deep .mdc-text-field--filled{
+    border: 1px solid #ccc;
+    padding-left: 0;
+    --mat-mdc-form-field-label-offset-x: -16px;
+    --mdc-filled-text-field-container-shape: 16px;
+}
+.todays span{ line-height: 13px; font-size: 12px;}
+.todays .progress{--bs-progress-height: 4px;}
+.todays .count{
+    font-size: 48px;
+    font-weight: medium;
+    color: black;
+}
+
+.progress-bar.bg-info {
+    background-color: rgba(rgb(93,186,232), 1) !important;
+}
+.progress-bar.bg-success {
+    --bs-success-rgb:rgb(102,204,102);
+    background-color: var(--bs-success-rgb)!important;
+
+}
+.progress-bar.bg-warning {
+    --bs-warning-rgb:rgb(255,153,51);
+    background-color: var(--bs-warning-rgb)!important;
+  
+}
+.progress-bar.bg-danger {
+    --bg-danger-rgb:rgb(232,79,79);
+
+}
+.dot{border-radius: 6px;
+    background:  #E8EAF2; height: 6px; width: 6px; display: block; margin: 0 1px;}
+.dot.active{background: #1C2D7B;}

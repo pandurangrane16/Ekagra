@@ -1,0 +1,13 @@
+<mat-list role="list" class="notify mt-3">
+    @for (info of forecast; track info) {
+      <mat-list-item>
+          <mat-icon matListItemIcon  class="ms-2"> <img src="{{info.img}}" alt="" width="24px"/></mat-icon>
+        <div matListItemTitle>{{info.name}}</div>
+        <div matListItemLine>{{info.dec}}</div>
+        <button mat-icon-button  matListItemMeta class="m-0 p-0">
+            <mat-icon>more_vert</mat-icon>
+         </button>
+      </mat-list-item>
+    }
+    </mat-list>
+    <!-- *ngFor="let serie of jsonData.data; index as i;" -->

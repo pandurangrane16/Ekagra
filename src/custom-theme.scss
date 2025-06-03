@@ -1,0 +1,227 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+//@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+//@include mat.core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+// $Ekagra-primary: mat.define-palette(mat.$indigo-palette);
+// $Ekagra-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+// $Ekagra-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+// $Ekagra-theme: mat.define-light-theme((
+//   color: (
+//     primary: $Ekagra-primary,
+//     accent: $Ekagra-accent,
+//     warn: $Ekagra-warn,
+//   ),
+//   typography: mat.define-typography-config(),
+//   density: 0
+// ));
+
+
+
+
+//Define a dark theme
+// $dark-theme: mat.define-dark-theme(
+//   (
+//     color: (
+//       primary: mat.define-palette(mat.$pink-palette),
+//       accent: mat.define-palette(mat.$blue-grey-palette),
+//     )
+
+//   )
+// );
+
+
+@mixin theme($theme) {
+  app-header {
+    div.header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+    //  background-color: mat.get-theme-color($theme, background, app-bar);
+    }
+   
+  }
+  
+}
+
+
+// Define your application's custom theme.
+// $primary: mat-palette($Ekagra-primary);
+// $accent: mat-palette($Ekagra-accent, A200, A100, A400);
+
+
+
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+//@include mat.all-component-themes($Ekagra-theme);
+
+
+
+// SWAPPING THEMES
+
+
+
+// body.dark-theme {
+//   color-scheme: dark;
+// }
+// body.light-theme {
+//   color-scheme: light;
+// }
+
+html{
+   --sys-primary: rgb(0 20 99);
+  --sys-surface-tint: rgb(73 88 167);
+  --sys-on-primary: rgb(255 255 255);
+  --sys-primary-container: rgb(28 45 123);
+  --sys-on-primary-container: rgb(137 152 236);
+  --sys-secondary: rgb(18 18 19);
+  --sys-on-secondary: rgb(255 255 255);
+  --sys-secondary-container: rgb(39 39 39);
+  --sys-on-secondary-container: rgb(143 142 141);
+  --sys-tertiary: rgb(143 78 0);
+  --sys-on-tertiary: rgb(255 255 255);
+  --sys-tertiary-container: rgb(255 153 51);
+  --sys-on-tertiary-container: rgb(105 56 0);
+  --sys-error: rgb(186 26 26);
+  --sys-on-error: rgb(255 255 255);
+  --sys-error-container: rgb(255 218 214);
+  --sys-on-error-container: rgb(147 0 10);
+  --sys-background: rgb(251 248 255);
+  --sys-on-background: rgb(27 27 32);
+  --sys-surface: rgb(252 248 248);
+  --sys-on-surface: rgb(28 27 27);
+  --sys-surface-variant: rgb(235 224 225);
+  --sys-on-surface-variant: rgb(76 69 70);
+  --sys-outline: rgb(126 117 118);
+  --sys-outline-variant: rgb(207 196 197);
+  --sys-shadow: rgb(0 0 0);
+  --sys-scrim: rgb(0 0 0);
+  --sys-inverse-surface: rgb(49 48 48);
+  --sys-inverse-on-surface: rgb(244 240 239);
+  --sys-inverse-primary: rgb(186 195 255);
+  --sys-primary-fixed: rgb(222 225 255);
+  --sys-on-primary-fixed: rgb(0 17 89);
+  --sys-primary-fixed-dim: rgb(186 195 255);
+  --sys-on-primary-fixed-variant: rgb(48 64 142);
+  --sys-secondary-fixed: rgb(228 226 225);
+  --sys-on-secondary-fixed: rgb(27 28 28);
+  --sys-secondary-fixed-dim: rgb(200 198 197);
+  --sys-on-secondary-fixed-variant: rgb(71 71 70);
+  --sys-tertiary-fixed: rgb(255 220 194);
+  --sys-on-tertiary-fixed: rgb(46 21 0);
+  --sys-tertiary-fixed-dim: rgb(255 183 122);
+  --sys-on-tertiary-fixed-variant: rgb(109 58 0);
+  --sys-surface-dim: rgb(221 217 217);
+  --sys-surface-bright: rgb(252 248 248);
+  --sys-surface-container-lowest: rgb(255 255 255);
+  --sys-surface-container-low: rgb(246 243 242);
+  --sys-surface-container: rgb(241 237 236);
+  --sys-surface-container-high: rgb(235 231 231);
+  --sys-surface-container-highest: rgb(229 226 225);
+  --extended-territory-sky-blue-color: rgb(0 102 137);
+  --extended-territory-sky-blue-on-color: rgb(255 255 255);
+  --extended-territory-sky-blue-color-container: rgb(102 204 255);
+  --extended-territory-sky-blue-on-color-container: rgb(0 85 115);
+  --extended-territory-teal-color: rgb(0 103 103);
+  --extended-territory-teal-on-color: rgb(255 255 255);
+  --extended-territory-teal-color-container: rgb(0 130 130);
+  --extended-territory-teal-on-color-container: rgb(243 255 254);
+  --extended-territory-light-green-color: rgb(0 110 27);
+  --extended-territory-light-green-on-color: rgb(255 255 255);
+  --extended-territory-light-green-color-container: rgb(102 204 102);
+  --extended-territory-light-green-on-color-container: rgb(0 84 18);
+  --extended-territory-red-color: rgb(182 33 42);
+  --extended-territory-red-on-color: rgb(255 255 255);
+  --extended-territory-red-color-container: rgb(255 87 87);
+  --extended-territory-red-on-color-container: rgb(94 0 10);
+  --mdc-filled-text-field-container-color: white;
+  --Primary-primary-50 :#E8EAF2;
+}
+
+
+.dark-theme{
+  --sys-primary: rgb(186 195 255);
+  --sys-surface-tint: rgb(186 195 255);
+  --sys-on-primary: rgb(22 40 118);
+  --sys-primary-container: rgb(28 45 123);
+  --sys-on-primary-container: rgb(137 152 236);
+  --sys-secondary: rgb(200 198 197);
+  --sys-on-secondary: rgb(48 48 48);
+  --sys-secondary-container: rgb(39 39 39);
+  --sys-on-secondary-container: rgb(143 142 141);
+  --sys-tertiary: rgb(255 192 141);
+  --sys-on-tertiary: rgb(76 39 0);
+  --sys-tertiary-container: rgb(255 153 51);
+  --sys-on-tertiary-container: rgb(105 56 0);
+  --sys-error: rgb(255 180 171);
+  --sys-on-error: rgb(105 0 5);
+  --sys-error-container: rgb(147 0 10);
+  --sys-on-error-container: rgb(255 218 214);
+  --sys-background: rgb(18 19 24);
+  --sys-on-background: rgb(227 225 233);
+  --sys-surface: rgb(20 19 19);
+  --sys-on-surface: rgb(229 226 225);
+  --sys-surface-variant: rgb(76 69 70);
+  --sys-on-surface-variant: rgb(207 196 197);
+  --sys-outline: rgb(152 142 144);
+  --sys-outline-variant: rgb(76 69 70);
+  --sys-shadow: rgb(0 0 0);
+  --sys-scrim: rgb(0 0 0);
+  --sys-inverse-surface: rgb(229 226 225);
+  --sys-inverse-on-surface: rgb(49 48 48);
+  --sys-inverse-primary: rgb(73 88 167);
+  --sys-primary-fixed: rgb(222 225 255);
+  --sys-on-primary-fixed: rgb(0 17 89);
+  --sys-primary-fixed-dim: rgb(186 195 255);
+  --sys-on-primary-fixed-variant: rgb(48 64 142);
+  --sys-secondary-fixed: rgb(228 226 225);
+  --sys-on-secondary-fixed: rgb(27 28 28);
+  --sys-secondary-fixed-dim: rgb(200 198 197);
+  --sys-on-secondary-fixed-variant: rgb(71 71 70);
+  --sys-tertiary-fixed: rgb(255 220 194);
+  --sys-on-tertiary-fixed: rgb(46 21 0);
+  --sys-tertiary-fixed-dim: rgb(255 183 122);
+  --sys-on-tertiary-fixed-variant: rgb(109 58 0);
+  --sys-surface-dim: rgb(20 19 19);
+  --sys-surface-bright: rgb(58 57 57);
+  --sys-surface-container-lowest: rgb(14 14 14);
+  --sys-surface-container-low: rgb(28 27 27);
+  --sys-surface-container: rgb(32 31 31);
+  --sys-surface-container-high: rgb(42 42 42);
+  --sys-surface-container-highest: rgb(53 52 52);
+  --extended-territory-sky-blue-color: rgb(182 227 255);
+  --extended-territory-sky-blue-on-color: rgb(0 53 73);
+  --extended-territory-sky-blue-color-container: rgb(102 204 255);
+  --extended-territory-sky-blue-on-color-container: rgb(0 85 115);
+  --extended-territory-teal-color: rgb(101 216 215);
+  --extended-territory-teal-on-color: rgb(0 55 55);
+  --extended-territory-teal-color-container: rgb(26 161 161);
+  --extended-territory-teal-on-color-container: rgb(0 39 39);
+  --extended-territory-light-green-color: rgb(130 233 127);
+  --extended-territory-light-green-on-color: rgb(0 57 10);
+  --extended-territory-light-green-color-container: rgb(102 204 102);
+  --extended-territory-light-green-on-color-container: rgb(0 84 18);
+  --extended-territory-red-color: rgb(255 179 175);
+  --extended-territory-red-on-color: rgb(104 0 13);
+  --extended-territory-red-color-container: rgb(255 87 87);
+  --extended-territory-red-on-color-container: rgb(94 0 10);
+  --mdc-filled-text-field-container-color: #4a4a4a;
+}
+ 

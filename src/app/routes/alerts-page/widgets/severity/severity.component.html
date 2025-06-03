@@ -1,0 +1,21 @@
+<!-- <div style="position: relative;" class="text-center">
+    <canvasjs-chart
+      [options]="options"
+      [styles]="{ width: '100%', height: '220px' }"
+      (chartInstance)="getChartInstance($event)"
+    ></canvasjs-chart>
+    <div class="gauge-center-label"><span  [innerHTML]="gauge.data.y.toString()"></span><br/><small>15 Areas</small></div>
+   
+  </div> -->
+  <highcharts-chart
+  *ngIf="Highcharts && chartOptions"
+  [Highcharts]="Highcharts"
+  [options]="chartOptions"
+  style="width: 100%; height: 250px; display: block;">
+</highcharts-chart>
+<div class="gauge-center-label d-flex flex-column"><span  [innerHTML]="gaugeValue" class="mb-1"></span>
+  <small class="badge rounded-pill d-flex align-items-center"><mat-icon>arrow_downward</mat-icon>21%</small>
+  <small>High</small></div>
+  
+ 
+ 

@@ -1,0 +1,129 @@
+<div class="row mt-1">
+    <div class="col-md-12">
+<div class="card">
+    <div class="card-body">
+        <mat-tab-group dynamicHeight>
+            <mat-tab label="Account  Setting"> 
+            <div class="mt-1">
+<div style="padding:20px 0">
+    <form id="editForm" name="editForm" [formGroup]="editForm">
+      <mat-form-field>
+        <mat-label>Your Profile  Picture</mat-label>
+        <div
+          class="fileUploadContainer"
+          [ngStyle]="{
+            'margin-top': editForm.get('photo')!.value ? '5px' : '20px'
+          }"
+        >
+          <ng-container *ngIf="editForm.get('photo')!.value">
+            <img [src]="editForm.get('photo')!.value" />
+            <button
+              class="deleteButton"
+              mat-icon-button
+              (click)="
+                fileInput.value = ''; editForm.get('photo')?.setValue(null)
+              "
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </ng-container>
+          <!-- no image -->
+          <div
+            *ngIf="!editForm.get('photo')!.value"
+            fxLayout="column"
+            fxLayoutAlign="center center"
+            fxLayoutGap="10px"
+          >
+           <img src="assets/img/photo-add.png" alt="">
+           
+            <small class="mt-1"> Upload your photo </small>
+          </div>
+          <!-- put on top of the fileUploadContainer with opacity 0 -->
+          <input
+            #fileInput
+            class="fileInput"
+            type="file"
+            multiple="multiple"
+            accept="image/*"
+            (change)="setFileData($event)"
+          />
+        </div>
+        <input matInput formControlName="photo" [hidden]="true" />
+      </mat-form-field>
+    </form>
+  </div>
+  
+
+<hr>
+<div class="form-group">
+    <div class="row mb-2">
+        <div class="col-md-6">
+            <mat-label>Full name</mat-label>
+            <mat-form-field class="w-100">
+                <input matInput placeholder="Placeholder">
+                <mat-hint>Hint</mat-hint>
+              </mat-form-field>
+        </div>
+        <div class="col-md-6">
+            <mat-label>Email</mat-label>
+            <mat-form-field   class="w-100">
+                <input matInput placeholder="Please enter your email" type="email">
+                <mat-hint>Hint</mat-hint>
+              </mat-form-field>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-md-6">
+            <mat-label>Username</mat-label>
+            <mat-form-field  class="w-100">
+                <input matInput placeholder="Please enter your username">
+                <mat-hint>Hint</mat-hint>
+              </mat-form-field>
+        </div>
+        <div class="col-md-6">
+            <mat-label>Phone number</mat-label>
+            <mat-form-field   class="w-100">
+                <input matInput placeholder="+1 | Please enter your phone number" type="tel">
+               
+                <mat-hint>Hint</mat-hint>
+              </mat-form-field>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <mat-label>Bio</mat-label>
+            <mat-form-field   class="w-100">
+                <textarea matInput placeholder="Write your Bio here e.g your hobbies, interests ETC..."></textarea>
+              </mat-form-field>
+        </div>
+       
+    </div>
+    <div>
+        <div class="col">
+            <div class="d-flex align-item-center mt-2">
+                <button mat-raised-button class="btn-primary mb-2 me-1 " >Update Profile</button>
+                <button mat-button class="mb-2" >Reset</button>
+        </div></div>
+    </div>
+</div>
+            </div>    
+            </mat-tab>
+            <mat-tab label="Login & Security"> Login & Security </mat-tab>
+            <mat-tab label="Notifications"> Content 3 </mat-tab>
+            <mat-tab label="Interface"> 
+              <div class="d-flex justify-content-between my-1" style="align-items: center;"><h6 class="ms-2 mb-0">Customized Layout</h6> 
+                <div class="action mb-1">
+                <span><img src="assets/img/ci_expand.svg" alt=""></span>
+                <span><img src="assets/img/pencil.svg" alt=""></span>
+                <span><img src="assets/img/more-horiz.svg" alt=""></span>
+              </div></div>
+            <div class="interface">
+
+            </div>
+            </mat-tab>
+          </mat-tab-group>
+    </div>
+</div>
+        </div>
+        </div>

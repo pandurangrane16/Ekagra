@@ -1,0 +1,41 @@
+/* .content-container{
+  min-height: 70vh;
+display: flex;
+} */
+.app-container {
+  display: flex;
+  height: 100vh;
+  /* overflow: hidden; */
+  flex-direction: column;
+  padding: 24px;
+}
+.content {
+  flex-grow: 1;
+  margin-left: 0px;
+  transition: all 0.3s ease-in-out;
+  /* overflow-y: auto; */
+}
+.content-inner {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.content-expanded {
+  margin-left: 0px;
+}
+.sidebar-toggle-btn {
+  position: absolute;
+  top: 1rem;
+  left: 200px;
+  border: none;
+  cursor: pointer;
+  z-index: 1001;
+  transition: all 0.3s ease;
+ 
+ 
+}
+
+.sidebar-toggle-btn.sidebar-collapsed {
+  left: 70px;
+}
+.shift120{margin-left: 120px;}

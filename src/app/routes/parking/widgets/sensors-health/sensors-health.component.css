@@ -1,0 +1,13 @@
+.gauge-center-label {position: absolute;
+    top: 70%;
+    left: 50%;
+    width: 100%;
+    align-items: center;
+    transform: translate(-50%);
+
+}
+.quality{
+    font-size: 600;
+    color: black;
+}
+.guageImg{width: 42px; height: 42px; border-radius: 50%; background-color: #E8EAF2; display: flex; justify-content: center; align-items: center;} 

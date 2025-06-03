@@ -1,0 +1,68 @@
+<div id="frame">
+	<div id="sidepanel">
+        <h6 class="m-4">Mensagens</h6>
+		
+			
+		<div id="search">
+			<label for=""><mat-icon>search</mat-icon></label>
+			<input type="text" placeholder="Search..." />
+            <div class="chatAdd">chat + </div>
+    </div>
+			<div id="contacts" [class.expanded]="expanded">
+				<ul class="mt-1">
+					<li class="contact" *ngFor="let user of users" (click)="setUserActive(user)"
+						[class.active]="activeUser.id === user.id">
+						<div class="wrap">
+							<span class="contact-status" [class]="user.status"></span>
+							<img [src]="user.img" alt="" />
+							<div class="meta">
+								<p class="name">{{user.name}}</p>
+								<p class="preview">
+									<!-- {{user.messages[user.messages?.length - 1]?.message || ''}} -->
+                                    {{ user.messages.length ? user.messages[user.messages.length - 1].message : '' }}
+
+								</p>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+			
+		</div>
+
+		<div class="content">
+			<div class="contact-profile">
+				<img [src]="activeUser.img" alt="" />
+				<p>{{activeUser.name}}</p>
+				<div class="moreConnect">
+					<mat-icon>call</mat-icon>
+					<mat-icon>videocam</mat-icon>
+					<mat-icon>info</mat-icon>
+				</div>
+			</div>
+			<div class="messages mb-5" #scrollMe>
+				<ul>
+					<li [class]="msg.type" *ngFor="let msg of activeUser?.messages">
+						<img [src]="msg.type === 'sent' ? activeUser.img : messageReceivedFrom.img" alt="" />
+						<p>{{msg?.message || ''}}</p>
+					</li>
+				</ul>
+			</div>
+			<div class="message-input">
+				<div class="wrap">
+					<input
+          type="text"
+          #msgInput
+          placeholder="Write your message..."
+          (keyup.enter)="addNewMessage(msgInput)"
+        />
+        <button class="submit" (click)="addNewMessage(msgInput)">  <mat-icon>send</mat-icon></button>
+       <mat-icon>attach_file</mat-icon>
+       <mat-icon class="me-2">check</mat-icon>
+					
+         
+        
+				</div>
+			</div>
+		</div>
+	</div>

@@ -1,0 +1,9 @@
+<div class="progress mx-3">
+    <div class="progress-bar good" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"><label><span class="scale" *ngIf="scale < 50 && scale > 0"></span>Good</label></div>
+    <div class="progress-bar moderate" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"><label><span class="scale" *ngIf="scale < 100 && scale > 51"></span>Moderate</label></div>
+    <div class="progress-bar poor" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"><label><span class="scale" *ngIf="scale < 200 && scale > 101"></span>Poor</label></div>
+    <div class="progress-bar unhealthy" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"><label><span class="scale" *ngIf="scale < 300 && scale > 201"></span>Unhealthy</label></div>
+    <div class="progress-bar severe" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"><label><span class="scale" *ngIf="scale < 400 && scale > 301"></span>Severe</label></div>
+    <div class="progress-bar hazardous" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"><label><span class="scale" *ngIf="scale > 401"></span>Hazardous</label></div>
+  </div>
+ 

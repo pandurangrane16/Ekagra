@@ -1,0 +1,11 @@
+<div class="position-relative">
+    <highcharts-chart
+  *ngIf="Highcharts && chartOptions"
+  [Highcharts]="Highcharts"
+  [options]="chartOptions"
+  style="width: 100%; height: 250px; display: block; margin-top: -50px; margin-bottom: 40px;">
+</highcharts-chart>
+<div class="gauge-center-label"><span  [innerHTML]="guageValue"></span><br/><small>15 Areas</small></div>
+  </div>
+
+  <div class="d-flex justify-content-center mt-4"><button mat-raised-button class="btn-primary mb-2 w-75">Details</button></div>

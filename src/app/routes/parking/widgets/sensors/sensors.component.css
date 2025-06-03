@@ -1,0 +1,12 @@
+.centerImage {
+    position: absolute;
+    z-index: 10;
+    left: 50%;
+    bottom: 45%;
+    transform: translate(-50%);
+    background: white;
+    border: 5px solid #f5f5f5;
+    border-radius: 50%;
+  }
+ :ng-deep a{display: none!important; color:#fff; visibility: hidden;}
+ :ng-deep #canvasjs-angular-chart-container-0 > div > a{display: none!important; color:#fff; visibility: hidden;}

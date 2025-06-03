@@ -1,0 +1,9 @@
+:host{
+--mdc-protected-button-container-shape:10px;
+--mdc-protected-button-label-text-weight:500;
+}
+.infoTxt{
+    font-weight: 600;
+    font-size: 22px;
+}
+span img{filter: brightness(0) invert(1);}

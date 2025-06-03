@@ -1,0 +1,120 @@
+.fileUploadContainer {
+    padding: 10px;
+    /* position: relative; */
+    display: flex;
+    flex-direction: column;
+    /* margin: 0 auto; */
+    width: 150px;
+    height: 150px;
+    text-align: center;
+    justify-content: center;
+    border-radius: 18px;
+border: 1px dashed #4C535F;
+background: #EDF2F6;
+}
+
+ .fileUploadContainer  img {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      max-height: 100%;
+      max-width: 100%;
+    }
+  
+    .fileUploadContainer  .noImageContainet {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 11px;
+      
+    }
+
+.noImageContainet button {
+    font-size: 11px;
+  }
+    .deleteButton{
+        position: absolute;
+        z-index: 10;
+        top: 20px;
+        inset-inline-end: 24px;
+        opacity: 50%;
+    }
+
+    .fileInput {
+        position: absolute;
+        z-index: 9;
+        opacity: 0;
+        height: 100%;
+        width: 100%;
+        left: 0px;
+        top: 0px;
+        cursor: pointer;
+    }
+  
+ mat-label{font-size: 16px; font-weight: 500; margin-bottom: 15px; color:#4C535F}
+
+ 
+ ::ng-deep .mat-mdc-text-field-wrapper  {
+  --mdc-filled-text-field-container-color: #EDF2F6!important;
+ border-radius: 8px!important;
+border: 1px solid #E0E4EC;
+background-color:#EDF2F6;
+ }
+ ::ng-deep #editForm .mat-mdc-text-field-wrapper{ 
+  background-color: #fff!important;
+  border: 1px solid #fff;}
+  ::ng-deep .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+    color: var(--mat-tab-header-active-label-text-color);
+    --mat-tab-header-active-label-text-color:#1C2D7B;
+    color: #1C2D7B;
+font-family: Poppins;
+font-size: 20px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+}
+::ng-deep .mat-mdc-tab .mdc-tab__text-label{
+  font-family: Poppins;
+font-size: 20px;
+font-style: normal;
+
+}
+::ng-deep .mat-mdc-tab-group.mat-mdc-tab-group-stretch-tabs>.mat-mdc-tab-header .mat-mdc-tab {
+  flex-grow: 0!important;
+  margin-right: 20px;
+}
+::ng-deep .mat-mdc-tab.mdc-tab--active:hover .mdc-tab__text-label {
+  --mat-tab-header-active-hover-label-text-color:#1C2D7B;
+  color: var(--mat-tab-header-active-hover-label-text-color);
+}
+
+::ng-deep .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+  --mat-tab-header-active-hover-label-text-color:#1C2D7B;
+  color: var(--mat-tab-header-active-hover-label-text-color);
+}
+.interface{
+  border-radius: 20px;
+border: 2px dashed var(--Dark-Tertiary-tr80, #AFAFAF);
+height: 80vh;
+max-height: 596px;
+}
+.action{
+  display: inline-flex;
+height: 36px;
+padding: 4px 6px 4px 8px;
+align-items: center;
+gap: 6px;
+flex-shrink: 0;
+border-radius: 12px;
+border: 1px solid #E0E0E0;
+background:  #FFF;
+box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+}
+::ng-deep .mat-mdc-tab .mdc-tab-indicator__content {
+  --mdc-tab-indicator-active-indicator-color: #9E9E9E;
+  transform-origin: left;
+  opacity: 1;
+  background-color:var(--mdc-tab-indicator-active-indicator-color)
+  
+}

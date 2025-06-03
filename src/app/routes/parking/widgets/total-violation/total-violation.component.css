@@ -1,0 +1,18 @@
+.gauge-center-label {
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    font-weight: bold;
+    color: #525252;
+    text-align: center;
+    pointer-events: none; 
+  }
+  .gauge-center-label small{
+    font-size: 14px;
+    font-weight: normal;
+
+  }
+  .circle{width: 10px;height: 10; border: 9px solid #1C2D7B; background-color: white; border-radius: 50%;}
+  .test{position: absolute; top:10px; right: -10px;}

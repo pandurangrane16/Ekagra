@@ -1,0 +1,67 @@
+<div class="row mb-2 mt-2 d-flex">
+    <div class="col-md-12">
+<div class="card">
+    <div class="d-flex p-3 justify-content-between border-1 border-bottom pb-2">
+        <div class="title d-flex align-items-start">
+            <img src="assets/img/list.png" alt="" class="me-2">
+            <h6>List of Alerts<br/>
+                <small>May to June 2021</small>
+            </h6>
+        </div>
+        <div class="actions">
+            <a class="me-1"><img src="assets/img/share.png" alt="Share"/></a>
+            <a class="me-1"> <img src="assets/img/download.png" alt="Download"></a>
+            <a><img src="assets/img/setting.png" alt="Setting"></a>
+        </div>
+    </div>
+    <div class="card-body pt-0">
+<app-list></app-list>
+<button mat-icon-button class="mapMenu" appearance="outline"><mat-icon>open_in_full</mat-icon></button>
+    </div>
+</div>
+        </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row d-flex align-content-stretch">
+                    <div class="col-md-6"><div class="card">
+                        <div class="card-body">
+    <div class="d-flex justify-content-between"><h6> <img src="assets/img/Triangle.png" alt="" class="me-1">Overview</h6> 
+        <div class="d-flex flex-column"><span class="due">Due from 6 days</span><span class="dueDay">Wed, October 12</span></div></div>
+       <div class="text-center"> <app-overview></app-overview></div>
+                        </div>
+                    </div></div>
+                    <div class="col-md-6"><div class="card">
+                        <div class="card-body text-center">
+    <h6 class="text-center">Severity Index</h6>
+    <app-severity></app-severity>
+    <p class="text-center">increased 12% from last hours</p>
+                        </div>
+                    </div></div>
+                </div>
+
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                       <h6> Alerts & Notification</h6>
+                       <mat-list role="list" class="notify">
+                        @for (alert of alertsData; track alert) {
+                            <div class="d-flex align-items-center">
+                                <span class="me-2" [class.redAlert]="alert.category === 'red'"
+                                  [class.orangeAlert]="alert.category === 'orange'"
+                                  [class.normalAlert]="alert.category === 'normal'">
+                                </span>
+                          <mat-list-item>
+                              <mat-icon matListItemIcon> <img src="{{alert.img}}" alt=""/></mat-icon>
+                            <div matListItemTitle>{{alert.name}}</div>
+                            <div matListItemLine>{{alert.updated}}</div>
+                          </mat-list-item>
+                        </div>
+                        }
+                        </mat-list>
+                    </div>
+                </div>
+            </div>
+        </div>

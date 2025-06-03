@@ -1,0 +1,20 @@
+ :ng-deep a{display: none!important; color:#fff; visibility: hidden;}
+ :ng-deep #canvasjs-angular-chart-container-0 > div > a{display: none!important; color:#fff; visibility: hidden;}
+ .gauge-center-label {
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 40px;
+    font-weight: bold;
+    color: #080808;
+    text-align: center;
+    pointer-events: none; 
+    margin-bottom: 10px;
+  }
+  .gauge-center-label small{
+    font-size: 14px;
+    font-weight: normal;
+
+  }
+  .badge{background-color: #FFEAEA; border: 1px solid #FF9F9D; color: #FB3B52; font-size: 14px; margin: 2px 0;}

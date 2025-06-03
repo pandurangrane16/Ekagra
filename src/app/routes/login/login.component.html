@@ -1,0 +1,40 @@
+<div class="container-fluid bg-white">
+    <div class="row">
+        <div class="col-md-6 col-lg-6 main justify-content-center">
+            <div class="login justify-content-center align-items-center">
+                <img src="assets/img/logo.svg" alt="" class="ml-auto mr-auto logo">
+                
+                <mat-label class="align-self-start">Email</mat-label>
+                <mat-form-field  class="mat-elevation-z16">
+                                      <input matInput placeholder="Enter your email"  >
+                                      <mat-hint class="d-none">Hint</mat-hint>    
+                  </mat-form-field>
+                
+                  <mat-label class="align-self-start">Password</mat-label>
+                  <mat-form-field class="mat-elevation-z24">
+                    <input matInput placeholder="**********">
+                  
+                    <mat-hint class="d-none">Hint</mat-hint>
+                  </mat-form-field>
+
+                  <button mat-flat-button class="btn w-100"  [routerLink]="['dashboard']">Sign In</button>
+
+            </div>
+            <app-footer></app-footer>
+        </div>
+        <div class="col-md-6 col-lg-6 p-0 m-0">
+         <ngx-slick-carousel class="carousel" 
+            #slickModal="slick-carousel" 
+            [config]="slideConfig"
+           >
+@for (slide of slides; track slide.img) {
+<div ngxSlickItem class="slide">
+      <img src="{{ slide.img }}" alt="" width="100%">
+</div>
+}
+</ngx-slick-carousel>
+
+
+        </div>
+        </div>
+</div>

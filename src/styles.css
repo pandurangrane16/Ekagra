@@ -1,0 +1,56 @@
+*{margin: 0; padding: 0;}
+html, body { height: 100%; }
+body { color: var(--text-color);
+    font-family: var(--font-family);;
+    font-size: var(--font-size-base);;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px; /* 142.857% */
+    letter-spacing: 0.25px;
+    background-color: var(--background-color);
+}
+:root{
+ /* Colors */
+--primary-color: #1C2D7B;
+--secondary-color: #272727;
+--Territory: #F93;
+--Territory-sky-blue: #6CF;
+--Territory-teal: #099;
+--Territory-Light-green: #6C6;
+--Territory-Red: #FF5757;
+--text-color: #000;
+--background-color: #E2E2EA;
+--White:#fff;
+
+/* Typography */
+--font-family: 'Poppins', sans-serif;
+--font-size-base: 14px;
+--font-size-heading: 22px;
+--line-height: 28px;
+
+ /* Spacing */
+--spacer: 16px;
+--spacer-lg: 32px;
+
+ /* Border radius */
+--border-radius: 8px;
+--mdc-tab-indicator-active-indicator-color: #1C2D7B;
+--mat-tab-header-active-hover-label-text-color:#1C2D7B;
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+.mat-drawer {
+  transform: none !important;
+}
+.btn-primary{
+  --mdc-protected-button-container-color: var(--primary-color);
+    --mdc-protected-button-label-text-color: var(--White);
+}
+.h6, h6 {
+  font-size: 0.9rem;
+}
+.fullscreenDiv{
+  overflow-y: hidden;
+}

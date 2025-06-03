@@ -1,0 +1,3 @@
+::ng-deep .highcharts-column-series path.highcharts-point {
+    clip-path: inset(0% 0% 0px 0% round 50px);
+}
