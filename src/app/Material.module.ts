@@ -88,6 +88,10 @@ import { ToastrModule } from 'ngx-toastr';
     FormsModule, 
     ReactiveFormsModule,
     MatSelectModule,
+    MatCardModule,
+    MatIconModule,
+    MatMenuModule,
+    MatButtonModule,
   ],
   imports:[ToastrModule.forRoot()],
 })
