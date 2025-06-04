@@ -7,14 +7,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-sensors-health',
-  standalone: true,
-  imports: [ HighchartsChartModule,
-    CommonModule,
-    MatIconModule,
-    MatButtonModule,],
-  templateUrl: './sensors-health.component.html',
-  styleUrl: './sensors-health.component.css'
+    selector: 'app-sensors-health',
+    imports: [HighchartsChartModule,
+        CommonModule,
+        MatIconModule,
+        MatButtonModule,],
+    templateUrl: './sensors-health.component.html',
+    styleUrl: './sensors-health.component.css'
 })
 export class SensorsHealthComponent implements OnInit {
    Highcharts!: typeof Highcharts;

@@ -4,11 +4,10 @@ import * as Highcharts from 'highcharts';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-daily',
-  standalone: true,
-  imports: [HighchartsChartModule, CommonModule],
-  templateUrl: './daily.component.html',
-  styleUrl: './daily.component.css'
+    selector: 'app-daily',
+    imports: [HighchartsChartModule, CommonModule],
+    templateUrl: './daily.component.html',
+    styleUrl: './daily.component.css'
 })
 export class DailyComponent implements OnInit {
   @ViewChild('customLegend')

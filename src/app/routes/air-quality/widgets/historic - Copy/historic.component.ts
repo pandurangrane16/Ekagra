@@ -4,11 +4,10 @@ import * as Highcharts from 'highcharts';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-historic',
-  standalone: true,
-  imports: [HighchartsChartModule, CommonModule],
-  templateUrl: './historic.component.html',
-  styleUrl: './historic.component.css'
+    selector: 'app-historic',
+    imports: [HighchartsChartModule, CommonModule],
+    templateUrl: './historic.component.html',
+    styleUrl: './historic.component.css'
 })
 export class HistoricComponent implements OnInit {
   @ViewChild('customLegend')

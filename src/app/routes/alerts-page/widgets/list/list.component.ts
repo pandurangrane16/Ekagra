@@ -22,11 +22,10 @@ const ELEMENT_DATA: PeriodicElement[] = [
   {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
 ];
 @Component({
-  selector: 'app-list',
-  standalone: true,
-  imports: [MatTableModule, MatSortModule],
-  templateUrl: './list.component.html',
-  styleUrl: './list.component.css'
+    selector: 'app-list',
+    imports: [MatTableModule, MatSortModule],
+    templateUrl: './list.component.html',
+    styleUrl: './list.component.css'
 })
 export class ListComponent implements AfterViewInit {
   private _liveAnnouncer = inject(LiveAnnouncer);

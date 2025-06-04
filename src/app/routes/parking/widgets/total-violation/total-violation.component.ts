@@ -7,14 +7,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-total-violation',
-  standalone: true,
-  imports: [HighchartsChartModule,
-    CommonModule,
-    MatIconModule,
-    MatButtonModule,],
-  templateUrl: './total-violation.component.html',
-  styleUrl: './total-violation.component.css'
+    selector: 'app-total-violation',
+    imports: [HighchartsChartModule,
+        CommonModule,
+        MatIconModule,
+        MatButtonModule,],
+    templateUrl: './total-violation.component.html',
+    styleUrl: './total-violation.component.css'
 })
 export class TotalViolationComponent implements OnInit {
    Highcharts!: typeof Highcharts;

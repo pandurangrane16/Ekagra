@@ -10,11 +10,10 @@ import { useGeographic } from 'ol/proj'; // Import useGeographic
 
 
 @Component({
-  selector: 'app-mapview',
-  standalone: true,
-  imports: [],
-  templateUrl: './mapview.component.html',
-  styleUrl: './mapview.component.css'
+    selector: 'app-mapview',
+    imports: [],
+    templateUrl: './mapview.component.html',
+    styleUrl: './mapview.component.css'
 })
 export class MapviewComponent implements AfterViewInit {
 

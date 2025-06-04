@@ -4,11 +4,10 @@ import * as Highcharts from 'highcharts';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-zonal',
-  standalone: true,
-  imports: [HighchartsChartModule, CommonModule],
-  templateUrl: './zonal.component.html',
-  styleUrl: './zonal.component.css'
+    selector: 'app-zonal',
+    imports: [HighchartsChartModule, CommonModule],
+    templateUrl: './zonal.component.html',
+    styleUrl: './zonal.component.css'
 })
 export class ZonalComponent implements OnInit {
   @ViewChild('customLegend')

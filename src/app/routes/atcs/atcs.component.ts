@@ -17,11 +17,10 @@ interface Junction{
   viewValue: string;
 }
 @Component({
-  selector: 'app-atcs',
-  standalone: true,
-  imports: [MapviewComponent, NotificationComponent, ZonalComponent, CorridorComponent, FailuresComponent, CycleComponent,MatFormFieldModule, MatSelectModule, MatInputModule, FormsModule,MatButtonModule, MatIconModule,CommonModule],
-  templateUrl: './atcs.component.html',
-  styleUrl: './atcs.component.css'
+    selector: 'app-atcs',
+    imports: [MapviewComponent, NotificationComponent, ZonalComponent, CorridorComponent, FailuresComponent, CycleComponent, MatFormFieldModule, MatSelectModule, MatInputModule, FormsModule, MatButtonModule, MatIconModule, CommonModule],
+    templateUrl: './atcs.component.html',
+    styleUrl: './atcs.component.css'
 })
 export class AtcsComponent {
   junctions: Junction[] = [

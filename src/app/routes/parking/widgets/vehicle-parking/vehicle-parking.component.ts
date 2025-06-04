@@ -4,11 +4,10 @@ import * as Highcharts from 'highcharts';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-vehicle-parking',
-  standalone: true,
-  imports: [HighchartsChartModule, CommonModule],
-  templateUrl: './vehicle-parking.component.html',
-  styleUrl: './vehicle-parking.component.css'
+    selector: 'app-vehicle-parking',
+    imports: [HighchartsChartModule, CommonModule],
+    templateUrl: './vehicle-parking.component.html',
+    styleUrl: './vehicle-parking.component.css'
 })
 export class VehicleParkingComponent implements OnInit {
   @ViewChild('customLegend')

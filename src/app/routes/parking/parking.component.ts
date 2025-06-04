@@ -12,12 +12,10 @@ import { ViolationComponent } from "./widgets/violation/violation.component";
 import { SensorsHealthComponent } from "./widgets/sensors-health/sensors-health.component";
 import { TotalViolationComponent } from "./widgets/total-violation/total-violation.component";
 @Component({
-  selector: 'app-parking',
-  standalone: true,
-  imports: [MapviewComponent, DailyComponent, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule, VehicleParkingComponent, ParkingPlacesComponent, SensorsHealthComponent, TotalViolationComponent],
-  templateUrl: './parking.component.html',
-  styleUrl: './parking.component.css',
-//  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-parking',
+    imports: [MapviewComponent, DailyComponent, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule, VehicleParkingComponent, ParkingPlacesComponent, SensorsHealthComponent, TotalViolationComponent],
+    templateUrl: './parking.component.html',
+    styleUrl: './parking.component.css'
 })
 export class ParkingComponent {
 

@@ -4,11 +4,10 @@ import * as Highcharts from 'highcharts';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-corridor',
-  standalone: true,
-  imports: [HighchartsChartModule, CommonModule],
-  templateUrl: './corridor.component.html',
-  styleUrl: './corridor.component.css'
+    selector: 'app-corridor',
+    imports: [HighchartsChartModule, CommonModule],
+    templateUrl: './corridor.component.html',
+    styleUrl: './corridor.component.css'
 })
 export class CorridorComponent implements OnInit {
   @ViewChild('customLegend')

@@ -8,12 +8,11 @@ import { ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-setting-page',
-  standalone: true,
-  imports: [MatTabsModule,MatFormFieldModule, MatInputModule, MatIconModule,MatButtonModule, CommonModule,ReactiveFormsModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './setting-page.component.html',
-  styleUrl: './setting-page.component.css'
+    selector: 'app-setting-page',
+    imports: [MatTabsModule, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule, CommonModule, ReactiveFormsModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './setting-page.component.html',
+    styleUrl: './setting-page.component.css'
 })
 export class SettingPageComponent {
   editForm = this.fb.group({

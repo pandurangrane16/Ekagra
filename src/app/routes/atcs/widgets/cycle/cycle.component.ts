@@ -4,11 +4,10 @@ import * as Highcharts from 'highcharts';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-cycle',
-  standalone: true,
-  imports: [HighchartsChartModule, CommonModule],
-  templateUrl: './cycle.component.html',
-  styleUrl: './cycle.component.css'
+    selector: 'app-cycle',
+    imports: [HighchartsChartModule, CommonModule],
+    templateUrl: './cycle.component.html',
+    styleUrl: './cycle.component.css'
 })
 export class CycleComponent implements OnInit {
   @ViewChild('customLegend')

@@ -8,11 +8,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-surveilience-page',
-  standalone: true,
-  imports: [MapviewComponent, NotificationComponent, WeeklyOverviewComponent, DeviceHealthComponent, MatButtonModule, MatIconModule,RouterModule ],
-  templateUrl: './surveilience-page.component.html',
-  styleUrl: './surveilience-page.component.css'
+    selector: 'app-surveilience-page',
+    imports: [MapviewComponent, NotificationComponent, WeeklyOverviewComponent, DeviceHealthComponent, MatButtonModule, MatIconModule, RouterModule],
+    templateUrl: './surveilience-page.component.html',
+    styleUrl: './surveilience-page.component.css'
 })
 
 export class SurveiliencePageComponent {

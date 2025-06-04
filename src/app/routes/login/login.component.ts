@@ -8,12 +8,11 @@ import {MatInputModule} from '@angular/material/input';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [CommonModule, SlickCarouselModule, FooterComponent,MatFormFieldModule, MatInputModule, MatIconModule,RouterModule],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-login',
+    imports: [CommonModule, SlickCarouselModule, FooterComponent, MatFormFieldModule, MatInputModule, MatIconModule, RouterModule],
+    templateUrl: './login.component.html',
+    styleUrl: './login.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent {
 

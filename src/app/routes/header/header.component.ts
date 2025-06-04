@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, signal, effect, HostBinding, APP_INITIALIZER, Inject, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, signal, effect, HostBinding, Inject, ChangeDetectorRef, inject, provideAppInitializer } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -20,34 +20,30 @@ import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-header',
-  standalone: true,
-  imports: [
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatButtonModule,
-    MatMenuModule,
-    CommonModule,
-    RouterModule,
-    FormsModule,
-    MatSlideToggleModule,
-    MatCheckboxModule,
-    MatGridListModule
-  ],
-  // providers:[HeaderService,ThemingService],
-  providers: [HeaderService,
-    ThemeManagerService,
-    {
-      provide: APP_INITIALIZER,
-      deps: [ThemeManagerService],
-      useFactory: (themeService: ThemeManagerService) => () =>
-        themeService.init(),
-      multi: true,
-    },
-  ],
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.css',
+    selector: 'app-header',
+    imports: [
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatButtonModule,
+        MatMenuModule,
+        CommonModule,
+        RouterModule,
+        FormsModule,
+        MatSlideToggleModule,
+        MatCheckboxModule,
+        MatGridListModule
+    ],
+    // providers:[HeaderService,ThemingService],
+    providers: [HeaderService,
+        ThemeManagerService,
+      //   provideAppInitializer(() => {
+      //   const initializerFn = ((themeService: ThemeManagerService) => () => themeService.init())(inject(ThemeManagerService));
+      //   return initializerFn();
+      // }),
+    ],
+    templateUrl: './header.component.html',
+    styleUrl: './header.component.css'
 })
 
 

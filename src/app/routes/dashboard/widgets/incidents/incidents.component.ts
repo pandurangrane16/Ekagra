@@ -2,11 +2,10 @@ import { Component } from '@angular/core';
 import { HighchartsChartModule } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
 @Component({
-  selector: 'app-incidents',
-  standalone: true,
-  imports: [HighchartsChartModule ],
-  templateUrl: './incidents.component.html',
-  styleUrl: './incidents.component.css'
+    selector: 'app-incidents',
+    imports: [HighchartsChartModule],
+    templateUrl: './incidents.component.html',
+    styleUrl: './incidents.component.css'
 })
 export class IncidentsComponent {
   Highcharts: typeof Highcharts = Highcharts;
