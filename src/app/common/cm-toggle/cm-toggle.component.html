@@ -1,1 +1,4 @@
-<p>cm-toggle works!</p>
+<h3>{{settings.headerName}}</h3>
+<mat-button-toggle-group [name]="settings.name">
+    <mat-button-toggle *ngFor="let val of settings.data" value="{{val.value}}">{{val.displayName}}</mat-button-toggle>
+</mat-button-toggle-group>

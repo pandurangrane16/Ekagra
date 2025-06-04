@@ -1,1 +1,22 @@
-<p>cm-select2 works!</p>
+<div [formGroup]="formGroup">
+    <mat-label>{{settings.labelHeader}}</mat-label>
+    <hr>
+    <mat-form-field [class]="settings.formFieldClass">
+        <input matInput
+               aria-label="State"
+               [matAutocomplete]="auto"
+               [formControlName]="controlName" 
+               [attr.disabled]="settings?.isDisabled ? true : null" />
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith" (optionSelected)="ChangeSelection($event)">
+          @for (state of filteredOptions | async; track state) {
+            <mat-option [value]="state">
+              <span>{{state.name}}</span>
+            </mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+    
+      <mat-slide-toggle style="display: none;"
+        [checked]="settings.isDisabled">
+      </mat-slide-toggle>
+  </div>

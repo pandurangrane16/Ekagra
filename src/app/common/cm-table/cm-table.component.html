@@ -1,0 +1,63 @@
+<mat-card class="cardWithShadow">
+    <mat-card-content>
+      <mat-card-title>{{_headerName}}</mat-card-title>
+      <hr>
+      <div class="table-responsive">
+        <table class="w-100" id="datatableexample">
+          <thead class="table-dark">
+            <tr>
+              <th>Sr No.</th>
+              <th class="f-w-600 f-s-14 p-l-0" *ngFor="let column of headArr">{{column.header}}</th>
+            </tr>
+          </thead>
+          <br>
+          <tbody>
+            <tr *ngFor="let item of gridArr;let sr=index" (click)="ShowForm(item)" class="p-l-0 text-center">
+              <td>{{sr+1}}</td>
+              <td *ngFor="let head of headArr">
+                <div class="row" *ngIf="head.fieldValue=='check'">
+                  <div class="col" *ngFor="let chk of item.check">
+                    <span><mat-checkbox color="primary" style="border:black">{{chk.label}}</mat-checkbox></span>
+                  </div>
+                </div>
+                <div class="row" *ngIf="head.fieldValue=='button'">
+                  <span>
+                    <div class="col" *ngFor="let chk of item.button">
+                      <button mat-flat-button color="primary" (click)="GoToBtnAction(chk,item)">
+                        <mat-icon>add</mat-icon>
+                        <span>{{chk.label}}</span>
+                      </button>
+                    </div>
+                  </span>
+                </div>
+                <div class="row" *ngIf="head.fieldValue!='check' && head.fieldValue!='button'">
+                  <div class="col">
+                    {{item[head.fieldValue]}}
+                  </div>
+                </div>
+              </td>
+              <td *ngIf="item.type == 'control'">
+                <div class="row">
+                  <div class="col" *ngFor="let cntr of item.control">
+                    <mat-checkbox class="example-margin" *ngIf="cntr.type == 'check'">{{cntr.header}}</mat-checkbox>
+                  </div>
+                </div>
+              </td>
+              <td *ngIf="item.type != 'control'">
+                {{item.FieldName}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12" *ngIf="pagination || pagination == undefined">
+            <app-cm-pagination [totalRecords]="totalRecords" [recordsPerPage]="perPage" [collectionSize]="collectionSize"
+              [totalPages]="totalPages" (pageno)="onPageChange($event)" (perPage)="onPageRecordsChange($event)">
+            </app-cm-pagination>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
