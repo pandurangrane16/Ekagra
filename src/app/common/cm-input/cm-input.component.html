@@ -1,1 +1,11 @@
-<p>cm-input works!</p>
+<div [formGroup]="formGroup" *ngIf="formGroup">
+    {{value}}
+    <mat-form-field [hideRequiredMarker]="true" [appearance]="_inputData.appearance" [class]="_inputData.formFieldClass" [color]="_inputData.color">
+  
+      <mat-label [class]="_inputData.labelClass">{{_inputData.labelHeader}}</mat-label>
+    
+      <input matInput [placeholder]="_inputData.placeholder" [disabled]="_inputData.isDisabled" [value]="value"
+      [formControlName]="controlName" [type]="type" />
+    
+    </mat-form-field>
+  </div>

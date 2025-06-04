@@ -1,1 +1,12 @@
-<p>cm-button works!</p>
+<button type="button" (click)="onButtonClicked()" mat-button [color]="color" [class]="class" *ngIf="type == 'normal'">
+    <ng-content></ng-content>
+</button>
+
+<button type="button" (click)="onButtonClicked()" mat-flat-button [color]="color" [class]="class" *ngIf="type == 'flat'">
+    <ng-content></ng-content>
+</button>
+
+<button type="button" (click)="onButtonClicked()" mat-stroked-button [color]="color" [class]="class" *ngIf="type == 'stroked'" >
+    <ng-content></ng-content>
+</button>
+
