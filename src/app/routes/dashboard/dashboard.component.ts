@@ -10,12 +10,11 @@ import { CommonModule } from '@angular/common';
 
 
 @Component({
-  selector: 'app-dashboard',
-  standalone: true,
-  imports: [WidgetComponent, MatButtonModule, MatIcon, MatMenuModule,CdkDropList, CdkDropListGroup,CommonModule],
-  providers:[DashboardService],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+    selector: 'app-dashboard',
+    imports: [WidgetComponent, MatButtonModule, MatIcon, MatMenuModule, CdkDropList, CdkDropListGroup, CommonModule],
+    providers: [DashboardService],
+    templateUrl: './dashboard.component.html',
+    styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit{
 store = inject(DashboardService);

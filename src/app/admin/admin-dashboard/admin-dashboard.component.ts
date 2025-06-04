@@ -2,11 +2,11 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 @Component({
-  selector: 'app-admin-dashboard',
-  standalone: true,
-  imports: [],
-  templateUrl: './admin-dashboard.component.html',
-  styleUrl: './admin-dashboard.component.css'
+    selector: 'app-admin-dashboard',
+    imports: [],
+    standalone:true,
+    templateUrl: './admin-dashboard.component.html',
+    styleUrl: './admin-dashboard.component.css'
 })
 export class AdminDashboardComponent implements OnInit {
   private map: any;

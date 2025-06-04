@@ -6,13 +6,12 @@ import { Widget } from '../../../models/dashboard';
 import { DashboardService } from '../../../services/dashboard.service';
 
 @Component({
-  selector: 'app-widget-options',
-  standalone: true,
-  imports: [
-    MatButtonModule, MatIcon, MatButtonToggleModule
-  ],
-  templateUrl: './widget-options.component.html',
-  styleUrl: './widget-options.component.css'
+    selector: 'app-widget-options',
+    imports: [
+        MatButtonModule, MatIcon, MatButtonToggleModule
+    ],
+    templateUrl: './widget-options.component.html',
+    styleUrl: './widget-options.component.css'
 })
 export class WidgetOptionsComponent {
 

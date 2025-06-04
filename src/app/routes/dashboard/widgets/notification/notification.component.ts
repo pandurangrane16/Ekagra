@@ -10,12 +10,11 @@ import { AlertsService } from '../../../../services/alerts.service';
 
 
 @Component({
-  selector: 'app-notification',
-  standalone: true,
-  imports: [MatListModule, MatIconModule],
-  providers:[AlertsService],
-  templateUrl: './notification.component.html',
-  styleUrl: './notification.component.css'
+    selector: 'app-notification',
+    imports: [MatListModule, MatIconModule],
+    providers: [AlertsService],
+    templateUrl: './notification.component.html',
+    styleUrl: './notification.component.css'
 })
 
 

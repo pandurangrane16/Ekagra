@@ -3,12 +3,11 @@ import { AlertsService } from '../../../../services/alerts.service';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-new-alert',
-  standalone: true,
-  imports: [MatButtonModule],
-  providers:[AlertsService],
-  templateUrl: './new-alert.component.html',
-  styleUrl: './new-alert.component.css'
+    selector: 'app-new-alert',
+    imports: [MatButtonModule],
+    providers: [AlertsService],
+    templateUrl: './new-alert.component.html',
+    styleUrl: './new-alert.component.css'
 })
 export class NewAlertComponent  implements OnInit {
   alertsData: any[] = [];

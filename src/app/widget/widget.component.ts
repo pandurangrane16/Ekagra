@@ -7,15 +7,13 @@ import { WidgetOptionsComponent } from './widget-options/widget-options/widget-o
 import { CdkDrag, CdkDragPlaceholder } from '@angular/cdk/drag-drop';
 
 @Component({
-  selector: 'app-widget',
-  standalone: true,
-  imports: [NgComponentOutlet, MatButtonModule, MatIcon, WidgetOptionsComponent,CdkDrag, CdkDragPlaceholder ],
-  templateUrl: './widget.component.html',
-  styleUrl: './widget.component.css',
-  host: {
-    '[style.grid-area]':
-    '"span " + (data().rows ?? 1) + "/ span " + (data().cols ?? 1)',
-  },
+    selector: 'app-widget',
+    imports: [NgComponentOutlet, MatButtonModule, MatIcon, WidgetOptionsComponent, CdkDrag, CdkDragPlaceholder],
+    templateUrl: './widget.component.html',
+    styleUrl: './widget.component.css',
+    host: {
+        '[style.grid-area]': '"span " + (data().rows ?? 1) + "/ span " + (data().cols ?? 1)',
+    }
 })
 export class WidgetComponent {
 

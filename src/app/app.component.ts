@@ -10,21 +10,18 @@ import { HeaderService } from './services/header.service';
 import { LoginComponent } from "./routes/login/login.component";
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [
-    HeaderComponent,
-    MatSidenavModule,
-    SidenavComponent,
-    FooterComponent,
-    CommonModule,
-    RouterModule,
-],
-  providers:[HeaderService],
-  
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
- 
+    selector: 'app-root',
+    imports: [
+        HeaderComponent,
+        MatSidenavModule,
+        SidenavComponent,
+        FooterComponent,
+        CommonModule,
+        RouterModule,
+    ],
+    providers: [HeaderService],
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit{
   title = 'Ekagra';

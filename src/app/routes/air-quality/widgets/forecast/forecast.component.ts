@@ -10,11 +10,10 @@ interface Section {
 }
 
 @Component({
-  selector: 'app-forecast',
-  standalone: true,
-  imports: [MatListModule, MatIconModule, MatButtonModule],
-  templateUrl: './forecast.component.html',
-  styleUrl: './forecast.component.css'
+    selector: 'app-forecast',
+    imports: [MatListModule, MatIconModule, MatButtonModule],
+    templateUrl: './forecast.component.html',
+    styleUrl: './forecast.component.css'
 })
 export class ForecastComponent {
  forecast: Section[] = [

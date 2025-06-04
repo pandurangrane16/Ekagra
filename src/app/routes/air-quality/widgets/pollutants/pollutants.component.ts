@@ -5,11 +5,10 @@ import * as Highcharts from 'highcharts';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-pollutants',
-  standalone: true,
-  imports: [HighchartsChartModule, CommonModule],
-  templateUrl: './pollutants.component.html',
-  styleUrl: './pollutants.component.css'
+    selector: 'app-pollutants',
+    imports: [HighchartsChartModule, CommonModule],
+    templateUrl: './pollutants.component.html',
+    styleUrl: './pollutants.component.css'
 })
 export class PollutantsComponent implements OnInit {
   @ViewChild('customLegend')

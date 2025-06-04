@@ -8,16 +8,15 @@ import { MatIconModule } from '@angular/material/icon';
 
 
 @Component({
-  selector: 'app-metro-cities',
-  standalone: true,
-  imports: [
-    HighchartsChartModule,
-    CommonModule,
-    MatIconModule,
-    MatButtonModule,
-  ],
-  templateUrl: './metro-cities.component.html',
-  styleUrl: './metro-cities.component.css',
+    selector: 'app-metro-cities',
+    imports: [
+        HighchartsChartModule,
+        CommonModule,
+        MatIconModule,
+        MatButtonModule,
+    ],
+    templateUrl: './metro-cities.component.html',
+    styleUrl: './metro-cities.component.css'
 })
 export class MetroCitiesComponent implements OnInit {
    Highcharts!: typeof Highcharts;

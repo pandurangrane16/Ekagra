@@ -7,11 +7,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { text } from 'node:stream/consumers';
 
 @Component({
-  selector: 'app-violation',
-  standalone: true,
-  templateUrl: './violation.component.html',
-  imports: [CommonModule, CanvasJSAngularChartsModule,MatButtonModule, MatIconModule,],
-  styleUrls: ['./violation.component.css'],
+    selector: 'app-violation',
+    templateUrl: './violation.component.html',
+    imports: [CommonModule, CanvasJSAngularChartsModule, MatButtonModule, MatIconModule,],
+    styleUrls: ['./violation.component.css']
 })
 export class ViolationComponent implements AfterViewInit{
 

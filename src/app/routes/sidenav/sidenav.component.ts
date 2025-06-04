@@ -19,20 +19,19 @@ interface MenuItem {
 }
 
 @Component({
-  selector: 'app-sidenav',
-  standalone: true,
-  imports: [
-    MatSidenavModule,
-    MatIconModule,
-    MatListModule,
-    MatTooltipModule,
-    MatButtonModule,
-    CommonModule,
-    RouterModule, 
-  ],
-  providers:[HeaderService],
-  templateUrl: './sidenav.component.html',
-  styleUrl: './sidenav.component.css',
+    selector: 'app-sidenav',
+    imports: [
+        MatSidenavModule,
+        MatIconModule,
+        MatListModule,
+        MatTooltipModule,
+        MatButtonModule,
+        CommonModule,
+        RouterModule,
+    ],
+    providers: [HeaderService],
+    templateUrl: './sidenav.component.html',
+    styleUrl: './sidenav.component.css'
 })
 export class SidenavComponent {
   isSidebarCollapsed = true;

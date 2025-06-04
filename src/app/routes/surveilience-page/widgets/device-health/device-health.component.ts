@@ -3,11 +3,10 @@ import { HighchartsChartModule } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
 import { CommonModule } from '@angular/common';
 @Component({
-  selector: 'app-device-health',
-  standalone: true,
-  imports: [HighchartsChartModule, CommonModule],
-  templateUrl: './device-health.component.html',
-  styleUrl: './device-health.component.css'
+    selector: 'app-device-health',
+    imports: [HighchartsChartModule, CommonModule],
+    templateUrl: './device-health.component.html',
+    styleUrl: './device-health.component.css'
 })
 export class DeviceHealthComponent implements OnInit {
   @ViewChild('customLegend')

@@ -4,11 +4,10 @@ import * as Highcharts from 'highcharts';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-failures',
-  standalone: true,
-  imports: [HighchartsChartModule, CommonModule],
-  templateUrl: './failures.component.html',
-  styleUrl: './failures.component.css'
+    selector: 'app-failures',
+    imports: [HighchartsChartModule, CommonModule],
+    templateUrl: './failures.component.html',
+    styleUrl: './failures.component.css'
 })
 export class FailuresComponent implements OnInit {
   @ViewChild('customLegend')

@@ -11,11 +11,10 @@ interface ChartSeries {
 }
 
 @Component({
-  selector: 'app-parking-places',
-  standalone: true,
-  imports: [HighchartsChartModule,MatButtonModule, CommonModule],
-  templateUrl: './parking-places.component.html',
-  styleUrl: './parking-places.component.css'
+    selector: 'app-parking-places',
+    imports: [HighchartsChartModule, MatButtonModule, CommonModule],
+    templateUrl: './parking-places.component.html',
+    styleUrl: './parking-places.component.css'
 })
 export class ParkingPlacesComponent implements OnInit {
   @ViewChild('customLegend')

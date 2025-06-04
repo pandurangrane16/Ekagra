@@ -5,11 +5,10 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-overview',
-  standalone: true,
-  imports: [HighchartsChartModule, CommonModule, MatIconModule],
-  templateUrl: './overview.component.html',
-  styleUrl: './overview.component.css'
+    selector: 'app-overview',
+    imports: [HighchartsChartModule, CommonModule, MatIconModule],
+    templateUrl: './overview.component.html',
+    styleUrl: './overview.component.css'
 })
 export class OverviewComponent implements OnInit {
   @ViewChild('customLegend')

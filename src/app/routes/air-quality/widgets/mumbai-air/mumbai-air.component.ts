@@ -7,16 +7,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-mumbai-air',
-  standalone: true,
-  imports: [
-    HighchartsChartModule,
-    CommonModule,
-    MatIconModule,
-    MatButtonModule,
-  ],
-  templateUrl: './mumbai-air.component.html',
-  styleUrl: './mumbai-air.component.css'
+    selector: 'app-mumbai-air',
+    imports: [
+        HighchartsChartModule,
+        CommonModule,
+        MatIconModule,
+        MatButtonModule,
+    ],
+    templateUrl: './mumbai-air.component.html',
+    styleUrl: './mumbai-air.component.css'
 })
 export class MumbaiAirComponent implements OnInit {
    Highcharts!: typeof Highcharts;

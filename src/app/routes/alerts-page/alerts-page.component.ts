@@ -8,12 +8,11 @@ import { SeverityComponent } from "./widgets/severity/severity.component";
 import { OverviewComponent } from "./widgets/overview/overview.component";
 
 @Component({
-  selector: 'app-alerts-page',
-  standalone: true,
-  imports: [MatListModule, MatIconModule, ListComponent, MatButtonModule, SeverityComponent, OverviewComponent],
-   providers:[AlertsService],
-  templateUrl: './alerts-page.component.html',
-  styleUrl: './alerts-page.component.css'
+    selector: 'app-alerts-page',
+    imports: [MatListModule, MatIconModule, ListComponent, MatButtonModule, SeverityComponent, OverviewComponent],
+    providers: [AlertsService],
+    templateUrl: './alerts-page.component.html',
+    styleUrl: './alerts-page.component.css'
 })
 export class AlertsPageComponent implements OnInit {
   redAlert=false;

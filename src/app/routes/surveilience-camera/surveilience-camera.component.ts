@@ -17,15 +17,14 @@ interface Location {
 }
 
 @Component({
-  selector: 'app-surveilience-camera',
-  standalone: true,
-  imports: [ MatFormFieldModule,
-      MatInputModule,
-      MatIconModule,
-      MatButtonModule,MatExpansionModule,CommonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './surveilience-camera.component.html',
-  styleUrl: './surveilience-camera.component.css'
+    selector: 'app-surveilience-camera',
+    imports: [MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatButtonModule, MatExpansionModule, CommonModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './surveilience-camera.component.html',
+    styleUrl: './surveilience-camera.component.css'
 })
 export class SurveilienceCameraComponent {
   readonly panelOpenState = signal(false);

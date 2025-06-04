@@ -2,11 +2,10 @@ import { Component } from '@angular/core';
 import { HighchartsChartModule } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
 @Component({
-  selector: 'app-weekly-overview',
-  standalone: true,
-  imports: [HighchartsChartModule],
-  templateUrl: './weekly-overview.component.html',
-  styleUrl: './weekly-overview.component.css'
+    selector: 'app-weekly-overview',
+    imports: [HighchartsChartModule],
+    templateUrl: './weekly-overview.component.html',
+    styleUrl: './weekly-overview.component.css'
 })
 export class WeeklyOverviewComponent {
   Highcharts: typeof Highcharts = Highcharts;

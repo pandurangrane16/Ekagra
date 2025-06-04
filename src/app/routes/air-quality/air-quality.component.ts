@@ -17,13 +17,12 @@ import { MetroCitiesComponent } from "./widgets/metro-cities/metro-cities.compon
 import { MumbaiAirComponent } from "./widgets/mumbai-air/mumbai-air.component";
 
 @Component({
-  selector: 'app-air-quality',
-  standalone: true,
-  imports: [MapviewComponent, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule, ForecastComponent, AqiComponent, MatDatepickerModule, MatSelectModule, HistoricComponent, PollutantsComponent, MetroCitiesComponent, MumbaiAirComponent],
-  providers: [provideNativeDateAdapter()],
- // changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './air-quality.component.html',
-  styleUrl: './air-quality.component.css'
+    selector: 'app-air-quality',
+    imports: [MapviewComponent, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule, ForecastComponent, AqiComponent, MatDatepickerModule, MatSelectModule, HistoricComponent, PollutantsComponent, MetroCitiesComponent, MumbaiAirComponent],
+    providers: [provideNativeDateAdapter()],
+    // changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './air-quality.component.html',
+    styleUrl: './air-quality.component.css'
 })
 export class AirQualityComponent {
 

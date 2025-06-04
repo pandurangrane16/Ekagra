@@ -7,11 +7,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-sensors',
-  standalone: true,
-  templateUrl: './sensors.component.html',
-  imports: [CommonModule, CanvasJSAngularChartsModule,MatButtonModule, MatIconModule,],
-  styleUrls: ['./sensors.component.css'],
+    selector: 'app-sensors',
+    templateUrl: './sensors.component.html',
+    imports: [CommonModule, CanvasJSAngularChartsModule, MatButtonModule, MatIconModule,],
+    styleUrls: ['./sensors.component.css']
 })
 export class SensorsComponent implements AfterViewInit{
 

@@ -7,11 +7,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-severity',
-  standalone: true,
-  templateUrl: './severity.component.html',
-  imports: [CommonModule, HighchartsChartModule, MatButtonModule, MatIconModule],
-  styleUrls: ['./severity.component.css'],
+    selector: 'app-severity',
+    templateUrl: './severity.component.html',
+    imports: [CommonModule, HighchartsChartModule, MatButtonModule, MatIconModule],
+    styleUrls: ['./severity.component.css']
 })
 export class SeverityComponent implements OnInit {
   Highcharts!: typeof Highcharts;
