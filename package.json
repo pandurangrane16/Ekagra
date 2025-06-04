@@ -36,6 +36,7 @@
     "ng-image-slider": "^9.0.0",
     "ngx-slick-carousel": "^17.0.0",
     "ngx-slickjs": "^1.5.2",
+    "ngx-toastr": "^19.0.0",
     "ol": "^10.4.0",
     "rimraf": "^6.0.1",
     "rxjs": "~7.8.0",

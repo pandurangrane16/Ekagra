@@ -89,8 +89,6 @@ import { ToastrModule } from 'ngx-toastr';
     ReactiveFormsModule,
     MatSelectModule,
   ],
-  imports :[
-    ToastrModule.forRoot()
-  ]
+  imports:[ToastrModule.forRoot()],
 })
 export class MaterialModule {}
