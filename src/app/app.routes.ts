@@ -22,7 +22,7 @@ export const routes: Routes = [
       { path: 'camera', component: SurveilienceCameraComponent },
       { path: 'chat', component: ChatPageComponent },
       { path: 'setting', component: SettingPageComponent },
-      { path: "**", redirectTo: "dashboard" },
+      //{ path: "**", redirectTo: "dashboard" },
 
       {
             path: 'admin',

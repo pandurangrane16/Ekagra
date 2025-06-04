@@ -1,11 +1,12 @@
 import { Routes } from "@angular/router";
+import { AdminDashboardComponent } from "./admin-dashboard/admin-dashboard.component";
 
 export const AdminRoutes: Routes = [
     {
       path: '',
-     // component: UserDashboardComponent,
+     component: AdminDashboardComponent,
       data: {
-        title: 'UserDashboard',
+        title: 'Admin Dashboard',
         urls: [
           { title: 'Dashboard', url: '/user-dash' },
           { title: 'UserDashboard' },
@@ -14,7 +15,7 @@ export const AdminRoutes: Routes = [
     },
     {
         path: 'dashboard',
-       // component: UserDashboardComponent,
+       component: AdminDashboardComponent,
         data: {
           title: 'Admin Dashboard',
           urls: [

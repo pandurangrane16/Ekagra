@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import * as L from 'leaflet';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -8,20 +8,27 @@ import * as L from 'leaflet';
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.css'
 })
-export class AdminDashboardComponent {
-  private map: L.Map | undefined;
+export class AdminDashboardComponent implements OnInit {
+  private map: any;
+  private L: any;
 
-  ngOnInit(): void {
-    this.initMap();
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+
+  async ngOnInit(): Promise<void> {
+    if (isPlatformBrowser(this.platformId)) {
+      const leaflet = await import('leaflet');
+      this.L = leaflet;
+      this.initMap();
+    }
   }
 
   private initMap(): void {
-    this.map = L.map('map', {
-      center: [51.505, -0.09], // London
+    this.map = this.L.map('map', {
+      center: [51.505, -0.09],
       zoom: 13
     });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    this.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(this.map);
   }
