@@ -1,6 +1,6 @@
 import { Routes } from "@angular/router";
 import { AdminDashboardComponent } from "./admin-dashboard/admin-dashboard.component";
-import { ProjectConfigurationComponent} from "./admin-dashboard/project-configuration.component";
+//import { ProjectConfigurationComponent} from "./admin-dashboard/project-configuration.component";
 
 export const AdminRoutes: Routes = [
     {

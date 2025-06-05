@@ -45,7 +45,6 @@ import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 
-
 @NgModule({
   declarations: [],
   exports: [
