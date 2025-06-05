@@ -10,6 +10,7 @@ import { SurveilienceCameraComponent } from './routes/surveilience-camera/survei
 import { ChatPageComponent } from './routes/chat-page/chat-page.component';
 import { SettingPageComponent } from './routes/setting-page/setting-page.component';
 import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
+import { ProjectConfigurationComponent } from './admin/project-configuration/project-configuration.component';
 
 export const routes: Routes = [
       { path: "login", component: LoginComponent, },
@@ -23,10 +24,10 @@ export const routes: Routes = [
       { path: 'chat', component: ChatPageComponent },
       { path: 'setting', component: SettingPageComponent },
       //{ path: "**", redirectTo: "dashboard" },
-
+      {path:'projconf', component: ProjectConfigurationComponent},
       {
             path: 'admin',
-            component: AdminDashboardComponent,
+            //  component: AdminDashboardComponent,
             children: [
                   {
                         path: '',

@@ -1,7 +1,10 @@
 <div [formGroup]="formGroup">
     <mat-label>{{settings.labelHeader}}</mat-label>
     <hr>
-    <mat-form-field [class]="settings.formFieldClass">
+    <!-- <mat-form-field [class]="settings.formFieldClass"> -->
+      <mat-form-field
+      [appearance]="settings.appearance || 'outline'"
+      [class]="settings.formFieldClass">
         <input matInput
                aria-label="State"
                [matAutocomplete]="auto"
