@@ -1,0 +1,42 @@
+.canvas {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: #f4f4f4;
+    overflow: hidden;
+  }
+  
+  .widget {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    padding: 10px;
+    cursor: move;
+    border-radius: 8px;
+  }
+  
+  .status-box {
+    font-weight: bold;
+    text-align: center;
+  }
+  
+
+  .resize-handle-bottom {
+    position: absolute;
+    bottom: 0;
+    height: 10px;
+    width: 100%;
+    cursor: ns-resize;
+    background-color: rgba(0,0,0,0.2);
+  }
+  
+  .resize-handle-right {
+    position: absolute;
+    right: 0;
+    width: 10px;
+    height: 100%;
+    cursor: ew-resize;
+    background-color: rgba(0,0,0,0.2);
+  }
+  

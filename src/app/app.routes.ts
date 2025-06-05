@@ -28,12 +28,26 @@ export const routes: Routes = [
       {
             path: 'admin',
             //  component: AdminDashboardComponent,
+            //component: AdminDashboardComponent,
             children: [
                   {
                         path: '',
                         loadChildren: () =>
                               import('../app/admin/admin.routes').then(
                                     (m) => m.AdminRoutes
+                              ),
+                  },
+            ],
+      },
+      {
+            path: 'user',
+            //component: AdminDashboardComponent,
+            children: [
+                  {
+                        path: '',
+                        loadChildren: () =>
+                              import('../app/user/user.routes').then(
+                                    (m) => m.UserRoutes
                               ),
                   },
             ],

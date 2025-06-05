@@ -1,0 +1,20 @@
+<div class="canvas">
+  <div *ngFor="let widget of widgets"
+       class="widget"
+       cdkDrag
+       [cdkDragFreeDragPosition]="widget.position"
+       (cdkDragEnded)="onDragEnd($event, widget)"
+       mwlResizable
+       (resizeEnd)="onResizeEnd($event, widget)"
+       [style.width.px]="widget.width"
+       [style.height.px]="widget.height"
+       mwlResizeHandle [resizeEdges]="{bottom: true, right: true}">
+       
+    <ng-container [ngSwitch]="widget.type">
+      <div *ngSwitchCase="'status'" class="status-box resize-handle-bottom">
+        {{widget.title}}<br><strong>{{widget.value}}</strong>
+      </div>
+    </ng-container>
+
+  </div>
+</div>
