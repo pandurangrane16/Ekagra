@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MaterialModule } from '../../Material.module';
 import { CommonModule } from '@angular/common';
 
@@ -14,7 +14,15 @@ export class CmSelectComponent implements OnInit {
   selectedVal:any;
   @Input() settings:any;
   @Input() labelHeader:string;
+  @Output() returnObject = new EventEmitter<any>();
   ngOnInit(): void {
     console.log(this.settings);
   }
+
+  ChangeSelection(event: any) {
+    console.log(event);
+    this.returnObject.emit(event.value);
+    
+  }
+
 }

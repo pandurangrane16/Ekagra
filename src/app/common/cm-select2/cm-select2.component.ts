@@ -55,7 +55,7 @@ export class CmSelect2Component {
   }
 
   ChangeSelection(event: any) {
-    this.returnObject.emit(event);
+    this.returnObject.emit(event.value);
   }
 
   displayWith(state: any): string {

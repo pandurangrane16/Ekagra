@@ -1,0 +1,49 @@
+<div class="card">
+    <div class="row">
+
+        <div class="col-md-3">
+            <app-cm-select [settings]="selectParentId" labelHeader="Select Type"
+                (returnObject)="onTypeSelect($event)"></app-cm-select>
+        </div>
+
+        <div class="col-md-3">
+            <app-cm-select [settings]="selectChartType" labelHeader="Select Chart Type"
+                (returnObject)="onChartTypeSelect($event)"></app-cm-select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <input type="text" class="form-control" [(ngModel)]="height" placeholder="Height"/>
+        </div>
+        <div class="col-md-3">
+            <input type="text" class="form-control"  [(ngModel)]="width" placeholder="Width"/>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div
+            mwlResizable
+            [style.width.px]="width"
+            [style.height.px]="height"
+            (resizeEnd)="onResizeEnd($event)"
+            style="border: 1px solid #ccc; padding: 10px; background: #fff;"
+          >
+            @if(category == 1){
+                <highcharts-chart
+                [Highcharts]="Highcharts"
+                [options]="chartOptions"
+                [style.width.px]="width - 20"
+                [style.height.px]="height - 40"
+                style="display: block;"
+              ></highcharts-chart> 
+            }
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <button (click)="saveChart()">Save Chart</button>
+    </div>
+</div>

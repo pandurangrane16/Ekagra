@@ -1,4 +1,4 @@
-<div class="canvas">
+<!-- <div class="canvas">
   <div *ngFor="let widget of widgets"
        class="widget"
        cdkDrag
@@ -17,4 +17,26 @@
     </ng-container>
 
   </div>
+</div> -->
+
+<div class="row">
+  <div class="col-md-12">
+    <div
+    cdkDrag
+    mwlResizable
+    [style.width.px]="width"
+    [style.height.px]="height"
+    (resizeEnd)="onResizeEnd($event)"
+    style="border: 1px solid #ccc; padding: 10px; background: #fff;"
+  >
+    <highcharts-chart
+      [Highcharts]="Highcharts"
+      [options]="chartOptions"
+      [style.width.px]="width - 20"
+      [style.height.px]="height - 40"
+      style="display: block;"
+    ></highcharts-chart>
+  </div>
+  </div>
 </div>
+

@@ -44,6 +44,7 @@ import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
+import { HighchartsChartModule } from 'highcharts-angular';
 
 @NgModule({
   declarations: [],
@@ -91,6 +92,7 @@ import { ToastrModule } from 'ngx-toastr';
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
+    HighchartsChartModule
   ],
   imports:[ToastrModule.forRoot()],
 })
