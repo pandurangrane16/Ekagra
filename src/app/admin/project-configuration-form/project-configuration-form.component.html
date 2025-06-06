@@ -1,0 +1,62 @@
+<div class="dialog-container">
+
+    <h2>Project Configuration</h2>
+
+    <hr class="input-header-hr" /> 
+    <form [formGroup]="form" class="form-container">
+  
+      <!-- Name Input -->
+      <app-cm-input
+        [formGroup]="form"
+        [controlName]="'name'"
+        [_inputData]="inputFields.name">
+      </app-cm-input>
+  
+      <!-- Description Input -->
+      <app-cm-input
+        [formGroup]="form"
+        [controlName]="'description'"
+        [_inputData]="inputFields.description">
+      </app-cm-input>
+  
+      <!-- Toggles -->
+      <div class="toggle-row">
+        <div class="toggle-column">
+          <label class="toggle-label">Is Active?</label>
+          <app-cm-toggle [formGroup]="form" [settings]="toggleSettingsWithoutHeader"></app-cm-toggle>
+        </div>
+      
+        <div class="toggle-column">
+          <label class="toggle-label">Is Featured?</label>
+          <app-cm-toggle [formGroup]="form" [settings]="toggleSettingsWithoutHeader"></app-cm-toggle>
+        </div>
+      </div>
+      
+  
+      <!-- File Uploads -->
+      <div class="file-upload">
+        <label>
+          Map Icon*
+          <input type="file" (change)="onFileChange($event, 'mapIcon')" />
+        </label>
+  
+        <label>
+          Project Icon*
+          <input type="file" (change)="onFileChange($event, 'projectIcon')" />
+        </label>
+      </div>
+  
+      <!-- Toggle -->
+      <div class="toggle-row">
+        <app-cm-toggle [formGroup]="form" [settings]="toggleSettingsWithoutHeader"></app-cm-toggle>
+        <label class="toggle-label">Is Active?</label>
+      </div>
+  
+      <!-- Action Buttons -->
+      <div class="dialog-actions">
+        <button mat-button (click)="close()">Cancel</button>
+        <button mat-flat-button color="primary" (click)="submit()">Save</button>
+      </div>
+    </form>
+  </div>
+  

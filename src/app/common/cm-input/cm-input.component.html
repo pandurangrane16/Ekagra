@@ -4,7 +4,7 @@
     <!-- Show mat-label + hr ABOVE input only if labelHeader is NOT 'Search' -->
     <ng-container *ngIf="_inputData.labelHeader && _inputData.labelHeader !== 'Search'">
       <mat-label [class]="_inputData.labelClass">{{ _inputData.labelHeader }}</mat-label>
-      <hr class="input-header-hr" />
+     
 
     </ng-container>
     <mat-form-field [hideRequiredMarker]="true" [appearance]="_inputData.appearance" [class]="_inputData.formFieldClass" [color]="_inputData.color">

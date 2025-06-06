@@ -6,6 +6,9 @@ import { CmSelectComponent } from '../../common/cm-select/cm-select.component';
 import { CmSelect2Component } from '../../common/cm-select2/cm-select2.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CmInputComponent } from '../../common/cm-input/cm-input.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ProjectConfigurationFormComponent } from '../project-configuration-form/project-configuration-form.component';
+
 
 @Component({
     selector: 'app-project-configuration',
@@ -148,7 +151,7 @@ import { CmInputComponent } from '../../common/cm-input/cm-input.component';
         collectionSize = 2;
       
        
-        constructor(private fb: FormBuilder) {}
+        constructor(private fb: FormBuilder,private dialog: MatDialog) {}
         ngOnInit(): void {
           this.form = this.fb.group({
             selectedProject: [''],
@@ -157,6 +160,22 @@ import { CmInputComponent } from '../../common/cm-input/cm-input.component';
           });
           this.buildHeader();
        
+        }
+
+        openDialog() {
+          const dialogRef = this.dialog.open(ProjectConfigurationFormComponent, {
+            width: '500px',         
+            disableClose: true,     
+            data: {}               
+          });
+      
+          // Optional: handle result
+          dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+              console.log('Dialog result:', result);
+             
+            }
+          });
         }
         buildHeader() {  
           this.headArr = [
@@ -183,15 +202,15 @@ import { CmInputComponent } from '../../common/cm-input/cm-input.component';
           color: 'primary'
         };
         squareSettings = {
-          labelHeader: 'Search',
-          formFieldClass: 'square-autocomplete',
-          appearance: 'fill',
+          labelHeader: 'Searchq',
+          formFieldClass: 'cm-square-input',
+        
           isDisabled: false
         };
         
         roundedSettings = {
-          labelHeader: 'Search',
-          formFieldClass: 'rounded-autocomplete',
+          labelHeader: 'Searchq',
+          formFieldClass: 'cm-pill-input',
           appearance: 'fill',
           isDisabled: false
         };
