@@ -26,7 +26,7 @@
   }
   .toggle-row {
     display: flex;
-    gap: 20px; /* Space between the two toggles */
+    gap: 10px; /* Space between the two toggles */
     margin-bottom: 16px;
   }
   

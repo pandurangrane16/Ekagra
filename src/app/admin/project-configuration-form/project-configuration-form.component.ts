@@ -20,18 +20,20 @@ export class ProjectConfigurationFormComponent {
   MatButtonToggleChange:any;
   inputFields = {
     name: {
-      labelHeader: 'Name',
+      // labelHeader: 'Name',
       placeholder: 'Enter project name',
       appearance: 'outline',
       isDisabled: false,
-      color: 'primary'
+      color: 'primary',
+      formFieldClass: "w-100"
     },
     description: {
-      labelHeader: 'Description',
+      // labelHeader: 'Description',
       placeholder: 'Enter description',
       appearance: 'outline',
       isDisabled: false,
-      color: 'primary'
+      color: 'primary',
+       formFieldClass: "w-100"
     }
   };
 
