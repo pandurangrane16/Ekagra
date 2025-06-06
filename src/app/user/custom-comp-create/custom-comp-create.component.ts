@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 export class CustomCompCreateComponent implements OnInit, OnChanges {
   height : number =  100;
   width : number = 200;
+  pageConfig : any[] =[];
   constructor(private chartService : ChartService){}
   public selectParentId = {
     options: [{ "name": "--Select--", "value": "0", "selected": true }, { "name": "Graph", "value": "1", "selected": false },
@@ -70,6 +71,8 @@ export class CustomCompCreateComponent implements OnInit, OnChanges {
   Highcharts: typeof Highcharts = Highcharts;
   chartOptions: Highcharts.Options = {};
   category: number = 0;
+  divs: { content: string }[] = [];
+
   @Input() chartType: string = 'bar';
   @Input() data: any[] = [1, 2, 3];
   @Input() categories: string[] = ['A', 'B', 'C'];
@@ -116,18 +119,30 @@ export class CustomCompCreateComponent implements OnInit, OnChanges {
     }
     this.ngOnChanges();
   }
-
-  saveChart() {
+  AddNew(){
+    const newContent = `This is div number ${this.divs.length + 1}`;
+    this.divs.push({ content: newContent });
+  }
+  AddToList() {
     const config = {
       type: this.chartType,
       categories: this.categories,
       data: this.data.map(Number)
     };
-    this.chartService.saveChartConfig(config);
+
+    this.pageConfig.push(config);
+  }
+  saveChart() {
+    
+    this.chartService.saveChartConfig(this.pageConfig);
     alert('Chart Saved!');
   }
   onResizeEnd(event: any) {
     this.width = event.rectangle.width;
     this.height = event.rectangle.height;
+  }
+
+  removeDiv(index: number) {
+    this.divs.splice(index, 1);
   }
 }

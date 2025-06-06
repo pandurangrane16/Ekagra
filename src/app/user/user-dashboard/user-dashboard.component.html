@@ -20,7 +20,7 @@
 </div> -->
 
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-12" *ngFor="let chart of chartOptions">
     <div
     cdkDrag
     mwlResizable
@@ -29,9 +29,10 @@
     (resizeEnd)="onResizeEnd($event)"
     style="border: 1px solid #ccc; padding: 10px; background: #fff;"
   >
+  
     <highcharts-chart
       [Highcharts]="Highcharts"
-      [options]="chartOptions"
+      [options]="chart"
       [style.width.px]="width - 20"
       [style.height.px]="height - 40"
       style="display: block;"

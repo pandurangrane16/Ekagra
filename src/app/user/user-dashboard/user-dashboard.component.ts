@@ -64,7 +64,7 @@ export class UserDashboardComponent {
   // }
 
   Highcharts: typeof Highcharts = Highcharts;
-  chartOptions: Highcharts.Options = {};
+  chartOptions: any[] =[] ;
   width = 400;
   height = 300;
 
@@ -72,25 +72,31 @@ export class UserDashboardComponent {
 
   ngOnInit(): void {
     const config = this.chartService.getChartConfig();
+    console.log(config);
     if (config) {
-      this.chartOptions = {
+      config.forEach((ele:any) => {
+        let chartMap :Highcharts.Options = {}
+
+      chartMap = {
         chart: {
-          type: config.type
+          type: ele.type
         },
         title: {
-          text: `${config.type.toUpperCase()} Chart`
+          text: `${ele.type.toUpperCase()} Chart`
         },
         xAxis: {
-          categories: config.categories
+          categories: ele.categories
         },
         series: [
           {
-            type: config.type,
-            data: config.data,
+            type: ele.type,
+            data: ele.data,
             name: 'User Data'
           }
         ]
       };
+      this.chartOptions.push(chartMap);
+      });
     }
   }
 
