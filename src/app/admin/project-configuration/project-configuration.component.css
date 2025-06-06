@@ -1,0 +1,18 @@
+.filter-row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1rem;
+    align-items: flex-end; /* aligns labels/text */
+    margin-bottom: 1rem;
+  }
+  
+  app-cm-select2 {
+    flex: 0 0 auto;
+    width: 250px; /* adjust width as per your layout */
+  }
+
+  app-cm-input {
+    flex: 0 0 auto;
+    width: 250px;
+  }
+  

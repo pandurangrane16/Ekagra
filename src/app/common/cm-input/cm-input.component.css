@@ -1,0 +1,14 @@
+label.form-label {
+    display: block;        /* Make label a block element */
+    width: 100%;           /* Full width so input goes below */
+    margin-bottom: 4px;    /* Space between label and input */
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+  .input-header-hr {
+    margin: 4px 0 8px 0;
+    border: none;
+    border-top: 1px solid rgba(0,0,0,0.12);
+  }
+  

@@ -3,7 +3,7 @@ import { MaterialModule } from '../../Material.module';
 import { CommonModule } from '@angular/common';
 import { CmPaginationComponent } from '../cm-pagination/cm-pagination.component';
 import { MatMenuPanel } from '@angular/material/menu';
-import { Router } from 'express';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cm-table',
@@ -42,7 +42,8 @@ export class CmTableComponent implements OnInit {
   
     }
     ngOnInit(): void {
-      this.headArr = this.headArr.sort(x=>x.position);
+      //this.headArr = this.headArr.sort(x=>x.position);
+      console.log(this.headArr);
     }
     ngOnChanges(changes: SimpleChanges): void {
       if(!this.isSearch) {
