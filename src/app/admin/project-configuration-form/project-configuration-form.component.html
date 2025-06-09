@@ -14,15 +14,18 @@
                 </app-cm-input>
             </div>
         </div>
-      <!-- Name Input -->
-  
-      <!-- Description Input -->
-      <label>Description</label>
-      <app-cm-input
-        [formGroup]="form"
-        [controlName]="'description'"
-        [_inputData]="inputFields.description">
-      </app-cm-input>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Description</label>
+                <app-cm-input
+                  [formGroup]="form"
+                  [controlName]="'name'"
+                  [_inputData]="inputFields.description">
+                </app-cm-input>
+            </div>
+        </div>
+
+   
   
       <!-- Toggles -->
       <div class="toggle-row">

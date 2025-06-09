@@ -1,15 +1,18 @@
 <div [formGroup]="formGroup">
     <mat-label>{{settings.labelHeader}}</mat-label>
-    <hr>
+    
     <!-- <mat-form-field [class]="settings.formFieldClass"> -->
-      <mat-form-field
-      [appearance]="settings.appearance || 'outline'"
+      <mat-form-field style="padding-top: 10px; "
+      [appearance]="settings.appearance || 'fill'"
       [class]="settings.formFieldClass">
-        <input matInput
+        <input matInput 
                aria-label="State"
                [matAutocomplete]="auto"
                [formControlName]="controlName" 
-               [attr.disabled]="settings?.isDisabled ? true : null" />
+               [attr.disabled]="settings?.isDisabled ? true : null"
+                />
+
+                
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith" (optionSelected)="ChangeSelection($event)">
           @for (state of filteredOptions | async; track state) {
             <mat-option [value]="state">
