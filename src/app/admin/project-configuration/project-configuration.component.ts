@@ -96,9 +96,9 @@ import { ProjectConfigurationFormComponent } from '../project-configuration-form
           formFieldClass: '', 
           appearance: 'fill',
           options: [
-            { name: 'Project A', value: 'A' },
-            { name: 'Project B', value: 'B' },
-            { name: 'Project C', value: 'C' }
+            { name: 'apple', value: 'A' },
+            { name: 'mango', value: 'B' },
+            { name: 'bananannanan', value: 'C' }
           ]
         };
         
@@ -202,14 +202,14 @@ import { ProjectConfigurationFormComponent } from '../project-configuration-form
           color: 'primary'
         };
         squareSettings = {
-          labelHeader: 'Searchq',
+          labelHeader: 'Search',
           formFieldClass: 'cm-square-input',
         
           isDisabled: false
         };
         
         roundedSettings = {
-          labelHeader: 'Searchq',
+          labelHeader: 'Search',
           formFieldClass: 'cm-pill-input',
           appearance: 'fill',
           isDisabled: false

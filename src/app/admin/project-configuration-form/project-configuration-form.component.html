@@ -4,20 +4,28 @@
 
     <hr class="input-header-hr" /> 
     <form [formGroup]="form" class="form-container">
-  
-      <!-- Name Input -->
-      <app-cm-input
-        [formGroup]="form"
-        [controlName]="'name'"
-        [_inputData]="inputFields.name">
-      </app-cm-input>
-  
-      <!-- Description Input -->
-      <app-cm-input
-        [formGroup]="form"
-        [controlName]="'description'"
-        [_inputData]="inputFields.description">
-      </app-cm-input>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Name</label>
+                <app-cm-input
+                  [formGroup]="form"
+                  [controlName]="'name'"
+                  [_inputData]="inputFields.name">
+                </app-cm-input>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Description</label>
+                <app-cm-input
+                  [formGroup]="form"
+                  [controlName]="'name'"
+                  [_inputData]="inputFields.description">
+                </app-cm-input>
+            </div>
+        </div>
+
+   
   
       <!-- Toggles -->
       <div class="toggle-row">
@@ -27,7 +35,7 @@
         </div>
       
         <div class="toggle-column">
-          <label class="toggle-label">Is Featured?</label>
+          <label class="toggle-label">Is Active?</label>
           <app-cm-toggle [formGroup]="form" [settings]="toggleSettingsWithoutHeader"></app-cm-toggle>
         </div>
       </div>
@@ -46,11 +54,11 @@
         </label>
       </div>
   
-      <!-- Toggle -->
-      <div class="toggle-row">
-        <app-cm-toggle [formGroup]="form" [settings]="toggleSettingsWithoutHeader"></app-cm-toggle>
-        <label class="toggle-label">Is Active?</label>
-      </div>
+         <!-- Toggles -->
+         <div class="toggle-row">
+              <app-cm-toggle [formGroup]="form" [settings]="toggleSettingsWithoutHeader"></app-cm-toggle>
+            
+          </div>
   
       <!-- Action Buttons -->
       <div class="dialog-actions">
