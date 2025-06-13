@@ -14,6 +14,7 @@ export class ChartService {
 
   getChartConfig(): any {
     const raw = localStorage.getItem(this.chartConfigKey);
+    // return JSON.parse(localStorage.getItem('charts') || '[]');
     return raw ? JSON.parse(raw) : null;
   }
 }

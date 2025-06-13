@@ -1,10 +1,10 @@
-<mat-card class="cardWithShadow">
-  <mat-card-content>
-    <mat-card-title>{{ _headerName }}</mat-card-title>
-    <hr />
+<mat-card class="p-0 shadow-none">
+  <mat-card-content class="p-0">
+    <!-- <mat-card-title>{{ _headerName }}</mat-card-title>
+    <hr /> -->
     <div class="table-responsive" *ngIf="headArr">
-      <table class="w-100" id="datatableexample">
-        <thead class="table-dark text-white">
+      <table class="w-100 table table-bordered" id="datatableexample">
+        <thead>
           <tr>
             <th>Sr No.</th>
             <th class="f-w-600 f-s-14" *ngFor="let col of headArr">{{ col.header }}</th>

@@ -4,12 +4,14 @@ import { CommonModule } from '@angular/common';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ResizableModule, ResizeEvent } from 'angular-resizable-element';
 import { ChartService } from '../../services/common/chart.service';
-import Highcharts from 'highcharts';
+import * as Highcharts from 'highcharts';
+import { HighchartsChartModule } from 'highcharts-angular';
 import { FormsModule } from '@angular/forms';
-
+// import Highcharts3d from 'highcharts/highcharts-3d';
+// Highcharts3d(Highcharts);
 @Component({
   selector: 'app-user-dashboard',
-  imports: [MaterialModule,CommonModule,DragDropModule,ResizableModule,FormsModule],
+  imports: [MaterialModule,CommonModule,DragDropModule,ResizableModule,FormsModule,HighchartsChartModule],
   templateUrl: './user-dashboard.component.html',
   styleUrl: './user-dashboard.component.css'
 })
@@ -79,7 +81,14 @@ export class UserDashboardComponent {
 
       chartMap = {
         chart: {
-          type: ele.type
+          type: ele.type,
+           options3d: {
+                enabled: true,
+                alpha: 15,
+                beta: 15,
+                depth: 50,
+                viewDistance: 25
+              }
         },
         title: {
           text: `${ele.type.toUpperCase()} Chart`
