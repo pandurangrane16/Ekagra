@@ -5,6 +5,8 @@ import { HighchartsChartModule } from 'highcharts-angular';
 import { ChartService } from '../../services/common/chart.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+// import Highcharts3d from 'highcharts/highcharts-3d';
+// Highcharts3d(Highcharts);
 
 @Component({
   selector: 'app-custom-comp-create',
@@ -35,7 +37,7 @@ export class CustomCompCreateComponent implements OnInit, OnChanges {
 
   public selectChartType = {
     options: [{ "name": "--Select--", "value": "0", "selected": true }, { "name": "Bar", "value": "bar", "selected": false },
-    { "name": "Line", "value": "line", "selected": false },
+    { "name": "Area", "value": "area", "selected": false },
     { "name": "Pie", "value": "pie", "selected": false }],
     appearance: "outline",
     color: "primary",
@@ -48,10 +50,18 @@ export class CustomCompCreateComponent implements OnInit, OnChanges {
   };
 
   ngOnInit(): void {
-    console.log("In NgOnIt");
+   // console.log("In NgOnIt");
+    console.log('userData:', this.data);
     this.chartOptions = {
       chart: {
-        type: this.chartType as any
+        type: this.chartType as any,
+    //   options3d: {
+    //   enabled: true,
+    //   alpha: 15,
+    //   beta: 15,
+    //   depth: 50,
+    //   viewDistance: 25
+    // }
       },
       title: {
         text: `${this.chartType.toUpperCase()} Chart`
@@ -63,7 +73,7 @@ export class CustomCompCreateComponent implements OnInit, OnChanges {
         {
           name: 'User Data',
           type: this.chartType as any,
-          data: this.data
+          data: this.data,
         }
       ]
     };
@@ -72,16 +82,26 @@ export class CustomCompCreateComponent implements OnInit, OnChanges {
   chartOptions: Highcharts.Options = {};
   category: number = 0;
   divs: { content: string }[] = [];
-
   @Input() chartType: string = 'bar';
   @Input() data: any[] = [1, 2, 3];
   @Input() categories: string[] = ['A', 'B', 'C'];
 
   ngOnChanges(): void {
     console.log("In NgOnChanges");
+     if (!this.data || !this.chartType || !this.categories) {
+    console.warn('Missing input data for chart setup.');
+    return;
+  }
     this.chartOptions = {
       chart: {
-        type: this.chartType as any
+        type: this.chartType as any,
+    //      options3d: {
+    //   enabled: true,
+    //   alpha: 15,
+    //   beta: 15,
+    //   depth: 50,
+    //   viewDistance: 25
+    // }
       },
       title: {
         text: `${this.chartType.toUpperCase()} Chart`
@@ -107,7 +127,7 @@ export class CustomCompCreateComponent implements OnInit, OnChanges {
   onChartTypeSelect(val: any) {
     this.chartType = val;
     if (val == "pie") {
-      this.data = [60,25,10 ];
+    this.data = [60,25,10 ];
 
      let series= [
         {

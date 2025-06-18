@@ -11,6 +11,7 @@ import { ChatPageComponent } from './routes/chat-page/chat-page.component';
 import { SettingPageComponent } from './routes/setting-page/setting-page.component';
 import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
 import { ProjectConfigurationComponent } from './admin/project-configuration/project-configuration.component';
+import { UserRoutes } from '../app/user/user.routes';
 
 export const routes: Routes = [
       { path: "login", component: LoginComponent, },
@@ -39,18 +40,23 @@ export const routes: Routes = [
                   },
             ],
       },
+      // {
+      //       path: 'user',
+      //       //component: AdminDashboardComponent,
+      //       children: [
+      //             {
+      //                   path: '',
+      //                   loadChildren: () =>
+      //                         import('../app/user/user.routes').then(
+      //                               (m) => m.UserRoutes
+      //                         ),
+      //             },
+      //       ],
+      // },
+
       {
-            path: 'user',
-            //component: AdminDashboardComponent,
-            children: [
-                  {
-                        path: '',
-                        loadChildren: () =>
-                              import('../app/user/user.routes').then(
-                                    (m) => m.UserRoutes
-                              ),
-                  },
-            ],
-      },
+  path: 'user',
+  children: UserRoutes
+}
 
 ];
