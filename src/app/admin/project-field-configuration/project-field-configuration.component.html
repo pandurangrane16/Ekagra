@@ -1,0 +1,97 @@
+
+<hr>
+<div class="filter-row" style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px;">
+
+
+<div style= "display: flex; gap: 20px;">
+<!-- Left Filters -->
+<app-cm-select2
+  [formGroup]="form"
+  [controlName]="'selectedProject'"
+  [settings]="projectSelectSettings"
+  (optionSelected)="onProjectSelected($event)">
+</app-cm-select2>
+
+<app-cm-select2
+  [formGroup]="form"
+  [controlName]="'selectedStatus'"
+  [settings]="statusSelectSettings"
+  (optionSelected)="onProjectSelected($event)">
+</app-cm-select2>
+
+<button mat-flat-button
+        style="
+        background-color: black;
+        color: white;
+        font-weight: 600;
+        padding: 10px 14px;      
+        border-radius: 8px;
+        font-size: 13px;         
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        text-transform: none;
+        white-space: nowrap;
+        display: flex ; gap:420px ;margin-top: 28px;   
+        ">
+        Submit
+        </button>
+</div>
+
+
+
+<div style="display: flex ; gap:420px ;margin-top: 28px;" >
+    <!-- <div style="display: flex ; gap:420px ;margin-top: 28px;">
+        
+        
+        </div> -->
+<div>
+    <button mat-flat-button
+style="
+background-color: black;
+
+color: white;
+font-weight: 600;
+padding: 10px 14px;      
+border-radius: 8px;
+font-size: 13px;         
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+text-transform: none;
+white-space: nowrap;     
+" (click)="openDialog()">
++ Create Project Field Configuration
+</button>
+</div>
+
+ </div>
+
+
+</div>
+<div style="text-align: right;">
+    <app-cm-input
+    [formGroup]="form"
+    [controlName]="'searchText'"
+    [_inputData]="squareSettings">
+  </app-cm-input>
+</div>
+
+
+
+
+<br>
+
+
+
+
+
+<app-cm-table
+  [headArr]="headArr"
+  [gridArr]="gridArr"
+  [pagination]="true"
+  [totalRecords]="totalRecords"
+  [perPage]="perPage"
+  [totalPages]="totalPages"
+  [collectionSize]="collectionSize"
+  (pager)="onPageChange($event)"
+  (recordPerPage)="onPageRecordsChange($event)"
+  (searchWithId)="onRowClicked($event)"
+  (btnAction)="onButtonClicked($event)">
+</app-cm-table>

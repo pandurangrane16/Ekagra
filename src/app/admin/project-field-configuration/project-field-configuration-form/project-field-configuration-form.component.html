@@ -1,0 +1,101 @@
+
+
+<div class="dialog-container">
+    <div class="dialog-header">
+        <h2>Project Field Configuration</h2>
+        <button mat-icon-button (click)="close()" aria-label="Close">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+   
+
+    <hr class="input-header-hr" /> 
+
+    <form [formGroup]="form" class="form-container">
+        <div class="row">
+            <div class="col-md-6" style="margin-top: -10px;">
+                <label style="position: relative; top: 6px; display: block;">Project Name</label>
+
+                <div >
+                  <app-cm-select2
+                    [formGroup]="form"
+                    [controlName]="'selectedStatus'"
+                    [settings]="projectSelectSettings"
+                    (optionSelected)="onProjectSelected($event)"
+                    class="full-width-select">
+                  </app-cm-select2>
+              </div>
+            </div>
+
+
+          <div class="col-md-6">
+            <label>Description</label>
+            <app-cm-input
+              [formGroup]="form"
+              [controlName]="'name'"
+              [_inputData]="inputFields.name">
+            </app-cm-input>
+          </div>
+
+
+        </div>
+
+
+        <div class="row">
+          
+            <div class="col-md-4">
+              <label>Latitude</label>
+              <app-cm-input
+                [formGroup]="form"
+                [controlName]="'name'"
+                [_inputData]="inputFields.name">
+              </app-cm-input>
+            </div>
+          
+           
+   <!-- Toggle Field - Centered Vertically and Horizontally -->
+   <div class="col-md-4 d-flex align-items-center justify-content-center">
+    <div style="width: 100%; text-align: center;">
+      <label class="toggle-label margin-top:4px">Enabled</label><br />
+      <app-cm-toggle
+        [formGroup]="form"
+        [settings]="toggleSettingsWithoutHeader">
+      </app-cm-toggle>
+    </div>
+  </div>
+
+            <div class="col-md-4">
+                <label>Pincode</label>
+                <app-cm-input
+                  [formGroup]="form"
+                  [controlName]="'description'"
+                  [_inputData]="inputFields.description">
+                </app-cm-input>
+              </div>
+        </div>
+       
+
+
+        
+
+
+     
+
+        <div class="row">
+            <div class="col-md-6">
+                <label class="toggle-label">Enabled</label>
+                <app-cm-toggle [formGroup]="form" [settings]="toggleSettingsWithoutHeader" style="margin-top: -35px;"></app-cm-toggle>
+            </div>
+        </div>
+        
+         <!-- Action Buttons -->
+         <div class="dialog-actions">
+            <button mat-button (click)="close()">Cancel</button>
+            <button mat-flat-button color="primary" (click)="submit()">Save</button>
+          </div>
+        
+           
+          
+      
+    </form>
+</div>

@@ -25,56 +25,7 @@ import { ProjectConfigurationFormComponent } from '../project-configuration-form
     styleUrls: ['./project-configuration.component.css']
 })
 
-    // export class ProjectConfigurationComponent implements OnInit {
-    //     headArr: any[] = [];
-    //     gridArr: any[] = [];
-      
-    //     totalRecords: number = 0;
-    //     perPage: number = 10;
-    //     totalPages: number = 1;
-    //     collectionSize: number = 0;
-      
-    //     ngOnInit(): void {
-            
-    //       this.headArr = [
-    //         { header: 'Name', fieldValue: 'name', position: 1 },
-    //         { header: 'Status', fieldValue: 'status', position: 2 },
-    //         { header: 'Actions', fieldValue: 'button', position: 3 }
-    //       ];
-      
-    //       this.gridArr = [
-    //         {
-    //           name: 'Item 1',
-    //           status: 'Active',
-    //           button: [{ label: 'Edit' }]
-    //         },
-    //         {
-    //           name: 'Item 2',
-    //           status: 'Inactive',
-    //           button: [{ label: 'View' }]
-    //         }
-    //       ];
-      
-    //       this.totalRecords = this.gridArr.length;
-    //       this.collectionSize = this.gridArr.length;
-    //     }
-      
-    //     onPageChange(pageNo: number) {
-    //       console.log('Page Changed:', pageNo);
-    //     }
-      
-    //     onPageRecordsChange(perPage: number) {
-    //       console.log('Records Per Page:', perPage);
-    //     }
-      
-    //     onRowClicked(row: any) {
-    //       console.log('Row clicked:', row);
-    //     }
-      
-    //     onButtonClicked(event: any) {
-    //       console.log('Button clicked:', event);
-    //     }
-    //   }
+ 
 
     export class ProjectConfigurationComponent implements OnInit {
 

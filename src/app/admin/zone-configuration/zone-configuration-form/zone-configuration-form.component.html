@@ -1,0 +1,89 @@
+
+
+<div class="dialog-container">
+    <div class="dialog-header">
+        <h2>Zone Configuration</h2>
+        <button mat-icon-button (click)="close()" aria-label="Close">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+   
+
+    <hr class="input-header-hr" /> 
+
+    <form [formGroup]="form" class="form-container">
+       
+          
+        <div class="row">
+           
+            <div class="col-md-6">
+              <label>Zone Name</label>
+              <app-cm-input
+                [formGroup]="form"
+                [controlName]="'name'"
+                [_inputData]="inputFields.name">
+              </app-cm-input>
+            </div>
+          
+           
+            <div class="col-md-6">
+              <label>Description</label>
+              <app-cm-input
+                [formGroup]="form"
+                [controlName]="'description'"
+                [_inputData]="inputFields.description">
+              </app-cm-input>
+            </div>
+        </div>
+       
+
+      
+      
+
+       
+      
+         
+
+        
+
+
+        
+
+
+     
+
+        <div class="row">
+            <div class="col-md-6">
+                <label class="toggle-label">Enabled</label>
+                <app-cm-toggle [formGroup]="form" [settings]="toggleSettingsWithoutHeader" style="margin-top: -35px;"></app-cm-toggle>
+            </div>
+        </div>
+        <div>
+            <button mat-flat-button
+        style="
+        background-color: rgb(114, 113, 113);
+        color: white;
+        font-weight: 100;
+        padding: 7px 12px;      
+        border-radius: 8px;
+        font-size: 13px;         
+        box-shadow: 0 2px 4px rgba(103, 98, 98, 0.3);
+        text-transform: none;
+        white-space: nowrap;
+        display: flex ; gap:420px ;margin-top: 28px;   
+        ">
+        Draw Co-ordinates
+        </button>
+        </div>
+        
+         <!-- Action Buttons -->
+         <div class="dialog-actions">
+            <button mat-button (click)="close()">Cancel</button>
+            <button mat-flat-button color="primary" (click)="submit()">Save</button>
+          </div>
+        
+           
+          
+      
+    </form>
+</div>

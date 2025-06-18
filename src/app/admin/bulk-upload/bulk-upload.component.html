@@ -1,0 +1,81 @@
+
+<hr>
+<br>
+<div class="filter-row" style=" width: 100%;display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px;">
+
+
+<div style= "display: flex; gap: 20px;">
+<!-- Left Filters -->
+<app-cm-select2
+  [formGroup]="form"
+  [controlName]="'selectedProject'"
+  [settings]="projectSelectSettings"
+  (optionSelected)="onProjectSelected($event)">
+</app-cm-select2>
+
+  <!-- Choose File Button -->
+  <label class=" mt-4 bg-gray-200 px-4 py-2 rounded cursor-pointer hover:bg-gray-300 text-sm whitespace-nowrap">
+    
+    <input type="file" class="hidden" (change)="onFileSelected($event)" />
+  </label>
+
+
+
+<!-- Container for span + button -->
+<div class="flex flex-col items-start">
+   <!-- Use a div instead of span to ensure block-level layout -->
+  <div class="text-sm text-gray-800">
+    <a
+      href="/assets/sample-file.xlsx"  
+      download
+      class="text-black underline cursor-pointer">
+      Click
+    </a>
+    here to download
+  </div>
+
+
+  <!-- Download Button -->
+  <button mat-flat-button
+    style="
+      background-color: black;
+      color: white;
+      font-weight: 600;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      text-transform: none;
+      white-space: nowrap;
+      margin-top: 12px; /* Adjust spacing just between text and button */
+    ">
+    Download Sample File
+  </button>
+</div>
+
+
+</div>
+
+
+
+
+</div>
+<br>
+
+
+
+
+
+<app-cm-table
+  [headArr]="headArr"
+  [gridArr]="gridArr"
+  [pagination]="true"
+  [totalRecords]="totalRecords"
+  [perPage]="perPage"
+  [totalPages]="totalPages"
+  [collectionSize]="collectionSize"
+  (pager)="onPageChange($event)"
+  (recordPerPage)="onPageRecordsChange($event)"
+  (searchWithId)="onRowClicked($event)"
+  (btnAction)="onButtonClicked($event)">
+</app-cm-table>

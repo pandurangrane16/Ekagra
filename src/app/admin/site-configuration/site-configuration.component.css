@@ -1,0 +1,27 @@
+.filter-row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1rem;
+    align-items: flex-end; 
+    margin-bottom: 1rem;
+    justify-content: space-between;
+  }
+  
+  app-cm-select2 {
+    flex: 0 0 auto;
+    width: 250px;
+  }
+
+  app-cm-input {
+    flex: 0 0 auto;
+    width: 250px;
+  }
+ 
+
+
+  
+  .form-label {
+    font-size: 24px !important;
+}
+
+  

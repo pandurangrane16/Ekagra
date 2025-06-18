@@ -1,0 +1,188 @@
+
+
+<div class="dialog-container">
+    <div class="dialog-header">
+        <h2>Site Configuration</h2>
+        <button mat-icon-button (click)="close()" aria-label="Close">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+   
+
+    <hr class="input-header-hr" /> 
+
+    <form [formGroup]="form" class="form-container">
+        <div class="row">
+            <div class="col-md-6" style="margin-top: -10px;">
+                <label style="position: relative; top: 6px; display: block;">Project Name</label>
+
+                <div >
+                  <app-cm-select2
+                    [formGroup]="form"
+                    [controlName]="'selectedStatus'"
+                    [settings]="projectSelectSettings"
+                    (optionSelected)="onProjectSelected($event)"
+                    class="full-width-select">
+                  </app-cm-select2>
+              </div>
+            </div>
+
+
+          <div class="col-md-6">
+            <label>Site Id</label>
+            <app-cm-input
+              [formGroup]="form"
+              [controlName]="'name'"
+              [_inputData]="inputFields.name">
+            </app-cm-input>
+          </div>
+
+
+        </div>
+          
+        <div class="row">
+           
+            <div class="col-md-6">
+              <label>Site Name</label>
+              <app-cm-input
+                [formGroup]="form"
+                [controlName]="'name'"
+                [_inputData]="inputFields.name">
+              </app-cm-input>
+            </div>
+          
+           
+            <div class="col-md-6">
+              <label>Description</label>
+              <app-cm-input
+                [formGroup]="form"
+                [controlName]="'description'"
+                [_inputData]="inputFields.description">
+              </app-cm-input>
+            </div>
+        </div>
+        <div class="row">
+          
+            <div class="col-md-4">
+              <label>Latitude</label>
+              <app-cm-input
+                [formGroup]="form"
+                [controlName]="'name'"
+                [_inputData]="inputFields.name">
+              </app-cm-input>
+            </div>
+          
+           
+            <div class="col-md-4">
+              <label>Longitude</label>
+              <app-cm-input
+                [formGroup]="form"
+                [controlName]="'description'"
+                [_inputData]="inputFields.description">
+              </app-cm-input>
+            </div>
+            <div class="col-md-4">
+                <label>Pincode</label>
+                <app-cm-input
+                  [formGroup]="form"
+                  [controlName]="'description'"
+                  [_inputData]="inputFields.description">
+                </app-cm-input>
+              </div>
+        </div>
+
+       
+        <div class="row">
+            <div class="col-md-6" style="margin-top: -10px;">
+                <label style="position: relative; top: 6px; display: block;">Project Name</label>
+
+                <div >
+                  <app-cm-select2
+                    [formGroup]="form"
+                    [controlName]="'selectedStatus'"
+                    [settings]="projectSelectSettings"
+                    (optionSelected)="onProjectSelected($event)"
+                    class="full-width-select">
+                  </app-cm-select2>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+                <label>Address</label>
+                <app-cm-input
+                  [formGroup]="form"
+                  [controlName]="'description'"
+                  [_inputData]="inputFields.description">
+                </app-cm-input>
+              </div>
+
+
+         
+        </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Area Name:</label>
+                    <app-cm-input
+                      [formGroup]="form"
+                      [controlName]="'description'"
+                      [_inputData]="inputFields.description">
+                    </app-cm-input>
+                </div>
+                <div class="col-md-6">
+                    <label>Road Name:</label>
+                    <app-cm-input
+                      [formGroup]="form"
+                      [controlName]="'description'"
+                      [_inputData]="inputFields.description">
+                    </app-cm-input>
+                </div>
+            </div>
+
+        
+            <div class="row">
+           
+              
+
+                <div class="col-md-6">
+                    <label>Taluka:</label>
+                    <app-cm-input
+                      [formGroup]="form"
+                      [controlName]="'name'"
+                      [_inputData]="inputFields.name">
+                    </app-cm-input>
+                  </div>
+               
+                <div class="col-md-6">
+                  <label>District:</label>
+                  <app-cm-input
+                    [formGroup]="form"
+                    [controlName]="'description'"
+                    [_inputData]="inputFields.description">
+                  </app-cm-input>
+                </div>
+            </div>
+
+
+        
+
+
+     
+
+        <div class="row">
+            <div class="col-md-6">
+                <label class="toggle-label">Enabled</label>
+                <app-cm-toggle [formGroup]="form" [settings]="toggleSettingsWithoutHeader" style="margin-top: -35px;"></app-cm-toggle>
+            </div>
+        </div>
+        
+         <!-- Action Buttons -->
+         <div class="dialog-actions">
+            <button mat-button (click)="close()">Cancel</button>
+            <button mat-flat-button color="primary" (click)="submit()">Save</button>
+          </div>
+        
+           
+          
+      
+    </form>
+</div>
