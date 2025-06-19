@@ -1,13 +1,14 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CmTableComponent } from '../../common/cm-table/cm-table.component';
 import { CmSelectComponent } from '../../common/cm-select/cm-select.component';
 import { CmSelect2Component } from '../../common/cm-select2/cm-select2.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CmInputComponent } from '../../common/cm-input/cm-input.component';
-import { MatDialog } from '@angular/material/dialog';
-import { SiteConfigurationFormComponent } from './site-configuration-form/site-configuration-form.component';
+//import { MatDialog } from '@angular/material/dialog';
+//import { SiteConfigurationFormComponent } from './site-configuration-form/site-configuration-form.component';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -25,7 +26,7 @@ import { SiteConfigurationFormComponent } from './site-configuration-form/site-c
 })
 export class SiteConfigurationComponent  {
 
-
+router = inject(Router);
 _headerName = 'Project Configuration Table';
 headArr: any[] = [];
 selectedProject: any;
@@ -105,7 +106,9 @@ gridArr = [
 ];
 
 
-constructor(private fb: FormBuilder,private dialog: MatDialog) {}
+constructor(private fb: FormBuilder
+  //,private dialog: MatDialog
+  ) {}
 ngOnInit(): void {
    this.form = this.fb.group({
      selectedProject: [''],
@@ -130,22 +133,24 @@ onProjectChange(value: any) {
   // Apply filtering or logic here
 }
 openDialog() {
-          const dialogRef = this.dialog.open(SiteConfigurationFormComponent, {
+          // const dialogRef = this.dialog.open(SiteConfigurationFormComponent, {
             
-            width: '800px', 
+          //   width: '1000px', 
              
-            disableClose: true,  
-            autoFocus: false,   
-            data: {}               
-          });
+          //   disableClose: true,  
+          //   autoFocus: false,   
+          //   data: {}               
+          // });
       
-          // Optional: handle result
-          dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-              console.log('Dialog result:', result);
+          // // Optional: handle result
+          // dialogRef.afterClosed().subscribe(result => {
+          //   if (result) {
+          //     console.log('Dialog result:', result);
              
-            }
-          });
+          //   }
+          // });
+this.router.navigate(['/admin/siteconfigmng']);
+          
 }
 buildHeader() {  
           this.headArr = [
