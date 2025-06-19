@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import {
   HttpRequest,
   HttpHandler,
@@ -13,21 +13,12 @@ export const InterceptorSkipHeader = 'X-Skip-Interceptor';
 @Injectable()
 export class LoaderInterceptor implements HttpInterceptor {
   constructor(private loaderService: LoaderService) {}
-  intercept(
-    request: HttpRequest<any>,
-    next: HttpHandler,
-    isLoader:boolean=true
-  ): Observable<HttpEvent<any>> {
-    let IsSkipLoader=request.headers.has("interceptorskipheader");
-    isLoader = IsSkipLoader;
-    if(!isLoader) {
-      this.loaderService.showLoader();
-      return next.handle(request).pipe(
-        finalize(() => this.loaderService.hideLoader())
-      );   
-    }
-    else{
-      return next.handle(request).pipe();   
-    }
+
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    this.loaderService.show();
+
+    return next.handle(request).pipe(
+      finalize(() => this.loaderService.hide())
+    );
   }
 }
