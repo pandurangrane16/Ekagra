@@ -1,11 +1,12 @@
 <mat-label [class]="settings.lableClass">{{labelHeader}}</mat-label>
 <br/>
-                    <mat-form-field [class]="settings.formFieldClass">
-                        <mat-select [(value)]="selectedVal" (selectionChange)="ChangeSelection($event)">
+                    <mat-form-field [class]="settings.formFieldClass" appearance="outline" matSuffix>
+                        <mat-select [(value)]="selectedVal" (selectionChange)="ChangeSelection($event)" >
                             @for(option of settings.options; track option.value) {
                             <mat-option [value]="option.value">{{
                                 option.name
                                 }}</mat-option>
                             }
+                             <i matSuffix class="icon-down"></i>
                         </mat-select>
                     </mat-form-field>

@@ -1,9 +1,13 @@
-mat-label{font-size: 16px; font-weight: 500; margin-bottom: 15px; color:#4C535F}
+::ng-deep .mat-mdc-card-content label{--font-size-base:16px; font-size: var(--font-size-base); font-weight: 500; margin-bottom: 15px; color:#4C535F}
 
  
  ::ng-deep .mat-mdc-text-field-wrapper  {
-  --mdc-filled-text-field-container-color: #EDF2F6!important;
+  --mdc-filled-text-field-container-color: #fff!important;
+  --mat-sys-outline: #e4ebf0;
  border-radius: 8px!important;
-border: 1px solid #E0E4EC;
-background-color:#EDF2F6;
+border: 1px solid var(--mat-sys-outline);
+background-color:#fff;
  }
+
+
+ 
