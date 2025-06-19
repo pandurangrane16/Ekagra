@@ -4,10 +4,11 @@ import { CmInputComponent } from '../../../common/cm-input/cm-input.component';
 import { CmToggleComponent } from '../../../common/cm-toggle/cm-toggle.component';
 import { CmSelect2Component } from '../../../common/cm-select2/cm-select2.component';
 import { MaterialModule } from '../../../Material.module';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-site-mng',
-  imports: [CmInputComponent,CmToggleComponent,CmSelect2Component,ReactiveFormsModule,MaterialModule],
+  imports: [CmInputComponent,CmToggleComponent,CmSelect2Component,ReactiveFormsModule,MaterialModule,MatButtonModule],
   templateUrl: './site-mng.component.html',
   styleUrl: './site-mng.component.css'
 })
