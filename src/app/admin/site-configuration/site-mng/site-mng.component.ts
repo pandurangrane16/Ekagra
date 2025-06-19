@@ -1,18 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CmInputComponent } from '../../../common/cm-input/cm-input.component';
 import { CmToggleComponent } from '../../../common/cm-toggle/cm-toggle.component';
 import { CmSelect2Component } from '../../../common/cm-select2/cm-select2.component';
 import { MaterialModule } from '../../../Material.module';
 import { MatButtonModule } from '@angular/material/button';
+import { LoaderService } from '../../../services/common/loader.service';
+import { CmLoaderComponent } from '../../../common/cm-loader/cm-loader.component';
+import { delay } from 'rxjs';
+import { ApiService } from '../../../services/common/api.service';
 
 @Component({
   selector: 'app-site-mng',
   imports: [CmInputComponent,CmToggleComponent,CmSelect2Component,ReactiveFormsModule,MaterialModule,MatButtonModule],
   templateUrl: './site-mng.component.html',
-  styleUrl: './site-mng.component.css'
+  styleUrl: './site-mng.component.css',
+  providers :[CmLoaderComponent,LoaderService]
 })
-export class SiteMngComponent {
+export class SiteMngComponent implements OnInit{
 form!: FormGroup;
   MatButtonToggleChange:any;
   ruleEngineStatus = '';
@@ -79,9 +84,9 @@ form!: FormGroup;
   onProjectSelected(event: any) {
     console.log('Selected Project:', event);
   }
-  
+  posts: any[] = [];
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,private loader:LoaderService,private apiService : ApiService
   ) {
     this.form = this.fb.group({
       name: ['', Validators.required],
@@ -90,7 +95,15 @@ form!: FormGroup;
       
     });
   }
-
+  ngOnInit(): void {
+    this.loadPosts();
+  }
+  loadPosts() {
+    this.apiService.getPosts().subscribe((res :any)=>{
+      this.posts = res;
+      console.log(this.posts);
+    })
+  }
   onFileChange(event: any, controlName: string) {
     const file = event.target.files[0];
     if (file) {

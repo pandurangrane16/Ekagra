@@ -45,6 +45,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { HighchartsChartModule } from 'highcharts-angular';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 @NgModule({
   declarations: [],
@@ -95,5 +96,6 @@ import { HighchartsChartModule } from 'highcharts-angular';
     HighchartsChartModule
   ],
   imports:[ToastrModule.forRoot()],
+  providers:[]
 })
 export class MaterialModule {}

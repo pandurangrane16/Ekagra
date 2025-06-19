@@ -1,24 +1,17 @@
-import { Inject, Injectable } from '@angular/core';
-import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
+// loader.interceptor.ts
+import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 import { LoaderService } from '../common/loader.service';
-export const InterceptorSkipHeader = 'X-Skip-Interceptor';
 
-@Injectable()
-export class LoaderInterceptor implements HttpInterceptor {
-  constructor(private loaderService: LoaderService) {}
+export const loaderInterceptor: HttpInterceptorFn = (req, next) => {
+  const loaderService = inject(LoaderService);
+  loaderService.show();
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    this.loaderService.show();
-
-    return next.handle(request).pipe(
-      finalize(() => this.loaderService.hide())
-    );
-  }
-}
+  return next(req).pipe(
+    finalize(() => {
+      //loaderService.hide();
+      console.log('[Loader Interceptor] Finalized.');
+    })
+  );
+};

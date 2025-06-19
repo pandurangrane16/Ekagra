@@ -1,4 +1,4 @@
-import { Component, Inject, Input, input, OnInit, Renderer2 } from '@angular/core';
+import { Component, importProvidersFrom, Inject, Input, input, OnInit, Renderer2 } from '@angular/core';
 import { FooterComponent } from './routes/footer/footer.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { SidenavComponent } from './routes/sidenav/sidenav.component';
@@ -8,6 +8,9 @@ import { HeaderComponent } from './routes/header/header.component';
 import { DashboardComponent } from './routes/dashboard/dashboard.component';
 import { HeaderService } from './services/header.service';
 import { LoginComponent } from "./routes/login/login.component";
+import { CmLoaderComponent } from './common/cm-loader/cm-loader.component';
+import { LoaderService } from './services/common/loader.service';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
     selector: 'app-root',
@@ -16,12 +19,14 @@ import { LoginComponent } from "./routes/login/login.component";
         MatSidenavModule,
         SidenavComponent,
         FooterComponent,
+        CmLoaderComponent,
         CommonModule,
         RouterModule,
     ],
-    providers: [HeaderService],
+    providers: [HeaderService,LoaderService,HttpClient  ],
     templateUrl: './app.component.html',
-    styleUrl: './app.component.css'
+    styleUrl: './app.component.css',
+  standalone: true,
 })
 export class AppComponent implements OnInit{
   title = 'Ekagra';
