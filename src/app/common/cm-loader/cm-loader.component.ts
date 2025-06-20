@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './cm-loader.component.css'
 })
 export class CmLoaderComponent {
-  loading$ = this.loaderService.loader$;
+  loading$ = this.loaderService.showLoader;
 
-  constructor(private loaderService: LoaderService) {}
+  constructor(private loaderService: LoaderService) {  }
 }
