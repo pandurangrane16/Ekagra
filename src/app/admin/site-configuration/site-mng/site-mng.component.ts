@@ -15,7 +15,8 @@ import { ApiService } from '../../../services/common/api.service';
   imports: [CmInputComponent,CmToggleComponent,CmSelect2Component,ReactiveFormsModule,MaterialModule,MatButtonModule],
   templateUrl: './site-mng.component.html',
   styleUrl: './site-mng.component.css',
-  providers :[CmLoaderComponent,LoaderService]
+  providers :[CmLoaderComponent,LoaderService],
+  standalone : true
 })
 export class SiteMngComponent implements OnInit{
 form!: FormGroup;
@@ -96,6 +97,7 @@ form!: FormGroup;
     });
   }
   ngOnInit(): void {
+    
     this.loadPosts();
   }
   loadPosts() {

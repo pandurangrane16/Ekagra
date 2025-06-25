@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MaterialModule } from '../../Material.module';
 import { CommonModule } from '@angular/common';
 @Component({
@@ -10,4 +10,10 @@ import { CommonModule } from '@angular/common';
 })
 export class CmToggleComponent {
   @Input() settings:any;
+  
+  @Output() returnObject = new EventEmitter<any>();
+
+   ChangeSelection(event: any) {
+    this.returnObject.emit(event.value);
+  }
 }
