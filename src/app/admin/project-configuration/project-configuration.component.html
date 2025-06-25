@@ -6,6 +6,7 @@
 
   <!-- Left Filters -->
   <app-cm-select2
+   *ngIf="isProjectOptionsLoaded"
     [formGroup]="form"
     [controlName]="'selectedProject'"
     [settings]="projectSelectSettings"
@@ -15,7 +16,7 @@
   <app-cm-select2
     [formGroup]="form"
     [controlName]="'selectedStatus'"
-    [settings]="projectSelectSettings"
+    [settings]="statusSelectSettings"
     (optionSelected)="onProjectSelected($event)">
   </app-cm-select2>
 
@@ -51,7 +52,7 @@
 
 <app-cm-table
   [headArr]="headArr"
-  [gridArr]="gridArr"
+  [gridArr]="items"
   [pagination]="true"
   [totalRecords]="totalRecords"
   [perPage]="perPage"

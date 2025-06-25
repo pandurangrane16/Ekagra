@@ -13,6 +13,8 @@ import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard
 import { ProjectConfigurationComponent } from './admin/project-configuration/project-configuration.component';
 import { UserRoutes } from '../app/user/user.routes';
 
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+
 export const routes: Routes = [
       { path: "login", component: LoginComponent, },
       { path: 'dashboard', component: DashboardComponent },

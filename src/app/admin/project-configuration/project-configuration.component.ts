@@ -7,7 +7,12 @@ import { CmSelect2Component } from '../../common/cm-select2/cm-select2.component
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CmInputComponent } from '../../common/cm-input/cm-input.component';
 import { MatDialog } from '@angular/material/dialog';
-import { ProjectConfigurationFormComponent } from '../project-configuration-form/project-configuration-form.component';
+import { InputRequest } from '../../models/request/inputreq.model';
+import { projconfigservice } from '../../services/admin/progconfig.service';
+
+
+import { ProjectConfigurationFormComponent } from './project-configuration-form/project-configuration-form.component';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -29,54 +34,26 @@ import { ProjectConfigurationFormComponent } from '../project-configuration-form
 
     export class ProjectConfigurationComponent implements OnInit {
 
-        _headerName = 'Project Configuration Table';
-        headArr: any[] = [];
-
-        selectedProject: any;
-        selectedStatus: any;
-        
-        onProjectChange(value: any) {
-          this.selectedProject = value;
-          console.log('Selected Project:', value);
-          // Apply filtering or logic here
-        }
-
-        projectSelectSettings = {
-          labelHeader: 'Select Project',
-          lableClass: 'form-label',
-          formFieldClass: '', 
-          appearance: 'fill',
-          options: [
-            { name: 'apple', value: 'A' },
-            { name: 'mango', value: 'B' },
-            { name: 'bananannanan', value: 'C' }
-          ]
-        };
-        
-        onStatusChange(value: any) {
-          this.selectedStatus = value;
-          console.log('Selected Status:', value);
-          // Apply filtering or logic here
-        }
-      
-
-        statusSelectSettings = {
-          lableClass: 'form-label',
-          formFieldClass: 'w-100',
-          appearance: 'fill',
-          options: [
-            { name: 'Active', value: 'active' },
-            { name: 'Inactive', value: 'inactive' },
-            { name: 'Archived', value: 'archived' }
-          ]
-        };
-        onProjectSelected(event: any) {
-          console.log('Selected Project:', event);
-        }
-        
-        
-      
-         gridArr = [
+      _headerName = 'Project Configuration Table';
+      headArr: any[] = [];
+      items:any;
+      _request: any = new InputRequest();
+      totalPages: number = 1;
+      pager: number = 1;
+      totalRecords!: number;
+      recordPerPage: number = 10;
+      startId!: number;
+      isSearch: boolean = false;
+      closeResult!: string;
+      searchText!:string;
+      selectedProject: any;
+      selectedStatus: any;
+      form!: FormGroup;
+      perPage = 10;
+      collectionSize = 2;
+      list!:any;
+      isProjectOptionsLoaded = false;
+      gridArr = [
            {
             name: 'Alpha Project',
             status:'as',
@@ -95,25 +72,83 @@ import { ProjectConfigurationFormComponent } from '../project-configuration-form
              action:''
            }
          ];
-        form!: FormGroup;
-        totalRecords = 2;
-        perPage = 10;
-        totalPages = 1;
-        collectionSize = 2;
-      
-       
-        constructor(private fb: FormBuilder,private dialog: MatDialog) {}
-        ngOnInit(): void {
+      projectSelectSettings = {
+          labelHeader: 'Select Project',
+          lableClass: 'form-label',
+          formFieldClass: '', 
+          appearance: 'fill',
+          options: []
+        };
+      statusSelectSettings = {
+        labelHeader: 'Select Status',
+          lableClass: 'form-label',
+          formFieldClass: 'w-100',
+          appearance: 'fill',
+          options: [
+            { name: 'Enable', value: true },
+            { name: 'Disable', value: false },
+            { name: 'All', value: null }
+          ]
+        };
+      searchInputSettings = {
+          labelHeader: 'Search',
+          placeholder: 'Type to search...',
+          formFieldClass: '', 
+          labelClass: 'form-label',
+          appearance: 'fill',
+          isDisabled: false,
+          color: 'primary'
+        };
+      squareSettings = {
+          labelHeader: 'Search',
+          formFieldClass: 'cm-square-input',
+        
+          isDisabled: false
+        };
+        
+      roundedSettings = {
+          labelHeader: 'Search',
+          formFieldClass: 'cm-pill-input',
+          appearance: 'fill',
+          isDisabled: false
+        };
+
+      constructor(private fb: FormBuilder,
+        private dialog: MatDialog,
+        private service: projconfigservice,
+          private toast : ToastrService
+        ) {}
+        
+        
+      ngOnInit(): void {
+        this.toast.success("chgdgsf")
           this.form = this.fb.group({
             selectedProject: [''],
             selectedStatus: [''],
             searchText: ['']
           });
           this.buildHeader();
+          this.getProjConfigList();
+          this.getProjList();
        
         }
 
-        openDialog() {
+      onProjectChange(value: any) {
+          this.selectedProject = value;
+          console.log('Selected Project:', value);
+          // Apply filtering or logic here
+        }
+
+      onStatusChange(value: any) {
+          this.selectedStatus = value;
+          console.log('Selected Status:', value);
+          // Apply filtering or logic here
+        }
+
+      onProjectSelected(event: any) {
+          console.log('Selected Project:', event);
+        }
+      openDialog() {
           const dialogRef = this.dialog.open(ProjectConfigurationFormComponent, {
             width: '500px',         
             disableClose: true,     
@@ -132,9 +167,10 @@ import { ProjectConfigurationFormComponent } from '../project-configuration-form
           this.headArr = [
             { header: 'Name', fieldValue: 'name', position: 1 },
             { header: 'Description', fieldValue: 'description', position: 2 },
-            { header: 'Status', fieldValue: 'status', position: 3 },
-            { header: 'Rule Engine', fieldValue: 'ruleEngine', position: 4 },
-            { header: 'Map', fieldValue: 'map', position: 5 },
+            { header: 'Status', fieldValue: 'isActive',"type": "boolean", position: 3 },
+           
+            { header: 'Rule Engine', fieldValue: 'ruleEngine',"type": "boolean", position: 4 },
+            { header: 'Map', fieldValue: 'map',"type": "boolean", position: 5 },
             { header: 'Action', fieldValue: 'action', position: 6 }
           ];
           ;}
@@ -143,30 +179,6 @@ import { ProjectConfigurationFormComponent } from '../project-configuration-form
           console.log('Button Action:', e);
         }
       
-        searchInputSettings = {
-          labelHeader: 'Search',
-          placeholder: 'Type to search...',
-          formFieldClass: '', 
-          labelClass: 'form-label',
-          appearance: 'fill',
-          isDisabled: false,
-          color: 'primary'
-        };
-        squareSettings = {
-          labelHeader: 'Search',
-          formFieldClass: 'cm-square-input',
-        
-          isDisabled: false
-        };
-        
-        roundedSettings = {
-          labelHeader: 'Search',
-          formFieldClass: 'cm-pill-input',
-          appearance: 'fill',
-          isDisabled: false
-        };
-        
-        
         handlePageChange(pageno: number) {
           console.log('Page Changed to:', pageno);
         }
@@ -184,17 +196,89 @@ import { ProjectConfigurationFormComponent } from '../project-configuration-form
         }
                onPageChange(pageNo: number) {
           console.log('Page Changed:', pageNo);
-       }
-       onPageRecordsChange(perPage: number) {
+        }
+        onPageRecordsChange(perPage: number) {
               console.log('Records Per Page:', perPage);
         }
         onRowClicked(row: any) {
                 console.log('Row clicked:', row);
                }
             
-               onButtonClicked(event: any) {
+        onButtonClicked(event: any) {
                  console.log('Button clicked:', event);
                }
+        
+        getProjConfigList() {
+      this._request.currentPage = this.pager;
+      this._request.pageSize = Number(this.recordPerPage);
+      this._request.startId = this.startId;
+      this._request.searchItem = this.searchText;
+      this.service.GetAll().subscribe(response => {
+
+         const items = response.result?.items;
+         
+         this.items=items;
+
+
+
+
+
+
+
+        if (Array.isArray(items)) {
+         
+           items.forEach((element: any) => {
+           
+
+            //let _data = JSON.parse(element);
+            element.name = element.name;
+            element.description = element.description;
+            element.isActive = !!element.isActive; 
+            element.ruleEngine = !!element.ruleEngine;
+            element.map =!! element.map;
+
+            
+
+
+
+
+         
+          });
+          // var _length = data.totalCount / Number(this.recordPerPage);
+          // if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+          //   this.totalRecords = Number(this.recordPerPage) * (_length);
+          // else if (Math.floor(_length) == 0)
+          //   this.totalRecords = 10;
+          // else
+          //   this.totalRecords = data.totalRecords;
+          // this.totalPages = this.totalRecords / this.pager;
+          //this.getMediaByStatus(this.tabno);
+        }
+      })
+    }       
+       
+  getProjList() {
+  this.service.GetProjectList().subscribe(response => {
+    const items = response?.result || [];
+
+ 
+    const projectOptions = items.map((item: any) => ({
+      name: item.name || item.shortCode, 
+      value: item.id
+    }));
+
+ 
+    this.projectSelectSettings.options = projectOptions;
+    this.isProjectOptionsLoaded = true;
+  }, error => {
+    console.error('Error fetching project list', error);
+  });
+}
+     
+       
+
+      
+    
       }
 
       
