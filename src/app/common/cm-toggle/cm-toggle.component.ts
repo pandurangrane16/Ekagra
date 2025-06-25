@@ -14,6 +14,7 @@ export class CmToggleComponent {
   @Output() returnObject = new EventEmitter<any>();
 
    ChangeSelection(event: any) {
+    
     this.returnObject.emit(event.value);
   }
 }
