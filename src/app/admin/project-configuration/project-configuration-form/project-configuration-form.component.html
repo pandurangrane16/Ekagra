@@ -1,0 +1,99 @@
+<div class="dialog-container">
+    <div class="dialog-header">
+        <h2>Project Configuration</h2>
+        <button mat-icon-button (click)="close()" aria-label="Close">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+   
+
+    <hr class="input-header-hr" /> 
+    <form [formGroup]="form" class="form-container">
+        <div class="row">
+            <div class="col-md-12">
+                <label>Name</label>
+                <app-cm-input
+                  [formGroup]="form"
+                  [controlName]="'name'"
+                  [_inputData]="inputFields.name">
+                </app-cm-input>
+
+                   <div *ngIf="f['name'].touched && f['name'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('name', 'Name', false, '') }}
+      </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Description</label>
+                <app-cm-input
+                  [formGroup]="form"
+                  [controlName]="'description'"
+                  [_inputData]="inputFields.description">
+                </app-cm-input>
+                
+                   <div *ngIf="f['description'].touched && f['description'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('description', 'Description', false, '') }}
+      </div>
+            </div>
+        </div>
+
+   
+  
+      <!-- Toggles -->
+      <div class="toggle-row">
+        <div class="toggle-column">
+          <label class="toggle-label">Map?</label>
+          <app-cm-toggle [formGroup]="form" [settings]="Maptoggle"></app-cm-toggle>
+                   
+        <div *ngIf="f['mapEnabled'].touched && f['mapEnabled'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('mapEnabled', 'Map', false, '') }}
+      </div>
+        </div>
+      
+        <div class="toggle-column">
+          <label class="toggle-label">Rule Engine?</label>
+          <app-cm-toggle [formGroup]="form" [settings]="Ruleenginetoggle"></app-cm-toggle>
+        <div *ngIf="f['ruleEngineEnabled'].touched && f['ruleEngineEnabled'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('ruleEngineEnabled', 'Rule Engine', false, '') }}
+      </div>
+        </div>
+      </div>
+      
+  
+      <!-- File Uploads -->
+      <div class="file-upload">
+        <label>
+          Map Icon*
+          <input type="file" (change)="onFileSelect($event, 'mapIcon')" />
+    <div *ngIf="f['mapIcon'].touched && f['mapIcon'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('mapIcon', 'Map Icon', false, '') }}
+      </div>
+        </label>
+  
+        <label>
+          Project Icon*
+          <input type="file" (change)="onFileSelect($event, 'projectIcon')"  />
+            <div *ngIf="f['projectIcon'].touched && f['projectIcon'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('projectIcon', 'Project Icon', false, '') }}
+      </div>
+        </label>
+      </div>
+  
+         <!-- Toggles -->
+         <div class="toggle-row">
+              <app-cm-toggle [formGroup]="form" [settings]="isactivetoggle"></app-cm-toggle>
+              <div *ngIf="f['isActive'].touched && f['isActive'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('isActive', 'isActive', false, '') }}
+      </div>
+          </div>
+  
+      <!-- Action Buttons -->
+    
+    </form>
+      <div class="dialog-actions">
+        <button mat-button (click)="close()">Cancel</button>
+        <button mat-flat-button color="primary" (click)="submit()">Save</button>
+      </div>
+  </div>
+  

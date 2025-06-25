@@ -15,6 +15,12 @@
             <td>{{ sr + 1 }}</td>
 
             <td *ngFor="let head of headArr">
+
+
+              
+
+
+
               <!-- Case: Checkboxes -->
               <ng-container *ngIf="head.fieldValue === 'check'; else notCheck">
                 <div *ngFor="let chk of item.check" class="d-inline-block me-2">
@@ -36,7 +42,18 @@
 
               <!-- Case: Plain text -->
               <ng-template #defaultText>
-                {{ item[head.fieldValue] }}
+      <ng-container *ngIf="head.type === 'boolean'; else normalText">
+    <button
+      mat-flat-button
+      [ngClass]="item[head.fieldValue] ? 'bg-success text-white' : 'bg-secondary text-white'"
+      disabled>
+      {{ item[head.fieldValue] ? 'Enable' : 'Disable' }}
+    </button>
+  </ng-container>
+
+  <ng-template #normalText>
+    {{ item[head.fieldValue] }}
+  </ng-template>
               </ng-template>
             </td>
 

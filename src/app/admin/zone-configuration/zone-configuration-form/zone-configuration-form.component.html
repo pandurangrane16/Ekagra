@@ -20,9 +20,14 @@
               <label>Zone Name</label>
               <app-cm-input
                 [formGroup]="form"
-                [controlName]="'name'"
-                [_inputData]="inputFields.name">
+                [controlName]="'zonename'"
+                [_inputData]="inputFields.zonename">
               </app-cm-input>
+
+                  <div *ngIf="f['zonename'].touched && f['zonename'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('zonename', 'Zonename', false, '') }}
+      </div>
+     
             </div>
           
            
@@ -33,24 +38,13 @@
                 [controlName]="'description'"
                 [_inputData]="inputFields.description">
               </app-cm-input>
+      
+            <div *ngIf="f['description'].touched && f['description'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('description', 'Description', false, '') }}
+      </div>
             </div>
         </div>
        
-
-      
-      
-
-       
-      
-         
-
-        
-
-
-        
-
-
-     
 
         <div class="row">
             <div class="col-md-6">

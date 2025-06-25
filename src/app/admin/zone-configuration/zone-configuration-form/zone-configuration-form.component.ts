@@ -9,7 +9,10 @@ import { CmSelect2Component } from '../../../common/cm-select2/cm-select2.compon
 import { CmToggleComponent } from '../../../common/cm-toggle/cm-toggle.component';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-
+import { getErrorMsg } from '../../../utils/utils';
+import { zoneconfigservice } from '../../../services/admin/zoneconfig.service';
+import { ToastrService } from 'ngx-toastr';
+import { zoneconfigmodel } from '../../../models/admin/zoneconfig.model';
 
 @Component({
   selector: 'app-zone-configuration-form',
@@ -27,9 +30,9 @@ export class ZoneConfigurationFormComponent {
   mapStatus = '';
   selectedStatus: any;
   inputFields = {
-    name: {
+    zonename: {
       // labelHeader: 'Name',
-      placeholder: 'Enter project name',
+      placeholder: 'Enter Zone name',
       appearance: 'outline',
       isDisabled: false,
       color: 'primary',
@@ -44,14 +47,7 @@ export class ZoneConfigurationFormComponent {
        formFieldClass: "w-100"
     }
   };
-  ruleEngineToggleSettings = {
-    headerName: 'Rule Engine Enabled',
-    name: 'ruleEngineToggle',
-    data: [
-      { value: 'enabled', displayName: 'Enabled' },
-      { value: 'disabled', displayName: 'Disabled' }
-    ]
-  };
+ 
 
   toggleSettingsWithoutHeader = {
    
@@ -63,56 +59,100 @@ export class ZoneConfigurationFormComponent {
     ]
   };
   
-  mapToggleSettings = {
-    headerName: 'Map Enabled',
-    name: 'mapToggle',
-    data: [
-      { value: 'enabled', displayName: 'Enabled' },
-     
-      
-    ]
-  };
-  projectSelectSettings = {
-    // labelHeader: 'Select Project',
-    lableClass: 'form-label',
-    formFieldClass: '', 
-    appearance: 'outline',
-    options: [
-      { name: 'apple', value: 'A' },
-      { name: 'mango', value: 'B' },
-      { name: 'bananannanan', value: 'C' }
-    ],
-    
-  };
-  onProjectSelected(event: any) {
-    console.log('Selected Project:', event);
-  }
+ 
+
+ 
   
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<ZoneConfigurationFormComponent>,
+    private service:zoneconfigservice,
+    private toast:ToastrService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.form = this.fb.group({
-      name: ['', Validators.required],
       description: ['', Validators.required],
-      selectedStatus: [''],
+      zonename: ['', Validators.required],
+      isActive: [false,Validators.required],
+      
       
     });
   }
 
+  get f() {
+  return this.form.controls;
+  }
   onFileChange(event: any, controlName: string) {
     const file = event.target.files[0];
     if (file) {
       this.form.get(controlName)?.setValue(file);
     }
   }
-
-  submit() {
-    if (this.form.valid) {
-      this.dialogRef.close(this.form.value);
+  getErrorMessage(_controlName: any, _controlLable: any, _isPattern: boolean = false, _msg: string) {
+      return getErrorMsg(this.form, _controlName, _controlLable, _isPattern, _msg);
     }
+  onProjectSelected(event: any) {
+    console.log('Selected Project:', event);
   }
+  submit() {
+      this.toast.success("chgdgsf")
+      if (!this.form.invalid) {
+        this.form.markAllAsTouched(); 
+         
+          let _zoneconfigmodel = new zoneconfigmodel();
+    
+  
+    _zoneconfigmodel.description = this.form.controls['description'].value;
+    _zoneconfigmodel.isActive=this.form.controls['isActive'].value;
+    _zoneconfigmodel.creationTime="2025-06-20T05:32:25.067Z"
+    _zoneconfigmodel.creatorUserId=0
+    _zoneconfigmodel.deleterUserId=0
+    _zoneconfigmodel.deletionTime="2025-06-20T05:32:25.067Z"
+    _zoneconfigmodel.id=0
+    _zoneconfigmodel.lastModificationTime="2025-06-20T05:32:25.067Z"
+    _zoneconfigmodel.lastModifierUserId="2"
+    _zoneconfigmodel.isDeleted=false;
+    _zoneconfigmodel.zoneCategory="string"
+    _zoneconfigmodel.zoneCordinate="string"
+    _zoneconfigmodel.zoneName=this.form.controls['zonename'].value;
+    _zoneconfigmodel.userId=0;
+    _zoneconfigmodel.projectId=0
+
+    
+
+    
+    
+     
+    
+    
+      this.service.ZoneCreate(_zoneconfigmodel).subscribe({
+        next: () => {
+          console.log('Saved successfully');
+    
+               this.toast.success('Zone saved successfully'); 
+          this.dialogRef.close(this.form.value);
+        
+          this.toast.success('Zone saved successfully');
+          
+        },
+        error: (err) => {
+          console.error('Save failed:', err);
+          this.toast.error('Failed to save Zone.');
+        }
+      });
+    
+    
+    
+      }
+      else {
+          this.form.markAllAsTouched(); 
+      this.toast.error('Form is not valid');
+      return;
+        
+      }
+    
+    
+      }
 
   close() {
     this.dialogRef.close();

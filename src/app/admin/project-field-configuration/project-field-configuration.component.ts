@@ -7,6 +7,9 @@ import { CmSelect2Component } from '../../common/cm-select2/cm-select2.component
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CmInputComponent } from '../../common/cm-input/cm-input.component';
 import { MatDialog } from '@angular/material/dialog';
+import { InputRequest } from '../../models/request/inputreq.model';
+import { projfieldconfigservice } from '../../services/admin/projfieldconfig.service';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ProjectFieldConfigurationFormComponent } from './project-field-configuration-form/project-field-configuration-form.component';
 
 
@@ -30,12 +33,24 @@ export class ProjectFieldConfigurationComponent  {
 
   _headerName = 'Project Configuration Table';
   headArr: any[] = [];
+  isProjectOptionsLoaded =false;
+  MaxResultCount=10;
+  SkipCount=0;
+  perPage=10;
+  items:any;
+  _request: any = new InputRequest();
+  totalPages: number = 1;
+  pager: number = 1;
+  totalRecords!: number;
+  recordPerPage: number = 10;
+  startId!: number;
+  isSearch: boolean = false;
+  closeResult!: string;
+  searchText!:string;
   selectedProject: any;
   selectedStatus: any;
   form!: FormGroup;
-  totalRecords = 2;
-  perPage = 10;
-  totalPages = 1;
+  
   collectionSize = 2;
   searchInputSettings = {
     labelHeader: 'Search',
@@ -63,23 +78,19 @@ export class ProjectFieldConfigurationComponent  {
     lableClass: 'form-label',
     formFieldClass: '', 
     appearance: 'outline',
-    options: [
-      { name: 'apple', value: 'A' },
-      { name: 'mango', value: 'B' },
-      { name: 'bananannanan', value: 'C' }
-    ]
+    options: [ ]
   };
-  statusSelectSettings = {
-    labelHeader: 'Status',
-    lableClass: 'form-label',
-    formFieldClass: 'w-100',
-    appearance: 'outline',
-    options: [
-      { name: 'Active', value: 'active' },
-      { name: 'Inactive', value: 'inactive' },
-      { name: 'Archived', value: 'archived' }
-    ]
-  };
+   statusSelectSettings = {
+        labelHeader: 'Select Status',
+          lableClass: 'form-label',
+          formFieldClass: 'w-100',
+          appearance: 'fill',
+          options: [
+            { name: 'Enable', value: true },
+            { name: 'Disable', value: false },
+            { name: 'All', value: null }
+          ]
+        };
   
   gridArr = [
     {
@@ -107,7 +118,9 @@ export class ProjectFieldConfigurationComponent  {
   ];
   
   
-  constructor(private fb: FormBuilder,private dialog: MatDialog) {}
+  constructor(private fb: FormBuilder,
+     private service: projfieldconfigservice,
+    private dialog: MatDialog) {}
   ngOnInit(): void {
      this.form = this.fb.group({
        selectedProject: [''],
@@ -115,6 +128,25 @@ export class ProjectFieldConfigurationComponent  {
        searchText: ['']
      });
      this.buildHeader();
+    this.getProjList();
+     //this.getProjfieldConfigList();
+
+
+  
+  this.form.get('searchText')?.valueChanges
+    .pipe(
+      debounceTime(300), 
+      distinctUntilChanged() 
+    )
+    .subscribe(value => {
+         if (value && value.length >= 3) {
+      this.getFilteredList();
+    } else if (!value || value.length === 0) {
+       this.getFilteredList();
+    }
+    });
+
+    
   
   }
   onProjectSelected(event: any) {
@@ -131,6 +163,49 @@ export class ProjectFieldConfigurationComponent  {
     console.log('Selected Project:', value);
     // Apply filtering or logic here
   }
+  // getProjfieldConfigList() {
+  //     this._request.currentPage = this.pager;
+  //     this._request.pageSize = Number(this.recordPerPage);
+  //     this._request.startId = this.startId;
+  //     this._request.searchItem = this.searchText;
+  //     this.MaxResultCount=
+  //     this.SkipCount
+  //     this.service.GetAll().subscribe(response => {
+
+  //        const items = response.result?.items;
+         
+  //        this.items=items;
+
+
+  //       if (Array.isArray(items)) {
+         
+  //          items.forEach((element: any) => {
+           
+
+  //           //let _data = JSON.parse(element);
+  //           element.projName = element.projectName;
+  //           element.description = element.description;
+  //           element.mapLabel=element.mapLabel;
+  //           element.apiLabel=element.label;
+  //           element.isActive = !!element.isActive; 
+
+
+
+
+         
+  //         });
+  //         // var _length = data.totalCount / Number(this.recordPerPage);
+  //         // if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+  //         //   this.totalRecords = Number(this.recordPerPage) * (_length);
+  //         // else if (Math.floor(_length) == 0)
+  //         //   this.totalRecords = 10;
+  //         // else
+  //         //   this.totalRecords = data.totalRecords;
+  //         // this.totalPages = this.totalRecords / this.pager;
+  //         //this.getMediaByStatus(this.tabno);
+  //       }
+  //     })
+  //   }    
   openDialog() {
             const dialogRef = this.dialog.open(ProjectFieldConfigurationFormComponent, {
               
@@ -151,15 +226,75 @@ export class ProjectFieldConfigurationComponent  {
   }
   buildHeader() {  
             this.headArr = [
-              { header: 'Project Name', fieldValue: 'sitename', position: 1 },
-              { header: 'Site Id', fieldValue: 'siteid', position: 2 },
-              { header: 'Site Name', fieldValue: 'sitename', position: 3 },
-              { header: 'Lat', fieldValue: 'lat', position: 4 },
-              { header: 'Long', fieldValue: 'long', position: 5 },
-              { header: 'Description', fieldValue: 'description', position: 6 },
-              { header: 'Action', fieldValue: 'action', position: 7 }
+              { header: 'Project Name', fieldValue: 'projName', position: 1 },
+              { header: 'Map Label', fieldValue: 'mapLabel', position: 2 },
+              { header: 'Api Label', fieldValue: 'apiLabel', position: 3 },
+              { header: 'Description', fieldValue: 'description', position: 4 },
+              { header: 'Status', fieldValue: 'isActive',type:'boolean', position: 5 },
+              { header: 'Action', fieldValue: 'action', position: 6 }
             ];
-  ;}     
+  ;}   
+    getProjList() {
+  this.service.GetProjectList().subscribe(response => {
+    const items = response?.result || [];
+
+ 
+    const projectOptions = items.map((item: any) => ({
+      name: item.name || item.shortCode, 
+      value: item.id
+    }));
+
+ 
+    this.projectSelectSettings.options = projectOptions;
+    this.isProjectOptionsLoaded = true;
+  }, error => {
+    console.error('Error fetching project list', error);
+  });
+}  
+
+ submit(){
+  this.getFilteredList();
+ }
+  getFilteredList() {
+    const selectedProjectId = this.form.controls['selectedProject'].value.value;
+     const selectedStatus = this.form.controls['selectedStatus'].value.value;
+     const search = this.form.controls['searchText'].value
+     this.service.GetFilteredList(selectedProjectId,search,selectedStatus).subscribe(response => {
+     const items = response?.result || [];
+         
+         this.items=items;
+
+
+        if (Array.isArray(items)) {
+         
+           items.forEach((element: any) => {
+           
+
+            //let _data = JSON.parse(element);
+            element.projName = element.projectName;
+            element.description = element.description;
+            element.mapLabel=element.mapLabel;
+            element.apiLabel=element.label;
+            element.isActive = !!element.isActive; 
+
+
+
+
+         
+          });
+          // var _length = data.totalCount / Number(this.recordPerPage);
+          // if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+          //   this.totalRecords = Number(this.recordPerPage) * (_length);
+          // else if (Math.floor(_length) == 0)
+          //   this.totalRecords = 10;
+          // else
+          //   this.totalRecords = data.totalRecords;
+          // this.totalPages = this.totalRecords / this.pager;
+          //this.getMediaByStatus(this.tabno);
+        }
+      })
+    }  
+
   handleBtnAction(e: any) {
             console.log('Button Action:', e);
   }

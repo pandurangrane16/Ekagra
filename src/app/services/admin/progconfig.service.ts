@@ -1,0 +1,26 @@
+import { Injectable, OnInit } from '@angular/core';
+import { HttpService } from '../common/http.service';
+
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class projconfigservice {
+  constructor(
+    private _httpService: HttpService) { }
+
+ jsonurl: string = '/assets/config/config.json';
+
+ProjectCreate(_data: any) {
+    return this._httpService._postMethod(_data, 'api/services/app/Project/Create');
+  }
+
+GetAll() {
+    return this._httpService._getMethod('api/services/app/Project/GetAll');
+  }
+
+GetProjectList() {
+    return this._httpService._getMethod('api/services/app/Project/GetProjectList');
+  }
+}

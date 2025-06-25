@@ -6,6 +6,7 @@
 <div style= "display: flex; gap: 20px;">
 <!-- Left Filters -->
 <app-cm-select2
+ *ngIf="isProjectOptionsLoaded"
   [formGroup]="form"
   [controlName]="'selectedProject'"
   [settings]="projectSelectSettings"
@@ -31,7 +32,7 @@
         text-transform: none;
         white-space: nowrap;
         display: flex ; gap:420px ;margin-top: 28px;   
-        ">
+        "(click)="submit()">
         Submit
         </button>
 </div>
@@ -84,7 +85,7 @@ white-space: nowrap;
 
 <app-cm-table
   [headArr]="headArr"
-  [gridArr]="gridArr"
+  [gridArr]="items"
   [pagination]="true"
   [totalRecords]="totalRecords"
   [perPage]="perPage"

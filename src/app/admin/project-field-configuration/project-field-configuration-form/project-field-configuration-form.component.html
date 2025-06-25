@@ -18,12 +18,16 @@
 
                 <div >
                   <app-cm-select2
+                   *ngIf="isProjectOptionsLoaded"
                     [formGroup]="form"
-                    [controlName]="'selectedStatus'"
+                    [controlName]="'selectedProject'"
                     [settings]="projectSelectSettings"
                     (optionSelected)="onProjectSelected($event)"
                     class="full-width-select">
                   </app-cm-select2>
+                          <div *ngIf="f['selectedProject'].touched && f['selectedProject'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('selectedProject', 'Project Name', false, '') }}
+      </div>
               </div>
             </div>
 
@@ -32,9 +36,12 @@
             <label>Description</label>
             <app-cm-input
               [formGroup]="form"
-              [controlName]="'name'"
-              [_inputData]="inputFields.name">
+              [controlName]="'description'"
+              [_inputData]="inputFields.description">
             </app-cm-input>
+                    <div *ngIf="f['description'].touched && f['description'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('description', 'Description', false, '') }}
+      </div>
           </div>
 
 
@@ -44,33 +51,39 @@
         <div class="row">
           
             <div class="col-md-4">
-              <label>Latitude</label>
+              <label>Map Label</label>
               <app-cm-input
                 [formGroup]="form"
-                [controlName]="'name'"
-                [_inputData]="inputFields.name">
+                [controlName]="'maplabel'"
+                [_inputData]="inputFields.maplabel">
               </app-cm-input>
+                      <div *ngIf="f['maplabel'].touched && f['maplabel'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('maplabel', 'Map Label', false, '') }}
+      </div>
             </div>
           
            
-   <!-- Toggle Field - Centered Vertically and Horizontally -->
+
    <div class="col-md-4 d-flex align-items-center justify-content-center">
     <div style="width: 100%; text-align: center;">
-      <label class="toggle-label margin-top:4px">Enabled</label><br />
+      <label class="toggle-label margin-top:4px">Is Same As</label><br />
       <app-cm-toggle
         [formGroup]="form"
-        [settings]="toggleSettingsWithoutHeader">
+        [settings]="isSameas">
       </app-cm-toggle>
     </div>
   </div>
 
             <div class="col-md-4">
-                <label>Pincode</label>
+                <label>Api Label</label>
                 <app-cm-input
                   [formGroup]="form"
-                  [controlName]="'description'"
-                  [_inputData]="inputFields.description">
+                  [controlName]="'apilabel'"
+                  [_inputData]="inputFields.apilabel">
                 </app-cm-input>
+                        <div *ngIf="f['apilabel'].touched && f['apilabel'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('apilabel', 'Api Label', false, '') }}
+      </div>
               </div>
         </div>
        
@@ -84,7 +97,7 @@
         <div class="row">
             <div class="col-md-6">
                 <label class="toggle-label">Enabled</label>
-                <app-cm-toggle [formGroup]="form" [settings]="toggleSettingsWithoutHeader" style="margin-top: -35px;"></app-cm-toggle>
+                <app-cm-toggle [formGroup]="form" [settings]="projectEnabled" style="margin-top: -35px;"></app-cm-toggle>
             </div>
         </div>
         

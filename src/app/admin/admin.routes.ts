@@ -6,7 +6,6 @@ import { ProjectFieldConfigurationComponent } from "./project-field-configuratio
 import { ZoneConfigurationComponent } from "./zone-configuration/zone-configuration.component";
 import { MapConfigurationComponent } from "./map-configuration/map-configuration.component";
 import { BulkUploadComponent } from "./bulk-upload/bulk-upload.component";
-import { SiteConfigurationFormComponent } from "./site-configuration/site-configuration-form/site-configuration-form.component";
 import { SiteMngComponent } from "./site-configuration/site-mng/site-mng.component";
 //import { ProjectConfigurationComponent} from "./admin-dashboard/project-configuration.component";
 
