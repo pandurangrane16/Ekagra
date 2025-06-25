@@ -1,33 +1,25 @@
+// loader.interceptor.ts
 import { Injectable } from '@angular/core';
 import {
+  HttpInterceptor,
   HttpRequest,
   HttpHandler,
-  HttpEvent,
-  HttpInterceptor
+  HttpEvent
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { LoaderService } from '../common/loader.service';
-export const InterceptorSkipHeader = 'X-Skip-Interceptor';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
+
 export class LoaderInterceptor implements HttpInterceptor {
   constructor(private loaderService: LoaderService) {}
-  intercept(
-    request: HttpRequest<any>,
-    next: HttpHandler,
-    isLoader:boolean=true
-  ): Observable<HttpEvent<any>> {
-    let IsSkipLoader=request.headers.has("interceptorskipheader");
-    isLoader = IsSkipLoader;
-    if(!isLoader) {
-      this.loaderService.showLoader();
-      return next.handle(request).pipe(
-        finalize(() => this.loaderService.hideLoader())
-      );   
-    }
-    else{
-      return next.handle(request).pipe();   
-    }
+
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    this.loaderService.show();
+    return next.handle(req).pipe(
+      finalize(() => setTimeout(() => {
+        this.loaderService.hide(); console.log("Loader Hides")}, 5000))
+    );
   }
 }

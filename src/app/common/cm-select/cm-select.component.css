@@ -3,7 +3,17 @@ mat-label{font-size: 16px; font-weight: 500; margin-bottom: 15px; color:#4C535F}
  
  ::ng-deep .mat-mdc-text-field-wrapper  {
   --mdc-filled-text-field-container-color: #EDF2F6!important;
+  --mat-sys-outline: #e4ebf0;
  border-radius: 8px!important;
-border: 1px solid #E0E4EC;
+border: 1px solid var(--mat-sys-outline);
 background-color:#EDF2F6;
+
  }
+
+ ::ng-deep .mat-mdc-select-arrow svg {
+    fill: black;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

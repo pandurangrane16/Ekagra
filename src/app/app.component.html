@@ -22,7 +22,8 @@
   </div>
 
   <main class="mb-2"  [ngClass]="headerService.shift120 ? 'content' : 'content shift120'" >
-    
+    <app-cm-loader></app-cm-loader>
+
       <router-outlet></router-outlet>
    
   </main>

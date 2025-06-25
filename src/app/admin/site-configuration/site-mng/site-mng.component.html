@@ -3,9 +3,9 @@
     <div class="row">
   <mat-card-header>
       <div class="col-md-11" style="padding-left: 40px;">
-        <mat-card-title><h2>Site Configuration</h2></mat-card-title>
+        <mat-card-title><h2 style="margin-top: 10px;">Site Configuration 2</h2></mat-card-title>
       </div>
-      <div class="col-md-1">
+      <div class="col text-right">
         <button mat-icon-button (click)="close()" aria-label="Close">
           <mat-icon>close</mat-icon>
         </button>
@@ -144,7 +144,8 @@
 
         <!-- Action Buttons -->
         <div class="dialog-actions">
-          <button mat-button (click)="close()">Cancel</button>
+         
+          <button mat-stroked-button (click)="close()">Cancel</button>
           <button mat-flat-button color="primary" (click)="submit()">Save</button>
         </div>
 

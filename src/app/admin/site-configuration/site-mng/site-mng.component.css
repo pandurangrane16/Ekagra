@@ -119,12 +119,8 @@
     position: sticky;
     bottom: 0;
   }
-  .mat-mdc-card-content {
-    display: block;
-    padding: 24px;
-}
-.pageWrapper {
-    padding: 30px;
+  .pageWrapper {
+    padding: 30px!important;
 }
 .mat-mdc-card {
   --mat-sys-corner-medium:24px;
@@ -132,3 +128,21 @@
 border-radius: var(--mdc-elevated-card-container-shape);
 
 }
+
+.mat-mdc-card-content {
+    display: block;
+    padding: 24px;
+}
+
+.mat-mdc-outlined-button{
+--mat-sys-primary:#1c2d7b;
+border-color: var(--mat-sys-primary);
+color: var(--mat-sys-primary);
+}
+.mat-button-toggle-appearance-standard.mat-button-toggle-checked {
+  --mat-sys-primary:#1c2d7b;
+    color: white;
+    background-color: var(--mat-sys-primary);
+}
+
+ .text-right{text-align: right;}

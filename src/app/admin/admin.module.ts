@@ -1,10 +1,12 @@
-import { NgModule } from '@angular/core';
+import { Injectable, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CmTableComponent } from '../common/cm-table/cm-table.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 
-
+@Injectable({
+  providedIn:'root'
+})
 
 @NgModule({
   declarations: [

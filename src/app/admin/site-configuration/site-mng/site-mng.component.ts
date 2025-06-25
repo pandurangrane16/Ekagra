@@ -1,25 +1,25 @@
-
-import { Component, Inject, Injectable } from '@angular/core';
-import {MatInputModule} from '@angular/material/input';
-import {MatButtonModule} from '@angular/material/button';
-import { FormBuilder, FormsModule,FormGroup, Validators ,ReactiveFormsModule,} from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CmInputComponent } from '../../../common/cm-input/cm-input.component';
-import { CmSelect2Component } from '../../../common/cm-select2/cm-select2.component';
 import { CmToggleComponent } from '../../../common/cm-toggle/cm-toggle.component';
-import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+import { CmSelect2Component } from '../../../common/cm-select2/cm-select2.component';
 import { MaterialModule } from '../../../Material.module';
+import { MatButtonModule } from '@angular/material/button';
+import { LoaderService } from '../../../services/common/loader.service';
+import { CmLoaderComponent } from '../../../common/cm-loader/cm-loader.component';
+import { delay } from 'rxjs';
+import { ApiService } from '../../../services/common/api.service';
 
 @Component({
-  selector: 'app-site-configuration-form',
-  standalone:true,
-  imports: [CommonModule,CmInputComponent,CmSelect2Component,CmToggleComponent,ReactiveFormsModule, FormsModule,MaterialModule],
-  templateUrl: './site-configuration-form.component.html',
-  styleUrl: './site-configuration-form.component.css'
+  selector: 'app-site-mng',
+  imports: [CmInputComponent,CmToggleComponent,CmSelect2Component,ReactiveFormsModule,MaterialModule,MatButtonModule],
+  templateUrl: './site-mng.component.html',
+  styleUrl: './site-mng.component.css',
+  providers :[CmLoaderComponent,LoaderService],
+  standalone : true
 })
-@Injectable({ providedIn: 'root' })
-export class SiteConfigurationFormComponent {
-  form!: FormGroup;
+export class SiteMngComponent implements OnInit{
+form!: FormGroup;
   MatButtonToggleChange:any;
   ruleEngineStatus = '';
   mapStatus = '';
@@ -85,9 +85,9 @@ export class SiteConfigurationFormComponent {
   onProjectSelected(event: any) {
     console.log('Selected Project:', event);
   }
-  
+  posts: any[] = [];
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,private loader:LoaderService,private apiService : ApiService
   ) {
     this.form = this.fb.group({
       name: ['', Validators.required],
@@ -96,7 +96,16 @@ export class SiteConfigurationFormComponent {
       
     });
   }
-
+  ngOnInit(): void {
+    
+    this.loadPosts();
+  }
+  loadPosts() {
+    this.apiService.getPosts().subscribe((res :any)=>{
+      this.posts = res;
+      console.log(this.posts);
+    })
+  }
   onFileChange(event: any, controlName: string) {
     const file = event.target.files[0];
     if (file) {

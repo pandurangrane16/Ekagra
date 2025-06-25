@@ -16,7 +16,15 @@
     flex: 0 0 auto;
     width: 250px;
   }
- 
+ .pageWrapper {
+    padding: 30px;
+}
+.mat-mdc-card {
+  --mat-sys-corner-medium:24px;
+--mdc-elevated-card-container-shape: var(--mat-sys-corner-medium);
+border-radius: var(--mdc-elevated-card-container-shape);
+
+}
 
 
   

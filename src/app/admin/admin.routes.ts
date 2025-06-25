@@ -6,7 +6,6 @@ import { ProjectFieldConfigurationComponent } from "./project-field-configuratio
 import { ZoneConfigurationComponent } from "./zone-configuration/zone-configuration.component";
 import { MapConfigurationComponent } from "./map-configuration/map-configuration.component";
 import { BulkUploadComponent } from "./bulk-upload/bulk-upload.component";
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 //import { ProjectConfigurationComponent} from "./admin-dashboard/project-configuration.component";
 
 export const AdminRoutes: Routes = [
@@ -50,6 +49,17 @@ export const AdminRoutes: Routes = [
           title: 'Site Configuration',
           urls: [
             { title: 'Admin Dashboard', url: '/admin/siteconfig' },
+            { title: 'Site Configuration' },
+          ],
+        },
+      },
+      {
+        path: 'siteconfigmng',
+        component: SiteMngComponent,
+        data: {
+          title: 'Site Configuration',
+          urls: [
+            { title: 'Admin Dashboard', url: '/admin/siteconfigmng' },
             { title: 'Site Configuration' },
           ],
         },

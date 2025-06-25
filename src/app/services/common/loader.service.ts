@@ -1,27 +1,31 @@
+// loader.service.ts
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class LoaderService {
-  private apiCount = 0;
-  private isLoadingSubject = new BehaviorSubject<boolean>(false);
-  isLoading$ = this.isLoadingSubject.asObservable();
+  private requestCount = 0;
+  public isLoading$ = new BehaviorSubject<boolean>(false);
 
-  constructor() { }
-
-  showLoader() {
-    if (this.apiCount === 0) {
-      this.isLoadingSubject.next(true);
+  show() {
+    console.log("Show method called");
+    this.requestCount++;
+    if (this.requestCount === 1) {
+      this.isLoading$.next(true);
     }
-    this.apiCount++;
   }
 
-  hideLoader() {
-    this.apiCount--;
-    //if (this.apiCount === 0) {
-      this.isLoadingSubject.next(false);
-    //}
+  hide() {
+    if (this.requestCount > 0) {
+      this.requestCount--;
+    }
+    if (this.requestCount === 0) {
+      this.isLoading$.next(false);
+    }
+  }
+
+  reset() {
+    this.requestCount = 0;
+    this.isLoading$.next(false);
   }
 }
