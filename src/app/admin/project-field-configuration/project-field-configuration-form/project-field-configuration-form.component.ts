@@ -11,7 +11,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { getErrorMsg } from '../../../utils/utils';
 import { projfieldconfigservice } from '../../../services/admin/projfieldconfig.service';
 import { projfieldconfigmodel } from '../../../models/admin/projfieldconfig.model';
-import { ToastrService } from 'ngx-toastr';
+
+
 
 
 @Component({
@@ -110,7 +111,7 @@ export class ProjectFieldConfigurationFormComponent  implements OnInit{
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<ProjectFieldConfigurationFormComponent>,
     private service :projfieldconfigservice,
-    private toast:ToastrService,
+
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.form = this.fb.group({
@@ -163,7 +164,7 @@ export class ProjectFieldConfigurationFormComponent  implements OnInit{
 }  
 
   submit() {
-  this.toast.success("chgdgsf")
+ 
   if (!this.form.invalid) {
     this.form.markAllAsTouched(); 
      
@@ -196,15 +197,15 @@ _projfieldconfigmodel.projectId = this.form.controls['selectedProject'].value?.v
     next: () => {
       console.log('Saved successfully');
 
-           this.toast.success('ProjectField saved successfully'); 
+           //this.toast.success('ProjectField saved successfully'); 
       this.dialogRef.close(this.form.value);
     
-      this.toast.success('ProjectField saved successfully');
+      //this.toast.success('ProjectField saved successfully');
       
     },
     error: (err) => {
       console.error('Save failed:', err);
-      this.toast.error('Failed to save project');
+      //this.toast.error('Failed to save project');
     }
   });
 
@@ -213,7 +214,7 @@ _projfieldconfigmodel.projectId = this.form.controls['selectedProject'].value?.v
   }
   else {
       this.form.markAllAsTouched(); 
-  this.toast.error('Form is not valid');
+ // this.toast.error('Form is not valid');
   return;
     
   }

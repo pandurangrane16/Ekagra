@@ -12,7 +12,6 @@ import { projconfigservice } from '../../services/admin/progconfig.service';
 
 
 import { ProjectConfigurationFormComponent } from './project-configuration-form/project-configuration-form.component';
-import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -23,7 +22,6 @@ import { ToastrService } from 'ngx-toastr';
       CmTableComponent,
       CmInputComponent,
       CmSelect2Component
-      
     ],
     templateUrl: './project-configuration.component.html',
     // styleUrl: './project-configuration.component.css',
@@ -116,12 +114,10 @@ import { ToastrService } from 'ngx-toastr';
       constructor(private fb: FormBuilder,
         private dialog: MatDialog,
         private service: projconfigservice,
-          private toast : ToastrService
         ) {}
         
         
       ngOnInit(): void {
-        this.toast.success("chgdgsf")
           this.form = this.fb.group({
             selectedProject: [''],
             selectedStatus: [''],
@@ -194,11 +190,11 @@ import { ToastrService } from 'ngx-toastr';
         handleSearch(term: string) {
           console.log('Search term:', term);
         }
-               onPageChange(pageNo: number) {
-          console.log('Page Changed:', pageNo);
+               onPageChange(event:{type:string,pageNo: number}) {
+          console.log('Page Changed:', event.pageNo);
         }
-        onPageRecordsChange(perPage: number) {
-              console.log('Records Per Page:', perPage);
+        onPageRecordsChange(event:{type:string,perPage: number}) {
+              console.log('Records Per Page:', event.perPage);
         }
         onRowClicked(row: any) {
                 console.log('Row clicked:', row);

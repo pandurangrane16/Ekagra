@@ -152,11 +152,11 @@ handleSearchWithId(item: any) {
 handleSearch(term: string) {
   console.log('Search term:', term);
 }
-onPageChange(pageNo: number) {
-  console.log('Page Changed:', pageNo);
+onPageChange(event:{type:string,pageNo: number}) {
+  console.log('Page Changed:', event.pageNo);
 }
-onPageRecordsChange(perPage: number) {
-      console.log('Records Per Page:', perPage);
+onPageRecordsChange(event:{type:string,perPage: number}) {
+      console.log('Records Per Page:', event.perPage);
 }
 onRowClicked(row: any) {
         console.log('Row clicked:', row);

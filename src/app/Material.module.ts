@@ -93,7 +93,8 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
     MatIconModule,
     MatMenuModule,
     MatButtonModule,
-    HighchartsChartModule
+    HighchartsChartModule,
+    ToastrModule
   ],
   imports:[ToastrModule.forRoot()],
   providers:[]
