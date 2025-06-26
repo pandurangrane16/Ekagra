@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MaterialModule } from '../../Material.module';
 import { CommonModule } from '@angular/common';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-cm-pagination',
@@ -14,6 +15,7 @@ export class CmPaginationComponent {
   @Input() totalPages = 10;
   selectedValue: number = 1;
   selectedPageValue:number = 10;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
   @Output() pageno = new EventEmitter<number>();
   pageIndex :number = 10;
   @Output() perPage = new EventEmitter<number>();
@@ -70,6 +72,7 @@ onPageChange($event: any) {
      if ($event.pageSize !== this.recordsPerPage) {
         this.perPage.emit($event.pageSize);
         this.pageIndex= 0;
+         this.paginator.firstPage();
      }
         else {
         this.pageno.emit($event.pageIndex);
