@@ -6,29 +6,35 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class projfieldconfigservice {
+export class siteconfigservice {
   constructor(
     private _httpService: HttpService) { }
 
  jsonurl: string = '/assets/config/config.json';
 
-ProjectfieldCreate(_data: any) {
-    return this._httpService._postMethod(_data, 'api/services/app/ProjectField/Create');
+SiteCreate(_data: any) {
+    return this._httpService._postMethod(_data, 'api/services/app/Site/Create');
   }
 
-  ProjectfieldEdit(_data: any) {
-    return this._httpService._postMethod(_data, 'api/services/app/ProjectField/Update');
+  SiteEdit(_data: any) {
+    return this._httpService._postMethod(_data, 'api/services/app/Site/Update');
   }
 
 
 
 GetAll(MaxResultCount: number, SkipCount: number,) {
-    return this._httpService._getMethod('api/services/app/ProjectField/GetAllProjectFieldMasterPage?MaxResultCount='+MaxResultCount+'&SkipCount='+SkipCount);
+    return this._httpService._getMethod('api/services/app/Site/GetAllSiteMasterPage?MaxResultCount='+MaxResultCount+'&SkipCount='+SkipCount);
   }
 
   GetProjectList() {
     return this._httpService._getMethod('api/services/app/Project/GetProjectList');
   }
+
+  GetLocationByPincode( Pincode: number) {
+    return this._httpService._getMethod('api/services/app/Location/GetLocationByPincode?Pincode='+Pincode);
+  }
+
+
 
 
 GetFilteredList(ProjectId?: number, filter?: string, status?: boolean) {
@@ -47,7 +53,7 @@ GetFilteredList(ProjectId?: number, filter?: string, status?: boolean) {
   }
 
   const queryString = params.length ? '?' + params.join('&') : '';
-  const url = `api/services/app/ProjectField/GetAllProjectFieldMasterPage${queryString}`;
+  const url = `api/services/app/Site/GetAllSiteMasterPage?${queryString}`;
 
   return this._httpService._getMethod(url);
 }

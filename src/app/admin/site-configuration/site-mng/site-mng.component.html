@@ -3,7 +3,7 @@
     <div class="row">
   <mat-card-header>
       <div class="col-md-11" style="padding-left: 40px;">
-        <mat-card-title><h2 style="margin-top: 10px;">Site Configuration 2</h2></mat-card-title>
+        <mat-card-title><h2 style="margin-top: 10px;">Site Configuration</h2></mat-card-title>
       </div>
       <div class="col text-right">
         <button mat-icon-button (click)="close()" aria-label="Close">
@@ -24,17 +24,23 @@
             <label style="position: relative; top: 6px; display: block;">Project Name</label>
 
             <div>
-              <app-cm-select2 [formGroup]="form" [controlName]="'selectedStatus'" [settings]="projectSelectSettings"
-                (optionSelected)="onProjectSelected($event)" class="full-width-select">
+              <app-cm-select2 *ngIf="isProjectOptionsLoaded" [formGroup]="form" [controlName]="'name'" [settings]="projectSelectSettings"
+                (returnObject)="onProjectSelected($event)" class="full-width-select">
               </app-cm-select2>
+                       <div *ngIf="f['name'].touched && f['name'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('name', 'Projectname', false, '') }}
+      </div>
             </div>
           </div>
 
 
           <div class="col-md-6">
             <label>Site Id</label>
-            <app-cm-input [formGroup]="form" [controlName]="'name'" [_inputData]="inputFields.name">
+            <app-cm-input [formGroup]="form" [controlName]="'siteId'" [_inputData]="inputFields.siteId">
             </app-cm-input>
+                              <div *ngIf="f['siteId'].touched && f['siteId'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('siteId', 'Site Id', false, '') }}
+      </div>
           </div>
 
 
@@ -44,8 +50,11 @@
 
           <div class="col-md-6">
             <label>Site Name</label>
-            <app-cm-input [formGroup]="form" [controlName]="'name'" [_inputData]="inputFields.name">
+            <app-cm-input [formGroup]="form" [controlName]="'siteName'" [_inputData]="inputFields.siteName">
             </app-cm-input>
+                                  <div *ngIf="f['siteName'].touched && f['siteName'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('siteName', 'Site Name', false, '') }}
+      </div>
           </div>
 
 
@@ -53,45 +62,64 @@
             <label>Description</label>
             <app-cm-input [formGroup]="form" [controlName]="'description'" [_inputData]="inputFields.description">
             </app-cm-input>
+                                        <div *ngIf="f['description'].touched && f['description'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('description', 'Description', false, '') }}
+      </div>
           </div>
         </div>
         <div class="row">
 
           <div class="col-md-4">
             <label>Latitude</label>
-            <app-cm-input [formGroup]="form" [controlName]="'name'" [_inputData]="inputFields.name">
+            <app-cm-input [formGroup]="form" [controlName]="'lat'" [_inputData]="inputFields.lat">
             </app-cm-input>
+                                        <div *ngIf="f['lat'].touched && f['lat'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('lat', 'Latitude', false, '') }}
+      </div>
           </div>
 
 
           <div class="col-md-4">
             <label>Longitude</label>
-            <app-cm-input [formGroup]="form" [controlName]="'description'" [_inputData]="inputFields.description">
+            <app-cm-input [formGroup]="form" [controlName]="'long'" [_inputData]="inputFields.long">
             </app-cm-input>
+                                        <div *ngIf="f['long'].touched && f['long'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('long', 'Longitude', false, '') }}
+      </div>
           </div>
           <div class="col-md-4">
             <label>Pincode</label>
-            <app-cm-input [formGroup]="form" [controlName]="'description'" [_inputData]="inputFields.description">
+            <app-cm-input [formGroup]="form" [controlName]="'pincode'" [_inputData]="inputFields.pincode">
             </app-cm-input>
+                                                <div *ngIf="f['pincode'].touched && f['pincode'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('pincode', 'Pincode', false, '') }}
+      </div>
           </div>
         </div>
 
 
         <div class="row">
           <div class="col-md-6" style="margin-top: -10px;">
-            <label style="position: relative; top: 6px; display: block;">Project Name</label>
+            <label style="position: relative; top: 6px; display: block;">Location/Area</label>
 
             <div>
-              <app-cm-select2 [formGroup]="form" [controlName]="'selectedStatus'" [settings]="projectSelectSettings"
-                (optionSelected)="onProjectSelected($event)" class="full-width-select">
+              <app-cm-select2 *ngIf="isLocationsOptionsLoaded" [formGroup]="form" [controlName]="'locationDropdown'" [settings]="locationDropdownSettings"
+                (returnObject)="onLocationSelected($event)" class="full-width-select">
               </app-cm-select2>
+                                                        <div *ngIf="f['locationDropdown'].touched && f['locationDropdown'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('locationDropdown', 'Location', false, '') }}
+      </div>
             </div>
           </div>
 
           <div class="col-md-6">
             <label>Address</label>
-            <app-cm-input [formGroup]="form" [controlName]="'description'" [_inputData]="inputFields.description">
+            
+            <app-cm-input   [formGroup]="form" [controlName]="'address'" [_inputData]="inputFields.address">
             </app-cm-input>
+                                                      <div *ngIf="f['address'].touched && f['address'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('address', 'Address', false, '') }}
+      </div>
           </div>
 
 

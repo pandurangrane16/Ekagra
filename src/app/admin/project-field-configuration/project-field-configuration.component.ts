@@ -78,7 +78,7 @@ export class ProjectFieldConfigurationComponent  {
     labelHeader: 'Select Project',
     lableClass: 'form-label',
     formFieldClass: '', 
-    appearance: 'outline',
+    appearance: 'fill',
     options: [ ]
   };
    statusSelectSettings = {
@@ -188,6 +188,11 @@ export class ProjectFieldConfigurationComponent  {
             element.apiLabel=element.label;
             element.isActive = !!element.isActive; 
 
+              element.button = [
+    { label: 'Edit', icon: 'edit', type: 'edit' },
+    { label: 'Delete', icon: 'delete', type: 'delete' }
+  ];
+
 
 
 
@@ -204,7 +209,35 @@ export class ProjectFieldConfigurationComponent  {
           
         }
       })
-    }    
+    }   
+    
+    
+    onButtonClicked({ event, data }: { event: any; data: any }) {
+  if (event.type === 'edit') {
+    this.editRow(data);
+    console.log(data);
+  } else if (event.type === 'delete') {
+    
+  }
+}
+
+
+editRow(rowData: any) {
+  const dialogRef = this.dialog.open(ProjectFieldConfigurationFormComponent, {
+    width: '500px',
+ data: {
+  mode: 'edit',
+  record: rowData  
+}
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result === 'updated') {
+      this.getProjfieldConfigList(); 
+    }
+  });
+}
+
   openDialog() {
             const dialogRef = this.dialog.open(ProjectFieldConfigurationFormComponent, {
               
@@ -230,7 +263,7 @@ export class ProjectFieldConfigurationComponent  {
               { header: 'Api Label', fieldValue: 'apiLabel', position: 3 },
               { header: 'Description', fieldValue: 'description', position: 4 },
               { header: 'Status', fieldValue: 'isActive',type:'boolean', position: 5 },
-              { header: 'Action', fieldValue: 'action', position: 6 }
+              { header: 'Action', fieldValue: 'button', position: 6 }
             ];
   ;}   
     getProjList() {
@@ -259,8 +292,10 @@ export class ProjectFieldConfigurationComponent  {
      const selectedStatus = this.form.controls['selectedStatus'].value.value;
      const search = this.form.controls['searchText'].value
      this.service.GetFilteredList(selectedProjectId,search,selectedStatus).subscribe(response => {
-     const items = response?.result || [];
+    //  const items = response?.result || [];
          
+    //      this.items=items;
+         const items = response.result?.items;
          this.items=items;
 
 
@@ -275,6 +310,11 @@ export class ProjectFieldConfigurationComponent  {
             element.mapLabel=element.mapLabel;
             element.apiLabel=element.label;
             element.isActive = !!element.isActive; 
+            
+              element.button = [
+    { label: 'Edit', icon: 'edit', type: 'edit' },
+    { label: 'Delete', icon: 'delete', type: 'delete' }
+  ];
 
 
 
@@ -351,8 +391,6 @@ onPaginationChanged(event: { pageNo: number; perPage: number }) {
   onRowClicked(row: any) {
           console.log('Row clicked:', row);
   }
-  onButtonClicked(event: any) {
-    console.log('Button clicked:', event);
-  }
+
          
   }
