@@ -1,0 +1,33 @@
+<div [formGroup]="formGroup" *ngIf="formGroup">
+  {{ value }}
+
+  <!-- Show label above textarea if labelHeader is not 'Search' -->
+  <ng-container *ngIf="_inputData.labelHeader && _inputData.labelHeader !== 'Search'">
+    <mat-label
+      [class]="_inputData.labelClass"
+      style="padding-top: 10px;">
+      {{ _inputData.labelHeader }}
+    </mat-label>
+    <hr />
+  </ng-container>
+
+  <mat-form-field
+    [hideRequiredMarker]="true"
+    [class]="_inputData.formFieldClass"
+    appearance="outline">
+    
+    <!-- Floating label inside textarea for Search -->
+    <mat-label *ngIf="_inputData.labelHeader === 'Search'">
+      {{ _inputData.labelHeader }}
+    </mat-label>
+
+    <textarea
+      matInput
+      [placeholder]="_inputData.placeholder"
+      [disabled]="_inputData.isDisabled"
+      [formControlName]="controlName"
+      [rows]="_inputData.rows || 4"
+    ></textarea>
+
+  </mat-form-field>
+</div>

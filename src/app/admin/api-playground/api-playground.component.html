@@ -1,0 +1,138 @@
+<div class="pageWrapper">
+    <mat-card class="cardWithShadow theme-card">
+        <div class="row">
+            <mat-card-header>
+                <div class="col-md-11" style="padding-left: 40px;">
+                    <mat-card-title>
+                        <h2 style="margin-top: 10px;">Site Configuration 2</h2>
+                    </mat-card-title>
+                </div>
+            </mat-card-header>
+        </div>
+        <hr>
+        <mat-card-content class="b-t-1 scroll">
+
+            <!-- <div class="dialog-container"> -->
+
+
+            <form [formGroup]="form" class="form-container">
+                <div class="row">
+                    <div class="col-md-3" style="margin-top: -10px;">
+                        <label style="position: relative; top: 6px; display: block;">Enter Name</label>
+                        <div>
+                            <app-cm-input [formGroup]="form" [controlName]="'apiName'"
+                                [_inputData]="inputFields.apiName">
+                            </app-cm-input>
+                        </div>
+                    </div>
+                    <div class="col-md-9" style="margin-top: -10px;">
+                        <label style="position: relative; top: 6px; display: block;">Enter URL</label>
+                        <div>
+                            <app-cm-input [formGroup]="form" [controlName]="'apiUrl'" [_inputData]="inputFields.apiUrl">
+                            </app-cm-input>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <mat-tab-group>
+                            <mat-tab label="Params">
+                                <hr>
+                                <ng-container>
+                                    <div class="query-container">
+                                        <button mat-flat-button color="primary" class="add-query"
+                                            (click)="createQueryStrings()">Add
+                                            New Query</button>
+                                        <div *ngIf="form.get('queryStrings')">
+                                            <div class="row">
+                                                <div formArrayName="queryStrings" class="query-table">
+                                                    <div class="row text-center mt-3">
+                                                        <label class="col-md-1">
+                                                            Sr No.
+                                                        </label>
+                                                        <label class="col-md-5">
+                                                            Key
+                                                        </label>
+                                                        <label class="col-md-5">
+                                                            Value
+                                                        </label>
+
+                                                        <label class="col-md-1">
+                                                            Action
+                                                        </label>
+                                                    </div>
+                                                    <div *ngFor="let group of queryStringsFormArray.controls; let i = index"
+                                                        [formGroup]="group" class="row mb-2">
+                                                        <div class="col-md-1 text-center">
+                                                            <app-cm-input [formGroup]="group" [controlName]="'qsNo'"
+                                                                [_inputData]="inputFields.apiUrl">
+                                                            </app-cm-input>
+                                                        </div>
+                                                        <div class="col-md-5 text-center">
+                                                            <app-cm-input [formGroup]="group" [controlName]="'qsKey'"
+                                                                [_inputData]="inputFields.apiUrl">
+                                                            </app-cm-input>
+                                                        </div>
+                                                        <div class="col-md-5 text-center">
+                                                            <app-cm-input [formGroup]="group" [controlName]="'qsValue'"
+                                                                [_inputData]="inputFields.apiUrl">
+                                                            </app-cm-input>
+                                                        </div>
+                                                        <div class="col-md-1 text-center">
+                                                            <button mat-stroked-button (click)="close()">Delete</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </mat-tab>
+                            <mat-tab label="Body">
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <app-cm-radio [_inputData]="radioInputData"
+                                            [formGroup]="form.body"></app-cm-radio>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <app-cm-textarea formArrayName="body" [formGroup]="form.bodyFormArray" [controlName]="'bodyValue'"
+                                            [_inputData]="inputFields.apiUrl">
+                                        </app-cm-textarea>
+                                    </div>
+                                </div>
+                            </mat-tab>
+
+                            <mat-tab label="Auth">
+
+                            </mat-tab>
+
+                            <mat-tab label="Headers">
+
+                            </mat-tab>
+                            <mat-tab label="Row">
+
+                            </mat-tab>
+                        </mat-tab-group>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+
+
+                    </div>
+                </div>
+            </form>
+            <!-- </div> -->
+        </mat-card-content>
+    </mat-card>
+</div>
