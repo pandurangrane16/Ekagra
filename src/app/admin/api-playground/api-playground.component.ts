@@ -7,10 +7,11 @@ import { ApiService } from '../../services/common/api.service';
 import { CmInputComponent } from '../../common/cm-input/cm-input.component';
 import { CmRadioComponent } from "../../common/cm-radio/cm-radio.component";
 import { CmTextareaComponent } from "../../common/cm-textarea/cm-textarea.component";
+import { CmSelect2Component } from '../../common/cm-select2/cm-select2.component';
 
 @Component({
   selector: 'app-api-playground',
-  imports: [MaterialModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmRadioComponent, CmTextareaComponent,CmTextareaComponent],
+  imports: [MaterialModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmRadioComponent, CmTextareaComponent,CmTextareaComponent,CmSelect2Component],
   templateUrl: './api-playground.component.html',
   styleUrl: './api-playground.component.css',
   standalone: true
@@ -20,7 +21,18 @@ export class ApiPlaygroundComponent implements OnInit {
     { label: 'Params', content : "Test Param" },
     { label: 'Body', content : "Test Body" }
   ];
-
+apiTypeSettings = {
+  labelHeader: 'Select Type',
+  lableClass: 'form-label',
+  formFieldClass: '', 
+  appearance: 'outline',
+  options: [
+    { name: 'GET', value: 'get' },
+    { name: 'POST', value: 'post' },
+    { name: 'PUT', value: 'put' },
+    { name: 'DELETE', value: 'delete' }
+  ]
+};
   radioInputData = {
     label : "",
     data : ['None', 'JSON', 'Form']
@@ -35,6 +47,7 @@ export class ApiPlaygroundComponent implements OnInit {
     this.form = this.fb.group({
       apiName: ['', Validators.required],
       apiUrl: ['', Validators.required],
+      apiType:['', Validators.required],
       queryStrings: this.fb.array([]),
       bodyType : ['', Validators.required],
       authType : ['', Validators.required],
@@ -44,6 +57,8 @@ export class ApiPlaygroundComponent implements OnInit {
     });
 
     this.createBody();
+    this.createAuth();
+    //this.();
   }
   ngOnInit(): void {
 
@@ -185,6 +200,11 @@ export class ApiPlaygroundComponent implements OnInit {
     qsNoControl?.setValue(i + 1);
   });
 }
+
+RemoveHeader(index:any){
+    const itemsArray = this.form.get('headers') as FormArray;
+    itemsArray.removeAt(index);
+  }
   submit() {
     console.log(this.form.controls);
     if (this.form.valid) {

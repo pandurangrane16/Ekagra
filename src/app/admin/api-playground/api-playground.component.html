@@ -25,12 +25,17 @@
                             </app-cm-input>
                         </div>
                     </div>
-                    <div class="col-md-9" style="margin-top: -10px;">
+                    <div class="col-md-7" style="margin-top: -10px;">
                         <label style="position: relative; top: 6px; display: block;">Enter URL</label>
                         <div>
                             <app-cm-input [formGroup]="form" [controlName]="'apiUrl'" [_inputData]="inputFields.apiUrl">
                             </app-cm-input>
                         </div>
+                    </div>
+                    <div class="col-md-2">
+                        <app-cm-select2 [formGroup]="form" [controlName]="'apiType'" [settings]="apiTypeSettings"
+                            (optionSelected)="onProjectSelected($event)">
+                        </app-cm-select2>
                     </div>
                 </div>
 
@@ -43,7 +48,7 @@
                                 <hr>
                                 <ng-container>
                                     <div class="query-container">
-                                        <button mat-flat-button color="primary" class="add-query"
+                                        <button mat-flat-button color="accent" class="add-query"
                                             (click)="createQueryStrings()">Add
                                             New Query</button>
                                         <div *ngIf="form.get('queryStrings')">
@@ -143,13 +148,22 @@
                                                     </app-cm-input>
                                                     }
                                                     @else if (form.controls['authType'].value == "Basic") {
-                                                    <app-cm-input [formGroup]="group" [controlName]="'authValue'"
-                                                        [_inputData]="inputFields.basicAuthUsername">
-                                                    </app-cm-input>
-
-                                                    <app-cm-input [formGroup]="group" [controlName]="'authValue'"
-                                                        [_inputData]="inputFields.basicAuthPassword">
-                                                    </app-cm-input>
+                                                    <div class="row padStyle">
+                                                        <div class="col-md-4">
+                                                            <app-cm-input [formGroup]="group"
+                                                                [controlName]="'authValue'"
+                                                                [_inputData]="inputFields.basicAuthUsername">
+                                                            </app-cm-input>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row padStyle">
+                                                        <div class="col-md-4">
+                                                            <app-cm-input [formGroup]="group"
+                                                                [controlName]="'authValue'"
+                                                                [_inputData]="inputFields.basicAuthPassword">
+                                                            </app-cm-input>
+                                                        </div>
+                                                    </div>
                                                     }
                                                 </div>
                                             </div>
@@ -159,19 +173,62 @@
                             </mat-tab>
 
                             <mat-tab label="Headers">
+                                <hr>
+                                <ng-container>
+                                    <div class="query-container">
+                                        <button mat-flat-button color="accent" class="add-query"
+                                            (click)="createHeader()">Add Header</button>
+                                        <div *ngIf="form.get('headers')">
+                                            <div class="row">
+                                                <div formArrayName="headers" class="query-table">
+                                                    <div class="row text-center mt-3">
+                                                        <label class="col-md-5">
+                                                            Key
+                                                        </label>
+                                                        <label class="col-md-5">
+                                                            Value
+                                                        </label>
 
-                            </mat-tab>
-                            <mat-tab label="Row">
+                                                        <label class="col-md-2">
+                                                            Action
+                                                        </label>
+                                                    </div>
+                                                    <div *ngFor="let group of headersFormArray.controls; let i = index"
+                                                        [formGroup]="group" class="row mb-2">
+                                                        <div class="col-md-5 text-center">
+                                                            <app-cm-input [formGroup]="group"
+                                                                [controlName]="'headerKey'"
+                                                                [_inputData]="inputFields.qsKey">
+                                                            </app-cm-input>
+                                                        </div>
+                                                        <div class="col-md-5 text-center">
+                                                            <app-cm-input [formGroup]="group"
+                                                                [controlName]="'headerValue'"
+                                                                [_inputData]="inputFields.qsValue">
+                                                            </app-cm-input>
+                                                        </div>
+                                                        <div class="col-md-2 text-center">
+                                                            <button mat-stroked-button
+                                                                (click)="RemoveHeader(i)">Delete</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-container>
                             </mat-tab>
                         </mat-tab-group>
                     </div>
                 </div>
-
+<hr>
                 <div class="row">
-                    <div class="col-md-12">
-                        <button mat-stroked-button (click)="submit()">Submit</button>
+                    <div class="col-md-12 d-flex justify-content-end">
+                        <button mat-flat-button  color="primary" (click)="submit()">Submit</button>
 
+                        <button mat-flat-button  color="warn" class="ms-4"  (click)="close()">Cancel</button>
                     </div>
                 </div>
             </form>

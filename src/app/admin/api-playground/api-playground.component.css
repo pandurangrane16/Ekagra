@@ -31,3 +31,7 @@
   
   cursor: pointer;
 }
+
+.padStyle {
+  padding: 25px;
+}
