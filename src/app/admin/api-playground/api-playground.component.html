@@ -82,7 +82,8 @@
                                                             </app-cm-input>
                                                         </div>
                                                         <div class="col-md-1 text-center">
-                                                            <button mat-stroked-button (click)="RemoveQS(i)">Delete</button>
+                                                            <button mat-stroked-button
+                                                                (click)="RemoveQS(i)">Delete</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -100,14 +101,22 @@
                                         <app-cm-radio [_inputData]="radioInputData" [formGroup]="form"
                                             [controlName]="'bodyType'"></app-cm-radio>
                                     </div>
-                                    <div formArrayName="body"  *ngIf="form.get('body')">
+                                    <div formArrayName="body" *ngIf="form.get('body')">
                                         <div *ngFor="let group of bodyFormArray.controls; let i = index"
                                             [formGroup]="group" class="row mb-2">
+
                                             <div class="row">
                                                 <div class="col-md-12">
-                                                    <app-cm-textarea [formGroup]="group"
-                                                        [controlName]="'bodyValue'" [_inputData]="inputFields.bodyJson">
+                                                    @if(form.controls['bodyType'].value == "JSON"){
+                                                    <app-cm-textarea [formGroup]="group" [controlName]="'bodyValue'"
+                                                        [_inputData]="inputFields.bodyJson">
                                                     </app-cm-textarea>
+                                                    }
+                                                    @else if (form.controls['bodyType'].value == "Form") {
+                                                    <app-cm-textarea [formGroup]="group" [controlName]="'bodyValue'"
+                                                        [_inputData]="inputFields.bodyForm">
+                                                    </app-cm-textarea>
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
@@ -117,7 +126,36 @@
                             </mat-tab>
 
                             <mat-tab label="Auth">
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <app-cm-radio [_inputData]="radioAuthInputData" [formGroup]="form"
+                                            [controlName]="'authType'"></app-cm-radio>
+                                    </div>
+                                    <div formArrayName="auth" *ngIf="form.get('auth')">
+                                        <div *ngFor="let group of authFormArray.controls; let i = index"
+                                            [formGroup]="group" class="row mb-2">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    @if(form.controls['authType'].value == "Bearer"){
+                                                    <app-cm-input [formGroup]="group" [controlName]="'authValue'"
+                                                        [_inputData]="inputFields.bearerToken">
+                                                    </app-cm-input>
+                                                    }
+                                                    @else if (form.controls['authType'].value == "Basic") {
+                                                    <app-cm-input [formGroup]="group" [controlName]="'authValue'"
+                                                        [_inputData]="inputFields.basicAuthUsername">
+                                                    </app-cm-input>
 
+                                                    <app-cm-input [formGroup]="group" [controlName]="'authValue'"
+                                                        [_inputData]="inputFields.basicAuthPassword">
+                                                    </app-cm-input>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </mat-tab>
 
                             <mat-tab label="Headers">
@@ -132,7 +170,7 @@
 
                 <div class="row">
                     <div class="col-md-12">
-
+                        <button mat-stroked-button (click)="submit()">Submit</button>
 
                     </div>
                 </div>

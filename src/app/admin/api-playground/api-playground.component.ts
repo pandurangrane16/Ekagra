@@ -25,6 +25,10 @@ export class ApiPlaygroundComponent implements OnInit {
     label : "",
     data : ['None', 'JSON', 'Form']
   }
+  radioAuthInputData = {
+    label : "",
+    data : ['None', 'Bearer', 'Basic','Custom']
+  }
   constructor(
     private fb: FormBuilder, private loader: LoaderService, private apiService: ApiService
   ) {
@@ -143,6 +147,30 @@ export class ApiPlaygroundComponent implements OnInit {
       color: 'primary',
       formFieldClass: "w-100"
     },
+    bearerToken : {
+      labelHeader: 'Bearer Token',
+      placeholder: '<Bearer> <Token>',
+      appearance: 'outline',
+      isDisabled: false,
+      color: 'primary',
+      formFieldClass: "w-100"
+    },
+    basicAuthUsername : {
+      labelHeader: 'Username',
+      placeholder: 'Username',
+      appearance: 'outline',
+      isDisabled: false,
+      color: 'primary',
+      formFieldClass: "w-100"
+    },
+    basicAuthPassword : {
+      labelHeader: 'Password',
+      placeholder: 'Password',
+      appearance: 'outline',
+      isDisabled: false,
+      color: 'primary',
+      formFieldClass: "w-100"
+    },
   };
 
   RemoveQS(index:any){
@@ -158,8 +186,9 @@ export class ApiPlaygroundComponent implements OnInit {
   });
 }
   submit() {
+    console.log(this.form.controls);
     if (this.form.valid) {
-
+      
     }
   }
 
