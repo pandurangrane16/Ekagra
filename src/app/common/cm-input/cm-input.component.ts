@@ -23,6 +23,7 @@ export class CmInputComponent {
     
   }
   ngOnInit(): void {
+    console.log(this._inputData);
     if(this._inputData.type != undefined)
       this.type = this._inputData.type;
   }

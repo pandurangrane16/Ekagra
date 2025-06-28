@@ -4,7 +4,7 @@
             <mat-card-header>
                 <div class="col-md-11" style="padding-left: 40px;">
                     <mat-card-title>
-                        <h2 style="margin-top: 10px;">Site Configuration 2</h2>
+                        <h2 style="margin-top: 10px;">API PLAYGROUND</h2>
                     </mat-card-title>
                 </div>
             </mat-card-header>
@@ -73,16 +73,16 @@
                                                         </div>
                                                         <div class="col-md-5 text-center">
                                                             <app-cm-input [formGroup]="group" [controlName]="'qsKey'"
-                                                                [_inputData]="inputFields.apiUrl">
+                                                                [_inputData]="inputFields.qsKey">
                                                             </app-cm-input>
                                                         </div>
                                                         <div class="col-md-5 text-center">
                                                             <app-cm-input [formGroup]="group" [controlName]="'qsValue'"
-                                                                [_inputData]="inputFields.apiUrl">
+                                                                [_inputData]="inputFields.qsValue">
                                                             </app-cm-input>
                                                         </div>
                                                         <div class="col-md-1 text-center">
-                                                            <button mat-stroked-button (click)="close()">Delete</button>
+                                                            <button mat-stroked-button (click)="RemoveQS(i)">Delete</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -97,18 +97,23 @@
                                 <hr>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <app-cm-radio [_inputData]="radioInputData"
-                                            [formGroup]="form.body"></app-cm-radio>
+                                        <app-cm-radio [_inputData]="radioInputData" [formGroup]="form"
+                                            [controlName]="'bodyType'"></app-cm-radio>
+                                    </div>
+                                    <div formArrayName="body"  *ngIf="form.get('body')">
+                                        <div *ngFor="let group of bodyFormArray.controls; let i = index"
+                                            [formGroup]="group" class="row mb-2">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <app-cm-textarea [formGroup]="group"
+                                                        [controlName]="'bodyValue'" [_inputData]="inputFields.bodyJson">
+                                                    </app-cm-textarea>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <app-cm-textarea formArrayName="body" [formGroup]="form.bodyFormArray" [controlName]="'bodyValue'"
-                                            [_inputData]="inputFields.apiUrl">
-                                        </app-cm-textarea>
-                                    </div>
-                                </div>
                             </mat-tab>
 
                             <mat-tab label="Auth">

@@ -32,10 +32,14 @@ export class ApiPlaygroundComponent implements OnInit {
       apiName: ['', Validators.required],
       apiUrl: ['', Validators.required],
       queryStrings: this.fb.array([]),
+      bodyType : ['', Validators.required],
+      authType : ['', Validators.required],
       body: this.fb.array([]),
       auth: this.fb.array([]),
       headers : this.fb.array([]),
     });
+
+    this.createBody();
   }
   ngOnInit(): void {
 
@@ -46,7 +50,7 @@ export class ApiPlaygroundComponent implements OnInit {
   createQueryStrings() {
     let len = this.form.controls['queryStrings'].length;
     const group = this.fb.group({
-      qsNo: [(len == undefined ? 1 : len + 1), Validators.required],
+      qsNo: [{value : (len == undefined ? 1 : len+1),disabled: true}],
       qsKey: ['', Validators.required],
       qsValue: ['', Validators.required]
     });
@@ -58,7 +62,6 @@ export class ApiPlaygroundComponent implements OnInit {
   }
   createBody() {
     const group = this.fb.group({
-      bodyType : ['', Validators.required],
       bodyValue: ['', Validators.required],
     });
     this.bodyFormArray.push(group);
@@ -69,7 +72,6 @@ export class ApiPlaygroundComponent implements OnInit {
   }
   createAuth() {
     const group = this.fb.group({
-      authType : ['', Validators.required],
       authKey : [''],
       authValue : ['']
     });
@@ -105,19 +107,56 @@ export class ApiPlaygroundComponent implements OnInit {
       // labelHeader: 'Name',
       placeholder: 'Enter URL',
       appearance: 'outline',
-      isDisabled: false,
+      isDisabled: true,
+      color: 'primary',
+      formFieldClass: "w-100"
+    },
+    qsKey: {
+      // labelHeader: 'Name',
+      placeholder: 'Enter Key',
+      appearance: 'outline',
+      isDisabled: true,
+      color: 'primary',
+      formFieldClass: "w-100"
+    },
+    qsValue: {
+      // labelHeader: 'Name',
+      placeholder: 'Enter Value',
+      appearance: 'outline',
+      isDisabled: true,
       color: 'primary',
       formFieldClass: "w-100"
     },
     bodyJson: {
       //labelHeader: 'JSON',
-      placeholder: '{ "Key" : "Key" , "Value" : "Value"}',
+      placeholder: '{ "Key" : "Value" }',
+      appearance: 'outline',
+      isDisabled: false,
+      color: 'primary',
+      formFieldClass: "w-100"
+    },
+    bodyForm: {
+      //labelHeader: 'JSON',
+      placeholder: 'key1=value1\nkey2=value2',
       appearance: 'outline',
       isDisabled: false,
       color: 'primary',
       formFieldClass: "w-100"
     },
   };
+
+  RemoveQS(index:any){
+    const itemsArray = this.form.get('queryStrings') as FormArray;
+    itemsArray.removeAt(index);
+     this.resequenceQsNo(itemsArray);
+  }
+
+  resequenceQsNo(formArray: FormArray) {
+  formArray.controls.forEach((group, i) => {
+    const qsNoControl = group.get('qsNo');
+    qsNoControl?.setValue(i + 1);
+  });
+}
   submit() {
     if (this.form.valid) {
 
