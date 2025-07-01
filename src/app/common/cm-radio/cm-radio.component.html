@@ -1,0 +1,8 @@
+<div class="cm-radio-group" [formGroup]="formGroup" *ngIf="formGroup">
+  <label class="cm-radio-label">{{ _inputData.label }}</label>
+  <mat-radio-group [formControlName]="controlName" class="cm-radio-options">
+    <mat-radio-button *ngFor="let option of _inputData.data" [value]="option">
+      {{ option }}
+    </mat-radio-button>
+  </mat-radio-group>
+</div>

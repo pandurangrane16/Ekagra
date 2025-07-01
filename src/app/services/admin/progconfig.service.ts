@@ -23,4 +23,8 @@ GetAll() {
 GetProjectList() {
     return this._httpService._getMethod('api/services/app/Project/GetProjectList');
   }
+
+
+  
+
 }

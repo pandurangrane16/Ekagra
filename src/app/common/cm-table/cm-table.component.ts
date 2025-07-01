@@ -18,10 +18,14 @@ export class CmTableComponent implements OnInit {
     @Input() _headerName:string = "";
     @Input() pagination:boolean =true;
     @Input() isSearch: boolean = false;
-    @Output() pager = new EventEmitter<number>();
+
+    @Output() pager = new EventEmitter<{ type: string; pageNo: number }>();
+@Output() recordPerPage = new EventEmitter<{ type: string; perPage: number }>();
+
+   
     @Output() searchWithId = new EventEmitter<any>();
     @Output() search = new EventEmitter<string>();
-    @Output() recordPerPage = new EventEmitter<number>();
+   
     @Input() headArr: any[] = [];
     @Input() link!: string;
     @Input() isSearchBox: boolean = true;
@@ -63,15 +67,16 @@ export class CmTableComponent implements OnInit {
     mouseEnter(msg: string) {
       this.tooltip = msg;
     }
-    pageChange(pager: number) {
-      this.pager.emit(pager);
+    pageChange(pager: any) {
+       this.pager.emit({ type: 'pageChange', pageNo: pager });
     }
   
     onPageChange(pageNo: number) {
       this.pageChange(pageNo);
+      
     }
     onPageRecordsChange(pageNo: number) {
-      this.recordPerPage.emit(pageNo);
+     this.recordPerPage.emit({ type: 'perPageChange', perPage: pageNo });
     }
   
     ShowForm(item: any) {

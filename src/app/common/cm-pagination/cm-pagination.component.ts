@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MaterialModule } from '../../Material.module';
 import { CommonModule } from '@angular/common';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-cm-pagination',
@@ -14,7 +15,9 @@ export class CmPaginationComponent {
   @Input() totalPages = 10;
   selectedValue: number = 1;
   selectedPageValue:number = 10;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
   @Output() pageno = new EventEmitter<number>();
+  pageIndex :number = 10;
   @Output() perPage = new EventEmitter<number>();
   @Input() collectionSize =1;
   public pages: number[] = [];
@@ -60,9 +63,29 @@ export class CmPaginationComponent {
     this.perPage.emit(this.selectedPageValue);
     //this.pageno.emit(this.selectedValue);
   }
-  onPageChange() {
-      this.pageno.emit(this.selectedValue);
+
+
+@Output() paginationChange = new EventEmitter<{ pageno: number, perPage: number }>();
+
+onPageChange($event: any) {
+
+     if ($event.pageSize !== this.recordsPerPage) {
+        this.perPage.emit($event.pageSize);
+        this.pageIndex= 0;
+         this.paginator.firstPage();
+     }
+        else {
+        this.pageno.emit($event.pageIndex);
+        }
   }
+
+
+
+//   onPageChange($event:any) {
+//     console.log($event);
+//       this.pageno.emit($event.pageIndex);
+//       this.perPage.emit($event.pageSize);
+//   }
 
   fakeArray(length: number) {
       if (length >= 0) {

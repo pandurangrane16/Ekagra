@@ -1,0 +1,22 @@
+.cm-radio-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.cm-radio-label {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.cm-radio-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.cm-error {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+}

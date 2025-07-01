@@ -1,20 +1,16 @@
 import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { MaterialModule } from '../../Material.module';
 import { CommonModule } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { FormGroup } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-cm-input',
-  standalone: true,
-  imports: [MatFormFieldModule,
-    MatInputModule,MaterialModule,CommonModule],
-  templateUrl: './cm-input.component.html',
-  styleUrl: './cm-input.component.css'
+  selector: 'app-cm-textarea',
+  imports: [MaterialModule,CommonModule,ReactiveFormsModule],
+  templateUrl: './cm-textarea.component.html',
+  styleUrl: './cm-textarea.component.css'
 })
-export class CmInputComponent {
-  @Input() _inputData:any;
+export class CmTextareaComponent {
+ @Input() _inputData:any;
   value: string = '';
   type : string= "text";
   @Input() formGroup : any;
@@ -23,7 +19,6 @@ export class CmInputComponent {
     
   }
   ngOnInit(): void {
-    console.log(this._inputData);
     if(this._inputData.type != undefined)
       this.type = this._inputData.type;
   }

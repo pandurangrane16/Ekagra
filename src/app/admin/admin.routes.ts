@@ -7,6 +7,7 @@ import { ZoneConfigurationComponent } from "./zone-configuration/zone-configurat
 import { MapConfigurationComponent } from "./map-configuration/map-configuration.component";
 import { BulkUploadComponent } from "./bulk-upload/bulk-upload.component";
 import { SiteMngComponent } from "./site-configuration/site-mng/site-mng.component";
+import { ApiPlaygroundComponent } from "./api-playground/api-playground.component";
 //import { ProjectConfigurationComponent} from "./admin-dashboard/project-configuration.component";
 
 export const AdminRoutes: Routes = [
@@ -108,5 +109,16 @@ export const AdminRoutes: Routes = [
             { title: 'Bulk Upload' },
           ],
         },
-      }
+      },
+      {
+        path: 'apiplayground',
+        component: ApiPlaygroundComponent,
+        data: {
+          title: 'Api Playground',
+          urls: [
+            { title: 'Api Playground', url: '/admin/apiplayground' },
+            { title: 'Api Playground' },
+          ],
+        },
+      },
 ]

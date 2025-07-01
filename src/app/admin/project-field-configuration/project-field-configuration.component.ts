@@ -37,10 +37,11 @@ export class ProjectFieldConfigurationComponent  {
   MaxResultCount=10;
   SkipCount=0;
   perPage=10;
+  pageNo=0;
   items:any;
   _request: any = new InputRequest();
   totalPages: number = 1;
-  pager: number = 1;
+  pager: number = 0;
   totalRecords!: number;
   recordPerPage: number = 10;
   startId!: number;
@@ -77,7 +78,7 @@ export class ProjectFieldConfigurationComponent  {
     labelHeader: 'Select Project',
     lableClass: 'form-label',
     formFieldClass: '', 
-    appearance: 'outline',
+    appearance: 'fill',
     options: [ ]
   };
    statusSelectSettings = {
@@ -129,7 +130,7 @@ export class ProjectFieldConfigurationComponent  {
      });
      this.buildHeader();
     this.getProjList();
-     //this.getProjfieldConfigList();
+    this.getProjfieldConfigList();
 
 
   
@@ -163,49 +164,80 @@ export class ProjectFieldConfigurationComponent  {
     console.log('Selected Project:', value);
     // Apply filtering or logic here
   }
-  // getProjfieldConfigList() {
-  //     this._request.currentPage = this.pager;
-  //     this._request.pageSize = Number(this.recordPerPage);
-  //     this._request.startId = this.startId;
-  //     this._request.searchItem = this.searchText;
-  //     this.MaxResultCount=
-  //     this.SkipCount
-  //     this.service.GetAll().subscribe(response => {
+  getProjfieldConfigList() {
+      
+      this.MaxResultCount=this.perPage;
+      this.SkipCount=this.MaxResultCount*this.pager;
+      this.recordPerPage=this.perPage;
+      this.service.GetAll(this.MaxResultCount,this.SkipCount).subscribe(response => {
 
-  //        const items = response.result?.items;
+         const items = response.result?.items;
+         const totalCount=response.result?.totalCount;
+         this.items=items;
+
+
+        if (Array.isArray(items)) {
          
-  //        this.items=items;
-
-
-  //       if (Array.isArray(items)) {
-         
-  //          items.forEach((element: any) => {
+           items.forEach((element: any) => {
            
 
-  //           //let _data = JSON.parse(element);
-  //           element.projName = element.projectName;
-  //           element.description = element.description;
-  //           element.mapLabel=element.mapLabel;
-  //           element.apiLabel=element.label;
-  //           element.isActive = !!element.isActive; 
+            //let _data = JSON.parse(element);
+            element.projName = element.projectName;
+            element.description = element.description;
+            element.mapLabel=element.mapLabel;
+            element.apiLabel=element.label;
+            element.isActive = !!element.isActive; 
+
+              element.button = [
+    { label: 'Edit', icon: 'edit', type: 'edit' },
+    { label: 'Delete', icon: 'delete', type: 'delete' }
+  ];
 
 
 
 
          
-  //         });
-  //         // var _length = data.totalCount / Number(this.recordPerPage);
-  //         // if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-  //         //   this.totalRecords = Number(this.recordPerPage) * (_length);
-  //         // else if (Math.floor(_length) == 0)
-  //         //   this.totalRecords = 10;
-  //         // else
-  //         //   this.totalRecords = data.totalRecords;
-  //         // this.totalPages = this.totalRecords / this.pager;
-  //         //this.getMediaByStatus(this.tabno);
-  //       }
-  //     })
-  //   }    
+          });
+           var _length = totalCount / Number(this.recordPerPage);
+          if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+            this.totalRecords = Number(this.recordPerPage) * (_length);
+          else if (Math.floor(_length) == 0)
+            this.totalRecords = 10;
+          else
+            this.totalRecords = totalCount;
+          this.totalPages = this.totalRecords / this.pager;
+          
+        }
+      })
+    }   
+    
+    
+    onButtonClicked({ event, data }: { event: any; data: any }) {
+  if (event.type === 'edit') {
+    this.editRow(data);
+    console.log(data);
+  } else if (event.type === 'delete') {
+    
+  }
+}
+
+
+editRow(rowData: any) {
+  const dialogRef = this.dialog.open(ProjectFieldConfigurationFormComponent, {
+    width: '500px',
+ data: {
+  mode: 'edit',
+  record: rowData  
+}
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result === 'updated') {
+      this.getProjfieldConfigList(); 
+    }
+  });
+}
+
   openDialog() {
             const dialogRef = this.dialog.open(ProjectFieldConfigurationFormComponent, {
               
@@ -231,7 +263,7 @@ export class ProjectFieldConfigurationComponent  {
               { header: 'Api Label', fieldValue: 'apiLabel', position: 3 },
               { header: 'Description', fieldValue: 'description', position: 4 },
               { header: 'Status', fieldValue: 'isActive',type:'boolean', position: 5 },
-              { header: 'Action', fieldValue: 'action', position: 6 }
+              { header: 'Action', fieldValue: 'button', position: 6 }
             ];
   ;}   
     getProjList() {
@@ -260,8 +292,10 @@ export class ProjectFieldConfigurationComponent  {
      const selectedStatus = this.form.controls['selectedStatus'].value.value;
      const search = this.form.controls['searchText'].value
      this.service.GetFilteredList(selectedProjectId,search,selectedStatus).subscribe(response => {
-     const items = response?.result || [];
+    //  const items = response?.result || [];
          
+    //      this.items=items;
+         const items = response.result?.items;
          this.items=items;
 
 
@@ -276,6 +310,11 @@ export class ProjectFieldConfigurationComponent  {
             element.mapLabel=element.mapLabel;
             element.apiLabel=element.label;
             element.isActive = !!element.isActive; 
+            
+              element.button = [
+    { label: 'Edit', icon: 'edit', type: 'edit' },
+    { label: 'Delete', icon: 'delete', type: 'delete' }
+  ];
 
 
 
@@ -300,6 +339,7 @@ export class ProjectFieldConfigurationComponent  {
   }
   handlePageChange(pageno: number) {
     console.log('Page Changed to:', pageno);
+    this.pageNo=pageno;
   }
   handlePerPageChange(records: number) {
     console.log('Records Per Page:', records);
@@ -310,17 +350,47 @@ export class ProjectFieldConfigurationComponent  {
   handleSearch(term: string) {
     console.log('Search term:', term);
   }
-  onPageChange(pageNo: number) {
-    console.log('Page Changed:', pageNo);
+  // onPageChange(pageNo: number) {
+  //   console.log('Page Changed:', pageNo);
+  //   this.pager=pageNo;
+    
+  // }
+
+
+  onPageChange(event:any) {
+    console.log(event);
+  if (event.type === 'pageChange') {
+    this.pager = event.pageNo;
+  this.getProjfieldConfigList();
   }
-  onPageRecordsChange(perPage: number) {
-        console.log('Records Per Page:', perPage);
+}
+
+
+onPageRecordsChange(event:any ) {
+  console.log(event);
+  if (event.type === 'perPageChange') {
+    this.perPage = event.perPage;
+    this.pager = 0;
+    this.getProjfieldConfigList();
   }
+}
+
+
+onPaginationChanged(event: { pageNo: number; perPage: number }) {
+  if (this.perPage !== event.perPage) {
+    this.perPage = event.perPage;
+    this.pager = 0; 
+  } else {
+    this.pager = event.pageNo;
+  }
+
+  this.getProjfieldConfigList(); 
+}
+
+ 
   onRowClicked(row: any) {
           console.log('Row clicked:', row);
   }
-  onButtonClicked(event: any) {
-    console.log('Button clicked:', event);
-  }
+
          
   }

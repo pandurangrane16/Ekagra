@@ -32,10 +32,22 @@
               <ng-template #notCheck>
                 <ng-container *ngIf="head.fieldValue === 'button'; else defaultText">
                   <div *ngFor="let btn of item.button" class="d-inline-block me-2">
-                    <button mat-flat-button color="primary" (click)="GoToBtnAction(btn, item)">
+                    <!-- <button mat-flat-button color="primary" (click)="GoToBtnAction(btn, item)">
+
+                       <mat-icon>{{ btn.icon || 'add' }}</mat-icon> -->
+
+
+<button mat-icon-button color="primary" (click)="GoToBtnAction(btn, item)" [matTooltip]="btn.label">
+  <mat-icon>{{ btn.icon || 'add' }}</mat-icon>
+</button>
+
+
+
+
+<!-- 
                       <mat-icon>add</mat-icon>
-                      {{ btn.label }}
-                    </button>
+                      {{ btn.label }} -->
+                    <!-- </button> -->
                   </div>
                 </ng-container>
               </ng-template>

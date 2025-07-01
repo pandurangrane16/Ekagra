@@ -108,7 +108,9 @@ export class ProjectConfigurationFormComponent {
   return this.form.controls;
   }
 
-
+ReturnValue($event:any) {
+  console.log($event);
+}
   onFileSelect(event: any, type: 'mapIcon' | 'projectIcon') {
     const file = event.target.files[0];
      const control = this.form.get(type);

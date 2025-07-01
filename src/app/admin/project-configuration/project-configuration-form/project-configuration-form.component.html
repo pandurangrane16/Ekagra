@@ -44,7 +44,7 @@
       <div class="toggle-row">
         <div class="toggle-column">
           <label class="toggle-label">Map?</label>
-          <app-cm-toggle [formGroup]="form" [settings]="Maptoggle"></app-cm-toggle>
+          <app-cm-toggle [formGroup]="form" [settings]="Maptoggle"  (returnObject)="ReturnValue($event)"></app-cm-toggle>
                    
         <div *ngIf="f['mapEnabled'].touched && f['mapEnabled'].errors" class="text-danger mt-1">
         {{ getErrorMessage('mapEnabled', 'Map', false, '') }}
@@ -53,7 +53,7 @@
       
         <div class="toggle-column">
           <label class="toggle-label">Rule Engine?</label>
-          <app-cm-toggle [formGroup]="form" [settings]="Ruleenginetoggle"></app-cm-toggle>
+          <app-cm-toggle [formGroup]="form" [settings]="Ruleenginetoggle" (returnObject)="ReturnValue($event)"></app-cm-toggle>
         <div *ngIf="f['ruleEngineEnabled'].touched && f['ruleEngineEnabled'].errors" class="text-danger mt-1">
         {{ getErrorMessage('ruleEngineEnabled', 'Rule Engine', false, '') }}
       </div>

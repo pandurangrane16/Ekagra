@@ -11,7 +11,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { getErrorMsg } from '../../../utils/utils';
 import { projfieldconfigservice } from '../../../services/admin/projfieldconfig.service';
 import { projfieldconfigmodel } from '../../../models/admin/projfieldconfig.model';
-import { ToastrService } from 'ngx-toastr';
+
+
 
 
 @Component({
@@ -26,6 +27,7 @@ export class ProjectFieldConfigurationFormComponent  implements OnInit{
   form!: FormGroup;
   MatButtonToggleChange:any;
   isProjectOptionsLoaded = false;
+  editid:any;
   ruleEngineStatus = '';
   mapStatus = '';
   selectedProject: any;
@@ -107,10 +109,11 @@ export class ProjectFieldConfigurationFormComponent  implements OnInit{
   }
   
   constructor(
+    
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<ProjectFieldConfigurationFormComponent>,
     private service :projfieldconfigservice,
-    private toast:ToastrService,
+
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.form = this.fb.group({
@@ -127,7 +130,7 @@ export class ProjectFieldConfigurationFormComponent  implements OnInit{
   }
 
   ngOnInit(): void {
-
+    
  
    this.getProjList();
 
@@ -157,13 +160,33 @@ export class ProjectFieldConfigurationFormComponent  implements OnInit{
  
     this.projectSelectSettings.options = projectOptions;
     this.isProjectOptionsLoaded = true;
+     if (this.data?.mode === 'edit' && this.data?.record) {
+
+
+const selectedProj = (this.projectSelectSettings.options as any[]).find(
+  proj => proj.name === this.data.record.projectName
+);
+console.log(selectedProj);
+
+this.editid=this.data.record.id;
+    this.form.patchValue({
+      description: this.data.record.description,
+      isActive: this.data.record.isActive,
+      maplabel: this.data.record.mapLabel,
+      apilabel: this.data.record.apiLabel,
+      isSameas: this.data.record.isMapLabel,
+      selectedProject: selectedProj
+    });
+
+    console.log('Edit form data patched:', this.data.record);
+  }
   }, error => {
     console.error('Error fetching project list', error);
   });
 }  
 
   submit() {
-  this.toast.success("chgdgsf")
+ 
   if (!this.form.invalid) {
     this.form.markAllAsTouched(); 
      
@@ -176,7 +199,6 @@ _projfieldconfigmodel.creationTime="2025-06-20T05:32:25.067Z"
 _projfieldconfigmodel.creatorUserId=0
 _projfieldconfigmodel.deleterUserId=0
 _projfieldconfigmodel.deletionTime="2025-06-20T05:32:25.067Z"
-_projfieldconfigmodel.id=0
 _projfieldconfigmodel.lastModificationTime="2025-06-20T05:32:25.067Z"
 _projfieldconfigmodel.lastModifierUserId="2"
 _projfieldconfigmodel.isDeleted=false
@@ -186,7 +208,29 @@ _projfieldconfigmodel.dataType="string"
 _projfieldconfigmodel.mapLabel=this.form.controls['maplabel'].value;
 _projfieldconfigmodel.projectId = this.form.controls['selectedProject'].value?.value;
 
+  if (this.data?.mode === 'edit' && this.data?.record?.id){
 
+    _projfieldconfigmodel.id = this.data.record.id;
+
+      this.service.ProjectfieldEdit(_projfieldconfigmodel).subscribe({
+    next: () => {
+      console.log('Updated successfully');
+
+           //this.toast.success('ProjectField saved successfully'); 
+      this.dialogRef.close(this.form.value);
+    
+      //this.toast.success('ProjectField saved successfully');
+      
+    },
+    error: (err) => {
+      console.error('Update failed:', err);
+      //this.toast.error('Failed to save project');
+    }
+  });
+
+  return;
+
+  }
 
 
  
@@ -196,15 +240,15 @@ _projfieldconfigmodel.projectId = this.form.controls['selectedProject'].value?.v
     next: () => {
       console.log('Saved successfully');
 
-           this.toast.success('ProjectField saved successfully'); 
+           //this.toast.success('ProjectField saved successfully'); 
       this.dialogRef.close(this.form.value);
     
-      this.toast.success('ProjectField saved successfully');
+      //this.toast.success('ProjectField saved successfully');
       
     },
     error: (err) => {
       console.error('Save failed:', err);
-      this.toast.error('Failed to save project');
+      //this.toast.error('Failed to save project');
     }
   });
 
@@ -213,7 +257,7 @@ _projfieldconfigmodel.projectId = this.form.controls['selectedProject'].value?.v
   }
   else {
       this.form.markAllAsTouched(); 
-  this.toast.error('Form is not valid');
+ // this.toast.error('Form is not valid');
   return;
     
   }
