@@ -1,0 +1,116 @@
+<div class="d-flex flex-column flex-column-fluid text-dark" id="kt_content">
+<hr>
+  <h4>Project Field Map</h4>
+
+  <div class="container-fluid">
+
+    <div class="row">
+
+      <!-- Project and API Selection -->
+      <div class="col-6">
+        <input type="text" id="apidatas" hidden />
+
+        <div class="card card-custom gutter-b">
+          <div class="card-body">
+            <div class="row mb-4">
+              <div class="col-xl-4">
+                <!-- <label for="ProjectId">Select Project</label> -->
+               <!-- <app-cm-select2
+   *ngIf="isProjectOptionsLoaded"
+    [formGroup]="form"
+    [controlName]="'selectedProject'"
+    [settings]="projectSelectSettings"
+    (optionSelected)="onProjectSelected($event)">
+  </app-cm-select2> -->
+  <app-custom-select
+  [formGroup]="form"
+  controlName="selectedProject"
+  label="Select Project"
+  [options]="projectOptions"
+  (selectionChange)="onProjectSelected($event)">
+</app-custom-select>
+              </div>
+
+              <div class="col-xl-3">
+                <!-- <label for="DrpDwnAPI">Select API</label> -->
+            <app-custom-select
+  [formGroup]="form"
+  controlName="selectedApi"
+  label="Select API"
+  [options]="apiOptions"
+  (selectionChange)="onApiSelected($event)">
+</app-custom-select>
+              </div>
+            </div>
+
+            <!-- API Details Section -->
+            <div >
+              <div class="col-md-12">
+                <label id="api_name_label">API Name:</label>
+                <div>
+                  <app-cm-input
+        [formGroup]="form"
+        [controlName]="'apiName'"
+        [_inputData]="apiNameSetting">
+      </app-cm-input>
+                </div>
+              </div>
+
+              <div class="col-md-12">
+                <label id="api_url_label">API URL:</label>
+                <div>
+                  <app-cm-input
+        [formGroup]="form"
+        [controlName]="'apiURL'"
+        [_inputData]="apiURLSetting">
+      </app-cm-input>
+                </div>
+              </div>
+
+              <div class="col-md-12">
+                <label id="api_response_label">API Response:</label>
+                <pre class="json-tree">
+                  <app-cm-input
+        [formGroup]="form"
+        [controlName]="'apiResponse'"
+        [_inputData]="apiResponseSetting">
+      </app-cm-input>
+                </pre>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Project Field Map Table -->
+      <div class="col-6" id="projectmasterdata">
+        <div class="card card-custom gutter-b">
+          <div class="card-body">
+            <div class="align-items-center" style="overflow-x:auto;">
+         <table id="ProjectFieldMapTable" class="table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Field Name</th>
+      <th>API Field</th>
+      <th>Set</th>
+      <th>Clear</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Dynamic Rows here -->
+  </tbody>
+</table>
+            </div>
+
+            <button id="Save" class="form-control btn btn-dark col-2"  >Save</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
