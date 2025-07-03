@@ -7,21 +7,14 @@
     <div class="row">
 
       <!-- Project and API Selection -->
-      <div class="col-6">
+      <div class="col-6" >
         <input type="text" id="apidatas" hidden />
 
         <div class="card card-custom gutter-b">
           <div class="card-body">
             <div class="row mb-4">
               <div class="col-xl-4">
-                <!-- <label for="ProjectId">Select Project</label> -->
-               <!-- <app-cm-select2
-   *ngIf="isProjectOptionsLoaded"
-    [formGroup]="form"
-    [controlName]="'selectedProject'"
-    [settings]="projectSelectSettings"
-    (optionSelected)="onProjectSelected($event)">
-  </app-cm-select2> -->
+              
   <app-custom-select
   [formGroup]="form"
   controlName="selectedProject"
@@ -29,6 +22,7 @@
   [options]="projectOptions"
   (selectionChange)="onProjectSelected($event)">
 </app-custom-select>
+
               </div>
 
               <div class="col-xl-3">
@@ -44,10 +38,10 @@
             </div>
 
             <!-- API Details Section -->
-            <div >
+            <div *ngIf="showApiDetails">
               <div class="col-md-12">
                 <label id="api_name_label">API Name:</label>
-                <div>
+                <div class="field-map-page">
                   <app-cm-input
         [formGroup]="form"
         [controlName]="'apiName'"
@@ -58,7 +52,7 @@
 
               <div class="col-md-12">
                 <label id="api_url_label">API URL:</label>
-                <div>
+                <div class="field-map-page">
                   <app-cm-input
         [formGroup]="form"
         [controlName]="'apiURL'"
@@ -70,11 +64,10 @@
               <div class="col-md-12">
                 <label id="api_response_label">API Response:</label>
                 <pre class="json-tree">
-                  <app-cm-input
-        [formGroup]="form"
-        [controlName]="'apiResponse'"
-        [_inputData]="apiResponseSetting">
-      </app-cm-input>
+<app-json-tree
+  [data]="apiJsonData"
+  (nodeSelected)="onJsonPathSelected($event)">
+</app-json-tree>
                 </pre>
               </div>
             </div>
@@ -84,11 +77,13 @@
       </div>
 
       <!-- Project Field Map Table -->
-      <div class="col-6" id="projectmasterdata">
+      <div class="col-6" id="projectmasterdata" *ngIf="showApiDetails">
         <div class="card card-custom gutter-b">
           <div class="card-body">
             <div class="align-items-center" style="overflow-x:auto;">
-         <table id="ProjectFieldMapTable" class="table">
+      
+
+<table id="ProjectFieldMapTable" class="table">
   <thead>
     <tr>
       <th>#</th>
@@ -99,12 +94,57 @@
     </tr>
   </thead>
   <tbody>
-    <!-- Dynamic Rows here -->
+    <tr *ngFor="let item of projectFieldMapData; let i = index">
+      <td>{{ i + 1 }}</td>
+      <td>
+        <input type="text" class="form-control" [value]="item.label" disabled />
+      </td>
+      <td>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="item.apiField"
+          placeholder="Enter API Field"
+          required
+          name="apiField{{ i }}"
+        />
+      </td>
+
+      <!-- Hidden fields -->
+      <td hidden>
+        <input type="text" [value]="item.fieldType" disabled />
+        <input type="hidden" [value]="item.id" />
+        <input type="hidden" [value]="item.projectField" />
+      </td>
+
+      <!-- Action buttons -->
+      <td>
+        <!-- <button type="button" class="btn btn-dark" (click)="setApiField(i)">Set</button> -->
+         <button type="button"
+        class="btn"
+        [ngClass]="{'btn-dark': selectedRowIndex !== i, 'btn-warning': selectedRowIndex === i}"
+        (click)="setApiField(i)">
+  Set
+</button>
+      </td>
+      <td>
+        <button type="button"
+        class="btn"
+        [ngClass]="{'btn-dark': selectedRowIndex !== i, 'btn-warning': selectedRowIndex === i}"
+        (click)="clearApiField(i)">
+  Clear
+</button>
+        <!-- <button type="button" class="btn btn-dark" (click)="clearApiField(i)">Clear</button> -->
+      </td>
+    </tr>
   </tbody>
 </table>
+
             </div>
 
-            <button id="Save" class="form-control btn btn-dark col-2"  >Save</button>
+            <!-- <button id="Save" class="form-control btn btn-dark col-2"  >Save</button> -->
+            <button id="Save" class="form-control btn btn-dark col-2" (click)="onSave()">Save</button>
+
           </div>
         </div>
       </div>

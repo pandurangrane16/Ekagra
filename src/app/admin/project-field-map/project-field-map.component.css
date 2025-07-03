@@ -1,12 +1,15 @@
 
-.mat-mdc-form-field
-{
-        width: 100%;
+::ng-deep .field-map-page .mat-mdc-form-field {
+      width: 100% !important;
+    pointer-events: none;
+    background-color: #b6b0b0;
+    color: #888;
+    cursor: not-allowed;
 }
-
+/* 
 apiResponseSetting 
  {
 
   height: 200px;
   width: 100%;
-};
+}; */

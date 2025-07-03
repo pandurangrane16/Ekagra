@@ -33,9 +33,15 @@ UpdateProjectFieldMap() {
 GetAllProjectFieldMapPage() {
     return this._httpService._getMethod('api/services/app/ProjectFieldMap/GetAllProjectFieldMapPage');
   }
-InsertUpdateBulkProjectFieldQuery() {
-    return this._httpService._getMethod('api/services/app/ProjectFieldMap/InsertUpdateBulkProjectFieldQuery');
-  }
+InsertUpdateBulkProjectFieldQuery(data: any[]): Observable<any> {
+  return this._httpService._postMethod(
+    data,
+    'api/services/app/ProjectFieldMap/InsertUpdateBulkProjectFieldQuery'
+  );
+}
+
+
+
   GetProjectFieldMapByProjectId() {
     return this._httpService._getMethod('api/services/app/ProjectFieldMap/GetProjectFieldMapByProjectId');
   }  
