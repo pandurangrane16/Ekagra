@@ -9,6 +9,7 @@ import { CmInputComponent } from '../../common/cm-input/cm-input.component';
 import { MatDialog } from '@angular/material/dialog';
 import { mapconfigservice } from '../../services/admin/mapconfig.service';
 import { InputRequest } from '../../models/request/inputreq.model';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { MapConfigurationFormComponent } from './map-configuration-form/map-configuration-form.component';
 
 
@@ -34,9 +35,15 @@ isProjectOptionsLoaded = false;
 items:any;
 _request: any = new InputRequest();
 totalPages: number = 1;
-pager: number = 1;
+MaxResultCount=10;
+  SkipCount=0;
+  perPage=10;
+  pageNo=0;
+   recordPerPage: number = 10;
+     pager: number = 0;
+
 totalRecords!: number;
-recordPerPage: number = 10;
+
 startId!: number;
 isSearch: boolean = false;
 closeResult!: string;
@@ -44,7 +51,7 @@ searchText!:string;
 selectedProject: any;
 selectedStatus: any;
 form!: FormGroup;
-perPage = 10;
+
 collectionSize = 2;
 searchInputSettings = {
   labelHeader: 'Search',
@@ -68,10 +75,10 @@ roundedSettings = {
   isDisabled: false
 };
 projectSelectSettings = {
-  labelHeader: 'Select Project',
+  labelHeader: 'Select Name',
   lableClass: 'form-label',
   formFieldClass: '', 
-  appearance: 'outline',
+  appearance: 'fill',
   options: []
 };
    statusSelectSettings = {
@@ -143,29 +150,84 @@ ngOnInit(): void {
    });
    this.buildHeader();
    this.getMapConfigList();
-   this.getProjList();
+   this.GetMapList();
+
+     this.form.get('searchText')?.valueChanges
+       .pipe(
+         debounceTime(300), 
+         distinctUntilChanged() 
+       )
+       .subscribe(value => {
+            if (value && value.length >= 3) {
+            this.pager=0;
+            this.perPage=10;
+         this.getFilteredList();
+       } else if (!value || value.length === 0) {
+          this.pager=0;
+            this.perPage=10;
+          this.getFilteredList();
+       }
+       });
+
+
+
 
 }
+  onPageChange(event:any) {
+    console.log(event);
+  if (event.type === 'pageChange') {
+    this.pager = event.pageNo;
+  this.getFilteredList();
+  }
+}
+
+
+onPageRecordsChange(event:any ) {
+  console.log(event);
+  if (event.type === 'perPageChange') {
+    this.perPage = event.perPage;
+    this.pager = 0;
+    this.getFilteredList();
+  }
+}
+
+
+onPaginationChanged(event: { pageNo: number; perPage: number }) {
+  if (this.perPage !== event.perPage) {
+    this.perPage = event.perPage;
+    this.pager = 0; 
+  } else {
+    this.pager = event.pageNo;
+  }
+
+  this.getFilteredList(); 
+}
+
 onProjectSelected(event: any) {
   console.log('Selected Project:', event);
 }
-    getProjList() {
-  this.service.GetProjectList().subscribe(response => {
+GetMapList() {
+  this.service.GetMapList().subscribe(response => {
     const items = response?.result || [];
 
- 
     const projectOptions = items.map((item: any) => ({
-      name: item.name || item.shortCode, 
+      name: item.name || item.displayName,
       value: item.id
     }));
 
- 
+  
+    projectOptions.unshift({
+      name: 'All',
+      value: null
+    });
+
     this.projectSelectSettings.options = projectOptions;
     this.isProjectOptionsLoaded = true;
   }, error => {
     console.error('Error fetching project list', error);
   });
-}  
+}
+
 onStatusChange(value: any) {
   this.selectedStatus = value;
   console.log('Selected Status:', value);
@@ -176,6 +238,59 @@ onProjectChange(value: any) {
   console.log('Selected Project:', value);
   // Apply filtering or logic here
 }
+  getFilteredList() {
+      this.MaxResultCount=this.perPage;
+      this.SkipCount=this.MaxResultCount*this.pager;
+      this.recordPerPage=this.perPage;
+    const selectedProjectId = this.form.controls['selectedProject'].value.value;
+     const selectedStatus = this.form.controls['selectedStatus'].value.value;
+     const search = this.form.controls['searchText'].value
+     this.service.GetFilteredList(0,search,selectedStatus,this.MaxResultCount,this.SkipCount,selectedProjectId).subscribe(response => {
+    //  const items = response?.result || [];
+         
+    //      this.items=items;
+         const items = response.result?.items;
+         this.items=items;
+
+
+        if (Array.isArray(items)) {
+         
+           items.forEach((element: any) => {
+           
+
+                element.name = element.name;
+           element.displayName = element.displayName;
+           element.sourceURL = element.sourceURL;
+           element.description = element.description;
+           element.minZoom = element.minZoom;
+           element.maxZoom = element.maxZoom;
+           element.wmsLayer = element.wmsLayer;
+           element.lat = element.lat;
+           element.long = element.long;
+           element.isActive = !!element.isActive;  
+            
+              element.button = [
+    { label: 'Edit', icon: 'edit', type: 'edit' },
+    { label: 'Delete', icon: 'delete', type: 'delete' }
+  ];
+
+
+
+
+         
+          });
+          // var _length = data.totalCount / Number(this.recordPerPage);
+          // if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+          //   this.totalRecords = Number(this.recordPerPage) * (_length);
+          // else if (Math.floor(_length) == 0)
+          //   this.totalRecords = 10;
+          // else
+          //   this.totalRecords = data.totalRecords;
+          // this.totalPages = this.totalRecords / this.pager;
+          //this.getMediaByStatus(this.tabno);
+        }
+      })
+    }  
 openDialog() {
           const dialogRef = this.dialog.open(MapConfigurationFormComponent, {
             
@@ -194,10 +309,13 @@ openDialog() {
             }
           });
 }
+ submit(){
+  this.getFilteredList();
+ }
 buildHeader() {  
           this.headArr = [
             { header: 'Name', fieldValue: 'name', position: 1 },
-            { header: 'Display Name', fieldValue: 'displayname', position: 2 },
+            { header: 'Display Name', fieldValue: 'displayName', position: 2 },
             { header: 'SourceUrl', fieldValue: 'sourceURL', position: 3 },
             { header: 'Description', fieldValue: 'description', position: 4 },
             { header: 'MinZoom', fieldValue: 'minZoom', position: 5 },
@@ -206,7 +324,7 @@ buildHeader() {
             { header: 'Lat', fieldValue: 'lat', position: 8 },
             { header: 'Long', fieldValue: 'long', position: 9 },
             { header: 'Status', fieldValue: 'isActive', type:'boolean',position: 10 },
-            { header: 'Action', fieldValue: 'action', position: 11 }
+            { header: 'Action', fieldValue: 'button', position: 11 }
           ];
 ;}     
 handleBtnAction(e: any) {
@@ -224,19 +342,33 @@ handleSearchWithId(item: any) {
 handleSearch(term: string) {
   console.log('Search term:', term);
 }
-onPageChange(event:{type:string,pageNo: number}) {
-  console.log('Page Changed:', event.pageNo);
-}
-onPageRecordsChange(event:{type:string,perPage: number}) {
-      console.log('Records Per Page:', event.perPage);
-}
+
 onRowClicked(row: any) {
         console.log('Row clicked:', row);
 }
-onButtonClicked(event: any) {
-  console.log('Button clicked:', event);
+    onButtonClicked({ event, data }: { event: any; data: any }) {
+  if (event.type === 'edit') {
+    this.editRow(data);
+    console.log(data);
+  } else if (event.type === 'delete') {
+    
+  }
 }
-     
+ editRow(rowData: any) {
+   const dialogRef = this.dialog.open(MapConfigurationFormComponent, {
+     width: '500px',
+  data: {
+   mode: 'edit',
+   record: rowData  
+ }
+   });
+ 
+   dialogRef.afterClosed().subscribe(result => {
+     if (result === 'updated') {
+       this.getMapConfigList(); 
+     }
+   });
+ }    
 getMapConfigList() {
       this._request.currentPage = this.pager;
       this._request.pageSize = Number(this.recordPerPage);
@@ -268,6 +400,12 @@ getMapConfigList() {
            element.lat = element.lat;
            element.long = element.long;
            element.isActive = !!element.isActive; 
+
+                         element.button = [
+    { label: 'Edit', icon: 'edit', type: 'edit' },
+    { label: 'Delete', icon: 'delete', type: 'delete' }
+  ];
+
 
 
 

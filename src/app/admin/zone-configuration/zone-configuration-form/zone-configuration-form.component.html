@@ -1,5 +1,3 @@
-
-
 <div class="dialog-container">
     <div class="dialog-header">
         <h2>Zone Configuration</h2>
@@ -53,7 +51,8 @@
             </div>
         </div>
         <div>
-            <button mat-flat-button
+          <div  #mapContainer id="map" style="height: 400px;">
+            <button mat-flat-button (click)="showMap()"
         style="
         background-color: rgb(114, 113, 113);
         color: white;
@@ -67,7 +66,9 @@
         display: flex ; gap:420px ;margin-top: 28px;   
         ">
         Draw Co-ordinates
+
         </button>
+        </div>
         </div>
         
          <!-- Action Buttons -->

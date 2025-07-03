@@ -16,14 +16,21 @@
     flex: 0 0 auto;
     width: 250px;
   }
- .pageWrapper {
-    padding: 30px;
+ 
+.status-enabled {
+  background-color: #4caf50; /* Green */
+  color: white;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 500;
 }
-.mat-mdc-card {
-  --mat-sys-corner-medium:24px;
---mdc-elevated-card-container-shape: var(--mat-sys-corner-medium);
-border-radius: var(--mdc-elevated-card-container-shape);
 
+.status-disabled {
+  background-color: #9e9e9e; /* Grey */
+  color: white;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 500;
 }
 
 

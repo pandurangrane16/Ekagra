@@ -89,7 +89,7 @@
           </div>
           <div class="col-md-4">
             <label>Pincode</label>
-            <app-cm-input [formGroup]="form" [controlName]="'pincode'" [_inputData]="inputFields.pincode">
+            <app-cm-input [formGroup]="form" [controlName]="'pincode'" [_inputData]="inputFields.pincode" >
             </app-cm-input>
                                                 <div *ngIf="f['pincode'].touched && f['pincode'].errors" class="text-danger mt-1">
         {{ getErrorMessage('pincode', 'Pincode', false, '') }}
@@ -98,12 +98,12 @@
         </div>
 
 
-        <div class="row">
+        <div class="row" *ngIf="isLocationsOptionsLoaded">
           <div class="col-md-6" style="margin-top: -10px;">
             <label style="position: relative; top: 6px; display: block;">Location/Area</label>
 
             <div>
-              <app-cm-select2 *ngIf="isLocationsOptionsLoaded" [formGroup]="form" [controlName]="'locationDropdown'" [settings]="locationDropdownSettings"
+              <app-cm-select2  [formGroup]="form" [controlName]="'locationDropdown'" [settings]="locationDropdownSettings"
                 (returnObject)="onLocationSelected($event)" class="full-width-select">
               </app-cm-select2>
                                                         <div *ngIf="f['locationDropdown'].touched && f['locationDropdown'].errors" class="text-danger mt-1">
@@ -112,7 +112,7 @@
             </div>
           </div>
 
-          <div class="col-md-6">
+          <div class="col-md-6" >
             <label>Address</label>
             
             <app-cm-input   [formGroup]="form" [controlName]="'address'" [_inputData]="inputFields.address">
@@ -125,15 +125,15 @@
 
 
         </div>
-        <div class="row">
+        <div class="row" *ngIf="noLocationFound">
           <div class="col-md-6">
             <label>Area Name:</label>
-            <app-cm-input [formGroup]="form" [controlName]="'description'" [_inputData]="inputFields.description">
+            <app-cm-input [formGroup]="form" [controlName]="'areaname'" [_inputData]="inputFields.areaname">
             </app-cm-input>
           </div>
           <div class="col-md-6">
             <label>Road Name:</label>
-            <app-cm-input [formGroup]="form" [controlName]="'description'" [_inputData]="inputFields.description">
+            <app-cm-input [formGroup]="form" [controlName]="'roadname'" [_inputData]="inputFields.roadname">
             </app-cm-input>
           </div>
         </div>
@@ -143,15 +143,15 @@
 
 
 
-          <div class="col-md-6">
+          <div class="col-md-6" *ngIf="noLocationFound">
             <label>Taluka:</label>
-            <app-cm-input [formGroup]="form" [controlName]="'name'" [_inputData]="inputFields.name">
+            <app-cm-input [formGroup]="form" [controlName]="'taluka'" [_inputData]="inputFields.taluka">
             </app-cm-input>
           </div>
 
-          <div class="col-md-6">
+          <div class="col-md-6" *ngIf="noLocationFound">
             <label>District:</label>
-            <app-cm-input [formGroup]="form" [controlName]="'description'" [_inputData]="inputFields.description">
+            <app-cm-input [formGroup]="form" [controlName]="'district'" [_inputData]="inputFields.district">
             </app-cm-input>
           </div>
         </div>
