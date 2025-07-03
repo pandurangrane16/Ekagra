@@ -7,10 +7,12 @@ import { FormBuilder, FormsModule,FormGroup, Validators ,ReactiveFormsModule,} f
 import { CmInputComponent } from '../../../common/cm-input/cm-input.component';
 import { CmSelect2Component } from '../../../common/cm-select2/cm-select2.component';
 import { CmToggleComponent } from '../../../common/cm-toggle/cm-toggle.component';
+//import { CmLeafletComponent } from '../../../common/cm-leaflet/cm-leaflet.component';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { getErrorMsg } from '../../../utils/utils';
 import { zoneconfigservice } from '../../../services/admin/zoneconfig.service';
+
 //import { ToastrService } from 'ngx-toastr';
 import { zoneconfigmodel } from '../../../models/admin/zoneconfig.model';
 //import * as L from 'leaflet';
@@ -32,6 +34,7 @@ export class ZoneConfigurationFormComponent {
   MatButtonToggleChange:any;
   ruleEngineStatus = '';
   mapStatus = '';
+  id: number = 0;
    private L: any;
 drawnItems: any;
 drawControl: any;
@@ -78,7 +81,7 @@ isMapVisible: boolean = false;
   
   constructor(
     private fb: FormBuilder,
-    @Inject(PLATFORM_ID) private platformId: Object,
+    //@Inject(PLATFORM_ID) private platformId: Object,
     private dialogRef: MatDialogRef<ZoneConfigurationFormComponent>,
     private service:zoneconfigservice,
    // private toast:ToastrService,
@@ -98,15 +101,7 @@ isMapVisible: boolean = false;
   }
     async ngOnInit(): Promise<void>  {
 
-     if (isPlatformBrowser(this.platformId)) {
-       const leaflet = await import('leaflet');
-    await import('leaflet-draw'); 
-
-    this.L = leaflet;
-      this.drawnItems= this.L.FeatureGroup = new this.L.FeatureGroup();
-      
-      
-    }
+ 
 
 
   }
@@ -182,148 +177,232 @@ isMapVisible: boolean = false;
     
       }
       
-showMap() {
-  if (isPlatformBrowser(this.platformId)) {
-      this.overrideDrawText(); 
-    this.isMapVisible = true;
-    setTimeout(() => {
-      this.initializeMap(); 
-    }, 0);
-  }
-}
-overrideDrawText() {
-  (this.L as any).drawLocal = {
-    draw: {
-      toolbar: {
-        buttons: {
-          polygon: ''
-        }
-      },
-      handlers: {
-        polygon: {
-          tooltip: {
-            start: '',
-            cont: '',
-            end: ''
-          }
-        }
-      }
-    },
-    edit: {
-      toolbar: {
-        buttons: {
-          edit: '',
-          remove: ''
-        }
-      },
-      handlers: {
-        edit: {
-          tooltip: {
-            text: '',
-            subtext: ''
-          }
-        },
-        remove: {
-          tooltip: {
-            text: ''
-          }
-        }
-      }
-    }
-  };
-}
-initializeMap(): void {
-
-   if (!isPlatformBrowser(this.platformId)) return;
-  this.map = this.L.map('map', {
-    center: [19.0760, 72.8777],
-    zoom: 10,
-    attributionControl: false
-  });
-
-  const osmLayer = this.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19
-  });
-
-  osmLayer.addTo(this.map);
+// showMap() {
+//   if (isPlatformBrowser(this.platformId)) {
+//       this.overrideDrawText(); 
+//     this.isMapVisible = true;
+//     setTimeout(() => {
+//       this.initializeMap(); 
+//     }, 0);
+//   }
+// }
 
 
+// overrideDrawText() {
+//   (this.L as any).drawLocal = {
+//     draw: {
+//       toolbar: {
+//         buttons: {
+//           polygon: ''
+//         }
+//       },
+//       handlers: {
+//         polygon: {
+//           tooltip: {
+//             start: '',
+//             cont: '',
+//             end: ''
+//           }
+//         }
+//       }
+//     },
+//     edit: {
+//       toolbar: {
+//         buttons: {
+//           edit: '',
+//           remove: ''
+//         }
+//       },
+//       handlers: {
+//         edit: {
+//           tooltip: {
+//             text: '',
+//             subtext: ''
+//           }
+//         },
+//         remove: {
+//           tooltip: {
+//             text: ''
+//           }
+//         }
+//       }
+//     }
+//   };
+// }
+// initializeMap(): void {
 
-this.drawnItems = new this.L.FeatureGroup();
-this.map.addLayer(this.drawnItems);
+//    if (!isPlatformBrowser(this.platformId)) return;
+//   this.map = this.L.map('map', {
+//     center: [19.0760, 72.8777],
+//     zoom: 10,
+//     attributionControl: false
+//   });
 
-  //this.map.addLayer(this.drawnItems);
+//   const osmLayer = this.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+//     maxZoom: 19
+//   });
 
-  this.drawControl = new this.L.Control.Draw({
-draw: {
-   polygon: {
+//   osmLayer.addTo(this.map);
+
+
+
+// this.drawnItems = new this.L.FeatureGroup();
+// this.map.addLayer(this.drawnItems);
+
+//   //this.map.addLayer(this.drawnItems);
+
+//   this.drawControl = new this.L.Control.Draw({
+// draw: {
+//    polygon: {
                
-            },
-    marker: false,
-    circle: false,
-    rectangle: false,
-    polyline: false,
-    circlemarker: false
-  },
-  edit: {
-    featureGroup: this.drawnItems
-  },
-      remove: {
-        tooltip: {
-          text: ''
-        }
-      }
+//             },
+//     marker: false,
+//     circle: false,
+//     rectangle: false,
+//     polyline: false,
+//     circlemarker: false
+//   },
+//   edit: {
+//     featureGroup: this.drawnItems
+//   },
+//       remove: {
+//         tooltip: {
+//           text: ''
+//         }
+//       }
     
   
-  });
+//   });
 
 
-  var options = {
-      position: 'topright',
-      draw: {
-        //     polyline: {
-        //         shapeOptions: {
-        //             color: '#f357a1',
-        //             weight: 10
-        //         }
-        //     },
-            polygon: {
+//   var options = {
+//       position: 'topright',
+//       draw: {
+//         //     polyline: {
+//         //         shapeOptions: {
+//         //             color: '#f357a1',
+//         //             weight: 10
+//         //         }
+//         //     },
+//             polygon: {
 
-            },
-        circle: false,
-        circlemarker: false,// Turns off this drawing tool
-        //     rectangle: {
-        //         shapeOptions: {
-        //             clickable: false
-        //         }
-        //     },
+//             },
+//         circle: false,
+//         circlemarker: false,// Turns off this drawing tool
+//         //     rectangle: {
+//         //         shapeOptions: {
+//         //             clickable: false
+//         //         }
+//         //     },
        
-      },
-      edit: {
-        featureGroup: this.drawnItems, //REQUIRED!!
-        // remove: false
-      }
+//       },
+//       edit: {
+//         featureGroup: this.drawnItems, //REQUIRED!!
+//         // remove: false
+//       }
 
-    };
+//     };
 
-    // var drawControl = new this.L.Control.Draw(options);
-    // this.map.addControl(drawControl);
+//     // var drawControl = new this.L.Control.Draw(options);
+//     // this.map.addControl(drawControl);
 
-  this.map.addControl(this.drawControl);
+//   this.map.addControl(this.drawControl);
 
 
   
-  this.map.on(this.L.Draw.Event.CREATED, (event: any) => {
-    const layer = event.layer;
-    this.drawnItems.addLayer(layer);
+//   this.map.on(this.L.Draw.Event.CREATED, (event: any) => {
+//     const layer = event.layer;
+//     this.drawnItems.addLayer(layer);
 
-    const geojson = layer.toGeoJSON();
-    this.coordinates = geojson.geometry.coordinates;
+//     const geojson = layer.toGeoJSON();
+//     this.coordinates = geojson.geometry.coordinates;
 
-    console.log('Polygon coordinates:', this.coordinates);
-    this.canSave = true;
-  });
+//     console.log('Polygon coordinates:', this.coordinates);
+//     this.canSave = true;
+//   });
+// }
+
+
+GetLatLong(content: any) {
+  if (this.id == 0) {
+    // this.toast.error("Zone is not available for this request.", "Error", {
+    //   positionClass: "toast-bottom-right"
+    // });
+  } else {
+    // Step 1: Build the GeoJSON-style polygon coordinates
+    const polygonCoordinates: number[][] = [];
+
+    content[0].forEach((point: any) => {
+      // Store as [longitude, latitude]
+      polygonCoordinates.push([point.lng, point.lat]);
+    });
+
+    // Optional: Ensure polygon is closed (first point == last point)
+    const first = polygonCoordinates[0];
+    const last = polygonCoordinates[polygonCoordinates.length - 1];
+    if (first[0] !== last[0] || first[1] !== last[1]) {
+      polygonCoordinates.push([...first]);
+    }
+
+    const geojsonPolygon = [polygonCoordinates]; // GeoJSON format
+
+    console.log("GeoJSON-style polygon:", geojsonPolygon);
+
+    // Step 2: Prepare object to send (modify this according to your backend schema)
+    const payload = {
+      zoneId: this.id,
+      coordinates: geojsonPolygon
+    };
+
+    // Step 3: Call backend to store
+    // this.adminFacade.addZoneCoordinates(payload).subscribe(res => {
+    //   if (!res || res == 0) {
+    //     this.toast.error("Something Went Wrong..!!! Contact System administrator.", "Error", {
+    //       positionClass: 'toast-bottom-right'
+    //     });
+    //   } else {
+    //     this.toast.success("Saved Successfully.");
+    //     this.router.navigate(['masters/zone-master']);
+    //   }
+    // });
+  }
 }
+
+
+
+
+
+  // GetLatLong(content: any) {
+  //   if (this.id == 0) {
+  //     //this.toast.error("Zone is not available for this request.", "Error", { positionClass: "toast-bottom-right" })
+  //   }
+  //   else {
+  //     let _zoneCoords: any[] = [];
+  //     console.log(content);
+  //     var count = 0;
+  //     content[0].forEach((ele: any) => {
+  //       var _zoneCoord = new ZoneCoords();
+  //       _zoneCoord.id = 0;
+  //       _zoneCoord.zoneId = this.id;
+  //       _zoneCoord.seqNo = count + 1;
+  //       _zoneCoord.latitude = ele.lng;
+  //       _zoneCoord.longitude = ele.lat;
+  //       _zoneCoords.push(_zoneCoord);
+  //       count = count + 1;
+  //     });
+
+  //     this.adminFacade.addZoneCoordinates(_zoneCoords).subscribe(res => {
+  //       if (res == 0 || res == undefined) {
+  //         this.toast.error("Something Went Wrong..!!! Contact System administrator.", "Error", { positionClass: 'toast-bottom-right' });
+  //       }
+  //       else {
+  //         this.toast.success("Saved Successfully.");
+  //         this.router.navigate(['masters/zone-master']);
+  //       }
+  //     })
+  //   }
+  // }
+
 
   close() {
     this.dialogRef.close();
