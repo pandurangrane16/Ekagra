@@ -2,7 +2,7 @@ import { Component, OnInit,Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 // import { CmTableComponent } from '../../common/cm-table/cm-table.component';
 import { CmSelectComponent } from '../../common/cm-select/cm-select.component';
-import { CmSelect2Component } from '../../common/cm-select2/cm-select2.component';
+// import { CmSelect2Component } from '../../common/cm-select2/cm-select2.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CmInputComponent } from '../../common/cm-input/cm-input.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -29,7 +29,7 @@ import { FormsModule } from '@angular/forms';
     FormsModule,          // ✅ <-- ADD THIS
     ReactiveFormsModule,  // ✅ <-- (you already had this)
       CmInputComponent,
-      CmSelect2Component,
+      // CmSelect2Component,
     AppCustomSelectComponent  ],
   templateUrl: './project-field-map.component.html',
   styleUrl: './project-field-map.component.css',
