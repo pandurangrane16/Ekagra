@@ -1,0 +1,20 @@
+<!-- <ngx-json-viewer [json]="apiJsonData"></ngx-json-viewer> -->
+<ul>
+  <ng-container *ngFor="let key of getKeys(data)">
+    <li>
+      <span>{{ parentPath ? parentPath + '.' : '' }}{{ key }}</span>
+
+      <!-- Set Icon / Button -->
+      <button (click)="onNodeSelect(key, parentPath)">📋</button>
+
+      <!-- If the value is an object, recursively call component -->
+      <ng-container *ngIf="isObject(data[key])">
+        <app-json-tree
+          [data]="data[key]"
+          [parentPath]="getFullPath(key, parentPath)"
+          (nodeSelected)="nodeSelected.emit($event)">
+        </app-json-tree>
+      </ng-container>
+    </li>
+  </ng-container>
+</ul>
