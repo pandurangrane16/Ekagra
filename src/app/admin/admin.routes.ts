@@ -8,6 +8,7 @@ import { MapConfigurationComponent } from "./map-configuration/map-configuration
 import { BulkUploadComponent } from "./bulk-upload/bulk-upload.component";
 import { SiteMngComponent } from "./site-configuration/site-mng/site-mng.component";
 import { ApiPlaygroundComponent } from "./api-playground/api-playground.component";
+import { ApiListComponent } from "./api-playground/api-list/api-list.component";
 //import { ProjectConfigurationComponent} from "./admin-dashboard/project-configuration.component";
 
 export const AdminRoutes: Routes = [
@@ -118,6 +119,17 @@ export const AdminRoutes: Routes = [
           urls: [
             { title: 'Api Playground', url: '/admin/apiplayground' },
             { title: 'Api Playground' },
+          ],
+        },
+      },
+      {
+        path: 'apilist',
+        component: ApiListComponent,
+        data: {
+          title: 'Api List View',
+          urls: [
+            { title: 'Api List View', url: '/admin/apilist' },
+            { title: 'Api List View' },
           ],
         },
       },

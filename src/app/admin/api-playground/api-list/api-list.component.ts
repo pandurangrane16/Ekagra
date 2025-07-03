@@ -1,39 +1,22 @@
-
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { CmTableComponent } from '../../common/cm-table/cm-table.component';
-import { CmSelectComponent } from '../../common/cm-select/cm-select.component';
-import { CmSelect2Component } from '../../common/cm-select2/cm-select2.component';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { CmInputComponent } from '../../common/cm-input/cm-input.component';
+import { Component } from '@angular/core';
+import { ProjectConfigurationFormComponent } from '../../project-configuration/project-configuration-form/project-configuration-form.component';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { InputRequest } from '../../models/request/inputreq.model';
-import { projconfigservice } from '../../services/admin/progconfig.service';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-
-
-import { ProjectConfigurationFormComponent } from './project-configuration-form/project-configuration-form.component';
-
+import { projconfigservice } from '../../../services/admin/progconfig.service';
+import { InputRequest } from '../../../models/request/inputreq.model';
+import { CmTableComponent } from '../../../common/cm-table/cm-table.component';
+import { CmSelect2Component } from '../../../common/cm-select2/cm-select2.component';
+import { CmInputComponent } from '../../../common/cm-input/cm-input.component';
 
 @Component({
-    selector: 'app-project-configuration',
-    standalone: true,
-    imports: [
-      CommonModule,
-      CmTableComponent,
-      CmInputComponent,
-      CmSelect2Component
-    ],
-    templateUrl: './project-configuration.component.html',
-    // styleUrl: './project-configuration.component.css',
-    styleUrls: ['./project-configuration.component.css']
+  selector: 'app-api-list',
+  imports: [CmTableComponent,CmSelect2Component,CmInputComponent],
+  templateUrl: './api-list.component.html',
+  styleUrl: './api-list.component.css'
 })
+export class ApiListComponent {
 
- 
-
-    export class ProjectConfigurationComponent implements OnInit {
-
-      _headerName = 'Project Configuration Table';
+      _headerName = 'API List';
       headArr: any[] = [];
       items:any;
       _request: any = new InputRequest();
@@ -127,20 +110,6 @@ import { ProjectConfigurationFormComponent } from './project-configuration-form/
           this.buildHeader();
           this.getProjConfigList();
           this.getProjList();
-
-
-            this.form.get('searchText')?.valueChanges
-              .pipe(
-                debounceTime(300), 
-                distinctUntilChanged() 
-              )
-              .subscribe(value => {
-                   if (value && value.length >= 3) {
-                this.getFilteredList();
-              } else if (!value || value.length === 0) {
-                 this.getFilteredList();
-              }
-              });
        
         }
 
@@ -159,9 +128,6 @@ import { ProjectConfigurationFormComponent } from './project-configuration-form/
       onProjectSelected(event: any) {
           console.log('Selected Project:', event);
         }
-         submit(){
-  this.getFilteredList();
- }
       openDialog() {
           const dialogRef = this.dialog.open(ProjectConfigurationFormComponent, {
             width: '500px',         
@@ -170,7 +136,7 @@ import { ProjectConfigurationFormComponent } from './project-configuration-form/
           });
       
           // Optional: handle result
-          dialogRef.afterClosed().subscribe(result => {
+          dialogRef.afterClosed().subscribe((result:any) => {
             if (result) {
               console.log('Dialog result:', result);
              
@@ -179,13 +145,13 @@ import { ProjectConfigurationFormComponent } from './project-configuration-form/
         }
         buildHeader() {  
           this.headArr = [
-            { header: 'Name', fieldValue: 'name', position: 1 },
-            { header: 'Description', fieldValue: 'description', position: 2 },
-            { header: 'Status', fieldValue: 'isActive',"type": "boolean", position: 3 },
+            { header: 'Project', fieldValue: 'name', position: 1 },
+            { header: 'API Name', fieldValue: 'description', position: 2 },
+            { header: 'URL', fieldValue: 'isActive',"type": "boolean", position: 3 },
            
-            { header: 'Rule Engine', fieldValue: 'ruleEngine',"type": "boolean", position: 4 },
-            { header: 'Map', fieldValue: 'map',"type": "boolean", position: 5 },
-            { header: 'Action', fieldValue: 'button', position: 6 }
+            { header: 'Type', fieldValue: 'ruleEngine',"type": "boolean", position: 4 },
+            { header: 'Active', fieldValue: 'map',"type": "boolean", position: 5 },
+            { header: 'Action', fieldValue: 'action', position: 6 }
           ];
           ;}
       
@@ -218,37 +184,16 @@ import { ProjectConfigurationFormComponent } from './project-configuration-form/
                 console.log('Row clicked:', row);
                }
             
-        onButtonClicked({ event, data }: { event: any; data: any }) {
-  if (event.type === 'edit') {
-    this.editRow(data);
-    console.log(data);
-  } else if (event.type === 'delete') {
-    
-  }
-}
-
-editRow(rowData: any) {
-  const dialogRef = this.dialog.open(ProjectConfigurationFormComponent, {
-    width: '500px',
- data: {
-  mode: 'edit',
-  record: rowData  
-}
-  });
-
-  dialogRef.afterClosed().subscribe(result => {
-    if (result === 'updated') {
-      this.getProjConfigList(); 
-    }
-  });
-}
+        onButtonClicked(event: any) {
+                 console.log('Button clicked:', event);
+               }
         
         getProjConfigList() {
       this._request.currentPage = this.pager;
       this._request.pageSize = Number(this.recordPerPage);
       this._request.startId = this.startId;
       this._request.searchItem = this.searchText;
-      this.service.GetAll().subscribe(response => {
+      this.service.GetAll().subscribe((response:any) => {
 
          const items = response.result?.items;
          
@@ -272,10 +217,6 @@ editRow(rowData: any) {
             element.ruleEngine = !!element.ruleEngine;
             element.map =!! element.map;
 
-                       element.button = [
-    { label: 'Edit', icon: 'edit', type: 'edit' },
-    { label: 'Delete', icon: 'delete', type: 'delete' }
-  ];
             
 
 
@@ -294,72 +235,22 @@ editRow(rowData: any) {
           //this.getMediaByStatus(this.tabno);
         }
       })
-    }    
-      getFilteredList() {
-    const selectedProjectId = this.form.controls['selectedProject'].value.value;
-     const selectedStatus = this.form.controls['selectedStatus'].value.value;
-     const search = this.form.controls['searchText'].value
-     this.service.GetFilteredList(selectedProjectId,search,selectedStatus).subscribe(response => {
-    //  const items = response?.result || [];
-         
-    //      this.items=items;
-         const items = response.result?.items;
-         this.items=items;
-
-
-        if (Array.isArray(items)) {
-         
-           items.forEach((element: any) => {
-           
-
-            //let _data = JSON.parse(element);
-             element.name = element.name;
-            element.description = element.description;
-            element.isActive = !!element.isActive; 
-            element.ruleEngine = !!element.ruleEngine;
-            element.map =!! element.map;
-            
-              element.button = [
-    { label: 'Edit', icon: 'edit', type: 'edit' },
-    { label: 'Delete', icon: 'delete', type: 'delete' }
-  ];
-
-
-
-
-         
-          });
-          // var _length = data.totalCount / Number(this.recordPerPage);
-          // if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-          //   this.totalRecords = Number(this.recordPerPage) * (_length);
-          // else if (Math.floor(_length) == 0)
-          //   this.totalRecords = 10;
-          // else
-          //   this.totalRecords = data.totalRecords;
-          // this.totalPages = this.totalRecords / this.pager;
-          //this.getMediaByStatus(this.tabno);
-        }
-      })
-    }     
+    }       
        
-getProjList() {
-  this.service.GetProjectList().subscribe(response => {
+  getProjList() {
+  this.service.GetProjectList().subscribe((response:any) => {
     const items = response?.result || [];
 
+ 
     const projectOptions = items.map((item: any) => ({
-      name: item.name || item.shortCode,
+      name: item.name || item.shortCode, 
       value: item.id
     }));
 
-  
-    projectOptions.unshift({
-      name: 'All',
-      value: null
-    });
-
+ 
     this.projectSelectSettings.options = projectOptions;
     this.isProjectOptionsLoaded = true;
-  }, error => {
+  }, (error:any) => {
     console.error('Error fetching project list', error);
   });
 }
@@ -369,16 +260,3 @@ getProjList() {
       
     
       }
-
-      
-
-  
-  
-
- 
-  
- 
-
-
-
-

@@ -30,6 +30,7 @@ export class MapConfigurationFormComponent {
   ruleEngineStatus = '';
   mapStatus = '';
   selectedStatus: any;
+  editid :any;
 
   inputFields = {
     name: {
@@ -158,6 +159,34 @@ export class MapConfigurationFormComponent {
   return this.form.controls;
   }
 
+    ngOnInit(): void {
+    
+ 
+        if (this.data?.mode === 'edit' && this.data?.record) {
+
+
+
+
+this.editid=this.data.record.id;
+    this.form.patchValue({
+      description: this.data.record.description,
+      isActive: this.data.record.isActive,
+      wmslayer: this.data.record.wmsLayer,
+      lat: this.data.record.lat,
+      long: this.data.record.long,
+      minzoom: this.data.record.minZoom,
+      maxzoom: this.data.record.maxZoom,
+      sourceurl: this.data.record.sourceURL,
+      displayname: this.data.record.displayName,
+      name: this.data.record.name,
+      
+    });
+
+    console.log('Edit form data patched:', this.data.record);
+  }
+
+}
+
   onProjectSelected(event: any) {
     console.log('Selected Project:', event);
   }
@@ -187,7 +216,7 @@ export class MapConfigurationFormComponent {
     _mapconfigmodel.lastModificationTime="2025-06-20T05:32:25.067Z"
     _mapconfigmodel.lastModifierUserId="2"
     _mapconfigmodel.isDeleted=true;
-    _mapconfigmodel.displayName="12";
+    _mapconfigmodel.displayName=this.form.controls['displayname'].value;;
     _mapconfigmodel.lat=this.form.controls['lat'].value;
     _mapconfigmodel.long=this.form.controls['long'].value;
     _mapconfigmodel.minZoom=this.form.controls['minzoom'].value;
@@ -196,7 +225,29 @@ export class MapConfigurationFormComponent {
     
 
     
+      if (this.data?.mode === 'edit' && this.data?.record?.id){
+
+    _mapconfigmodel.id = this.data.record.id;
+
+      this.service.MapEdit(_mapconfigmodel).subscribe({
+    next: () => {
+      console.log('Updated successfully');
+
+           //this.toast.success('ProjectField saved successfully'); 
+      this.dialogRef.close(this.form.value);
     
+      //this.toast.success('ProjectField saved successfully');
+      
+    },
+    error: (err) => {
+      console.error('Update failed:', err);
+      //this.toast.error('Failed to save project');
+    }
+  });
+
+  return;
+
+  }
      
     
     

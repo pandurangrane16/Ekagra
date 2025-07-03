@@ -9,6 +9,7 @@ import { CmInputComponent } from '../../common/cm-input/cm-input.component';
 import { MatDialog } from '@angular/material/dialog';
 import { zoneconfigservice } from '../../services/admin/zoneconfig.service';
 import { InputRequest } from '../../models/request/inputreq.model';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ZoneConfigurationFormComponent } from './zone-configuration-form/zone-configuration-form.component';
 
 
@@ -35,6 +36,10 @@ _headerName = 'Project Configuration Table';
 headArr: any[] = [];
 isProjectOptionsLoaded = false;
 items:any;
+ MaxResultCount=10;
+  SkipCount=0;
+  perPage=10;
+  pageNo=0;
 _request: any = new InputRequest();
 totalPages: number = 1;
 pager: number = 1;
@@ -47,7 +52,7 @@ searchText!:string;
 selectedProject: any;
 selectedStatus: any;
 form!: FormGroup;
-perPage = 10;
+
 collectionSize = 2;
 searchInputSettings = {
   labelHeader: 'Search',
@@ -71,10 +76,10 @@ roundedSettings = {
   isDisabled: false
 };
 projectSelectSettings = {
-  labelHeader: 'Select Project',
+  labelHeader: 'Select Name',
   lableClass: 'form-label',
   formFieldClass: '', 
-  appearance: 'outline',
+  appearance: 'fill',
   options: []
 };
    statusSelectSettings = {
@@ -126,9 +131,107 @@ ngOnInit(): void {
    });
    this.buildHeader();
    this.getZoneConfigList();
-   this.getProjList();
+   this.GetZoneList();
+
+
+
+     this.form.get('searchText')?.valueChanges
+       .pipe(
+         debounceTime(300), 
+         distinctUntilChanged() 
+       )
+       .subscribe(value => {
+            if (value && value.length >= 3) {
+            this.pager=0;
+            this.perPage=10;
+         this.getFilteredList();
+       } else if (!value || value.length === 0) {
+          this.pager=0;
+            this.perPage=10;
+          this.getFilteredList();
+       }
+       });
+   
 
 }
+
+ submit(){
+    this.pager=0;
+         this.perPage=10;
+  this.getFilteredList();
+ }
+
+ GetZoneList() {
+  this.service.GetAll().subscribe(response => {
+
+
+    const items = response.result?.items || [];
+
+    const projectOptions = items.map((item: any) => ({
+      name: item.zoneName,  
+      value: item.id        
+    }));
+  
+    projectOptions.unshift({
+      name: 'All',
+      value: null
+    });
+
+    this.projectSelectSettings.options = projectOptions;
+    this.isProjectOptionsLoaded = true;
+  }, error => {
+    console.error('Error fetching project list', error);
+  });
+}
+  getFilteredList() {
+      this.MaxResultCount=this.perPage;
+      this.SkipCount=this.MaxResultCount*this.pager;
+      this.recordPerPage=this.perPage;
+    const selectedProjectId = this.form.controls['selectedProject'].value.value;
+     const selectedStatus = this.form.controls['selectedStatus'].value.value;
+     const search = this.form.controls['searchText'].value
+     this.service.GetFilteredList(0,search,selectedStatus,this.MaxResultCount,this.SkipCount,selectedProjectId).subscribe(response => {
+    //  const items = response?.result || [];
+         
+    //      this.items=items;
+         const items = response.result?.items;
+         this.items=items;
+ const totalCount=response.result?.totalCount;
+
+
+        if (Array.isArray(items)) {
+         
+           items.forEach((element: any) => {
+           
+
+            //let _data = JSON.parse(element);
+            element.projName = element.projectName;
+            element.description = element.description;
+            element.mapLabel=element.mapLabel;
+            element.apiLabel=element.label;
+            element.isActive = !!element.isActive; 
+            
+              element.button = [
+    { label: 'Edit', icon: 'edit', type: 'edit' },
+    { label: 'Delete', icon: 'delete', type: 'delete' }
+  ];
+
+
+
+
+         
+          });
+             var _length = totalCount / Number(this.recordPerPage);
+          if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+            this.totalRecords = Number(this.recordPerPage) * (_length);
+          else if (Math.floor(_length) == 0)
+            this.totalRecords = 10;
+          else
+            this.totalRecords = totalCount;
+          this.totalPages = this.totalRecords / this.pager;
+        }
+      })
+    }  
 onProjectSelected(event: any) {
   console.log('Selected Project:', event);
 }
@@ -143,23 +246,27 @@ onProjectChange(value: any) {
   console.log('Selected Project:', value);
   // Apply filtering or logic here
 }
-    getProjList() {
+getProjList() {
   this.service.GetProjectList().subscribe(response => {
     const items = response?.result || [];
 
- 
     const projectOptions = items.map((item: any) => ({
-      name: item.name || item.shortCode, 
+      name: item.name || item.shortCode,
       value: item.id
     }));
 
- 
+  
+    projectOptions.unshift({
+      name: 'All',
+      value: null
+    });
+
     this.projectSelectSettings.options = projectOptions;
     this.isProjectOptionsLoaded = true;
   }, error => {
     console.error('Error fetching project list', error);
   });
-}  
+}
 openDialog() {
           const dialogRef = this.dialog.open(ZoneConfigurationFormComponent, {
             
@@ -183,7 +290,7 @@ buildHeader() {
             { header: 'Zone Name', fieldValue: 'zoneName', position: 1 },
             { header: 'Description', fieldValue: 'description', position: 2 },
             { header: 'Status', fieldValue: 'isActive',type:'boolean', position: 3 },
-            { header: 'Action', fieldValue: 'action', position: 4 }
+            { header: 'Action', fieldValue: 'button', position: 4 }
           ];
 ;}     
 handleBtnAction(e: any) {
@@ -201,11 +308,34 @@ handleSearchWithId(item: any) {
 handleSearch(term: string) {
   console.log('Search term:', term);
 }
-onPageChange(event: { type: string, pageNo: number }) {
-  console.log('Page Changed:', event.pageNo);
+  onPageChange(event:any) {
+    console.log(event);
+  if (event.type === 'pageChange') {
+    this.pager = event.pageNo;
+  this.getFilteredList();
+  }
 }
-onPageRecordsChange(event: { type: string, perPage: number }) {
-      console.log('Records Per Page:', event.perPage);
+
+
+onPageRecordsChange(event:any ) {
+  console.log(event);
+  if (event.type === 'perPageChange') {
+    this.perPage = event.perPage;
+    this.pager = 0;
+    this.getFilteredList();
+  }
+}
+
+
+onPaginationChanged(event: { pageNo: number; perPage: number }) {
+  if (this.perPage !== event.perPage) {
+    this.perPage = event.perPage;
+    this.pager = 0; 
+  } else {
+    this.pager = event.pageNo;
+  }
+
+  this.getFilteredList(); 
 }
 onRowClicked(row: any) {
         console.log('Row clicked:', row);
@@ -224,7 +354,7 @@ getZoneConfigList() {
          
          this.items=items;
 
-
+ const totalCount=response.result?.totalCount;
 
 
 
@@ -240,6 +370,10 @@ getZoneConfigList() {
             element.description = element.description;
              element.isActive = !!element.isActive; 
          
+              element.button = [
+    { label: 'Edit', icon: 'edit', type: 'edit' },
+    { label: 'Delete', icon: 'delete', type: 'delete' }
+  ];
 
         
 
@@ -248,15 +382,14 @@ getZoneConfigList() {
 
          
           });
-          // var _length = data.totalCount / Number(this.recordPerPage);
-          // if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-          //   this.totalRecords = Number(this.recordPerPage) * (_length);
-          // else if (Math.floor(_length) == 0)
-          //   this.totalRecords = 10;
-          // else
-          //   this.totalRecords = data.totalRecords;
-          // this.totalPages = this.totalRecords / this.pager;
-          //this.getMediaByStatus(this.tabno);
+             var _length = totalCount / Number(this.recordPerPage);
+          if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+            this.totalRecords = Number(this.recordPerPage) * (_length);
+          else if (Math.floor(_length) == 0)
+            this.totalRecords = 10;
+          else
+            this.totalRecords = totalCount;
+          this.totalPages = this.totalRecords / this.pager;
         }
       })
     }       

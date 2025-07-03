@@ -9,6 +9,10 @@ import { CmInputComponent } from '../../common/cm-input/cm-input.component';
 //import { MatDialog } from '@angular/material/dialog';
 //import { SiteConfigurationFormComponent } from './site-configuration-form/site-configuration-form.component';
 import { Router } from '@angular/router';
+import { siteconfigservice } from '../../services/admin/siteconfig.service';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+
+
 
 
 @Component({
@@ -27,13 +31,21 @@ import { Router } from '@angular/router';
 export class SiteConfigurationComponent  {
 
 router = inject(Router);
+isProjectOptionsLoaded = false;
 _headerName = 'Project Configuration Table';
 headArr: any[] = [];
 selectedProject: any;
+  MaxResultCount=10;
+  SkipCount=0;
+  perPage=10;
+  pageNo=0;
+   recordPerPage: number = 10;
+     pager: number = 0;
 selectedStatus: any;
 form!: FormGroup;
 totalRecords = 2;
-perPage = 10;
+items :any;
+
 totalPages = 1;
 collectionSize = 2;
 searchInputSettings = {
@@ -62,24 +74,20 @@ projectSelectSettings = {
   lableClass: 'form-label',
   formFieldClass: '', 
   appearance: 'outline',
-  options: [
-    { name: 'apple', value: 'A' },
-    { name: 'mango', value: 'B' },
-    { name: 'bananannanan', value: 'C' }
-  ]
-};
-statusSelectSettings = {
-  labelHeader: 'Status',
-  lableClass: 'form-label',
-  formFieldClass: 'w-100',
-  appearance: 'outline',
-  options: [
-    { name: 'Active', value: 'active' },
-    { name: 'Inactive', value: 'inactive' },
-    { name: 'Archived', value: 'archived' }
-  ]
+  options:[]
 };
 
+   statusSelectSettings = {
+        labelHeader: 'Select Status',
+          lableClass: 'form-label',
+          formFieldClass: 'w-100',
+          appearance: 'fill',
+          options: [
+            { name: 'Enable', value: true },
+            { name: 'Disable', value: false },
+            { name: 'All', value: null }
+          ]
+        };
 gridArr = [
   {
    projectname: 'Alpha Project',
@@ -106,7 +114,7 @@ gridArr = [
 ];
 
 
-constructor(private fb: FormBuilder
+constructor(private fb: FormBuilder,private service:siteconfigservice
   //,private dialog: MatDialog
   ) {}
 ngOnInit(): void {
@@ -116,12 +124,187 @@ ngOnInit(): void {
      searchText: ['']
    });
    this.buildHeader();
+   this.getProjList();
+   this.getSiteConfigList();
+
+     this.form.get('searchText')?.valueChanges
+       .pipe(
+         debounceTime(300), 
+         distinctUntilChanged() 
+       )
+       .subscribe(value => {
+            if (value && value.length >= 3) {
+                this.pager=0;
+         this.perPage=10;
+         this.getFilteredList();
+       } else if (!value || value.length === 0) {
+          this.pager=0;
+         this.perPage=10;
+          this.getFilteredList();
+       }
+       });
+   
 
 }
+  onPageChange(event:any) {
+    console.log(event);
+  if (event.type === 'pageChange') {
+    this.pager = event.pageNo;
+  this.getFilteredList();
+  }
+}
+
+
+onPageRecordsChange(event:any ) {
+  console.log(event);
+  if (event.type === 'perPageChange') {
+    this.perPage = event.perPage;
+    this.pager = 0;
+    this.getFilteredList();
+  }
+}
+
+
+onPaginationChanged(event: { pageNo: number; perPage: number }) {
+  if (this.perPage !== event.perPage) {
+    this.perPage = event.perPage;
+    this.pager = 0; 
+  } else {
+    this.pager = event.pageNo;
+  }
+
+  this.getFilteredList(); 
+}
+
+ getSiteConfigList() {
+      
+      this.MaxResultCount=this.perPage;
+      this.SkipCount=this.MaxResultCount*this.pager;
+      this.recordPerPage=this.perPage;
+      const selectedProjectId = this.form.controls['selectedProject'].value.value;
+     const selectedStatus = this.form.controls['selectedStatus'].value.value;
+     const search = this.form.controls['searchText'].value
+      this.service.GetAll(this.MaxResultCount,this.SkipCount).subscribe(response => {
+       
+         const items = response.result?.items;
+         const totalCount=response.result?.totalCount;
+       
+
+
+         console.log("List before mapping:", items);
+         this.items = items.map((element: any) => ({
+  ...element,
+
+ 
+    siteId : element.siteId,
+    siteName : element.siteName,
+    lat:element.lat,
+    long:element.long,
+    description:element.description,
+    name: element.projectName,
+    isActive: !!element.isActive,
+    button: [
+    { label: 'Edit', icon: 'edit', type: 'edit' },
+    { label: 'Delete', icon: 'delete', type: 'delete' }
+  ]
+}));
+ console.log("list2: " + this.items)
+
+
+
+        if (Array.isArray(items)) {
+         
+        
+           var _length = totalCount / Number(this.recordPerPage);
+          if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+            this.totalRecords = Number(this.recordPerPage) * (_length);
+          else if (Math.floor(_length) == 0)
+            this.totalRecords = 10;
+          else
+            this.totalRecords = totalCount;
+          this.totalPages = this.totalRecords / this.pager;
+          
+        }
+      })
+    }  
 onProjectSelected(event: any) {
   console.log('Selected Project:', event);
 }
+getProjList() {
+  this.service.GetProjectList().subscribe(response => {
+    const items = response?.result || [];
 
+    const projectOptions = items.map((item: any) => ({
+      name: item.name || item.shortCode,
+      value: item.id
+    }));
+
+  
+    projectOptions.unshift({
+      name: 'All',
+      value: null
+    });
+
+    this.projectSelectSettings.options = projectOptions;
+    this.isProjectOptionsLoaded = true;
+  }, error => {
+    console.error('Error fetching project list', error);
+  });
+}
+
+
+ submit(){
+  this.getFilteredList();
+ }
+  getFilteredList() {
+     this.MaxResultCount=this.perPage;
+      this.SkipCount=this.MaxResultCount*this.pager;
+      this.recordPerPage=this.perPage;
+    const selectedProjectId = this.form.controls['selectedProject'].value.value;
+     const selectedStatus = this.form.controls['selectedStatus'].value.value;
+     const search = this.form.controls['searchText'].value
+     this.service.GetFilteredList(selectedProjectId,search,selectedStatus,this.MaxResultCount,this.SkipCount).subscribe(response => {
+    //  const items = response?.result || [];
+         
+    //      this.items=items;
+         const items = response.result?.items;
+         this.items=items;
+
+const totalCount=response.result?.totalCount;
+        if (Array.isArray(items)) {
+         
+           items.forEach((element: any) => {
+               
+        element.siteId = element.siteId;
+            element.siteName = element.siteName;
+            element.lat=element.lat;
+            element.long=element.long;
+            element.description=element.description;
+            element.name=element.projectName;
+            
+            element.isActive = !!element.isActive; 
+
+              element.button = [
+    { label: 'Edit', icon: 'edit', type: 'edit' },
+    { label: 'Delete', icon: 'delete', type: 'delete' }
+  ];
+        
+
+
+
+         
+          });
+         var _length = totalCount / Number(this.recordPerPage);
+          if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+            this.totalRecords = Number(this.recordPerPage) * (_length);
+          else if (Math.floor(_length) == 0)
+            this.totalRecords = 10;
+          else
+            this.totalRecords = totalCount;
+          this.totalPages = this.totalRecords / this.pager;
+        }
+      })
+    }  
 onStatusChange(value: any) {
   this.selectedStatus = value;
   console.log('Selected Status:', value);
@@ -133,34 +316,20 @@ onProjectChange(value: any) {
   // Apply filtering or logic here
 }
 openDialog() {
-          // const dialogRef = this.dialog.open(SiteConfigurationFormComponent, {
-            
-          //   width: '1000px', 
-             
-          //   disableClose: true,  
-          //   autoFocus: false,   
-          //   data: {}               
-          // });
-      
-          // // Optional: handle result
-          // dialogRef.afterClosed().subscribe(result => {
-          //   if (result) {
-          //     console.log('Dialog result:', result);
-             
-          //   }
-          // });
+
 this.router.navigate(['/admin/siteconfigmng']);
           
 }
 buildHeader() {  
           this.headArr = [
-            { header: 'Project Name', fieldValue: 'sitename', position: 1 },
-            { header: 'Site Id', fieldValue: 'siteid', position: 2 },
-            { header: 'Site Name', fieldValue: 'sitename', position: 3 },
+            { header: 'Project Name', fieldValue: 'name', position: 1 },
+            { header: 'Site Id', fieldValue: 'siteId', position: 2 },
+            { header: 'Site Name', fieldValue: 'siteName', position: 3 },
             { header: 'Lat', fieldValue: 'lat', position: 4 },
             { header: 'Long', fieldValue: 'long', position: 5 },
             { header: 'Description', fieldValue: 'description', position: 6 },
-            { header: 'Action', fieldValue: 'action', position: 7 }
+            { header: 'Status', fieldValue: 'isActive',type:'boolean', position: 5 },
+            { header: 'Action', fieldValue: 'button', position: 7 }
           ];
 ;}     
 handleBtnAction(e: any) {
@@ -178,17 +347,28 @@ handleSearchWithId(item: any) {
 handleSearch(term: string) {
   console.log('Search term:', term);
 }
-onPageChange(event:{type:string,pageNo: number}) {
-  console.log('Page Changed:', event.pageNo);
-}
-onPageRecordsChange(event:{type:string,perPage: number}) {
-      console.log('Records Per Page:', event.perPage);
-}
+
 onRowClicked(row: any) {
         console.log('Row clicked:', row);
 }
-onButtonClicked(event: any) {
-  console.log('Button clicked:', event);
+    onButtonClicked({ event, data }: { event: any; data: any }) {
+  if (event.type === 'edit') {
+       console.log(data);
+    this.editRow(data);
+    console.log(data);
+  } else if (event.type === 'delete') {
+    
+  }
+}
+
+
+editRow(rowData: any) {
+  this.router.navigate(['/admin/siteconfigmng'], {
+    state: {
+      mode: 'edit',
+      record: rowData
+    }
+  });
 }
        
 }
