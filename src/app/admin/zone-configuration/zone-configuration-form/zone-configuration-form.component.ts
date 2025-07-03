@@ -11,8 +11,12 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { getErrorMsg } from '../../../utils/utils';
 import { zoneconfigservice } from '../../../services/admin/zoneconfig.service';
-import { ToastrService } from 'ngx-toastr';
+//import { ToastrService } from 'ngx-toastr';
 import { zoneconfigmodel } from '../../../models/admin/zoneconfig.model';
+//import * as L from 'leaflet';
+
+import {  PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-zone-configuration-form',
@@ -28,7 +32,16 @@ export class ZoneConfigurationFormComponent {
   MatButtonToggleChange:any;
   ruleEngineStatus = '';
   mapStatus = '';
-  selectedStatus: any;
+   private L: any;
+drawnItems: any;
+drawControl: any;
+coordinates: any[] = [];
+zoneName: string = '';
+description: string = '';
+canSave: boolean = false;
+isMapVisible: boolean = false;
+  map!: L.Map;
+ 
   inputFields = {
     zonename: {
       // labelHeader: 'Name',
@@ -65,9 +78,10 @@ export class ZoneConfigurationFormComponent {
   
   constructor(
     private fb: FormBuilder,
+    @Inject(PLATFORM_ID) private platformId: Object,
     private dialogRef: MatDialogRef<ZoneConfigurationFormComponent>,
     private service:zoneconfigservice,
-    private toast:ToastrService,
+   // private toast:ToastrService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.form = this.fb.group({
@@ -82,6 +96,20 @@ export class ZoneConfigurationFormComponent {
   get f() {
   return this.form.controls;
   }
+    async ngOnInit(): Promise<void>  {
+
+     if (isPlatformBrowser(this.platformId)) {
+       const leaflet = await import('leaflet');
+    await import('leaflet-draw'); 
+
+    this.L = leaflet;
+      this.drawnItems= this.L.FeatureGroup = new this.L.FeatureGroup();
+      
+      
+    }
+
+
+  }
   onFileChange(event: any, controlName: string) {
     const file = event.target.files[0];
     if (file) {
@@ -95,7 +123,7 @@ export class ZoneConfigurationFormComponent {
     console.log('Selected Project:', event);
   }
   submit() {
-      this.toast.success("chgdgsf")
+      //this.toast.success("chgdgsf")
       if (!this.form.invalid) {
         this.form.markAllAsTouched(); 
          
@@ -129,15 +157,15 @@ export class ZoneConfigurationFormComponent {
         next: () => {
           console.log('Saved successfully');
     
-               this.toast.success('Zone saved successfully'); 
+              // this.toast.success('Zone saved successfully'); 
           this.dialogRef.close(this.form.value);
         
-          this.toast.success('Zone saved successfully');
+          //this.toast.success('Zone saved successfully');
           
         },
         error: (err) => {
           console.error('Save failed:', err);
-          this.toast.error('Failed to save Zone.');
+         // this.toast.error('Failed to save Zone.');
         }
       });
     
@@ -146,13 +174,156 @@ export class ZoneConfigurationFormComponent {
       }
       else {
           this.form.markAllAsTouched(); 
-      this.toast.error('Form is not valid');
+      //this.toast.error('Form is not valid');
       return;
         
       }
     
     
       }
+      
+showMap() {
+  if (isPlatformBrowser(this.platformId)) {
+      this.overrideDrawText(); 
+    this.isMapVisible = true;
+    setTimeout(() => {
+      this.initializeMap(); 
+    }, 0);
+  }
+}
+overrideDrawText() {
+  (this.L as any).drawLocal = {
+    draw: {
+      toolbar: {
+        buttons: {
+          polygon: ''
+        }
+      },
+      handlers: {
+        polygon: {
+          tooltip: {
+            start: '',
+            cont: '',
+            end: ''
+          }
+        }
+      }
+    },
+    edit: {
+      toolbar: {
+        buttons: {
+          edit: '',
+          remove: ''
+        }
+      },
+      handlers: {
+        edit: {
+          tooltip: {
+            text: '',
+            subtext: ''
+          }
+        },
+        remove: {
+          tooltip: {
+            text: ''
+          }
+        }
+      }
+    }
+  };
+}
+initializeMap(): void {
+
+   if (!isPlatformBrowser(this.platformId)) return;
+  this.map = this.L.map('map', {
+    center: [19.0760, 72.8777],
+    zoom: 10,
+    attributionControl: false
+  });
+
+  const osmLayer = this.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19
+  });
+
+  osmLayer.addTo(this.map);
+
+
+
+this.drawnItems = new this.L.FeatureGroup();
+this.map.addLayer(this.drawnItems);
+
+  //this.map.addLayer(this.drawnItems);
+
+  this.drawControl = new this.L.Control.Draw({
+draw: {
+   polygon: {
+               
+            },
+    marker: false,
+    circle: false,
+    rectangle: false,
+    polyline: false,
+    circlemarker: false
+  },
+  edit: {
+    featureGroup: this.drawnItems
+  },
+      remove: {
+        tooltip: {
+          text: ''
+        }
+      }
+    
+  
+  });
+
+
+  var options = {
+      position: 'topright',
+      draw: {
+        //     polyline: {
+        //         shapeOptions: {
+        //             color: '#f357a1',
+        //             weight: 10
+        //         }
+        //     },
+            polygon: {
+
+            },
+        circle: false,
+        circlemarker: false,// Turns off this drawing tool
+        //     rectangle: {
+        //         shapeOptions: {
+        //             clickable: false
+        //         }
+        //     },
+       
+      },
+      edit: {
+        featureGroup: this.drawnItems, //REQUIRED!!
+        // remove: false
+      }
+
+    };
+
+    // var drawControl = new this.L.Control.Draw(options);
+    // this.map.addControl(drawControl);
+
+  this.map.addControl(this.drawControl);
+
+
+  
+  this.map.on(this.L.Draw.Event.CREATED, (event: any) => {
+    const layer = event.layer;
+    this.drawnItems.addLayer(layer);
+
+    const geojson = layer.toGeoJSON();
+    this.coordinates = geojson.geometry.coordinates;
+
+    console.log('Polygon coordinates:', this.coordinates);
+    this.canSave = true;
+  });
+}
 
   close() {
     this.dialogRef.close();

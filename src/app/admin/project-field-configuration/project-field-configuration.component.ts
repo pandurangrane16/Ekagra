@@ -141,8 +141,12 @@ export class ProjectFieldConfigurationComponent  {
     )
     .subscribe(value => {
          if (value && value.length >= 3) {
+         this.pager=0;
+         this.perPage=10;
       this.getFilteredList();
     } else if (!value || value.length === 0) {
+       this.pager=0;
+         this.perPage=10;
        this.getFilteredList();
     }
     });
@@ -266,38 +270,47 @@ editRow(rowData: any) {
               { header: 'Action', fieldValue: 'button', position: 6 }
             ];
   ;}   
-    getProjList() {
+getProjList() {
   this.service.GetProjectList().subscribe(response => {
     const items = response?.result || [];
 
- 
     const projectOptions = items.map((item: any) => ({
-      name: item.name || item.shortCode, 
+      name: item.name || item.shortCode,
       value: item.id
     }));
 
- 
+  
+    projectOptions.unshift({
+      name: 'All',
+      value: null
+    });
+
     this.projectSelectSettings.options = projectOptions;
     this.isProjectOptionsLoaded = true;
   }, error => {
     console.error('Error fetching project list', error);
   });
-}  
+}
 
  submit(){
+    this.pager=0;
+         this.perPage=10;
   this.getFilteredList();
  }
   getFilteredList() {
+      this.MaxResultCount=this.perPage;
+      this.SkipCount=this.MaxResultCount*this.pager;
+      this.recordPerPage=this.perPage;
     const selectedProjectId = this.form.controls['selectedProject'].value.value;
      const selectedStatus = this.form.controls['selectedStatus'].value.value;
      const search = this.form.controls['searchText'].value
-     this.service.GetFilteredList(selectedProjectId,search,selectedStatus).subscribe(response => {
+     this.service.GetFilteredList(selectedProjectId,search,selectedStatus,this.MaxResultCount,this.SkipCount).subscribe(response => {
     //  const items = response?.result || [];
          
     //      this.items=items;
          const items = response.result?.items;
          this.items=items;
-
+  const totalCount=response.result?.totalCount;
 
         if (Array.isArray(items)) {
          
@@ -321,15 +334,14 @@ editRow(rowData: any) {
 
          
           });
-          // var _length = data.totalCount / Number(this.recordPerPage);
-          // if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-          //   this.totalRecords = Number(this.recordPerPage) * (_length);
-          // else if (Math.floor(_length) == 0)
-          //   this.totalRecords = 10;
-          // else
-          //   this.totalRecords = data.totalRecords;
-          // this.totalPages = this.totalRecords / this.pager;
-          //this.getMediaByStatus(this.tabno);
+              var _length = totalCount / Number(this.recordPerPage);
+          if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+            this.totalRecords = Number(this.recordPerPage) * (_length);
+          else if (Math.floor(_length) == 0)
+            this.totalRecords = 10;
+          else
+            this.totalRecords = totalCount;
+          this.totalPages = this.totalRecords / this.pager;
         }
       })
     }  
@@ -361,7 +373,7 @@ editRow(rowData: any) {
     console.log(event);
   if (event.type === 'pageChange') {
     this.pager = event.pageNo;
-  this.getProjfieldConfigList();
+  this.getFilteredList();
   }
 }
 
@@ -371,7 +383,7 @@ onPageRecordsChange(event:any ) {
   if (event.type === 'perPageChange') {
     this.perPage = event.perPage;
     this.pager = 0;
-    this.getProjfieldConfigList();
+    this.getFilteredList();
   }
 }
 
@@ -384,7 +396,7 @@ onPaginationChanged(event: { pageNo: number; perPage: number }) {
     this.pager = event.pageNo;
   }
 
-  this.getProjfieldConfigList(); 
+  this.getFilteredList(); 
 }
 
  

@@ -17,7 +17,7 @@ ProjectfieldCreate(_data: any) {
   }
 
   ProjectfieldEdit(_data: any) {
-    return this._httpService._postMethod(_data, 'api/services/app/ProjectField/Update');
+    return this._httpService._putMethod(_data, 'api/services/app/ProjectField/Update');
   }
 
 
@@ -31,7 +31,13 @@ GetAll(MaxResultCount: number, SkipCount: number,) {
   }
 
 
-GetFilteredList(ProjectId?: number, filter?: string, status?: boolean) {
+GetFilteredList(
+  ProjectId?: number,
+  filter?: string,
+  status?: boolean,
+  maxResultCount?: number,
+  skipCount?: number
+) {
   let params: string[] = [];
 
   if (ProjectId !== null && ProjectId !== undefined) {
@@ -44,6 +50,14 @@ GetFilteredList(ProjectId?: number, filter?: string, status?: boolean) {
 
   if (status !== null && status !== undefined) {
     params.push(`IsActive=${status}`);
+  }
+
+  if (maxResultCount !== null && maxResultCount !== undefined) {
+    params.push(`MaxResultCount=${maxResultCount}`);
+  }
+
+  if (skipCount !== null && skipCount !== undefined) {
+    params.push(`SkipCount=${skipCount}`);
   }
 
   const queryString = params.length ? '?' + params.join('&') : '';
