@@ -14,7 +14,8 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-api-playground',
   imports: [MaterialModule, CommonModule, ReactiveFormsModule, CmInputComponent, 
-    CmRadioComponent, CmTextareaComponent,CmTextareaComponent,CmSelect2Component],
+    CmRadioComponent, CmTextareaComponent,CmTextareaComponent,CmSelect2Component,
+  CmLeafletComponent],
   templateUrl: './api-playground.component.html',
   styleUrl: './api-playground.component.css',
   standalone: true
