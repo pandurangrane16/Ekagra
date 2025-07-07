@@ -2,9 +2,21 @@
 ::ng-deep .field-map-page .mat-mdc-form-field {
       width: 100% !important;
     pointer-events: none;
-    background-color: #b6b0b0;
-    color: #888;
+    /* background-color: #b6b0b0; */
+    color: #dee2e6;
     cursor: not-allowed;
+}
+
+::ng-deep pre {
+  border: 1px solid #dee2e6;
+  /* background: #f9f9f9; */
+  padding: 12px;
+  border-radius: 6px;
+}
+
+::ng-deep .copy-button{
+    margin-left: 3px;
+    border: 1px solid red;
 }
 /* 
 apiResponseSetting 

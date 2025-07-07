@@ -5,7 +5,7 @@
       <span>{{ parentPath ? parentPath + '.' : '' }}{{ key }}</span>
 
       <!-- Set Icon / Button -->
-      <button (click)="onNodeSelect(key, parentPath)">📋</button>
+      <button (click)="onNodeSelect(key, parentPath)" class="copy-button">📋</button>
 
       <!-- If the value is an object, recursively call component -->
       <ng-container *ngIf="isObject(data[key])">
