@@ -1,0 +1,5 @@
+/* Fix Leaflet default marker icon path */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+}

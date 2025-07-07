@@ -5,6 +5,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import {  HTTP_INTERCEPTORS, provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';// ✅ Must be a function
 import { routes } from './app.routes';
 import { LoaderInterceptor } from './services/interceptors/loader.interceptor';
+import { provideToastr } from 'ngx-toastr';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -12,6 +13,7 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(),
     provideAnimationsAsync(),
      provideHttpClient(withInterceptorsFromDi()),
+     provideToastr(),
     LoaderInterceptor
   ]
 };
