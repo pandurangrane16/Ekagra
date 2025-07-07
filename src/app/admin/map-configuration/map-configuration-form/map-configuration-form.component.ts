@@ -200,7 +200,8 @@ this.editid=this.data.record.id;
   }
 
   submit() {
-      this.toast.success("chgdgsf")
+     
+
       if (!this.form.invalid) {
         this.form.markAllAsTouched(); 
          
@@ -216,8 +217,9 @@ this.editid=this.data.record.id;
     _mapconfigmodel.id=0
     _mapconfigmodel.lastModificationTime="2025-06-20T05:32:25.067Z"
     _mapconfigmodel.lastModifierUserId="2"
-    _mapconfigmodel.isDeleted=true;
-    _mapconfigmodel.displayName=this.form.controls['displayname'].value;;
+    _mapconfigmodel.isDeleted=false;
+    _mapconfigmodel.displayName=this.form.controls['displayname'].value;
+    _mapconfigmodel.wmsLayer=this.form.controls['wmslayer'].value
     _mapconfigmodel.lat=this.form.controls['lat'].value;
     _mapconfigmodel.long=this.form.controls['long'].value;
     _mapconfigmodel.minZoom=this.form.controls['minzoom'].value;
@@ -234,15 +236,16 @@ this.editid=this.data.record.id;
     next: () => {
       console.log('Updated successfully');
 
-           //this.toast.success('ProjectField saved successfully'); 
+          this.toast.success('Updated successfully'); 
       this.dialogRef.close(this.form.value);
+      
     
       //this.toast.success('ProjectField saved successfully');
       
     },
     error: (err) => {
       console.error('Update failed:', err);
-      //this.toast.error('Failed to save project');
+      this.toast.error('Failed to save Map');
     }
   });
 
@@ -259,12 +262,12 @@ this.editid=this.data.record.id;
                this.toast.success('Map saved successfully'); 
           this.dialogRef.close(this.form.value);
         
-          this.toast.success('Map saved successfully');
+         
           
         },
         error: (err) => {
           console.error('Save failed:', err);
-          this.toast.error('Failed to save project');
+          this.toast.error('Failed to save Map');
         }
       });
     
