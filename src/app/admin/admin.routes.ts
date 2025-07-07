@@ -9,6 +9,7 @@ import { BulkUploadComponent } from "./bulk-upload/bulk-upload.component";
 import { SiteMngComponent } from "./site-configuration/site-mng/site-mng.component";
 import { ApiPlaygroundComponent } from "./api-playground/api-playground.component";
 import { ApiListComponent } from "./api-playground/api-list/api-list.component";
+import { LoginComponent } from "../routes/login/login.component";
 //import { ProjectConfigurationComponent} from "./admin-dashboard/project-configuration.component";
 
 export const AdminRoutes: Routes = [
@@ -130,6 +131,17 @@ export const AdminRoutes: Routes = [
           urls: [
             { title: 'Api List View', url: '/admin/apilist' },
             { title: 'Api List View' },
+          ],
+        },
+      },
+          {
+        path: 'login',
+        component: LoginComponent,
+        data: {
+          title: 'login',
+          urls: [
+            { title: 'login', url: '/admin/login' },
+            { title: 'login' },
           ],
         },
       },

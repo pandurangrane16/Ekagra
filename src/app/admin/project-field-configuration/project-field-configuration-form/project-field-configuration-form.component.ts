@@ -67,7 +67,7 @@ export class ProjectFieldConfigurationFormComponent  implements OnInit{
     ]
   };
 
-  projectEnabled = {
+  projectEnabled2 = {
    
     name: 'isActive',
     defaultValue: true,
@@ -77,10 +77,21 @@ export class ProjectFieldConfigurationFormComponent  implements OnInit{
     ]
   };
 
+  projectEnabled = {
+
+  name: 'isActive',
+  formControlName: 'isActive',
+  data: [
+    { value: true, displayName: 'Yes' },
+    { value: false, displayName: 'No' }
+  ]
+};
+
     isSameas= {
    
     name: 'isSameas',
-    defaultValue: true,
+    formControlName: 'isSameas',
+   
     data: [
       { value: true, displayName: 'Yes' },
       { value: false, displayName: 'No' }
@@ -119,10 +130,10 @@ export class ProjectFieldConfigurationFormComponent  implements OnInit{
     this.form = this.fb.group({
     
       description: ['', Validators.required],
-      isActive: [false,Validators.required],
+      isActive: [false],
       maplabel: ['',Validators.required],
       apilabel: ['',Validators.required],
-      isSameas: [false,Validators.required],
+      isSameas: [false],
       selectedProject:['', Validators.required],
       
       
@@ -179,6 +190,9 @@ this.editid=this.data.record.id;
     });
 
     console.log('Edit form data patched:', this.data.record);
+      console.log('Edit form data patched form value:', this.form.value);
+      console.log(this.form.controls)
+
   }
   }, error => {
     console.error('Error fetching project list', error);
@@ -202,7 +216,7 @@ _projfieldconfigmodel.deletionTime="2025-06-20T05:32:25.067Z"
 _projfieldconfigmodel.lastModificationTime="2025-06-20T05:32:25.067Z"
 _projfieldconfigmodel.lastModifierUserId="2"
 _projfieldconfigmodel.isDeleted=false
-_projfieldconfigmodel.isMap=this.form.controls['isSameas'].value;
+_projfieldconfigmodel.isMapLabel=this.form.controls['isSameas'].value;
 _projfieldconfigmodel.label=this.form.controls['apilabel'].value;
 _projfieldconfigmodel.dataType="string"
 _projfieldconfigmodel.mapLabel=this.form.controls['maplabel'].value;

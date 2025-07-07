@@ -6,15 +6,33 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import { RouterModule } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { loginservice } from '../../services/admin/login.service';
+import { MatButtonModule } from '@angular/material/button';
+
+
 
 @Component({
     selector: 'app-login',
-    imports: [CommonModule, SlickCarouselModule, FooterComponent, MatFormFieldModule, MatInputModule, MatIconModule, RouterModule],
+    imports: [CommonModule, SlickCarouselModule,MatButtonModule,ReactiveFormsModule, FooterComponent, MatFormFieldModule, MatInputModule, MatIconModule, RouterModule],
     templateUrl: './login.component.html',
     styleUrl: './login.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent {
+
+  loginForm!: FormGroup;
+
+    constructor(
+    private fb: FormBuilder,
+    private http: HttpClient,
+    private router: Router,
+    private service :loginservice
+  ) {}
+
+
 
   slideConfig = {
     infinite: true,
@@ -54,4 +72,41 @@ export class LoginComponent {
     { img: '/assets/img/login_bg3.jpg' },
     { img: '/assets/img/login_bg4.jpg' },
   ];
+
+    ngOnInit(): void {
+    this.loginForm = this.fb.group({
+      userNameOrEmailAddress: ['', Validators.required],
+      password: ['', Validators.required]
+    });
+  }
+  showPassword: boolean = false;
+
+togglePasswordVisibility(): void {
+  this.showPassword = !this.showPassword;
+}
+
+   onLogin(): void {
+    const credentials = this.loginForm.value;
+
+    this.service.Login(credentials).subscribe({
+      next: (res) => {
+        const accessToken = res?.result?.accessToken;
+        if (accessToken) {
+      
+          this.router.navigate(['/dashboard']);
+        } else {
+          alert('Login failed: No token received');
+        }
+      },
+      error: (err) => {
+        console.error('Login error:', err);
+        alert('Login failed: Invalid credentials or server error');
+          this.loginForm.reset(); 
+      }
+    });
+  }
+
+
+
+
 }

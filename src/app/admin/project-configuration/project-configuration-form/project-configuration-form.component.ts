@@ -83,7 +83,7 @@ export class ProjectConfigurationFormComponent {
       { value: false, displayName: 'No' }
     ]
   };
-
+previewUrls: { [key: string]: string } = {};
 
   
   constructor(
@@ -111,24 +111,97 @@ export class ProjectConfigurationFormComponent {
 ReturnValue($event:any) {
   console.log($event);
 }
-  onFileSelect(event: any, type: 'mapIcon' | 'projectIcon') {
-    const file = event.target.files[0];
-     const control = this.form.get(type);
-    if (file) {
-     
-      const fileName = file.name;
 
-    control?.setValue(fileName);      
-    control?.setErrors(null);
-    control?.markAsTouched();
-    control?.markAsDirty();
+onFileSelect(event: any, type: 'mapIcon' | 'projectIcon') {
+  const file = event.target.files[0];
+  const control = this.form.get(type);
 
-    this.selectedFilePaths[type] = fileName;
+  if (file) {
+ 
+    if (!file.type.startsWith('image/')) {
+      console.warn('File is not an image:', file.type);
+      return;
     }
+
+   
+    const objectUrl = URL.createObjectURL(file);
+    this.previewUrls[type] = objectUrl;
+    console.log('Preview URL set for', type, ':', objectUrl);
+
+  
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.service.UploadFile(formData).subscribe({
+      next: (response) => {
+        if (response?.result?.success) {
+          const uploadedFileName = response.result.fileName;
+
+          control?.setValue(uploadedFileName);
+          control?.setErrors(null);
+          control?.markAsTouched();
+          control?.markAsDirty();
+
+          this.selectedFilePaths[type] = uploadedFileName;
+        }
+      },
+      error: (err) => {
+        console.error('Upload error:', err);
+      }
+    });
   }
+}
+
+
+  ngOnInit(): void {
+         if (this.data?.mode === 'edit' && this.data?.record) {
+
+
+
+    this.form.patchValue({
+   
+      name: this.data.record.name,
+      description: this.data.record.description,
+      mapEnabled: this.data.record.map,
+      ruleEngineEnabled: this.data.record.ruleEngine,
+      isActive: this.data.record.isActive,
+    
+      
+    });
+    this.loadExistingIcons();
+
+    console.log('Edit form data patched:', this.data.record);
+  }
+ 
+  
+
+}
   getErrorMessage(_controlName: any, _controlLable: any, _isPattern: boolean = false, _msg: string) {
     return getErrorMsg(this.form, _controlName, _controlLable, _isPattern, _msg);
   }
+
+loadExistingIcons(): void {
+  const basePath = 'https://172.19.32.210:8002/UploadedFiles/Icons/';
+
+  if (this.data?.record?.mapIcon) {
+    const mapIconUrl = basePath + this.data.record.mapIcon;
+    this.selectedFilePaths['mapIcon'] =  this.data?.record?.mapIcon;
+    this.previewUrls['mapIcon'] = mapIconUrl;
+  }
+
+  if (this.data?.record?.projectIcon) {
+    const projectIconUrl = basePath + this.data.record.projectIcon;
+    this.selectedFilePaths['projectIcon'] = this.data?.record?.projectIcon;
+    this.previewUrls['projectIcon'] = projectIconUrl; 
+  }
+
+  this.form.patchValue({
+    mapIcon: this.data?.record?.mapIcon,
+    projectIcon: this.data?.record?.projectIcon
+  });
+
+  console.log('Edit Preview URLs:', this.previewUrls);
+}
 
 
   submit() {
@@ -157,6 +230,29 @@ _projconfigmodel.shortCode="2"
 _projconfigmodel.roles="2"
 _projconfigmodel.isDeleted=false;
 
+  if (this.data?.mode === 'edit' && this.data?.record?.id){
+
+    _projconfigmodel.id = this.data.record.id;
+
+      this.service.ProjectEdit(_projconfigmodel).subscribe({
+    next: () => {
+      console.log('Updated successfully');
+
+           //this.toast.success('ProjectField saved successfully'); 
+      this.dialogRef.close(this.form.value);
+    
+      //this.toast.success('ProjectField saved successfully');
+      
+    },
+    error: (err) => {
+      console.error('Update failed:', err);
+      //this.toast.error('Failed to save project');
+    }
+  });
+
+  return;
+   
+  }
 
  
 

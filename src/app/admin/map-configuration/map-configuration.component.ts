@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { mapconfigservice } from '../../services/admin/mapconfig.service';
 import { InputRequest } from '../../models/request/inputreq.model';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 import { MapConfigurationFormComponent } from './map-configuration-form/map-configuration-form.component';
 
 
@@ -19,7 +20,8 @@ import { MapConfigurationFormComponent } from './map-configuration-form/map-conf
     CommonModule,
     CmTableComponent,
     CmInputComponent,
-    CmSelect2Component
+    CmSelect2Component,
+    CmConfirmationDialogComponent
     
   ],
   templateUrl: './map-configuration.component.html',
@@ -351,8 +353,45 @@ onRowClicked(row: any) {
     this.editRow(data);
     console.log(data);
   } else if (event.type === 'delete') {
-    
+    this.deleteRow(data);
   }
+}
+
+deleteRow(rowData: any): void {
+  const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
+    width: '320px',
+       position: { top: '20px' },
+  panelClass: 'custom-confirm-dialog',
+    data: {
+      title: 'Confirm Delete',
+      message: 'Are you sure you want to delete this Map?',
+      type: 'delete',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel'
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+     
+      this.service.Delete(rowData.id).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.getMapConfigList();
+            console.log('Deleted successfully');
+           
+          } else {
+            console.error('Delete failed:', res.error);
+          }
+        },
+        error: (err) => {
+          console.error('API error:', err);
+        }
+      });
+    } else {
+      console.log('User cancelled');
+    }
+  });
 }
  editRow(rowData: any) {
    const dialogRef = this.dialog.open(MapConfigurationFormComponent, {

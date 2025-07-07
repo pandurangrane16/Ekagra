@@ -26,7 +26,9 @@ GetAll() {
     return this._httpService._getMethod('api/services/app/Project/GetProjectList');
   }
 
-
+ Delete(id: any) {
+    return this._httpService._deleteMethod('api/services/app/Zone/Delete?Id='+id);
+  }
 
   GetFilteredList(
   

@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { InputRequest } from '../../models/request/inputreq.model';
 import { projfieldconfigservice } from '../../services/admin/projfieldconfig.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 import { ProjectFieldConfigurationFormComponent } from './project-field-configuration-form/project-field-configuration-form.component';
 
 
@@ -20,7 +21,7 @@ import { ProjectFieldConfigurationFormComponent } from './project-field-configur
     CommonModule,
     CmTableComponent,
     CmInputComponent,
-    CmSelect2Component
+    CmSelect2Component,CmConfirmationDialogComponent
     
   ],
   templateUrl: './project-field-configuration.component.html',
@@ -221,11 +222,46 @@ export class ProjectFieldConfigurationComponent  {
     this.editRow(data);
     console.log(data);
   } else if (event.type === 'delete') {
-    
+    this.deleteRow(data);
   }
 }
 
+deleteRow(rowData: any): void {
+  const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
+    width: '320px',
+       position: { top: '20px' },
+  panelClass: 'custom-confirm-dialog',
+    data: {
+      title: 'Confirm Delete',
+      message: 'Are you sure you want to delete this ProjectField?',
+      type: 'delete',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel'
+    }
+  });
 
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+     
+      this.service.Delete(rowData.id).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.getProjfieldConfigList();
+            console.log('Deleted successfully');
+           
+          } else {
+            console.error('Delete failed:', res.error);
+          }
+        },
+        error: (err) => {
+          console.error('API error:', err);
+        }
+      });
+    } else {
+      console.log('User cancelled');
+    }
+  });
+}
 editRow(rowData: any) {
   const dialogRef = this.dialog.open(ProjectFieldConfigurationFormComponent, {
     width: '500px',

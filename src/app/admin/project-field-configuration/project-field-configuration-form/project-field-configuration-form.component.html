@@ -67,10 +67,13 @@
    <div class="col-md-4 d-flex align-items-center justify-content-center">
     <div style="width: 100%; text-align: center;">
       <label class="toggle-label margin-top:4px">Is Same As</label><br />
-      <app-cm-toggle
+      <app-cm-toggle 
         [formGroup]="form"
         [settings]="isSameas">
       </app-cm-toggle>
+              <div *ngIf="f['isSameas'].touched && f['isSameas'].errors" class="text-danger mt-1">
+  {{ getErrorMessage('isSameas', 'isSameas', false, '') }}
+</div>
     </div>
   </div>
 
@@ -98,6 +101,9 @@
             <div class="col-md-6">
                 <label class="toggle-label">Enabled</label>
                 <app-cm-toggle [formGroup]="form" [settings]="projectEnabled" style="margin-top: -35px;"></app-cm-toggle>
+               <div *ngIf="f['isActive'].touched && f['isActive'].errors" class="text-danger mt-1">
+  {{ getErrorMessage('isActive', 'isActive', false, '') }}
+</div>
             </div>
         </div>
         
