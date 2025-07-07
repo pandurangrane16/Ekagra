@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, Inject, OnInit } from '@angular/core';
 import { MaterialModule } from '../../Material.module';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -9,6 +9,7 @@ import { CmRadioComponent } from "../../common/cm-radio/cm-radio.component";
 import { CmTextareaComponent } from "../../common/cm-textarea/cm-textarea.component";
 import { CmSelect2Component } from '../../common/cm-select2/cm-select2.component';
 import { CmLeafletComponent } from '../../common/cm-leaflet/cm-leaflet.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-api-playground',
@@ -45,7 +46,7 @@ apiTypeSettings = {
     data : ['None', 'Bearer', 'Basic','Custom']
   }
   constructor(
-    private fb: FormBuilder, private loader: LoaderService, private apiService: ApiService,
+    private fb: FormBuilder, private loader: LoaderService, private apiService: ApiService,private toast: ToastrService
   ) {
     this.form = this.fb.group({
       apiName: ['', Validators.required],
@@ -209,6 +210,7 @@ RemoveHeader(index:any){
     itemsArray.removeAt(index);
   }
   submit() {
+    this.toast.success("Saved Suuccessfully...");
     setTimeout(() => {
       this.isMap = true;
     }, 2000);

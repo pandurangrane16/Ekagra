@@ -36,6 +36,7 @@
               "src/custom-theme.scss",
               "node_modules/slick-carousel/slick/slick.css",
               "node_modules/ol/ol.css",
+              "node_modules/ngx-toastr/toastr.css",
               "node_modules/leaflet/dist/leaflet.css"
             ],
             "scripts": [
@@ -105,7 +106,8 @@
             ],
             "styles": [
               "src/styles.css",
-              "node_modules/leaflet/dist/leaflet.css"
+              "node_modules/leaflet/dist/leaflet.css",
+              "node_modules/ngx-toastr/toastr.css"
             ],
             "scripts": []
           }
