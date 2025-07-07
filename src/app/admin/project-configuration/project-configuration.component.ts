@@ -102,7 +102,7 @@ import { ProjectConfigurationFormComponent } from './project-configuration-form/
       squareSettings = {
           labelHeader: 'Search',
           formFieldClass: 'cm-square-input',
-        
+          
           isDisabled: false
         };
         

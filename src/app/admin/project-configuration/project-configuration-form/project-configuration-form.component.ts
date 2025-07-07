@@ -15,6 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ToastrService } from 'ngx-toastr';
 
 
+
 @Component({
   selector: 'app-project-configuration-form',
   imports: [CommonModule,CmInputComponent, MatIconModule,CmToggleComponent,ReactiveFormsModule, MatDialogModule, MatButtonModule, MatInputModule, FormsModule],
@@ -68,6 +69,8 @@ export class ProjectConfigurationFormComponent {
   Maptoggle = {
    
     name: 'mapEnabled',
+     formControlName:'mapEnabled',
+    
     //defaultValue: true,
     data: [
       { value: true, displayName: 'Yes' },
@@ -78,6 +81,7 @@ export class ProjectConfigurationFormComponent {
   Ruleenginetoggle = {
    
     name: 'ruleEngineEnabled',
+    formControlName :'ruleEngineEnabled',
     //defaultValue: true,
     data: [
       { value: true, displayName: 'Yes' },
@@ -206,7 +210,7 @@ loadExistingIcons(): void {
 
 
   submit() {
-  this.toast.success("chgdgsf")
+
   if (!this.form.invalid) {
     this.form.markAllAsTouched(); 
      
@@ -239,7 +243,7 @@ _projconfigmodel.isDeleted=false;
     next: () => {
       console.log('Updated successfully');
 
-           //this.toast.success('ProjectField saved successfully'); 
+      this.toast.success('Project Updated successfully'); 
       this.dialogRef.close(this.form.value);
     
       //this.toast.success('ProjectField saved successfully');
@@ -247,7 +251,7 @@ _projconfigmodel.isDeleted=false;
     },
     error: (err) => {
       console.error('Update failed:', err);
-      //this.toast.error('Failed to save project');
+      this.toast.error('Update failed:', err);
     }
   });
 
@@ -262,10 +266,10 @@ _projconfigmodel.isDeleted=false;
     next: () => {
       console.log('Saved successfully');
 
-           this.toast.success('Project saved successfully'); 
+      this.toast.success('Project saved successfully'); 
       this.dialogRef.close(this.form.value);
     
-      this.toast.success('Project saved successfully');
+      //this.toast.success('Project saved successfully');
       
     },
     error: (err) => {
