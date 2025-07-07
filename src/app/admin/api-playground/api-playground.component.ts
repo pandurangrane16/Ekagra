@@ -211,7 +211,7 @@ RemoveHeader(index:any){
     itemsArray.removeAt(index);
   }
   submit() {
-    this.toast.success("Saved Suuccessfully...");
+    this.toast.success("Saved Successfully...");
     setTimeout(() => {
       this.isMap = true;
     }, 2000);
