@@ -99,13 +99,16 @@ previewUrls: { [key: string]: string } = {};
     @Inject(MAT_DIALOG_DATA) public data: any
   ){
     this.form = this.fb.group({
-      name: [ '',Validators.required],
+        name: ['', [
+    Validators.required,
+    Validators.pattern(/^[a-zA-Z0-9 ]+$/) 
+  ]],
       description: [ '',Validators.required],
-      ruleEngineEnabled: [false,Validators.required],
-      mapEnabled: [false,Validators.required],
+      ruleEngineEnabled: [Validators.required],
+      mapEnabled: [Validators.required],
       mapIcon: [ null,Validators.required],
       projectIcon: [ null,Validators.required],
-      isActive: [false,Validators.required],
+      isActive: [Validators.required],
     });
   }
 
@@ -151,7 +154,16 @@ onFileSelect(event: any, type: 'mapIcon' | 'projectIcon') {
         }
       },
       error: (err) => {
+               this.form.patchValue({
+     [type]: null
+   
+    
+      
+    });
         console.error('Upload error:', err);
+        
+        this.toast.error('Upload error:', err);
+   
       }
     });
   }
@@ -177,6 +189,16 @@ onFileSelect(event: any, type: 'mapIcon' | 'projectIcon') {
 
     console.log('Edit form data patched:', this.data.record);
   }
+
+    this.form.controls['name'].valueChanges.subscribe((value: string) => {
+    if (value !== null) {
+      const transformed = value.replace(/\s+/g, '').toUpperCase();
+
+      if (value !== transformed) {
+        this.form.controls['name'].setValue(transformed, { emitEvent: false });
+      }
+    }
+  });
  
   
 
@@ -235,7 +257,18 @@ _projconfigmodel.shortCode="2"
 _projconfigmodel.roles="2"
 _projconfigmodel.isDeleted=false;
 
-  if (this.data?.mode === 'edit' && this.data?.record?.id){
+
+     this.service.CheckProjectName(this.form.controls['name'].value,this.data?.record?.id).subscribe(response => {
+        if (response.result === true) {
+          this.toast.error(" Name already exists in the System.");
+          this.form.setErrors({ duplicateName: true });
+          return;
+        }
+       
+     else{
+  
+
+        if (this.data?.mode === 'edit' && this.data?.record?.id){
 
     _projconfigmodel.id = this.data.record.id;
 
@@ -259,9 +292,8 @@ _projconfigmodel.isDeleted=false;
    
   }
 
- 
 
-
+  
   this.service.ProjectCreate(_projconfigmodel).subscribe({
     next: () => {
       console.log('Saved successfully');
@@ -277,6 +309,16 @@ _projconfigmodel.isDeleted=false;
       this.toast.error('Failed to save project');
     }
   });
+     }
+        
+
+      });
+
+
+
+ 
+ 
+
 
 
 

@@ -1,6 +1,6 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, Input, OnInit, PLATFORM_ID } from '@angular/core';
-
+import l from "leaflet";
 @Component({
   selector: 'app-cm-leaflet',
   standalone: true,
@@ -10,6 +10,7 @@ import { Component, Inject, Input, OnInit, PLATFORM_ID } from '@angular/core';
 })
 export class CmLeafletComponent implements OnInit {
   private map: any;
+  L : any;
   isBrowser = false;
 
   @Input() showMap: any;
@@ -20,17 +21,17 @@ export class CmLeafletComponent implements OnInit {
     this.isBrowser = isPlatformBrowser(this.platformId);
 
     if (this.isBrowser) {
-      const L = await import('leaflet');
+      this.L = await import('leaflet');
       await import('leaflet-draw'); // must import after Leaflet is loaded
 
-      const map = L.map('map').setView([51.505, -0.09], 13);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      const map = this.L.map('map').setView([51.505, -0.09], 13);
+      this.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
       }).addTo(map);
 
       this.map = map;
 
-      this.addDrawControl(L);
+      this.addDrawControl(this.L);
     }
   }
 
@@ -61,7 +62,7 @@ export class CmLeafletComponent implements OnInit {
 
     this.map.addControl(drawControl);
 
-    this.map.on(L.Draw.Event.CREATED, (event: any) => {
+    this.map.on(this.L.Draw.Event.CREATED, (event: any) => {
       const layer = event.layer;
       drawnItems.addLayer(layer);
       const coordinates = layer.getLatLngs();

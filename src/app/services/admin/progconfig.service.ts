@@ -16,6 +16,27 @@ ProjectCreate(_data: any) {
     return this._httpService._postMethod(_data, 'api/services/app/Project/Create');
   }
 
+
+  CheckProjectName(projectName?: string, Id?: number, ) {
+  let params: string[] = [];
+
+  if (projectName !== null && projectName !== undefined) {
+    params.push(`projectName=${projectName}`);
+  }
+
+
+
+  if (Id !== null && Id !== undefined) {
+    params.push(`Id=${Id}`);
+  }
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/Project/CheckProjectNameExist${queryString}`;
+
+  return this._httpService._postMethod(null,url);
+}
+
+
   Delete(id: any) {
     return this._httpService._deleteMethod('api/services/app/Project/Delete?Id='+id);
   }

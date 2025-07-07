@@ -32,6 +32,7 @@ export class ProjectFieldConfigurationFormComponent  implements OnInit{
   ruleEngineStatus = '';
   mapStatus = '';
   selectedProject: any;
+  showMapLabelError = false;
   inputFields = {
 
         description: {
@@ -129,24 +130,71 @@ export class ProjectFieldConfigurationFormComponent  implements OnInit{
 
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    this.form = this.fb.group({
-    
-      description: ['', Validators.required],
-      isActive: [false],
-      maplabel: ['',Validators.required],
-      apilabel: ['',Validators.required],
-      isSameas: [false],
-      selectedProject:['', Validators.required],
-      
-      
-    });
+this.form = this.fb.group({
+  description: ['', Validators.required],
+  isActive: [ Validators.required],
+  maplabel: [{ value: '', disabled: true }, Validators.required],
+  apilabel: [{ value: '', disabled: true }, Validators.required],
+  isSameas: [ Validators.required],
+  selectedProject: ['', Validators.required],
+});
   }
 
   ngOnInit(): void {
     
  
    this.getProjList();
+this.form.controls['selectedProject'].valueChanges.subscribe((value: { value: number; name: string } | null) => {
+  const selectedName = value?.name?.trim();
 
+  if (selectedName) {
+    this.form.controls['maplabel'].enable();
+    this.form.controls['apilabel'].enable();
+  } else {
+    this.form.controls['maplabel'].disable();
+    this.form.controls['maplabel'].reset();
+    
+    this.form.controls['apilabel'].disable();
+    this.form.controls['apilabel'].reset();
+  }
+});
+
+
+
+
+
+this.form.controls['maplabel'].valueChanges.subscribe((newVal: string) => {
+  const isSame = this.form.controls['isSameas'].value;
+  if (isSame === true) {
+    this.form.controls['apilabel'].setValue(newVal);     
+  }
+});
+this.form.controls['isSameas'].valueChanges.subscribe((option: boolean) =>  {
+
+  if (option === true) {
+    const mapVal = this.form.controls['maplabel'].value || '';
+    this.form.controls['apilabel'].setValue(mapVal);     
+    this.form.controls['apilabel'].disable();            
+  } else {
+    this.form.controls['apilabel'].enable();            
+    this.form.controls['apilabel'].reset();              
+  }
+});
+
+}
+
+
+
+onMapLabelClick(): void {
+  const mapLabelControl = this.form.controls['maplabel'];
+  const projectSelected = this.form.controls['selectedProject'].value;
+
+  if (mapLabelControl.disabled && !projectSelected) {
+    this.showMapLabelError = true;
+
+  
+    setTimeout(() => this.showMapLabelError = false, 3000);
+  }
 }
  
   onFileChange(event: any, controlName: string) {
@@ -222,8 +270,31 @@ _projfieldconfigmodel.isMapLabel=this.form.controls['isSameas'].value;
 _projfieldconfigmodel.label=this.form.controls['apilabel'].value;
 _projfieldconfigmodel.dataType="string"
 _projfieldconfigmodel.mapLabel=this.form.controls['maplabel'].value;
+
 _projfieldconfigmodel.projectId = this.form.controls['selectedProject'].value?.value;
 
+    this.service.CheckMapLabel(_projfieldconfigmodel.projectId,_projfieldconfigmodel.mapLabel,this.data?.record?.id).subscribe(response => {
+        if (response.result === true) {
+          this.toast.error(" Map Label exists in the System.");
+          
+          return;
+        }
+       
+     else{
+
+
+
+          this.service.CheckMapLabel(_projfieldconfigmodel.projectId,_projfieldconfigmodel.label,this.data?.record?.id).subscribe(response => {
+        if (response.result === true) {
+          this.toast.error(" Api Label exists in the System.");
+          
+          return;
+        }
+       
+     else{
+
+      
+  
   if (this.data?.mode === 'edit' && this.data?.record?.id){
 
     _projfieldconfigmodel.id = this.data.record.id;
@@ -248,10 +319,6 @@ _projfieldconfigmodel.projectId = this.form.controls['selectedProject'].value?.v
 
   }
 
-
- 
-
-
   this.service.ProjectfieldCreate(_projfieldconfigmodel).subscribe({
     next: () => {
       console.log('Saved successfully');
@@ -267,6 +334,24 @@ _projfieldconfigmodel.projectId = this.form.controls['selectedProject'].value?.v
       this.toast.error('Failed to save project');
     }
   });
+     }
+        
+
+      });
+
+
+  
+
+     }
+        
+
+      });
+
+  
+
+
+
+
 
 
 

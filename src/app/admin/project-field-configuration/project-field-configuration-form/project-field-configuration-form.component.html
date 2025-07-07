@@ -50,14 +50,18 @@
 
         <div class="row">
           
-            <div class="col-md-4">
+            <div class="col-md-4" (click)="onMapLabelClick()">
               <label>Map Label</label>
               <app-cm-input
                 [formGroup]="form"
                 [controlName]="'maplabel'"
                 [_inputData]="inputFields.maplabel">
               </app-cm-input>
-                      <div *ngIf="f['maplabel'].touched && f['maplabel'].errors" class="text-danger mt-1">
+
+  <div *ngIf="showMapLabelError" class="text-danger mt-1">
+    Please select a project first.
+  </div>
+                      <div *ngIf="f['maplabel'].touched && f['maplabel'].errors && f['maplabel'].enabled" class="text-danger mt-1">
         {{ getErrorMessage('maplabel', 'Map Label', false, '') }}
       </div>
             </div>
@@ -84,7 +88,7 @@
                   [controlName]="'apilabel'"
                   [_inputData]="inputFields.apilabel">
                 </app-cm-input>
-                        <div *ngIf="f['apilabel'].touched && f['apilabel'].errors" class="text-danger mt-1">
+                        <div *ngIf="f['apilabel'].touched && f['apilabel'].errors && f['apilabel'].enabled" class="text-danger mt-1">
         {{ getErrorMessage('apilabel', 'Api Label', false, '') }}
       </div>
               </div>
