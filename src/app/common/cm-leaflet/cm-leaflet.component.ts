@@ -1,39 +1,40 @@
-import { isPlatformBrowser } from '@angular/common';
-import { Component, Inject, Input, input, PLATFORM_ID } from '@angular/core';
-import * as L from 'leaflet';
-import 'leaflet-draw';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, Inject, Input, OnInit, PLATFORM_ID } from '@angular/core';
 
 @Component({
   selector: 'app-cm-leaflet',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './cm-leaflet.component.html',
-  styleUrl: './cm-leaflet.component.css'
+  styleUrls: ['./cm-leaflet.component.css']
 })
-export class CmLeafletComponent {
-  private map: L.Map | undefined;
+export class CmLeafletComponent implements OnInit {
+  private map: any;
+  isBrowser = false;
+
   @Input() showMap: any;
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
-  ngAfterViewInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      setTimeout(() => {
-      this.initMap();
-      this.addDrawControl();
-    }, 1000);
+
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+
+  async ngOnInit() {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+
+    if (this.isBrowser) {
+      const L = await import('leaflet');
+      await import('leaflet-draw'); // must import after Leaflet is loaded
+
+      const map = L.map('map').setView([51.505, -0.09], 13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+      }).addTo(map);
+
+      this.map = map;
+
+      this.addDrawControl(L);
     }
   }
 
-  private initMap(): void {
-    this.map = L.map('map', {
-      center: [19.0760, 72.8777], // Mumbai
-      zoom: 13,
-    });
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors',
-    }).addTo(this.map);
-  }
-
-  private addDrawControl(): void {
+  private addDrawControl(L: any): void {
     if (!this.map) return;
 
     const drawnItems = new L.FeatureGroup();
@@ -63,7 +64,6 @@ export class CmLeafletComponent {
     this.map.on(L.Draw.Event.CREATED, (event: any) => {
       const layer = event.layer;
       drawnItems.addLayer(layer);
-
       const coordinates = layer.getLatLngs();
       console.log('Polygon Coordinates:', coordinates);
     });
