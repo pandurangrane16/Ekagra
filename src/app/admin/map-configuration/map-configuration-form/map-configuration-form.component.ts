@@ -111,6 +111,7 @@ export class MapConfigurationFormComponent {
   toggleSettingsWithoutHeader = {
    
     name: 'isActive',
+    formControlName: 'isActive',
     defaultValue: true,
     data: [
       { value: true, displayName: 'Yes' },

@@ -359,14 +359,15 @@ onRowClicked(row: any) {
 
 deleteRow(rowData: any): void {
   const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
-    width: '320px',
-       position: { top: '20px' },
+    width: '400px',
+      position: { top: '20px' },
   panelClass: 'custom-confirm-dialog',
     data: {
       title: 'Confirm Delete',
-      message: 'Are you sure you want to delete this Map?',
+     message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.name}</b> will be deleted.</div>`,
+
       type: 'delete',
-      confirmButtonText: 'Delete',
+      confirmButtonText: 'Confirm',
       cancelButtonText: 'Cancel'
     }
   });

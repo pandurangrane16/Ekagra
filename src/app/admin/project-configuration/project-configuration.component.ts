@@ -237,7 +237,7 @@ deleteRow(rowData: any): void {
      message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.name}</b> will be deleted.</div>`,
 
       type: 'delete',
-      confirmButtonText: 'Delete',
+      confirmButtonText: 'Confirm',
       cancelButtonText: 'Cancel'
     }
   });

@@ -55,6 +55,7 @@ export class ProjectConfigurationFormComponent {
   isactivetoggle = {
    
     name: 'isActive',
+    formControlName:'isActive',
     //defaultValue: true,
     data: [
       { value: true, displayName: 'Yes' },
