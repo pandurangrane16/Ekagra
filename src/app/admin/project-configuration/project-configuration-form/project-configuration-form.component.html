@@ -66,6 +66,8 @@
         <label>
           Map Icon*
           <input type="file" (change)="onFileSelect($event, 'mapIcon')" />
+         
+          <img *ngIf="previewUrls['mapIcon']" [src]="previewUrls['mapIcon']" width="50" height="50" alt="Map Icon Preview" style="border-radius: 4px;" />
     <div *ngIf="f['mapIcon'].touched && f['mapIcon'].errors" class="text-danger mt-1">
         {{ getErrorMessage('mapIcon', 'Map Icon', false, '') }}
       </div>
@@ -74,6 +76,7 @@
         <label>
           Project Icon*
           <input type="file" (change)="onFileSelect($event, 'projectIcon')"  />
+           <img *ngIf="previewUrls['projectIcon']" [src]="previewUrls['projectIcon']" width="50" height="50" alt="Project Icon Preview" style="border-radius: 4px;" />
             <div *ngIf="f['projectIcon'].touched && f['projectIcon'].errors" class="text-danger mt-1">
         {{ getErrorMessage('projectIcon', 'Project Icon', false, '') }}
       </div>

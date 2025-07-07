@@ -10,7 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { InputRequest } from '../../models/request/inputreq.model';
 import { projconfigservice } from '../../services/admin/progconfig.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-
+import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 
 import { ProjectConfigurationFormComponent } from './project-configuration-form/project-configuration-form.component';
 
@@ -22,7 +22,8 @@ import { ProjectConfigurationFormComponent } from './project-configuration-form/
       CommonModule,
       CmTableComponent,
       CmInputComponent,
-      CmSelect2Component
+      CmSelect2Component,
+      
     ],
     templateUrl: './project-configuration.component.html',
     // styleUrl: './project-configuration.component.css',
@@ -223,10 +224,46 @@ import { ProjectConfigurationFormComponent } from './project-configuration-form/
     this.editRow(data);
     console.log(data);
   } else if (event.type === 'delete') {
-    
+    this.deleteRow(data);
   }
 }
+deleteRow(rowData: any): void {
+  const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
+    width: '400px',
+      position: { top: '20px' },
+  panelClass: 'custom-confirm-dialog',
+    data: {
+      title: 'Confirm Delete',
+     message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.name}</b> will be deleted.</div>`,
 
+      type: 'delete',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel'
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+     
+      this.service.Delete(rowData.id).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.getProjConfigList();
+            console.log('Deleted successfully');
+           
+          } else {
+            console.error('Delete failed:', res.error);
+          }
+        },
+        error: (err) => {
+          console.error('API error:', err);
+        }
+      });
+    } else {
+      console.log('User cancelled');
+    }
+  });
+}
 editRow(rowData: any) {
   const dialogRef = this.dialog.open(ProjectConfigurationFormComponent, {
     width: '500px',

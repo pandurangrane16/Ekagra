@@ -67,6 +67,11 @@ GetFilteredList(
 }
 
 
+  Delete(id: any) {
+    return this._httpService._deleteMethod('api/services/app/ProjectField/Delete?Id='+id);
+  }
+
+
 
 
 }
