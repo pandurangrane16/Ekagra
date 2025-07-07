@@ -10,6 +10,7 @@ import { SiteMngComponent } from "./site-configuration/site-mng/site-mng.compone
 import { ApiPlaygroundComponent } from "./api-playground/api-playground.component";
 import { ApiListComponent } from "./api-playground/api-list/api-list.component";
 import { LoginComponent } from "../routes/login/login.component";
+import { RuleConfigComponent } from "./rule-engine/rule-config/rule-config.component";
 //import { ProjectConfigurationComponent} from "./admin-dashboard/project-configuration.component";
 
 export const AdminRoutes: Routes = [
@@ -131,6 +132,28 @@ export const AdminRoutes: Routes = [
           urls: [
             { title: 'Api List View', url: '/admin/apilist' },
             { title: 'Api List View' },
+          ],
+        },
+      },
+      {
+        path: 'rulelist',
+        component: ApiListComponent,
+        data: {
+          title: 'Rules List View',
+          urls: [
+            { title: 'Rules List View', url: '/admin/rulelist' },
+            { title: 'Rules List View' },
+          ],
+        },
+      },
+      {
+        path: 'ruleengine',
+        component: RuleConfigComponent,
+        data: {
+          title: 'Rules List View',
+          urls: [
+            { title: 'Rules List View', url: '/admin/ruleengine' },
+            { title: 'Rules List View' },
           ],
         },
       },
