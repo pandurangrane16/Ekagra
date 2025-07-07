@@ -13,7 +13,7 @@ import { CmLeafletComponent } from '../../common/cm-leaflet/cm-leaflet.component
 @Component({
   selector: 'app-api-playground',
   imports: [MaterialModule, CommonModule, ReactiveFormsModule, CmInputComponent, 
-    CmRadioComponent, CmTextareaComponent,CmTextareaComponent,CmSelect2Component,CmLeafletComponent],
+    CmRadioComponent, CmTextareaComponent,CmTextareaComponent,CmSelect2Component],
   templateUrl: './api-playground.component.html',
   styleUrl: './api-playground.component.css',
   standalone: true

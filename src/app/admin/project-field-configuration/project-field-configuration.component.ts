@@ -21,7 +21,7 @@ import { ProjectFieldConfigurationFormComponent } from './project-field-configur
     CommonModule,
     CmTableComponent,
     CmInputComponent,
-    CmSelect2Component,CmConfirmationDialogComponent
+    CmSelect2Component
     
   ],
   templateUrl: './project-field-configuration.component.html',

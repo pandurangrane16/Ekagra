@@ -20,8 +20,7 @@ import { MapConfigurationFormComponent } from './map-configuration-form/map-conf
     CommonModule,
     CmTableComponent,
     CmInputComponent,
-    CmSelect2Component,
-    CmConfirmationDialogComponent
+    CmSelect2Component
     
   ],
   templateUrl: './map-configuration.component.html',

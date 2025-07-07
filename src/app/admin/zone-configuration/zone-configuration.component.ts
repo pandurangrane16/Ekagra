@@ -20,7 +20,7 @@ import { ZoneConfigurationFormComponent } from './zone-configuration-form/zone-c
     CommonModule,
     CmTableComponent,
     CmInputComponent,
-    CmSelect2Component,CmConfirmationDialogComponent
+    CmSelect2Component
     
   ],
   templateUrl: './zone-configuration.component.html',
