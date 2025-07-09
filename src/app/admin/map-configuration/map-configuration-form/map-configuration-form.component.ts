@@ -1,5 +1,5 @@
 
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef,MatDialogModule } from '@angular/material/dialog';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
@@ -13,11 +13,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { ToastrService } from 'ngx-toastr';
 import { mapconfigmodel } from '../../../models/admin/mapconfig.model';
 import { getErrorMsg } from '../../../utils/utils';
-
+import { MatCardModule } from '@angular/material/card';
+import { Router } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { AbstractControl, ValidatorFn } from '@angular/forms';
 
 @Component({
   selector: 'app-map-configuration-form',
-  imports: [CommonModule,CmInputComponent,MatIconModule, CmToggleComponent,ReactiveFormsModule, MatDialogModule, MatButtonModule, MatInputModule, FormsModule],
+  imports: [CommonModule,CmInputComponent,MatIconModule,MatCardModule, MatTooltipModule,CmToggleComponent,ReactiveFormsModule, MatDialogModule, MatButtonModule, MatInputModule, FormsModule],
   templateUrl: './map-configuration-form.component.html',
   styleUrl: './map-configuration-form.component.css',
   providers:[ToastrService]
@@ -25,10 +28,12 @@ import { getErrorMsg } from '../../../utils/utils';
 
 
 export class MapConfigurationFormComponent {
+    router = inject(Router);
   form!: FormGroup;
   MatButtonToggleChange:any;
   ruleEngineStatus = '';
   mapStatus = '';
+  state:any;
   selectedStatus: any;
   editid :any;
 
@@ -37,6 +42,7 @@ export class MapConfigurationFormComponent {
       // labelHeader: 'Name',
       placeholder: 'Enter project name',
       appearance: 'outline',
+       restrictToAlphanumeric:true,
       isDisabled: false,
       color: 'primary',
       formFieldClass: "w-100"
@@ -62,6 +68,7 @@ export class MapConfigurationFormComponent {
       placeholder: 'Enter MinZoom',
       appearance: 'outline',
       isDisabled: false,
+        restrictToDigits: true, 
       color: 'primary',
       formFieldClass: "w-100"
     },
@@ -69,6 +76,7 @@ export class MapConfigurationFormComponent {
       // labelHeader: 'Description',
       placeholder: 'Enter MaxZoom',
       appearance: 'outline',
+        restrictToDigits: true, 
       isDisabled: false,
       color: 'primary',
       formFieldClass: "w-100"
@@ -79,6 +87,7 @@ export class MapConfigurationFormComponent {
       appearance: 'outline',
       isDisabled: false,
       color: 'primary',
+       restrictToDecimal: true ,
       formFieldClass: "w-100"
     },
     long: {
@@ -87,6 +96,7 @@ export class MapConfigurationFormComponent {
       appearance: 'outline',
       isDisabled: false,
       color: 'primary',
+       restrictToDecimal: true ,
       formFieldClass: "w-100"
     },
     sourceurl: {
@@ -112,7 +122,7 @@ export class MapConfigurationFormComponent {
    
     name: 'isActive',
     formControlName: 'isActive',
-    defaultValue: true,
+    //defaultValue: true,
     data: [
       { value: true, displayName: 'Yes' },
       { value: false, displayName: 'No' }
@@ -134,10 +144,10 @@ export class MapConfigurationFormComponent {
   
   constructor(
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<MapConfigurationFormComponent>,
+   // private dialogRef: MatDialogRef<MapConfigurationFormComponent>,
     private service :mapconfigservice,
      private toast: ToastrService,
-    @Inject(MAT_DIALOG_DATA) public data: any
+   // @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.form = this.fb.group({
       name: ['', Validators.required],
@@ -149,7 +159,7 @@ export class MapConfigurationFormComponent {
       lat: ['', Validators.required],
       long: ['', Validators.required],
       wmslayer :['',Validators.required],
-      isActive: [false,Validators.required],
+      isActive: [Validators.required],
 
       
       
@@ -159,31 +169,38 @@ export class MapConfigurationFormComponent {
   get f() {
   return this.form.controls;
   }
-
+  noWhitespaceValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      return isWhitespace ? { whitespace: true } : null;
+    };
+  }
     ngOnInit(): void {
     
- 
-        if (this.data?.mode === 'edit' && this.data?.record) {
+    
+    this.state = history.state;
+         const state = this.state;
+        if (this.state?.mode === 'edit' && this.state?.record) {
 
 
 
 
-this.editid=this.data.record.id;
+this.editid=this.state.record.id;
     this.form.patchValue({
-      description: this.data.record.description,
-      isActive: this.data.record.isActive,
-      wmslayer: this.data.record.wmsLayer,
-      lat: this.data.record.lat,
-      long: this.data.record.long,
-      minzoom: this.data.record.minZoom,
-      maxzoom: this.data.record.maxZoom,
-      sourceurl: this.data.record.sourceURL,
-      displayname: this.data.record.displayName,
-      name: this.data.record.name,
+      description: this.state.record.description,
+      isActive: this.state.record.isActive,
+      wmslayer: this.state.record.wmsLayer,
+      lat: this.state.record.lat,
+      long: this.state.record.long,
+      minzoom: this.state.record.minZoom,
+      maxzoom: this.state.record.maxZoom,
+      sourceurl: this.state.record.sourceURL,
+      displayname: this.state.record.displayName,
+      name: this.state.record.name,
       
     });
 
-    console.log('Edit form data patched:', this.data.record);
+    console.log('Edit form data patched:', this.state.record);
   }
 
 }
@@ -228,16 +245,17 @@ this.editid=this.data.record.id;
     
 
     
-      if (this.data?.mode === 'edit' && this.data?.record?.id){
+      if (this.state?.mode === 'edit' && this.state?.record?.id){
 
-    _mapconfigmodel.id = this.data.record.id;
+    _mapconfigmodel.id = this.state.record.id;
 
       this.service.MapEdit(_mapconfigmodel).subscribe({
     next: () => {
       console.log('Updated successfully');
+        this.router.navigate(['/admin/mapconfig']);   
 
           this.toast.success('Updated successfully'); 
-      this.dialogRef.close(this.form.value);
+      //this.dialogRef.close(this.form.value);
       
     
       //this.toast.success('ProjectField saved successfully');
@@ -258,9 +276,9 @@ this.editid=this.data.record.id;
       this.service.MapCreate(_mapconfigmodel).subscribe({
         next: () => {
           console.log('Saved successfully');
-    
+      this.router.navigate(['/admin/mapconfig']);   
                this.toast.success('Map saved successfully'); 
-          this.dialogRef.close(this.form.value);
+         // this.dialogRef.close(this.form.value);
         
          
           
@@ -285,7 +303,7 @@ this.editid=this.data.record.id;
       }
 
   close() {
-    this.dialogRef.close();
+      this.router.navigate(['/admin/mapconfig']);   
   }
 
   getErrorMessage(_controlName: any, _controlLable: any, _isPattern: boolean = false, _msg: string) {

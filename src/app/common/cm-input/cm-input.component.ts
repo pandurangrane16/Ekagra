@@ -44,7 +44,52 @@ export class CmInputComponent {
    this.onChange = fn;
  }
 
- // Register a callback function to notify Angular when the input is touched
+ restrictToDigits(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  const digitsOnly = input.value.replace(/[^0-9]/g, '');
+
+  if (input.value !== digitsOnly) {
+    input.value = digitsOnly;
+    this.formGroup.get(this.controlName)?.setValue(digitsOnly);
+  }
+}
+restrictToDecimal(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  let value = input.value;
+
+
+  const regex = /^-?\d*\.?\d{0,6}$/;
+
+
+  if (!regex.test(value)) {
+    value = value.slice(0, -1);
+    input.value = value;
+  }
+
+  this.formGroup.get(this.controlName)?.setValue(value);
+}
+
+restrictToAlphanumeric(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  const originalValue = input.value;
+
+  // Keep only alphanumeric characters and spaces
+  const filteredValue = originalValue.replace(/[^a-zA-Z0-9 ]/g, '');
+
+  if (originalValue !== filteredValue) {
+    input.value = filteredValue;
+
+    // ✅ Update the form control manually
+    const control = this.formGroup?.get(this.controlName);
+    if (control) {
+      control.setValue(filteredValue);
+    }
+  }
+}
+
+
+
+
  registerOnTouched(fn: any): void {
    this.onTouched = fn;
  }

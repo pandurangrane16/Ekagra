@@ -16,7 +16,8 @@
       </mat-label>
     
       <input matInput [placeholder]="_inputData.placeholder" [disabled]="_inputData.isDisabled" [value]="value"
-      [formControlName]="controlName" [type]="type" />
+      [formControlName]="controlName" [type]="type"     (input)="_inputData.restrictToDigits ? restrictToDigits($event) :
+          _inputData.restrictToDecimal ? restrictToDecimal($event) : _inputData.restrictToAlphanumeric ? restrictToAlphanumeric($event): null" />
     
     </mat-form-field>
   </div>

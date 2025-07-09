@@ -19,6 +19,9 @@ import { combineLatest } from 'rxjs';
 import { siteconfigmodel } from '../../../models/admin/siteconfig.model';
 import { locationmodel } from '../../../models/admin/location.model';
 import { v4 as uuidv4 } from 'uuid';
+import { ToastrService } from 'ngx-toastr';
+import { AbstractControl, ValidatorFn } from '@angular/forms';
+
 
 
 @Component({
@@ -82,6 +85,7 @@ foreditmode : boolean =false;
       appearance: 'outline',
       isDisabled: false,
       color: 'primary',
+       restrictToDecimal: true ,
        formFieldClass: "w-100"
     },
       long: {
@@ -89,15 +93,19 @@ foreditmode : boolean =false;
       placeholder: 'Enter Longitude',
       appearance: 'outline',
       isDisabled: false,
+       restrictToDecimal: true ,
       color: 'primary',
        formFieldClass: "w-100"
     },
     pincode: {
       // labelHeader: 'Description',
+  pattern: '^[0-9]*$',
+      type: 'text', 
       placeholder: 'Enter Pincode',
       appearance: 'outline',
       isDisabled: false,
       color: 'primary',
+        restrictToDigits: true, 
        formFieldClass: "w-100"
     },
        address: {
@@ -155,7 +163,7 @@ foreditmode : boolean =false;
    
     name: 'isActive',
      formControlName: 'isActive',
-    defaultValue: true,
+    //defaultValue: true,
     data: [
       { value: true, displayName: 'Yes' },
       { value: false, displayName: 'No' }
@@ -199,34 +207,52 @@ onLocationSelected(selected: any) {
 }
 
 
+noWhitespaceValidator(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const value = control.value;
 
+    if (typeof value !== 'string') {
+      return null; 
+    }
+
+    const isWhitespace = value.trim().length === 0;
+    return isWhitespace ? { whitespace: true } : null;
+  };
+}
 
 
 onProjectSelected(event: any) {
 
 }
 
+allowOnlyNumbers(event: KeyboardEvent) {
+  const charCode = event.which ? event.which : event.keyCode;
+  if (charCode < 48 || charCode > 57) {
+    event.preventDefault();
+  }
+}
+
 
   posts: any[] = [];
   constructor(
     private fb: FormBuilder,private loader:LoaderService,private apiService : ApiService,
-    private service :siteconfigservice,private http: HttpClient
+    private service :siteconfigservice,private http: HttpClient,private toast :ToastrService,
   ) {
     this.form = this.fb.group({
-      name: ['', Validators.required],
-      siteId: ['', Validators.required],
-      siteName: ['', Validators.required],
-      lat: ['', Validators.required],
-      long: ['', Validators.required],
-      pincode: ['', Validators.required],
-      description: ['', Validators.required],
-      isActive: [false,Validators.required],
+      name: ['', [Validators.required, this.noWhitespaceValidator()  ]],
+      siteId: ['', [Validators.required, this.noWhitespaceValidator() ] ],
+      siteName: ['', [Validators.required, this.noWhitespaceValidator()]  ],
+      lat: ['', [Validators.required, this.noWhitespaceValidator() ] ],
+      long: ['', [Validators.required, this.noWhitespaceValidator() ] ],
+      pincode: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+      description: ['', [Validators.required, this.noWhitespaceValidator() ] ],
+      isActive: [''],
       locationDropdown: [''],
-      address: [''],
-      areaname: [''],
-      roadname: [''],
-      taluka: [''],
-      district: [''],
+      address: ['' , [this.noWhitespaceValidator()]],
+      areaname: ['',[this.noWhitespaceValidator()]],
+      roadname: ['',[this.noWhitespaceValidator()]],
+      taluka: ['',[this.noWhitespaceValidator()]],
+      district: ['',[this.noWhitespaceValidator()]],
 
     
       
@@ -244,8 +270,29 @@ onProjectSelected(event: any) {
   }
   ngOnInit(): void {
 
-      
-    
+this.form.get('siteId')?.valueChanges
+  .pipe(
+    debounceTime(1000),
+    distinctUntilChanged()
+  )
+  .subscribe((siteId: string) => {
+      const state = history.state;
+    if (state?.mode === 'edit') return;
+
+    if (siteId) {
+      const projectId = this.form.controls['name'].value?.value;
+
+      if (!projectId) {
+        this.toast.error('Please select a project before entering Site ID.');
+        this.form.patchValue({ siteId: null }); 
+        return;
+      }
+
+      this.checkSiteIdExists(siteId, projectId);
+    }
+  });
+
+
   this.setupFormValueListeners(); 
   //this.loadPosts();               
   this.getProjList();
@@ -256,6 +303,22 @@ onProjectSelected(event: any) {
   }
 
   
+checkSiteIdExists(siteId: string, projectid: any): void {
+  this.service.CheckSiteId(siteId, projectid).subscribe({
+    next: (response) => {
+      if (response.result === 1) {
+        this.toast.error('Site Id already exists.');
+        this.form.patchValue({
+          siteId: null
+        });
+      }
+    },
+    error: (err) => {
+      console.error('API Error', err);
+    }
+  });
+}
+
 
 setupFormValueListeners() {
 
@@ -347,12 +410,13 @@ setupFormValueListeners() {
         
       } else {
         this.form.get('pincode')?.setValue(''); 
-        alert('Invalid or missing pincode');
+        this.toast.error("Invalid or missing pincode");
+     
       }
     },
     error: () => {
       this.form.get('pincode')?.setValue(''); 
-      alert('Failed to fetch address');
+      this.toast.error("Failed to fetch address");
     }
   });
 }
@@ -465,7 +529,7 @@ this.form.get('address')?.setValue(formattedAddress);
      this.locationOptions = response?.result || [];
      const items=response?.result || [];
 
-
+console.log("response" + response)
          if (items.length === 0) {
           this.form.patchValue({
             areaname : null,
@@ -477,7 +541,7 @@ this.form.get('address')?.setValue(formattedAddress);
       this.noLocationFound = true;
        this.isLocationsOptionsLoaded = false;
       // this.locationDropdownSettings.options = []; 
-
+console.log("hello")
       return;
     }
 
@@ -493,7 +557,7 @@ this.form.get('address')?.setValue(formattedAddress);
 
     }));
 
- 
+    console.log(locationsOptions)
     this.locationDropdownSettings.options = locationsOptions
     console.log(this.locationDropdownSettings.options
 
@@ -593,15 +657,15 @@ submit() {
     next: () => {
       console.log('Updated successfully');
 
-           //this.toast.success('ProjectField saved successfully'); 
+       this.toast.success('Updated successfully'); 
        this.router.navigate(['/admin/siteconfig']);
     
-      //this.toast.success('ProjectField saved successfully');
+     
       
     },
     error: (err) => {
       console.error('Update failed:', err);
-      //this.toast.error('Failed to save project');
+      this.toast.error('Failed to update Site');
     }
   });
 
@@ -613,10 +677,12 @@ submit() {
     this.service.SiteCreate(_siteconfigmodel).subscribe({
       next: () => {
         console.log('Site saved successfully');
+        this.toast.success('Site saved successfully'); 
         this.router.navigate(['/admin/siteconfig']);
       },
       error: (err) => {
         console.error('Site save failed:', err);
+        this.toast.error('Failed to save Site');
       }
     });
   };
@@ -643,11 +709,13 @@ submit() {
     this.service.LocationCreate(_locationmodel).subscribe({
       next: (res: any) => {
         const newId = res?.result?.locationId || _locationmodel.locationId;
+        this.toast.success('Location saved successfully with ID:', newId);
         console.log('Location saved successfully with ID:', newId);
-        createSite(newId); // ✅ Only proceed after location is saved
+        createSite(newId); 
       },
       error: (err) => {
         console.error('Location save failed:', err);
+        this.toast.error('Location save failed:', err);
       }
     });
   } else {

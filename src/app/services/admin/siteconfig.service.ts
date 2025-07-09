@@ -24,6 +24,10 @@ SiteCreate(_data: any) {
     return this._httpService._putMethod(_data, 'api/services/app/Site/Update');
   }
 
+    CheckSiteId(SiteId: any,ProjectId:any) {
+    return this._httpService._postMethod(null, 'api/services/app/Site/CheckSiteId?SiteId='+SiteId+'&ProjectId='+ProjectId);
+  }
+
 
 
 GetAll(MaxResultCount: number, SkipCount: number,) {
@@ -40,6 +44,10 @@ GetAll(MaxResultCount: number, SkipCount: number,) {
 
     GetLocationbyLocationId( Locationid: number) {
     return this._httpService._getMethod('api/services/app/Location/GetLocationbyLocationId?LocationId='+Locationid);
+  }
+
+    Delete(id: any) {
+    return this._httpService._deleteMethod('api/services/app/Site/Delete?Id='+id);
   }
 
 

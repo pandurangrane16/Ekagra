@@ -29,7 +29,9 @@ GetAll() {
  Delete(id: any) {
     return this._httpService._deleteMethod('api/services/app/Zone/Delete?Id='+id);
   }
-
+    ZoneEdit(_data: any) {
+    return this._httpService._putMethod(_data, 'api/services/app/Zone/Update');
+  }
   GetFilteredList(
   
   ProjectId?: number,

@@ -57,7 +57,15 @@ GetProjectList() {
     return this._httpService._putMethod(_data, 'api/services/app/Project/Update');
   }
 
-  GetFilteredList(ProjectId?: number, filter?: string, status?: boolean) {
+
+
+GetFilteredList(
+  ProjectId?: number,
+  filter?: string,
+  status?: boolean,
+  maxResultCount?: number,
+  skipCount?: number
+) {
   let params: string[] = [];
 
   if (ProjectId !== null && ProjectId !== undefined) {
@@ -70,6 +78,14 @@ GetProjectList() {
 
   if (status !== null && status !== undefined) {
     params.push(`IsActive=${status}`);
+  }
+
+  if (maxResultCount !== null && maxResultCount !== undefined) {
+    params.push(`MaxResultCount=${maxResultCount}`);
+  }
+
+  if (skipCount !== null && skipCount !== undefined) {
+    params.push(`SkipCount=${skipCount}`);
   }
 
   const queryString = params.length ? '?' + params.join('&') : '';
