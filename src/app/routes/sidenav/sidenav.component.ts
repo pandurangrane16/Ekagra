@@ -7,7 +7,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { HeaderService } from '../../services/header.service';
-import { MaterialModule } from '../../Material.module';
 
 
 interface MenuItem {
@@ -16,29 +15,27 @@ interface MenuItem {
   label: string;
   children?: MenuItem[];
   isOpen?: boolean;
-  link: string;
-  hasChild: boolean;
+  link:string;
 }
 
 @Component({
-  selector: 'app-sidenav',
-  imports: [
-    MatSidenavModule,
-    MatIconModule,
-    MatListModule,
-    MatTooltipModule,
-    MatButtonModule,
-    CommonModule,
-    RouterModule,
-    MaterialModule,
-  ],
-  providers: [HeaderService],
-  templateUrl: './sidenav.component.html',
-  styleUrl: './sidenav.component.css'
+    selector: 'app-sidenav',
+    imports: [
+        MatSidenavModule,
+        MatIconModule,
+        MatListModule,
+        MatTooltipModule,
+        MatButtonModule,
+        CommonModule,
+        RouterModule,
+    ],
+    providers: [HeaderService],
+    templateUrl: './sidenav.component.html',
+    styleUrl: './sidenav.component.css'
 })
 export class SidenavComponent {
   isSidebarCollapsed = true;
-
+  
   @Output() logoShow = new EventEmitter<Event>();
   @Output() sidebarToggle = new EventEmitter<void>();
   @Input()
@@ -53,14 +50,14 @@ export class SidenavComponent {
 
   onClick(event: Event) {
     this.eventChange.emit(event);
-
+       
   }
 
-  constructor(public headerService: HeaderService, public routes: Router, private route: ActivatedRoute) {
+  constructor(public headerService : HeaderService,public routes: Router,private route: ActivatedRoute){
 
   }
-  toggleLogoMain() {
-    this.headerService.showLogo = !this.headerService.showLogo;
+  toggleLogoMain(){
+    this.headerService.showLogo=!this.headerService.showLogo;
     console.log(this.headerService.showLogo);
   }
   toggle() {
@@ -75,8 +72,7 @@ export class SidenavComponent {
       icon: './assets/img/icon_dashboard1.svg',
       label: 'Dashboard',
       link: 'dashboard',
-      activeIcon: './assets/img/icon_dashboard2.svg',
-      hasChild: false,
+      activeIcon: './assets/img/icon_dashboard2.svg'
       // isOpen: false,
       // children: [
       //   { icon: 'fas fa-chart-pie', label: 'Analytics' },
@@ -87,8 +83,7 @@ export class SidenavComponent {
       icon: './assets/img/icon_surveillance.svg',
       activeIcon: './assets/img/icon_surveillance1.svg',
       label: 'Surveillance',
-      link: 'surveilience',
-      hasChild: false,
+      link:'surveilience',
       // isOpen: false,
       // children: [
       //   { icon: 'fas fa-user', label: 'Profile' },
@@ -99,108 +94,43 @@ export class SidenavComponent {
       icon: './assets/img/icon_parking.svg',
       activeIcon: './assets/img/icon_parking1.svg',
       label: 'Parking',
-      link: 'parking',
-      hasChild: false,
+      link:'parking'
     },
     {
       icon: './assets/img/icon_ATCS.svg',
       activeIcon: './assets/img/icon_ATCS1.svg',
       label: 'ATCS',
-      link: 'atcs',
-      hasChild: false,
+      link:'atcs',
     },
     {
       icon: './assets/img/icon_airQuality.svg',
       activeIcon: './assets/img/icon_airQuality1.svg',
       label: 'Air Quality',
-      link: 'air',
-      hasChild: false,
+      link:'air',
     },
     {
       icon: './assets/img/icon_alerts.svg',
       activeIcon: './assets/img/icon_alerts1.svg',
       label: 'Alerts',
-      link: 'alerts',
-      hasChild: false,
+      link:'alerts',
     },
     {
       icon: './assets/img/icon_SOPs.svg',
       activeIcon: './assets/img/icon_SOPs1.svg',
       label: 'SOPs',
-      link: '#',
-      hasChild: false,
+      link:'#',
     },
     {
       icon: './assets/img/icon_Chat.svg',
       activeIcon: './assets/img/icon_Chat1.svg',
       label: 'Chat',
-      link: 'chat',
-      hasChild: false,
+      link:'chat',
     },
     {
       icon: './assets/img/icon_settings.svg',
       activeIcon: './assets/img/icon_settings1.svg',
       label: 'Settings',
-      link: 'setting',
-      hasChild: false,
-    },
-    {
-      icon: './assets/img/icon_settings.svg',
-      activeIcon: './assets/img/icon_settings1.svg',
-      label: 'Admin',
-      link: '',
-      hasChild: true,
-      children: [
-        {
-          icon: './assets/img/icon_settings.svg',
-          activeIcon: './assets/img/icon_settings1.svg',
-          label: 'Project Configuration',
-          link: 'admin/projconfig',
-          hasChild: false,
-        },
-        {
-          icon: './assets/img/icon_settings.svg',
-          activeIcon: './assets/img/icon_settings1.svg',
-          label: 'Site Configuration',
-          link: 'admin/siteconfig',
-          hasChild: false,
-        },
-        {
-          icon: './assets/img/icon_settings.svg',
-          activeIcon: './assets/img/icon_settings1.svg',
-          label: 'Project Field Configuration',
-          link: 'admin/projfieldconfig',
-          hasChild: false,
-        },
-        {
-          icon: './assets/img/icon_settings.svg',
-          activeIcon: './assets/img/icon_settings1.svg',
-          label: 'Map Configuration',
-          link: 'admin/mapconfig',
-          hasChild: false,
-        },
-        {
-          icon: './assets/img/icon_settings.svg',
-          activeIcon: './assets/img/icon_settings1.svg',
-          label: 'Zone Configuration',
-          link: 'admin/zoneconfig',
-          hasChild: false,
-        },
-        {
-          icon: './assets/img/icon_settings.svg',
-          activeIcon: './assets/img/icon_settings1.svg',
-          label: 'API Playground',
-          link: 'admin/apiplayground',
-          hasChild: false,
-        },
-        {
-          icon: './assets/img/icon_settings.svg',
-          activeIcon: './assets/img/icon_settings1.svg',
-          label: 'Rule Engine',
-          link: 'admin/ruleengine',
-          hasChild: false,
-        }
-      ]
+      link:'setting',
     }
   ];
 

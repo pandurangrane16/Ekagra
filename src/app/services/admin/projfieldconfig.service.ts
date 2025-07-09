@@ -66,39 +66,6 @@ GetFilteredList(
   return this._httpService._getMethod(url);
 }
 
-CheckMapLabel(
-  ProjectId?: number,
-  MapLabel?: string,
-  id?: number,
-
-) {
-  let params: string[] = [];
-
-  if (ProjectId !== null && ProjectId !== undefined) {
-    params.push(`ProjectId=${ProjectId}`);
-  }
-
-  if (MapLabel !== null && MapLabel !== undefined) {
-    params.push(`MapLabel=${MapLabel}`);
-  }
-
-
-
-  if (id !== null && id !== undefined) {
-    params.push(`id=${id}`);
-  }
-
-  const queryString = params.length ? '?' + params.join('&') : '';
-  const url = `api/services/app/ProjectField/CheckProjectNameAndMapLabelExist${queryString}`;
-
-  return this._httpService._postMethod(null,url);
-}
-
-
-  Delete(id: any) {
-    return this._httpService._deleteMethod('api/services/app/ProjectField/Delete?Id='+id);
-  }
-
 
 
 

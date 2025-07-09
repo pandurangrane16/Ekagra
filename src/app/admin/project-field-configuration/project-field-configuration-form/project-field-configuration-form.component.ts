@@ -12,10 +12,13 @@ import { getErrorMsg } from '../../../utils/utils';
 import { MatCardModule } from '@angular/material/card';
 import { projfieldconfigservice } from '../../../services/admin/projfieldconfig.service';
 import { projfieldconfigmodel } from '../../../models/admin/projfieldconfig.model';
+<<<<<<< HEAD
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
+=======
+>>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
 
 
 
@@ -37,7 +40,6 @@ export class ProjectFieldConfigurationFormComponent  implements OnInit{
   ruleEngineStatus = '';
   mapStatus = '';
   selectedProject: any;
-  showMapLabelError = false;
   inputFields = {
 
         description: {
@@ -74,7 +76,7 @@ export class ProjectFieldConfigurationFormComponent  implements OnInit{
     ]
   };
 
-  projectEnabled2 = {
+  projectEnabled = {
    
     name: 'isActive',
     defaultValue: true,
@@ -84,21 +86,10 @@ export class ProjectFieldConfigurationFormComponent  implements OnInit{
     ]
   };
 
-  projectEnabled = {
-
-  name: 'isActive',
-  formControlName: 'isActive',
-  data: [
-    { value: true, displayName: 'Yes' },
-    { value: false, displayName: 'No' }
-  ]
-};
-
     isSameas= {
    
     name: 'isSameas',
-    formControlName: 'isSameas',
-   
+    defaultValue: true,
     data: [
       { value: true, displayName: 'Yes' },
       { value: false, displayName: 'No' }
@@ -131,10 +122,10 @@ export class ProjectFieldConfigurationFormComponent  implements OnInit{
     private fb: FormBuilder,
     //private dialogRef: MatDialogRef<ProjectFieldConfigurationFormComponent>,
     private service :projfieldconfigservice,
-    private toast :ToastrService,
 
    // @Inject(MAT_DIALOG_DATA) public data: any
   ) {
+<<<<<<< HEAD
 this.form = this.fb.group({
   description: ['',[ Validators.required, this.noWhitespaceValidator()]  ],
   isActive: [ Validators.required],
@@ -143,6 +134,19 @@ this.form = this.fb.group({
   isSameas: [ Validators.required],
   selectedProject: ['',[ Validators.required, this.noWhitespaceValidator()]  ],
 });
+=======
+    this.form = this.fb.group({
+    
+      description: ['', Validators.required],
+      isActive: [false,Validators.required],
+      maplabel: ['',Validators.required],
+      apilabel: ['',Validators.required],
+      isSameas: [false,Validators.required],
+      selectedProject:['', Validators.required],
+      
+      
+    });
+>>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
   }
 noWhitespaceValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -162,9 +166,8 @@ noWhitespaceValidator(): ValidatorFn {
     this.state = history.state;
          const state = this.state;
    this.getProjList();
-this.form.controls['selectedProject'].valueChanges.subscribe((value: { value: number; name: string } | null) => {
-  const selectedName = value?.name?.trim();
 
+<<<<<<< HEAD
   if (selectedName) {
     this.form.controls['maplabel'].enable();
     this.form.controls['apilabel'].enable();
@@ -220,6 +223,8 @@ onMapLabelClick(): void {
   
     setTimeout(() => this.showMapLabelError = false, 3000);
   }
+=======
+>>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
 }
  
   onFileChange(event: any, controlName: string) {
@@ -264,10 +269,14 @@ this.editid=this.state.record.id;
       selectedProject: selectedProj
     });
 
+<<<<<<< HEAD
     console.log('Edit form data patched:', this.state.record);
       console.log('Edit form data patched form value:', this.form.value);
       console.log(this.form.controls)
 
+=======
+    console.log('Edit form data patched:', this.data.record);
+>>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
   }
   }, error => {
     console.error('Error fetching project list', error);
@@ -291,13 +300,13 @@ _projfieldconfigmodel.deletionTime="2025-06-20T05:32:25.067Z"
 _projfieldconfigmodel.lastModificationTime="2025-06-20T05:32:25.067Z"
 _projfieldconfigmodel.lastModifierUserId="2"
 _projfieldconfigmodel.isDeleted=false
-_projfieldconfigmodel.isMapLabel=this.form.controls['isSameas'].value;
+_projfieldconfigmodel.isMap=this.form.controls['isSameas'].value;
 _projfieldconfigmodel.label=this.form.controls['apilabel'].value;
 _projfieldconfigmodel.dataType="string"
 _projfieldconfigmodel.mapLabel=this.form.controls['maplabel'].value;
-
 _projfieldconfigmodel.projectId = this.form.controls['selectedProject'].value?.value;
 
+<<<<<<< HEAD
     this.service.CheckMapLabel(_projfieldconfigmodel.projectId,_projfieldconfigmodel.mapLabel,this.state?.record?.id).subscribe(response => {
         if (response.result === true) {
           this.toast.error(" Map Label exists in the System.");
@@ -321,6 +330,9 @@ _projfieldconfigmodel.projectId = this.form.controls['selectedProject'].value?.v
       
   
   if (this.state?.mode === 'edit' && this.state?.record?.id){
+=======
+  if (this.data?.mode === 'edit' && this.data?.record?.id){
+>>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
 
     _projfieldconfigmodel.id = this.state.record.id;
 
@@ -328,14 +340,21 @@ _projfieldconfigmodel.projectId = this.form.controls['selectedProject'].value?.v
     next: () => {
       console.log('Updated successfully');
 
+<<<<<<< HEAD
            this.toast.success('Updated successfully'); 
            this.router.navigate(['/admin/projfieldconfig']);
       
+=======
+           //this.toast.success('ProjectField saved successfully'); 
+      this.dialogRef.close(this.form.value);
+    
+      //this.toast.success('ProjectField saved successfully');
+>>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
       
     },
     error: (err) => {
       console.error('Update failed:', err);
-      this.toast.error('Update failed:', err);
+      //this.toast.error('Failed to save project');
     }
   });
 
@@ -343,6 +362,7 @@ _projfieldconfigmodel.projectId = this.form.controls['selectedProject'].value?.v
 
   }
 
+<<<<<<< HEAD
   else{  this.service.ProjectfieldCreate(_projfieldconfigmodel).subscribe({
     next: () => {
       console.log('Saved successfully');
@@ -350,14 +370,27 @@ _projfieldconfigmodel.projectId = this.form.controls['selectedProject'].value?.v
            this.toast.success('ProjectField saved successfully'); 
            this.router.navigate(['/admin/projfieldconfig']);
     
+=======
+
+ 
+
+
+  this.service.ProjectfieldCreate(_projfieldconfigmodel).subscribe({
+    next: () => {
+      console.log('Saved successfully');
+
+           //this.toast.success('ProjectField saved successfully'); 
+      this.dialogRef.close(this.form.value);
+>>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
     
-     
+      //this.toast.success('ProjectField saved successfully');
       
     },
     error: (err) => {
       console.error('Save failed:', err);
-      this.toast.error('Failed to save project');
+      //this.toast.error('Failed to save project');
     }
+<<<<<<< HEAD
   });}
 
 
@@ -380,13 +413,16 @@ _projfieldconfigmodel.projectId = this.form.controls['selectedProject'].value?.v
 
 
 
+=======
+  });
+>>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
 
 
 
   }
   else {
       this.form.markAllAsTouched(); 
- this.toast.error('Form is not valid');
+ // this.toast.error('Form is not valid');
   return;
     
   }

@@ -11,10 +11,7 @@ import { ApiPlaygroundComponent } from "./api-playground/api-playground.componen
 import { ZoneConfigurationFormComponent } from "./zone-configuration/zone-configuration-form/zone-configuration-form.component";
 import { ApiListComponent } from "./api-playground/api-list/api-list.component";
 import { LoginComponent } from "../routes/login/login.component";
-import { MapConfigurationFormComponent } from "./map-configuration/map-configuration-form/map-configuration-form.component";
 import { RuleConfigComponent } from "./rule-engine/rule-config/rule-config.component";
-import { ProjectFieldConfigurationFormComponent } from "./project-field-configuration/project-field-configuration-form/project-field-configuration-form.component";
-import { ProjectConfigurationFormComponent } from "./project-configuration/project-configuration-form/project-configuration-form.component";
 //import { ProjectConfigurationComponent} from "./admin-dashboard/project-configuration.component";
 
 export const AdminRoutes: Routes = [
@@ -180,39 +177,6 @@ export const AdminRoutes: Routes = [
           urls: [
             { title: 'Api List View', url: '/admin/apilist' },
             { title: 'Api List View' },
-          ],
-        },
-      },
-      {
-        path: 'rulelist',
-        component: ApiListComponent,
-        data: {
-          title: 'Rules List View',
-          urls: [
-            { title: 'Rules List View', url: '/admin/rulelist' },
-            { title: 'Rules List View' },
-          ],
-        },
-      },
-      {
-        path: 'ruleengine',
-        component: RuleConfigComponent,
-        data: {
-          title: 'Rules List View',
-          urls: [
-            { title: 'Rules List View', url: '/admin/ruleengine' },
-            { title: 'Rules List View' },
-          ],
-        },
-      },
-          {
-        path: 'login',
-        component: LoginComponent,
-        data: {
-          title: 'login',
-          urls: [
-            { title: 'login', url: '/admin/login' },
-            { title: 'login' },
           ],
         },
       },

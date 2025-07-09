@@ -25,12 +25,19 @@
                   [controlName]="'name'"
                   [_inputData]="inputFields.name">
                 </app-cm-input>
+<<<<<<< HEAD
                 <!-- <mat-error *ngIf="form.get('name')?.hasError('whitespace')">
   Name cannot be empty or just spaces.
 </mat-error> -->
   <div *ngIf="f['name'].touched && f['name'].errors" class="text-danger mt-1">
     {{ getErrorMessage('name', 'Name', true, 'Special characters are not allowed') }}
   </div>
+=======
+
+                   <div *ngIf="f['name'].touched && f['name'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('name', 'Name', false, '') }}
+      </div>
+>>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
             </div>
              <div class="col-md-6">
                 <label>Description</label>
@@ -90,8 +97,6 @@
         <label>
           Map Icon*
           <input type="file" (change)="onFileSelect($event, 'mapIcon')" />
-         
-          <img *ngIf="previewUrls['mapIcon']" [src]="previewUrls['mapIcon']" width="50" height="50" alt="Map Icon Preview" style="border-radius: 4px;" />
     <div *ngIf="f['mapIcon'].touched && f['mapIcon'].errors" class="text-danger mt-1">
         {{ getErrorMessage('mapIcon', 'Map Icon', false, '') }}
       </div>
@@ -100,7 +105,6 @@
         <label>
           Project Icon*
           <input type="file" (change)="onFileSelect($event, 'projectIcon')"  />
-           <img *ngIf="previewUrls['projectIcon']" [src]="previewUrls['projectIcon']" width="50" height="50" alt="Project Icon Preview" style="border-radius: 4px;" />
             <div *ngIf="f['projectIcon'].touched && f['projectIcon'].errors" class="text-danger mt-1">
         {{ getErrorMessage('projectIcon', 'Project Icon', false, '') }}
       </div>

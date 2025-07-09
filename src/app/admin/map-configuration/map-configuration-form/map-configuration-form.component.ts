@@ -121,8 +121,12 @@ export class MapConfigurationFormComponent {
   toggleSettingsWithoutHeader = {
    
     name: 'isActive',
+<<<<<<< HEAD
     formControlName: 'isActive',
     //defaultValue: true,
+=======
+    defaultValue: true,
+>>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
     data: [
       { value: true, displayName: 'Yes' },
       { value: false, displayName: 'No' }
@@ -217,8 +221,7 @@ this.editid=this.state.record.id;
   }
 
   submit() {
-     
-
+      this.toast.success("chgdgsf")
       if (!this.form.invalid) {
         this.form.markAllAsTouched(); 
          
@@ -234,9 +237,8 @@ this.editid=this.state.record.id;
     _mapconfigmodel.id=0
     _mapconfigmodel.lastModificationTime="2025-06-20T05:32:25.067Z"
     _mapconfigmodel.lastModifierUserId="2"
-    _mapconfigmodel.isDeleted=false;
-    _mapconfigmodel.displayName=this.form.controls['displayname'].value;
-    _mapconfigmodel.wmsLayer=this.form.controls['wmslayer'].value
+    _mapconfigmodel.isDeleted=true;
+    _mapconfigmodel.displayName=this.form.controls['displayname'].value;;
     _mapconfigmodel.lat=this.form.controls['lat'].value;
     _mapconfigmodel.long=this.form.controls['long'].value;
     _mapconfigmodel.minZoom=this.form.controls['minzoom'].value;
@@ -254,16 +256,21 @@ this.editid=this.state.record.id;
       console.log('Updated successfully');
         this.router.navigate(['/admin/mapconfig']);   
 
+<<<<<<< HEAD
           this.toast.success('Updated successfully'); 
       //this.dialogRef.close(this.form.value);
       
+=======
+           //this.toast.success('ProjectField saved successfully'); 
+      this.dialogRef.close(this.form.value);
+>>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
     
       //this.toast.success('ProjectField saved successfully');
       
     },
     error: (err) => {
       console.error('Update failed:', err);
-      this.toast.error('Failed to save Map');
+      //this.toast.error('Failed to save project');
     }
   });
 
@@ -280,12 +287,12 @@ this.editid=this.state.record.id;
                this.toast.success('Map saved successfully'); 
          // this.dialogRef.close(this.form.value);
         
-         
+          this.toast.success('Map saved successfully');
           
         },
         error: (err) => {
           console.error('Save failed:', err);
-          this.toast.error('Failed to save Map');
+          this.toast.error('Failed to save project');
         }
       });
     

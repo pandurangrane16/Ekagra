@@ -10,9 +10,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { mapconfigservice } from '../../services/admin/mapconfig.service';
 import { InputRequest } from '../../models/request/inputreq.model';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+<<<<<<< HEAD
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
+=======
+>>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
 import { MapConfigurationFormComponent } from './map-configuration-form/map-configuration-form.component';
 
 
@@ -368,9 +371,10 @@ onRowClicked(row: any) {
     this.editRow(data);
     console.log(data);
   } else if (event.type === 'delete') {
-    this.deleteRow(data);
+    
   }
 }
+<<<<<<< HEAD
 
 deleteRow(rowData: any): void {
   const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
@@ -417,6 +421,23 @@ editRow(rowData: any) {
     }
   });
 }   
+=======
+ editRow(rowData: any) {
+   const dialogRef = this.dialog.open(MapConfigurationFormComponent, {
+     width: '500px',
+  data: {
+   mode: 'edit',
+   record: rowData  
+ }
+   });
+ 
+   dialogRef.afterClosed().subscribe(result => {
+     if (result === 'updated') {
+       this.getMapConfigList(); 
+     }
+   });
+ }    
+>>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
 getMapConfigList() {
       this._request.currentPage = this.pager;
       this._request.pageSize = Number(this.recordPerPage);

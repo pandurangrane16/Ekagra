@@ -370,6 +370,7 @@ onRowClicked(row: any) {
     this.editRow(data);
     console.log(data);
   } else if (event.type === 'delete') {
+<<<<<<< HEAD
      this.deleteRow(data);
   }
 }
@@ -410,6 +411,12 @@ deleteRow(rowData: any): void {
     }
   });
 }
+=======
+    
+  }
+}
+
+>>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
 
 editRow(rowData: any) {
   this.router.navigate(['/admin/siteconfigmng'], {

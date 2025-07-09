@@ -36,7 +36,6 @@
               "src/custom-theme.scss",
               "node_modules/slick-carousel/slick/slick.css",
               "node_modules/ol/ol.css",
-              "node_modules/ngx-toastr/toastr.css",
               "node_modules/leaflet/dist/leaflet.css"
             ],
             "scripts": [
@@ -45,7 +44,7 @@
               ],
               
             "server": "src/main.server.ts",
-            "prerender": false,
+            "prerender": true,
             "ssr": {
               "entry": "server.ts"
             }
@@ -106,8 +105,7 @@
             ],
             "styles": [
               "src/styles.css",
-              "node_modules/leaflet/dist/leaflet.css",
-              "node_modules/ngx-toastr/toastr.css"
+              "node_modules/leaflet/dist/leaflet.css"
             ],
             "scripts": []
           }

@@ -1,12 +1,7 @@
-
-<div [formGroup]="formGroup">
-
 <h3>{{settings.headerName}}</h3>
-<mat-button-toggle-group [name]="settings.name"   [formControlName]="settings.formControlName"
-  (change)="ChangeSelection($event)">
-    <mat-button-toggle style="height: 40px;" *ngFor="let val of settings.data" [value]="val.value" (change)="ChangeSelection($event)">{{val.displayName}}
-    </mat-button-toggle>
+<mat-button-toggle-group [name]="settings.name">
+    <mat-button-toggle style="height: 40px;" *ngFor="let val of settings.data" value="{{val.value}}" (change)="ChangeSelection($event)">{{val.displayName}}</mat-button-toggle>
 </mat-button-toggle-group> 
 
-</div>
+
 

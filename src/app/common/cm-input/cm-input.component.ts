@@ -24,7 +24,6 @@ export class CmInputComponent {
   }
   ngOnInit(): void {
     console.log(this._inputData);
-    console.log(this.formGroup);
     if(this._inputData.type != undefined)
       this.type = this._inputData.type;
   }
@@ -96,7 +95,6 @@ restrictToAlphanumeric(event: Event): void {
 
  // Handle input changes
  onInput(event: Event): void {
-  console.log("OnChange Called");
    const value = (event.target as HTMLInputElement).value;
    this.value = value;
    this.onChange(value); // Notify Angular of the change
