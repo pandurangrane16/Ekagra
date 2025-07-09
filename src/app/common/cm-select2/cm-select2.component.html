@@ -1,28 +1,44 @@
 <div [formGroup]="formGroup">
-    <mat-label >{{settings.labelHeader}}</mat-label>
-    
-    <!-- <mat-form-field [class]="settings.formFieldClass"> -->
-      <mat-form-field style="padding-top: 10px; "
-      [appearance]="settings.appearance || 'fill'"
-      [class]="settings.formFieldClass">
-        <input matInput 
-               aria-label="State"
-               [matAutocomplete]="auto"
-               [formControlName]="controlName" 
-               [attr.disabled]="settings?.isDisabled ? true : null"
-                />
+  <mat-label>{{settings.labelHeader}}</mat-label>
 
-                
-        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith" (optionSelected)="ChangeSelection($event)">
-          @for (state of filteredOptions | async; track state) {
-            <mat-option [value]="state">
-              <span>{{state.name}}</span>
-            </mat-option>
-          }
-        </mat-autocomplete>
-      </mat-form-field>
+
+  <mat-form-field style="padding-top: 10px; " [appearance]="settings.appearance || 'fill'"
+    [class]="settings.formFieldClass">
+    <input matInput aria-label="State" [matAutocomplete]="auto" [formControlName]="controlName"
+      [attr.disabled]="settings?.isDisabled ? true : null" />
+
+
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith" (optionSelected)="ChangeSelection($event)">
+      @if(settings.options != undefined){
+      @for (state of filteredOptions | async; track state) {
+      <mat-option [value]="state">
+        <span>{{state.name}}</span>
+      </mat-option>
+      }
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <mat-slide-toggle style="display: none;" [checked]="settings.isDisabled">
+  </mat-slide-toggle>
+</div>
+
+<!-- <div [formGroup]="formGroup">
+  <mat-label>{{settings.labelHeader}}</mat-label>
+  <mat-form-field style="padding-top: 10px;"
+                  [appearance]="settings.appearance || 'fill'"
+                  [class]="settings.formFieldClass">
+    <input matInput 
+           aria-label="State"
+           [matAutocomplete]="auto"
+           [formControlName]="controlName" />
     
-      <mat-slide-toggle style="display: none;"
-        [checked]="settings.isDisabled">
-      </mat-slide-toggle>
-  </div>
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith" (optionSelected)="ChangeSelection($event)">
+      @for (state of filteredOptions | async; track state) {
+        <mat-option [value]="state">
+          <span>{{state.name}}</span>
+        </mat-option>
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+</div> -->

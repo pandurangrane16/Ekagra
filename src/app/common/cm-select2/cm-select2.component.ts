@@ -26,10 +26,12 @@ export class CmSelect2Component {
   filteredOptions: Observable<any[]>;
 
   constructor(private cdRef: ChangeDetectorRef) {
-    this.filteredOptions = this.stateCtrl.valueChanges.pipe(
+    if(this.settings != undefined){
+this.filteredOptions = this.stateCtrl.valueChanges.pipe(
       startWith(''),
       map(state => (state ? this._filterStates(state) : this.settings.options.slice())),
     );
+    }
   }
   private _filterStates(value: string): any[] {
     const filterValue = value.toLowerCase();
@@ -37,14 +39,28 @@ export class CmSelect2Component {
     return this.settings.options.filter((state: any) => state.name.toLowerCase().includes(filterValue));
   }
   ngOnInit(): void {
+    console.log(this.settings);
     if (!this.settings || !this.settings.options) {
       console.error('Settings or options not provided');
       return;
     }
+    // this.filteredOptions = this.stateCtrl.valueChanges.pipe(
+    //   startWith(''),
+    //   map(state => (typeof state === 'string' ? this._filterStates(state) : this.settings.options.slice())),
+    // );
     this.filteredOptions = this.stateCtrl.valueChanges.pipe(
-      startWith(''),
-      map(state => (typeof state === 'string' ? this._filterStates(state) : this.settings.options.slice())),
-    );
+  startWith(''),
+  map(state => (typeof state === 'string' ? this._filterStates(state) : this.settings.options.slice()))
+);
+
+ const control = this.formGroup.get(this.controlName);
+  if (control) {
+    if (this.settings?.isDisabled) {
+      control.disable();
+    } else {
+      control.enable();
+    }
+  }
   }
   displayFn(option: any): string {
     return option && option.name ? option.name : '';
