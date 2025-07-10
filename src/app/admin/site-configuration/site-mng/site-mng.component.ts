@@ -162,12 +162,7 @@ foreditmode : boolean =false;
   toggleSettingsWithoutHeader = {
    
     name: 'isActive',
-<<<<<<< HEAD
-     formControlName: 'isActive',
-    //defaultValue: true,
-=======
     defaultValue: true,
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
     data: [
       { value: true, displayName: 'Yes' },
       { value: false, displayName: 'No' }

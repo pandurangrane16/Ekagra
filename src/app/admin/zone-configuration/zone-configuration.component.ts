@@ -10,12 +10,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { zoneconfigservice } from '../../services/admin/zoneconfig.service';
 import { InputRequest } from '../../models/request/inputreq.model';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-<<<<<<< HEAD
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
-=======
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
 import { ZoneConfigurationFormComponent } from './zone-configuration-form/zone-configuration-form.component';
 
 
@@ -376,7 +373,6 @@ onPaginationChanged(event: { pageNo: number; perPage: number }) {
 onRowClicked(row: any) {
         console.log('Row clicked:', row);
 }
-<<<<<<< HEAD
     
     onButtonClicked({ event, data }: { event: any; data: any }) {
   if (event.type === 'edit') {
@@ -430,10 +426,6 @@ deleteRow(rowData: any): void {
       console.log('User cancelled');
     }
   });
-=======
-onButtonClicked(event: any) {
-  console.log('Button clicked:', event);
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
 }
 getZoneConfigList() {
       this._request.currentPage = this.pager;

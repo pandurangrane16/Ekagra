@@ -10,13 +10,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { InputRequest } from '../../models/request/inputreq.model';
 import { projconfigservice } from '../../services/admin/progconfig.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-<<<<<<< HEAD
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
-=======
-
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
 
 import { ProjectConfigurationFormComponent } from './project-configuration-form/project-configuration-form.component';
 
@@ -28,13 +24,9 @@ import { ProjectConfigurationFormComponent } from './project-configuration-form/
       CommonModule,
       CmTableComponent,
       CmInputComponent,
-<<<<<<< HEAD
       CmSelect2Component,
       MatCardModule
       
-=======
-      CmSelect2Component
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
     ],
     templateUrl: './project-configuration.component.html',
     // styleUrl: './project-configuration.component.css',
@@ -117,11 +109,7 @@ router = inject(Router);
       squareSettings = {
           labelHeader: 'Search',
           formFieldClass: 'cm-square-input',
-<<<<<<< HEAD
           placeholder: 'Search (minimum 3 letters)',
-=======
-        
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
           isDisabled: false
         };
         
@@ -156,8 +144,13 @@ router = inject(Router);
               )
               .subscribe(value => {
                    if (value && value.length >= 3) {
+                       this.perPage=10;
+                 this.pager=0;
                 this.getFilteredList();
               } else if (!value || value.length === 0) {
+
+                 this.perPage=10;
+                 this.pager=0;
                  this.getFilteredList();
               }
               });
@@ -180,6 +173,8 @@ router = inject(Router);
           console.log('Selected Project:', event);
         }
          submit(){
+          this.pager=0;
+          this.perPage=10;
   this.getFilteredList();
  }
     
@@ -260,10 +255,46 @@ onPaginationChanged(event: { pageNo: number; perPage: number }) {
     this.editRow(data);
     console.log(data);
   } else if (event.type === 'delete') {
-    
+    this.deleteRow(data);
   }
 }
+deleteRow(rowData: any): void {
+  const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
+    width: '400px',
+      position: { top: '20px' },
+  panelClass: 'custom-confirm-dialog',
+    data: {
+      title: 'Confirm Delete',
+     message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.name}</b> will be deleted.</div>`,
 
+      type: 'delete',
+      confirmButtonText: 'Confirm',
+      cancelButtonText: 'Cancel'
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+     
+      this.service.Delete(rowData.id).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.getProjConfigList();
+            console.log('Deleted successfully');
+           
+          } else {
+            console.error('Delete failed:', res.error);
+          }
+        },
+        error: (err) => {
+          console.error('API error:', err);
+        }
+      });
+    } else {
+      console.log('User cancelled');
+    }
+  });
+}
 editRow(rowData: any) {
   this.router.navigate(['/admin/projform'], {
     state: {

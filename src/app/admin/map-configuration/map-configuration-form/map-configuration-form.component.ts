@@ -121,12 +121,8 @@ export class MapConfigurationFormComponent {
   toggleSettingsWithoutHeader = {
    
     name: 'isActive',
-<<<<<<< HEAD
     formControlName: 'isActive',
     //defaultValue: true,
-=======
-    defaultValue: true,
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
     data: [
       { value: true, displayName: 'Yes' },
       { value: false, displayName: 'No' }
@@ -154,9 +150,9 @@ export class MapConfigurationFormComponent {
    // @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.form = this.fb.group({
-      name: ['', Validators.required],
-      description: ['', Validators.required],
-      displayname: ['', Validators.required],
+      name: ['', [Validators.required,this.noWhitespaceValidator()]],
+      description: ['', [Validators.required,this.noWhitespaceValidator()]],
+      displayname: ['', [Validators.required,this.noWhitespaceValidator()]],
       minzoom: ['', Validators.required],
       maxzoom: ['', Validators.required],
       sourceurl: ['', Validators.required],
@@ -221,7 +217,7 @@ this.editid=this.state.record.id;
   }
 
   submit() {
-      this.toast.success("chgdgsf")
+     
       if (!this.form.invalid) {
         this.form.markAllAsTouched(); 
          
@@ -256,14 +252,9 @@ this.editid=this.state.record.id;
       console.log('Updated successfully');
         this.router.navigate(['/admin/mapconfig']);   
 
-<<<<<<< HEAD
           this.toast.success('Updated successfully'); 
       //this.dialogRef.close(this.form.value);
       
-=======
-           //this.toast.success('ProjectField saved successfully'); 
-      this.dialogRef.close(this.form.value);
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
     
       //this.toast.success('ProjectField saved successfully');
       

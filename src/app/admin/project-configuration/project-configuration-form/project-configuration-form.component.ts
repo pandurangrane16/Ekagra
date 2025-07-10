@@ -33,6 +33,7 @@ export class ProjectConfigurationFormComponent {
   MatButtonToggleChange:any;
   ruleEngineStatus:any;
   mapStatus :any;
+ previewUrls: { [key: string]: string } = {};
   state:any;
   selectedFilePaths = {
     mapIcon: '',
@@ -111,7 +112,6 @@ export class ProjectConfigurationFormComponent {
    // @Inject(MAT_DIALOG_DATA) public data: any
   ){
     this.form = this.fb.group({
-<<<<<<< HEAD
   name: [
     '',
     [
@@ -132,16 +132,6 @@ export class ProjectConfigurationFormComponent {
   isActive: [Validators.required]
 });
 
-=======
-      name: [ '',Validators.required],
-      description: [ '',Validators.required],
-      ruleEngineEnabled: [false,Validators.required],
-      mapEnabled: [false,Validators.required],
-      mapIcon: [ null,Validators.required],
-      projectIcon: [ null,Validators.required],
-      isActive: [false,Validators.required],
-    });
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
   }
 
   get f() {
@@ -158,23 +148,56 @@ export class ProjectConfigurationFormComponent {
 ReturnValue($event:any) {
   console.log($event);
 }
-  onFileSelect(event: any, type: 'mapIcon' | 'projectIcon') {
-    const file = event.target.files[0];
-     const control = this.form.get(type);
-    if (file) {
-     
-      const fileName = file.name;
+onFileSelect(event: any, type: 'mapIcon' | 'projectIcon') {
+  const file = event.target.files[0];
+  const control = this.form.get(type);
 
-    control?.setValue(fileName);      
-    control?.setErrors(null);
-    control?.markAsTouched();
-    control?.markAsDirty();
-
-    this.selectedFilePaths[type] = fileName;
+  if (file) {
+    // ✅ Check if the file is an image
+    if (!file.type.startsWith('image/')) {
+      this.toast.error('Please upload a valid image file.');
+      return;
     }
+
+    // ✅ Set preview image
+    const objectUrl = URL.createObjectURL(file);
+    this.previewUrls[type] = objectUrl;
+    console.log('Preview URL set for', type, ':', objectUrl);
+
+    // ✅ Prepare FormData (make sure to use 'File' if backend expects that)
+    const formData = new FormData();
+    formData.append('File', file); // Use 'File' with capital F if backend expects it
+
+    // ✅ Call upload service
+    this.service.UploadFile(formData).subscribe({
+      next: (response) => {
+        if (response?.result?.success) {
+          const uploadedFileName = response.result.fileName;
+
+          // ✅ Update form control with uploaded file name
+          control?.setValue(uploadedFileName);
+          control?.setErrors(null);
+          control?.markAsTouched();
+          control?.markAsDirty();
+
+          this.selectedFilePaths[type] = uploadedFileName;
+        }
+      },
+      error: (err) => {
+            this.form.patchValue({
+     [type]: null
+   
+    
+      
+    });
+      console.error('Upload error:', err);
+        
+        this.toast.error('Upload error:', err);
+      }
+    });
   }
-<<<<<<< HEAD
 }
+
 
 
   ngOnInit(): void {
@@ -212,13 +235,10 @@ ReturnValue($event:any) {
   
 
 }
-=======
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
   getErrorMessage(_controlName: any, _controlLable: any, _isPattern: boolean = false, _msg: string) {
     return getErrorMsg(this.form, _controlName, _controlLable, _isPattern, _msg);
   }
 
-<<<<<<< HEAD
 loadExistingIcons(): void {
   const basePath = 'https://172.19.32.210:8002/UploadedFiles/Icons/';
 
@@ -242,11 +262,9 @@ loadExistingIcons(): void {
   console.log('Edit Preview URLs:', this.previewUrls);
 }
 
-=======
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
 
   submit() {
-  this.toast.success("chgdgsf")
+ 
   if (!this.form.invalid) {
     this.form.markAllAsTouched(); 
      
@@ -272,7 +290,6 @@ _projconfigmodel.roles="2"
 _projconfigmodel.isDeleted=false;
 
 
-<<<<<<< HEAD
      this.service.CheckProjectName(this.form.controls['name'].value,this.state?.record?.id).subscribe(response => {
         if (response.result === true) {
           this.toast.error(" Name already exists in the System.");
@@ -309,26 +326,14 @@ _projconfigmodel.isDeleted=false;
   }
 
   else{
-=======
- 
-
-
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
   this.service.ProjectCreate(_projconfigmodel).subscribe({
     next: () => {
       console.log('Saved successfully');
 
-<<<<<<< HEAD
       this.toast.success('Project saved successfully'); 
       //this.dialogRef.close(this.form.value);
      this.router.navigate(['/admin/projconfig']);
       //this.toast.success('Project saved successfully');
-=======
-           this.toast.success('Project saved successfully'); 
-      this.dialogRef.close(this.form.value);
-    
-      this.toast.success('Project saved successfully');
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
       
     },
     error: (err) => {
@@ -336,7 +341,6 @@ _projconfigmodel.isDeleted=false;
       this.toast.error('Failed to save project');
     }
   });
-<<<<<<< HEAD
   return;
   }
 
@@ -353,8 +357,6 @@ _projconfigmodel.isDeleted=false;
  
  
 
-=======
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
 
 
 

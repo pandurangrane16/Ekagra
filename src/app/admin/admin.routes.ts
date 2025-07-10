@@ -11,7 +11,10 @@ import { ApiPlaygroundComponent } from "./api-playground/api-playground.componen
 import { ZoneConfigurationFormComponent } from "./zone-configuration/zone-configuration-form/zone-configuration-form.component";
 import { ApiListComponent } from "./api-playground/api-list/api-list.component";
 import { LoginComponent } from "../routes/login/login.component";
-import { RuleConfigComponent } from "./rule-engine/rule-config/rule-config.component";
+//import { RuleConfigComponent } from "./rule-engine/rule-config/rule-config.component";
+import { ProjectFieldConfigurationFormComponent } from "./project-field-configuration/project-field-configuration-form/project-field-configuration-form.component";
+import { ProjectConfigurationFormComponent } from "./project-configuration/project-configuration-form/project-configuration-form.component";
+import { MapConfigurationFormComponent } from "./map-configuration/map-configuration-form/map-configuration-form.component";
 //import { ProjectConfigurationComponent} from "./admin-dashboard/project-configuration.component";
 
 export const AdminRoutes: Routes = [

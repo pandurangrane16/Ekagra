@@ -10,12 +10,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { mapconfigservice } from '../../services/admin/mapconfig.service';
 import { InputRequest } from '../../models/request/inputreq.model';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-<<<<<<< HEAD
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
-=======
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
 import { MapConfigurationFormComponent } from './map-configuration-form/map-configuration-form.component';
 
 
@@ -330,6 +327,8 @@ onProjectChange(value: any) {
           
 }
  submit(){
+      this.pager=0;
+         this.perPage=10;
   this.getFilteredList();
  }
 buildHeader() {  
@@ -371,10 +370,9 @@ onRowClicked(row: any) {
     this.editRow(data);
     console.log(data);
   } else if (event.type === 'delete') {
-    
+    this.deleteRow(data);
   }
 }
-<<<<<<< HEAD
 
 deleteRow(rowData: any): void {
   const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
@@ -383,7 +381,7 @@ deleteRow(rowData: any): void {
   panelClass: 'custom-confirm-dialog',
     data: {
       title: 'Confirm Delete',
-     message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.name}</b> will be deleted.</div>`,
+     message: `Are you sure?<div style="margin-top: 8px;">Map: <b>${rowData.name}</b> will be deleted.</div>`,
 
       type: 'delete',
       confirmButtonText: 'Confirm',
@@ -421,23 +419,6 @@ editRow(rowData: any) {
     }
   });
 }   
-=======
- editRow(rowData: any) {
-   const dialogRef = this.dialog.open(MapConfigurationFormComponent, {
-     width: '500px',
-  data: {
-   mode: 'edit',
-   record: rowData  
- }
-   });
- 
-   dialogRef.afterClosed().subscribe(result => {
-     if (result === 'updated') {
-       this.getMapConfigList(); 
-     }
-   });
- }    
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
 getMapConfigList() {
       this._request.currentPage = this.pager;
       this._request.pageSize = Number(this.recordPerPage);

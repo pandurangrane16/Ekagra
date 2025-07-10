@@ -25,6 +25,9 @@ ProjectfieldCreate(_data: any) {
 GetAll(MaxResultCount: number, SkipCount: number,) {
     return this._httpService._getMethod('api/services/app/ProjectField/GetAllProjectFieldMasterPage?MaxResultCount='+MaxResultCount+'&SkipCount='+SkipCount);
   }
+  Delete(id: number) {
+    return this._httpService._deleteMethod('api/services/app/ProjectField/Delete?Id='+id);
+  }
 
   GetProjectList() {
     return this._httpService._getMethod('api/services/app/Project/GetProjectList');
@@ -64,6 +67,34 @@ GetFilteredList(
   const url = `api/services/app/ProjectField/GetAllProjectFieldMasterPage${queryString}`;
 
   return this._httpService._getMethod(url);
+}
+
+CheckMapLabel(
+  projectId?: number,
+  MapLabel?:any,
+  id?:any
+) {
+  let params: string[] = [];
+
+  if (projectId !== null && projectId !== undefined) {
+    params.push(`projectId=${projectId}`);
+  }
+
+
+
+  if (MapLabel !== null && MapLabel !== undefined) {
+    params.push(`MapLabel=${MapLabel}`);
+  }
+
+
+  if (id !== null && id !== undefined) {
+    params.push(`id=${id}`);
+  }
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/ProjectField/CheckProjectNameAndMapLabelExist${queryString}`;
+
+  return this._httpService._postMethod(null,url);
 }
 
 

@@ -25,19 +25,12 @@
                   [controlName]="'name'"
                   [_inputData]="inputFields.name">
                 </app-cm-input>
-<<<<<<< HEAD
                 <!-- <mat-error *ngIf="form.get('name')?.hasError('whitespace')">
   Name cannot be empty or just spaces.
 </mat-error> -->
   <div *ngIf="f['name'].touched && f['name'].errors" class="text-danger mt-1">
     {{ getErrorMessage('name', 'Name', true, 'Special characters are not allowed') }}
   </div>
-=======
-
-                   <div *ngIf="f['name'].touched && f['name'].errors" class="text-danger mt-1">
-        {{ getErrorMessage('name', 'Name', false, '') }}
-      </div>
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
             </div>
              <div class="col-md-6">
                 <label>Description</label>

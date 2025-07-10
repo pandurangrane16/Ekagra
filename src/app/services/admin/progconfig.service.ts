@@ -23,13 +23,40 @@ GetAll() {
 GetProjectList() {
     return this._httpService._getMethod('api/services/app/Project/GetProjectList');
   }
+UploadFile(formData: FormData) {
+  return this._httpService._postMethod( formData,'api/services/app/FileUpload/UploadIcon');
+}
 
-<<<<<<< HEAD
+
     ProjectEdit(_data: any) {
     return this._httpService._putMethod(_data, 'api/services/app/Project/Update');
   }
 
+  Delete(id: number) {
+    return this._httpService._deleteMethod('api/services/app/Project/Delete?Id='+id);
+  }
 
+CheckProjectName(
+  projectName?: any,
+  Id?: any,
+ 
+) {
+  let params: string[] = [];
+
+  if (projectName !== null && projectName !== undefined) {
+    params.push(`projectName=${projectName}`);
+  }
+
+
+  if (Id !== null && Id !== undefined) {
+    params.push(`Id=${Id}`);
+  }
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/Project/CheckProjectNameExist${queryString}`;
+
+  return this._httpService._postMethod(null,url);
+}
 
 GetFilteredList(
   ProjectId?: number,
@@ -38,9 +65,6 @@ GetFilteredList(
   maxResultCount?: number,
   skipCount?: number
 ) {
-=======
-  GetFilteredList(ProjectId?: number, filter?: string, status?: boolean) {
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
   let params: string[] = [];
 
   if (ProjectId !== null && ProjectId !== undefined) {

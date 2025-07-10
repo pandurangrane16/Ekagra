@@ -1,5 +1,5 @@
 
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, Inject, inject, OnInit } from '@angular/core';
 //import { MAT_DIALOG_DATA, MatDialogRef,MatDialogModule } from '@angular/material/dialog';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
@@ -7,29 +7,24 @@ import { FormBuilder, FormsModule,FormGroup, Validators ,ReactiveFormsModule,} f
 import { CmInputComponent } from '../../../common/cm-input/cm-input.component';
 import { CmSelect2Component } from '../../../common/cm-select2/cm-select2.component';
 import { CmToggleComponent } from '../../../common/cm-toggle/cm-toggle.component';
-<<<<<<< HEAD
 import { CmLeafletComponent } from '../../../common/cm-leaflet/cm-leaflet.component';
-=======
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { getErrorMsg } from '../../../utils/utils';
 import { zoneconfigservice } from '../../../services/admin/zoneconfig.service';
-<<<<<<< HEAD
 import { ToastrService } from 'ngx-toastr';
 import { InputRequest } from '../../../models/request/inputreq.model';
 import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 
-=======
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
 //import { ToastrService } from 'ngx-toastr';
 import { zoneconfigmodel } from '../../../models/admin/zoneconfig.model';
 //import * as L from 'leaflet';
 
 import {  PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-zone-configuration-form',
@@ -60,12 +55,9 @@ router = inject(Router);
   recordPerPage: number = 10;
   startId!: number;
   mapStatus = '';
-<<<<<<< HEAD
   public state:any;
   id: number = 0;
   zoneCordinate:any;
-=======
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
    private L: any;
 drawnItems: any;
 polygonCoordinates:any;
@@ -115,16 +107,12 @@ isMapVisible: boolean = false;
   
   constructor(
     private fb: FormBuilder,
-<<<<<<< HEAD
     //@Inject(PLATFORM_ID) private platformId: Object,
    
     private service:zoneconfigservice,private toast :ToastrService,
     // private router: Router
-=======
     @Inject(PLATFORM_ID) private platformId: Object,
-    private dialogRef: MatDialogRef<ZoneConfigurationFormComponent>,
-    private service:zoneconfigservice,
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
+    //private dialogRef: MatDialogRef<ZoneConfigurationFormComponent>,
    // private toast:ToastrService,
    //  @Inject(MAT_DIALOG_DATA) public data: any
   ) {
@@ -143,7 +131,6 @@ isMapVisible: boolean = false;
   }
      ngOnInit(): void {
 
-<<<<<<< HEAD
          
         this.state = history.state;
          const state = this.state;
@@ -162,17 +149,6 @@ isMapVisible: boolean = false;
   }
  
   }
-=======
-     if (isPlatformBrowser(this.platformId)) {
-       const leaflet = await import('leaflet');
-    await import('leaflet-draw'); 
-
-    this.L = leaflet;
-      this.drawnItems= this.L.FeatureGroup = new this.L.FeatureGroup();
-      
-      
-    }
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
 
   onPolygonDrawn(coords: any) {
   console.log('Received polygon coordinates in parent:', coords);
@@ -270,7 +246,6 @@ submit() {
         this.toast.error('Update failed');
          return;
       }
-<<<<<<< HEAD
     });
 
   }
@@ -290,30 +265,10 @@ submit() {
       this.toast.error('Failed to save Zone.');
     }
   });
-=======
-      else {
-          this.form.markAllAsTouched(); 
-      //this.toast.error('Form is not valid');
-      return;
-        
-      }
-    
-    
-      }
-      
-showMap() {
-  if (isPlatformBrowser(this.platformId)) {
-      this.overrideDrawText(); 
-    this.isMapVisible = true;
-    setTimeout(() => {
-      this.initializeMap(); 
-    }, 0);
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
   }
 
 
 }
-<<<<<<< HEAD
 getZoneConfigList() {
       this._request.currentPage = this.pager;
       this._request.pageSize = Number(this.recordPerPage);
@@ -326,63 +281,6 @@ getZoneConfigList() {
          this.items=items;
 
  const totalCount=response.result?.totalCount;
-=======
-overrideDrawText() {
-  (this.L as any).drawLocal = {
-    draw: {
-      toolbar: {
-        buttons: {
-          polygon: ''
-        }
-      },
-      handlers: {
-        polygon: {
-          tooltip: {
-            start: '',
-            cont: '',
-            end: ''
-          }
-        }
-      }
-    },
-    edit: {
-      toolbar: {
-        buttons: {
-          edit: '',
-          remove: ''
-        }
-      },
-      handlers: {
-        edit: {
-          tooltip: {
-            text: '',
-            subtext: ''
-          }
-        },
-        remove: {
-          tooltip: {
-            text: ''
-          }
-        }
-      }
-    }
-  };
-}
-initializeMap(): void {
-
-   if (!isPlatformBrowser(this.platformId)) return;
-  this.map = this.L.map('map', {
-    center: [19.0760, 72.8777],
-    zoom: 10,
-    attributionControl: false
-  });
-
-  const osmLayer = this.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19
-  });
-
-  osmLayer.addTo(this.map);
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
 
 
 
@@ -415,7 +313,6 @@ draw: {
   });
 
 
-<<<<<<< HEAD
         if (Array.isArray(items)) {
          
            items.forEach((element: any) => {
@@ -432,35 +329,8 @@ draw: {
   ];
 
         
-=======
-  var options = {
-      position: 'topright',
-      draw: {
-        //     polyline: {
-        //         shapeOptions: {
-        //             color: '#f357a1',
-        //             weight: 10
-        //         }
-        //     },
-            polygon: {
 
-            },
-        circle: false,
-        circlemarker: false,// Turns off this drawing tool
-        //     rectangle: {
-        //         shapeOptions: {
-        //             clickable: false
-        //         }
-        //     },
-       
-      },
-      edit: {
-        featureGroup: this.drawnItems, //REQUIRED!!
-        // remove: false
-      }
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
-
-    };
+    });
 
     // var drawControl = new this.L.Control.Draw(options);
     // this.map.addControl(drawControl);
@@ -478,11 +348,6 @@ draw: {
 
     console.log('Polygon coordinates:', this.coordinates);
     this.canSave = true;
-  });
-}
-
-
-
          
           });
              var _length = totalCount / Number(this.recordPerPage);

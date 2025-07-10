@@ -26,17 +26,12 @@ GetAll() {
     return this._httpService._getMethod('api/services/app/Project/GetProjectList');
   }
 
-<<<<<<< HEAD
  Delete(id: any) {
     return this._httpService._deleteMethod('api/services/app/Zone/Delete?Id='+id);
   }
     ZoneEdit(_data: any) {
     return this._httpService._putMethod(_data, 'api/services/app/Zone/Update');
   }
-=======
-
-
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
   GetFilteredList(
   
   ProjectId?: number,

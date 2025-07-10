@@ -10,12 +10,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { InputRequest } from '../../models/request/inputreq.model';
 import { projfieldconfigservice } from '../../services/admin/projfieldconfig.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-<<<<<<< HEAD
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
-=======
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
 import { ProjectFieldConfigurationFormComponent } from './project-field-configuration-form/project-field-configuration-form.component';
 
 
@@ -230,24 +227,9 @@ router = inject(Router);
     this.editRow(data);
     console.log(data);
   } else if (event.type === 'delete') {
-    
+    this.deleteRow(data);
   }
 }
-
-<<<<<<< HEAD
-deleteRow(rowData: any): void {
-
-  
-  const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
-    width: '400px',
-      position: { top: '20px' },
-  panelClass: 'custom-confirm-dialog',
-    data: {
-      title: 'Confirm Delete',
-     message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.projectName}</b> will be deleted.</div>`,
-=======
->>>>>>> 1c24b7970766921b3cbd43fb4e7747e088943405
-
 editRow(rowData: any) {
   this.router.navigate(['/admin/projfieldform'], {
     state: {
@@ -255,7 +237,45 @@ editRow(rowData: any) {
       record: rowData
     }
   });
+}  
+deleteRow(rowData: any): void {
+  const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
+    width: '400px',
+      position: { top: '20px' },
+  panelClass: 'custom-confirm-dialog',
+    data: {
+      title: 'Confirm Delete',
+     message: `Are you sure?<div style="margin-top: 8px;">Project Field: <b>${rowData.projectName}</b> will be deleted.</div>`,
+
+      type: 'delete',
+      confirmButtonText: 'Confirm',
+      cancelButtonText: 'Cancel'
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+     
+      this.service.Delete(rowData.id).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.getProjfieldConfigList();
+            console.log('Deleted successfully');
+           
+          } else {
+            console.error('Delete failed:', res.error);
+          }
+        },
+        error: (err) => {
+          console.error('API error:', err);
+        }
+      });
+    } else {
+      console.log('User cancelled');
+    }
+  });
 }
+
 
   // openDialog() {
   //           const dialogRef = this.dialog.open(ProjectFieldConfigurationFormComponent, {
@@ -290,7 +310,7 @@ editRow(rowData: any) {
               { header: 'Status', fieldValue: 'isActive',type:'boolean', position: 5 },
               { header: 'Action', fieldValue: 'button', position: 6 }
             ];
-  ;}   
+          }   
 getProjList() {
   this.service.GetProjectList().subscribe(response => {
     const items = response?.result || [];

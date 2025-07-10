@@ -67,6 +67,11 @@ export class HttpService {
     return this.http.get(this._api_url + _appendUrl,{headers:header});
   }
 
+  
+  _deleteMethod(_appendUrl: string, options?: any): Observable<any> {
+  return this.http.delete(this._api_url + _appendUrl, options);
+}
+
 //   _getMethodNotCommon(_appendUrl: string, _token: string): Observable<any> {
 //     _token = _token;
 //     this.authService._setSessionValue("isNotHeader","1");
