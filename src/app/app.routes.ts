@@ -17,6 +17,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ProjectFieldMapComponent } from './admin/project-field-map/project-field-map.component';
 import { CmLeafletComponent } from './common/cm-leaflet/cm-leaflet.component';
 export const routes: Routes = [
+      { path: "", component: LoginComponent, },
       { path: "login", component: LoginComponent, },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'surveilience', component: SurveiliencePageComponent },

@@ -1,3 +1,108 @@
+<!-- <div class="pageWrapper">
+    <mat-card class="cardWithShadow theme-card">
+        <div class="row">
+            <mat-card-header>
+                <div class="col-md-11" style="padding-left: 40px;">
+                    <mat-card-title>
+                        <h2 style="margin-top: 10px;">Rule Engine</h2>
+                    </mat-card-title>
+                </div>
+            </mat-card-header>
+        </div>
+        <hr>
+        <div class="row">
+            <mat-card-content>
+                <div class="card">
+
+                    <mat-stepper [linear]="isLinear" #stepper>
+                        <mat-step [stepControl]="firstFormGroup">
+                            <form [formGroup]="firstFormGroup">
+                                <ng-template matStepLabel>Rule Details</ng-template>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <h2>Rule Details</h2>
+                                    </div>
+                                </div>
+                                
+                                <div class="row" style="padding-top: 30px;">
+                                    <div class="col-md-4">
+                                        <app-cm-input [formGroup]="firstFormGroup" [controlName]="'policyName'"
+                                            [_inputData]="inputFields.policyName">
+                                        </app-cm-input>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <app-cm-select2 [formGroup]="firstFormGroup"
+                                            [controlName]="'selectedCategory'" [settings]="categorySettings">
+                                        </app-cm-select2>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <app-cm-select2 [formGroup]="firstFormGroup"
+                                            [controlName]="'selectedUserGroup'" [settings]="userGroupSettings">
+                                        </app-cm-select2>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label class="toggle-label">Active</label>
+                                        <app-cm-toggle [formGroup]="firstFormGroup" [settings]="isActiveToggle"></app-cm-toggle>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <app-cm-input [formGroup]="firstFormGroup" [controlName]="'intervalTime'"
+                                            [_inputData]="inputFields.intervalTime">
+                                        </app-cm-input>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button mat-flat-button color="primary" matStepperNext>Next</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </mat-step>
+                        <mat-step [stepControl]="secondFormGroup" label="Rule Design">
+                            <form [formGroup]="secondFormGroup">
+                                <mat-form-field>
+                                    <mat-label>Address</mat-label>
+                                    <input matInput formControlName="secondCtrl"
+                                        placeholder="Ex. 1 Main St, New York, NY" required>
+                                </mat-form-field>
+                                <div>
+                                    <button matButton matStepperPrevious>Back</button>
+                                    <button matButton matStepperNext>Next</button>
+                                </div>
+                            </form>
+                        </mat-step>
+                        <mat-step [stepControl]="thirdFormGroup" label="Rule Schedule">
+                            <form [formGroup]="secondFormGroup">
+                                <mat-form-field>
+                                    <mat-label>Address</mat-label>
+                                    <input matInput formControlName="secondCtrl"
+                                        placeholder="Ex. 1 Main St, New York, NY" required>
+                                </mat-form-field>
+                                <div>
+                                    <button matButton matStepperPrevious>Back</button>
+                                    <button matButton matStepperNext>Next</button>
+                                </div>
+                            </form>
+                        </mat-step>
+                        <mat-step>
+                            <ng-template matStepLabel>Done</ng-template>
+                            <p>You are now done.</p>
+                            <div>
+                                <button mat-flat-button color="secondary" matStepperPrevious>Back</button>
+                                <button mat-flat-button color="primary" (click)="stepper.reset()">Reset</button>
+                            </div>
+                        </mat-step>
+                    </mat-stepper>
+                </div>
+            </mat-card-content>
+        </div>
+        <hr>
+    </mat-card>
+</div> -->
 <div class="pageWrapper">
     <mat-card class="cardWithShadow theme-card">
         <div class="row">
@@ -10,5 +115,12 @@
             </mat-card-header>
         </div>
         <hr>
+        <div class="row">
+            <mat-card-content>
+
+                
+
+            </mat-card-content>
+        </div>
     </mat-card>
 </div>

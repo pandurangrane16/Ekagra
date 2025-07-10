@@ -1,6 +1,18 @@
     {
-        "api_url": "https://10.100.43.108:444"
-       
+        "api_url": "https://172.19.32.210:8002/",
+        "ruleConditions" : [
+            {"key" : "Equal","value" : "equal"},
+            {"key" : "Not Equal","value" : "not_equal"},
+            {"key" : "Begins With","value" : "begins_with"},
+            {"key" : "Doesn't Begins With","value" : "doesnt_begins_with"},
+            {"key" : "Contains","value" : "contains"},
+            {"key" : "Doesn't Contains","value" : "doesnt_contains"},
+            {"key" : "Ends With","value" : "ends_with"},
+            {"key" : "Doesn't Ends With","value" : "doesnt_ends_with"},
+            {"key" : "Is Empty","value" : "is_empty"},
+            {"key" : "Is Null","value" : "is_null"},
+            {"key" : "Is Not Null","value" : "is_not_null"}
+        ]
       
         
 
