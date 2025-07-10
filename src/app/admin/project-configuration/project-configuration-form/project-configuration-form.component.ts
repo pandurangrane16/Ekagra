@@ -1,5 +1,5 @@
 
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef,MatDialogModule } from '@angular/material/dialog';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
@@ -11,24 +11,30 @@ import { projconfigservice } from '../../../services/admin/progconfig.service';
 import { projconfigmodel } from '../../../models/admin/projconfig.model';
 import { getErrorMsg } from '../../../utils/utils';
 import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { Router } from '@angular/router';
+import { AbstractControl, ValidatorFn } from '@angular/forms';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { ToastrService } from 'ngx-toastr';
 
 
-
 @Component({
   selector: 'app-project-configuration-form',
-  imports: [CommonModule,CmInputComponent, MatIconModule,CmToggleComponent,ReactiveFormsModule, MatDialogModule, MatButtonModule, MatInputModule, FormsModule],
+  imports: [CommonModule,CmInputComponent,MatTooltipModule,MatCardModule, MatIconModule,CmToggleComponent,ReactiveFormsModule, MatDialogModule, MatButtonModule, MatInputModule, FormsModule],
   templateUrl: './project-configuration-form.component.html',
   styleUrl: './project-configuration-form.component.css',
   standalone:true,
   providers:[ToastrService]
 })
 export class ProjectConfigurationFormComponent {
+  router = inject(Router);
   form!: FormGroup;
   MatButtonToggleChange:any;
   ruleEngineStatus:any;
   mapStatus :any;
+ previewUrls: { [key: string]: string } = {};
+  state:any;
   selectedFilePaths = {
     mapIcon: '',
     projectIcon: ''
@@ -37,6 +43,7 @@ export class ProjectConfigurationFormComponent {
     name: {
       // labelHeader: 'Name',
       placeholder: 'Enter project name',
+      restrictToAlphanumeric:true,
       appearance: 'outline',
       isDisabled: false,
       color: 'primary',
@@ -56,7 +63,6 @@ export class ProjectConfigurationFormComponent {
   isactivetoggle = {
    
     name: 'isActive',
-    formControlName:'isActive',
     //defaultValue: true,
     data: [
       { value: true, displayName: 'Yes' },
@@ -64,13 +70,21 @@ export class ProjectConfigurationFormComponent {
     ]
   };
 
-
+  toggleSettingsWithoutHeader = {
+   
+    name: 'isActive',
+    //defaultValue: true,
+    formControlName: 'isActive',
+    data: [
+      { value: true, displayName: 'Yes' },
+      { value: false, displayName: 'No' }
+    ]
+  };
+  
 
   Maptoggle = {
    
     name: 'mapEnabled',
-     formControlName:'mapEnabled',
-    
     //defaultValue: true,
     data: [
       { value: true, displayName: 'Yes' },
@@ -81,70 +95,86 @@ export class ProjectConfigurationFormComponent {
   Ruleenginetoggle = {
    
     name: 'ruleEngineEnabled',
-    formControlName :'ruleEngineEnabled',
     //defaultValue: true,
     data: [
       { value: true, displayName: 'Yes' },
       { value: false, displayName: 'No' }
     ]
   };
-previewUrls: { [key: string]: string } = {};
+
 
   
   constructor(
     private fb: FormBuilder,
     private service: projconfigservice,
     private toast: ToastrService,
-    private dialogRef: MatDialogRef<ProjectConfigurationFormComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    //private dialogRef: MatDialogRef<ProjectConfigurationFormComponent>,
+   // @Inject(MAT_DIALOG_DATA) public data: any
   ){
     this.form = this.fb.group({
-        name: ['', [
-    Validators.required,
-    Validators.pattern(/^[a-zA-Z0-9 ]+$/) 
-  ]],
-      description: [ '',Validators.required],
-      ruleEngineEnabled: [Validators.required],
-      mapEnabled: [Validators.required],
-      mapIcon: [ null,Validators.required],
-      projectIcon: [ null,Validators.required],
-      isActive: [Validators.required],
-    });
+  name: [
+    '',
+    [
+      Validators.required,
+      Validators.pattern(/^[a-zA-Z0-9 ]+$/),
+      this.noWhitespaceValidator()  
+    ]
+  ],
+  description: [
+    '',
+    [
+      Validators.required,
+      this.noWhitespaceValidator()  
+    ]
+  ],
+  mapIcon: [null, Validators.required],
+  projectIcon: [null, Validators.required],
+  isActive: [Validators.required]
+});
+
   }
 
   get f() {
   return this.form.controls;
   }
 
+    noWhitespaceValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      return isWhitespace ? { whitespace: true } : null;
+    };
+  }
+
 ReturnValue($event:any) {
   console.log($event);
 }
-
 onFileSelect(event: any, type: 'mapIcon' | 'projectIcon') {
   const file = event.target.files[0];
   const control = this.form.get(type);
 
   if (file) {
- 
+    // ✅ Check if the file is an image
     if (!file.type.startsWith('image/')) {
-      console.warn('File is not an image:', file.type);
+      this.toast.error('Please upload a valid image file.');
       return;
     }
 
-   
+    // ✅ Set preview image
     const objectUrl = URL.createObjectURL(file);
     this.previewUrls[type] = objectUrl;
     console.log('Preview URL set for', type, ':', objectUrl);
 
-  
+    // ✅ Prepare FormData (make sure to use 'File' if backend expects that)
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('File', file); // Use 'File' with capital F if backend expects it
 
+    // ✅ Call upload service
     this.service.UploadFile(formData).subscribe({
       next: (response) => {
         if (response?.result?.success) {
           const uploadedFileName = response.result.fileName;
 
+          // ✅ Update form control with uploaded file name
           control?.setValue(uploadedFileName);
           control?.setErrors(null);
           control?.markAsTouched();
@@ -154,40 +184,42 @@ onFileSelect(event: any, type: 'mapIcon' | 'projectIcon') {
         }
       },
       error: (err) => {
-               this.form.patchValue({
+            this.form.patchValue({
      [type]: null
    
     
       
     });
-        console.error('Upload error:', err);
+      console.error('Upload error:', err);
         
         this.toast.error('Upload error:', err);
-   
       }
     });
   }
 }
 
 
+
   ngOnInit(): void {
-         if (this.data?.mode === 'edit' && this.data?.record) {
+
+      this.state = history.state;
+         const state = this.state;
+         if (state?.mode === 'edit' && state?.record) {
 
 
 
     this.form.patchValue({
    
-      name: this.data.record.name,
-      description: this.data.record.description,
-      mapEnabled: this.data.record.map,
-      ruleEngineEnabled: this.data.record.ruleEngine,
-      isActive: this.data.record.isActive,
+      name: state.record.name,
+      description: state.record.description,
+    
+      isActive: state.record.isActive,
     
       
     });
     this.loadExistingIcons();
 
-    console.log('Edit form data patched:', this.data.record);
+    console.log('Edit form data patched:', state.record);
   }
 
     this.form.controls['name'].valueChanges.subscribe((value: string) => {
@@ -210,21 +242,21 @@ onFileSelect(event: any, type: 'mapIcon' | 'projectIcon') {
 loadExistingIcons(): void {
   const basePath = 'https://172.19.32.210:8002/UploadedFiles/Icons/';
 
-  if (this.data?.record?.mapIcon) {
-    const mapIconUrl = basePath + this.data.record.mapIcon;
-    this.selectedFilePaths['mapIcon'] =  this.data?.record?.mapIcon;
+  if (this.state?.record?.mapIcon) {
+    const mapIconUrl = basePath + this.state.record.mapIcon;
+    this.selectedFilePaths['mapIcon'] =  this.state?.record?.mapIcon;
     this.previewUrls['mapIcon'] = mapIconUrl;
   }
 
-  if (this.data?.record?.projectIcon) {
-    const projectIconUrl = basePath + this.data.record.projectIcon;
-    this.selectedFilePaths['projectIcon'] = this.data?.record?.projectIcon;
+  if (this.state?.record?.projectIcon) {
+    const projectIconUrl = basePath + this.state.record.projectIcon;
+    this.selectedFilePaths['projectIcon'] = this.state?.record?.projectIcon;
     this.previewUrls['projectIcon'] = projectIconUrl; 
   }
 
   this.form.patchValue({
-    mapIcon: this.data?.record?.mapIcon,
-    projectIcon: this.data?.record?.projectIcon
+    mapIcon: this.state?.record?.mapIcon,
+    projectIcon: this.state?.record?.projectIcon
   });
 
   console.log('Edit Preview URLs:', this.previewUrls);
@@ -232,7 +264,7 @@ loadExistingIcons(): void {
 
 
   submit() {
-
+ 
   if (!this.form.invalid) {
     this.form.markAllAsTouched(); 
      
@@ -240,8 +272,8 @@ loadExistingIcons(): void {
 
 _projconfigmodel.name = this.form.controls['name'].value;
 _projconfigmodel.description = this.form.controls['description'].value;
-_projconfigmodel.map=this.form.controls['mapEnabled'].value;
-_projconfigmodel.ruleEngine=this.form.controls['ruleEngineEnabled'].value;
+//_projconfigmodel.map=this.form.controls['mapEnabled'].value;
+//_projconfigmodel.ruleEngine=this.form.controls['ruleEngineEnabled'].value;
 _projconfigmodel.mapIcon=this.form.controls['mapIcon'].value;
 _projconfigmodel.projectIcon=this.form.controls['projectIcon'].value;
 _projconfigmodel.isActive=this.form.controls['isActive'].value;
@@ -258,7 +290,7 @@ _projconfigmodel.roles="2"
 _projconfigmodel.isDeleted=false;
 
 
-     this.service.CheckProjectName(this.form.controls['name'].value,this.data?.record?.id).subscribe(response => {
+     this.service.CheckProjectName(this.form.controls['name'].value,this.state?.record?.id).subscribe(response => {
         if (response.result === true) {
           this.toast.error(" Name already exists in the System.");
           this.form.setErrors({ duplicateName: true });
@@ -268,16 +300,17 @@ _projconfigmodel.isDeleted=false;
      else{
   
 
-        if (this.data?.mode === 'edit' && this.data?.record?.id){
+    if (this.state?.mode === 'edit' && this.state?.record?.id){
 
-    _projconfigmodel.id = this.data.record.id;
+    _projconfigmodel.id = this.state.record.id;
 
       this.service.ProjectEdit(_projconfigmodel).subscribe({
     next: () => {
       console.log('Updated successfully');
 
       this.toast.success('Project Updated successfully'); 
-      this.dialogRef.close(this.form.value);
+      this.router.navigate(['/admin/projconfig']);
+      //this.dialogRef.close(this.form.value);
     
       //this.toast.success('ProjectField saved successfully');
       
@@ -292,15 +325,14 @@ _projconfigmodel.isDeleted=false;
    
   }
 
-
-  
+  else{
   this.service.ProjectCreate(_projconfigmodel).subscribe({
     next: () => {
       console.log('Saved successfully');
 
       this.toast.success('Project saved successfully'); 
-      this.dialogRef.close(this.form.value);
-    
+      //this.dialogRef.close(this.form.value);
+     this.router.navigate(['/admin/projconfig']);
       //this.toast.success('Project saved successfully');
       
     },
@@ -309,6 +341,12 @@ _projconfigmodel.isDeleted=false;
       this.toast.error('Failed to save project');
     }
   });
+  return;
+  }
+
+
+  
+
      }
         
 
@@ -346,7 +384,7 @@ _projconfigmodel.isDeleted=false;
 
 
     close() {
-    this.dialogRef.close();
+    this.router.navigate(['/admin/projconfig']);
   }
 
 

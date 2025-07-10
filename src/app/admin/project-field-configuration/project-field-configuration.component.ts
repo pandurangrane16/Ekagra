@@ -1,5 +1,5 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component,inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CmTableComponent } from '../../common/cm-table/cm-table.component';
 import { CmSelectComponent } from '../../common/cm-select/cm-select.component';
@@ -10,6 +10,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { InputRequest } from '../../models/request/inputreq.model';
 import { projfieldconfigservice } from '../../services/admin/projfieldconfig.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
 import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 import { ProjectFieldConfigurationFormComponent } from './project-field-configuration-form/project-field-configuration-form.component';
 
@@ -21,7 +23,8 @@ import { ProjectFieldConfigurationFormComponent } from './project-field-configur
     CommonModule,
     CmTableComponent,
     CmInputComponent,
-    CmSelect2Component
+    CmSelect2Component,
+    MatCardModule
     
   ],
   templateUrl: './project-field-configuration.component.html',
@@ -31,7 +34,7 @@ import { ProjectFieldConfigurationFormComponent } from './project-field-configur
 
 export class ProjectFieldConfigurationComponent  {
 
-
+router = inject(Router);
   _headerName = 'Project Configuration Table';
   headArr: any[] = [];
   isProjectOptionsLoaded =false;
@@ -66,6 +69,7 @@ export class ProjectFieldConfigurationComponent  {
   squareSettings = {
     labelHeader: 'Search',
     formFieldClass: 'cm-square-input',
+      placeholder: 'Search (minimum 3 letters)',
     appearance: 'outline',
     isDisabled: false
   };
@@ -87,6 +91,7 @@ export class ProjectFieldConfigurationComponent  {
           lableClass: 'form-label',
           formFieldClass: 'w-100',
           appearance: 'fill',
+         
           options: [
             { name: 'Enable', value: true },
             { name: 'Disable', value: false },
@@ -225,7 +230,14 @@ export class ProjectFieldConfigurationComponent  {
     this.deleteRow(data);
   }
 }
-
+editRow(rowData: any) {
+  this.router.navigate(['/admin/projfieldform'], {
+    state: {
+      mode: 'edit',
+      record: rowData
+    }
+  });
+}  
 deleteRow(rowData: any): void {
   const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
     width: '400px',
@@ -233,7 +245,7 @@ deleteRow(rowData: any): void {
   panelClass: 'custom-confirm-dialog',
     data: {
       title: 'Confirm Delete',
-     message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.name}</b> will be deleted.</div>`,
+     message: `Are you sure?<div style="margin-top: 8px;">Project Field: <b>${rowData.projectName}</b> will be deleted.</div>`,
 
       type: 'delete',
       confirmButtonText: 'Confirm',
@@ -263,40 +275,32 @@ deleteRow(rowData: any): void {
     }
   });
 }
-editRow(rowData: any) {
-  const dialogRef = this.dialog.open(ProjectFieldConfigurationFormComponent, {
-    width: '500px',
- data: {
-  mode: 'edit',
-  record: rowData  
-}
-  });
 
-  dialogRef.afterClosed().subscribe(result => {
-    if (result === 'updated') {
-      this.getProjfieldConfigList(); 
-    }
-  });
-}
 
-  openDialog() {
-            const dialogRef = this.dialog.open(ProjectFieldConfigurationFormComponent, {
+  // openDialog() {
+  //           const dialogRef = this.dialog.open(ProjectFieldConfigurationFormComponent, {
               
-              width: '500px', 
+  //             width: '500px', 
                
-              disableClose: true,  
-              autoFocus: false,   
-              data: {}               
-            });
+  //             disableClose: true,  
+  //             autoFocus: false,   
+  //             data: {}               
+  //           });
         
-            // Optional: handle result
-            dialogRef.afterClosed().subscribe(result => {
-              if (result) {
-                console.log('Dialog result:', result);
+  //           // Optional: handle result
+  //           dialogRef.afterClosed().subscribe(result => {
+  //             this.getProjfieldConfigList();
+  //             if (result) {
+  //               console.log('Dialog result:', result);
                
-              }
-            });
-  }
+  //             }
+  //           });
+  // }
+
+          openDialog() {
+      this.router.navigate(['/admin/projfieldform']);   
+          
+}
   buildHeader() {  
             this.headArr = [
               { header: 'Project Name', fieldValue: 'projName', position: 1 },
@@ -306,7 +310,7 @@ editRow(rowData: any) {
               { header: 'Status', fieldValue: 'isActive',type:'boolean', position: 5 },
               { header: 'Action', fieldValue: 'button', position: 6 }
             ];
-  ;}   
+          }   
 getProjList() {
   this.service.GetProjectList().subscribe(response => {
     const items = response?.result || [];
@@ -323,6 +327,16 @@ getProjList() {
     });
 
     this.projectSelectSettings.options = projectOptions;
+        this.projectSelectSettings.options = projectOptions;
+this.form.controls['selectedProject'].setValue({
+  name: 'All',
+  value: null
+});
+
+this.form.controls['selectedStatus'].setValue({
+  name: 'All',
+  value: null
+});
     this.isProjectOptionsLoaded = true;
   }, error => {
     console.error('Error fetching project list', error);

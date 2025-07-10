@@ -15,7 +15,7 @@ import { UserRoutes } from '../app/user/user.routes';
 
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ProjectFieldMapComponent } from './admin/project-field-map/project-field-map.component';
-import { CmLeafletComponent } from './common/cm-leaflet/cm-leaflet.component';
+import { BulkUploadComponent } from './admin/bulk-upload/bulk-upload.component';
 export const routes: Routes = [
       { path: "", component: LoginComponent, },
       { path: "login", component: LoginComponent, },
@@ -28,10 +28,11 @@ export const routes: Routes = [
       { path: 'camera', component: SurveilienceCameraComponent },
       { path: 'chat', component: ChatPageComponent },
       { path: 'setting', component: SettingPageComponent },
-      { path: 'map', component: CmLeafletComponent },
       //{ path: "**", redirectTo: "dashboard" },
        { path: 'project-filed-map', component: ProjectFieldMapComponent },
       {path:'projconf', component: ProjectConfigurationComponent},
+            {path:'BulkUpload', component: BulkUploadComponent},
+            
       {
             path: 'admin',
             //  component: AdminDashboardComponent,

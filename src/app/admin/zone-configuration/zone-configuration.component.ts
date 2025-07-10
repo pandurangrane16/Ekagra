@@ -1,5 +1,5 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component, inject,OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CmTableComponent } from '../../common/cm-table/cm-table.component';
 import { CmSelectComponent } from '../../common/cm-select/cm-select.component';
@@ -10,6 +10,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { zoneconfigservice } from '../../services/admin/zoneconfig.service';
 import { InputRequest } from '../../models/request/inputreq.model';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
 import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 import { ZoneConfigurationFormComponent } from './zone-configuration-form/zone-configuration-form.component';
 
@@ -20,7 +22,7 @@ import { ZoneConfigurationFormComponent } from './zone-configuration-form/zone-c
     CommonModule,
     CmTableComponent,
     CmInputComponent,
-    CmSelect2Component
+    CmSelect2Component,MatCardModule
     
   ],
   templateUrl: './zone-configuration.component.html',
@@ -32,7 +34,7 @@ import { ZoneConfigurationFormComponent } from './zone-configuration-form/zone-c
 
 export class ZoneConfigurationComponent  {
 
-
+router = inject(Router);
 _headerName = 'Project Configuration Table';
 headArr: any[] = [];
 isProjectOptionsLoaded = false;
@@ -67,6 +69,7 @@ searchInputSettings = {
 squareSettings = {
   labelHeader: 'Search',
   formFieldClass: 'cm-square-input',
+       placeholder: 'Search (minimum 3 letters)',
   appearance: 'outline',
   isDisabled: false
 };
@@ -130,6 +133,9 @@ ngOnInit(): void {
      selectedStatus: [''],
      searchText: ['']
    });
+
+
+
    this.buildHeader();
    this.getZoneConfigList();
    this.GetZoneList();
@@ -179,6 +185,15 @@ ngOnInit(): void {
     });
 
     this.projectSelectSettings.options = projectOptions;
+    this.form.controls['selectedProject'].setValue({
+  name: 'All',
+  value: null
+});
+
+this.form.controls['selectedStatus'].setValue({
+  name: 'All',
+  value: null
+});
     this.isProjectOptionsLoaded = true;
   }, error => {
     console.error('Error fetching project list', error);
@@ -263,29 +278,46 @@ getProjList() {
     });
 
     this.projectSelectSettings.options = projectOptions;
+//     this.form.controls['selectedProject'].setValue({
+//   name: 'All',
+//   value: null
+// });
+
+// this.form.controls['selectedStatus'].setValue({
+//   name: 'All',
+//   value: null
+// });
     this.isProjectOptionsLoaded = true;
   }, error => {
     console.error('Error fetching project list', error);
   });
 }
-openDialog() {
-          const dialogRef = this.dialog.open(ZoneConfigurationFormComponent, {
+// openDialog() {
+//           const dialogRef = this.dialog.open(ZoneConfigurationFormComponent, {
             
-            width: '500px', 
+//             width: '800px', 
              
-            disableClose: true,  
-            autoFocus: false,   
-            data: {}               
-          });
+//             disableClose: true,  
+//             autoFocus: false,   
+//             data: {}               
+//           });
       
-          // Optional: handle result
-          dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-              console.log('Dialog result:', result);
+         
+//           dialogRef.afterClosed().subscribe(result => {
+//              this.getZoneConfigList();
+              
+//             if (result) {
+            
+//               console.log('Dialog result:', result);
              
-            }
-          });
+//             }
+//           });
+// }
+openDialog() {
+      this.router.navigate(['/admin/zoneform']);   
+          
 }
+
 buildHeader() {  
           this.headArr = [
             { header: 'Zone Name', fieldValue: 'zoneName', position: 1 },
@@ -344,22 +376,31 @@ onRowClicked(row: any) {
     
     onButtonClicked({ event, data }: { event: any; data: any }) {
   if (event.type === 'edit') {
-    //this.editRow(data);
+    this.editRow(data);
     console.log(data);
   } else if (event.type === 'delete') {
     this.deleteRow(data);
   }
 }
+editRow(rowData: any) {
+  this.router.navigate(['/admin/zoneform'], {
+    state: {
+      mode: 'edit',
+      record: rowData
+    }
+  });
+}
 deleteRow(rowData: any): void {
   const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
-    width: '320px',
-       position: { top: '20px' },
+    width: '400px',
+      position: { top: '20px' },
   panelClass: 'custom-confirm-dialog',
     data: {
       title: 'Confirm Delete',
-      message: 'Are you sure you want to delete this ProjectField?',
+     message: `Are you sure?<div style="margin-top: 8px;">Zone: <b>${rowData.zoneName}</b> will be deleted.</div>`,
+
       type: 'delete',
-      confirmButtonText: 'Delete',
+      confirmButtonText: 'Confirm',
       cancelButtonText: 'Cancel'
     }
   });

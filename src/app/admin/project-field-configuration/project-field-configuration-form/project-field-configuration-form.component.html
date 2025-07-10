@@ -1,15 +1,20 @@
-
-
-<div class="dialog-container">
-    <div class="dialog-header">
-        <h2>Project Field Configuration</h2>
-        <button mat-icon-button (click)="close()" aria-label="Close">
-          <mat-icon>close</mat-icon>
-        </button>
+<div class="pageWrapper">
+<mat-card class="cardWithShadow theme-card">
+    <div class="row">
+  <mat-card-header>
+      <div class="col-md-11" style="padding-left: 40px;">
+        <mat-card-title><h2 style="margin-top: 10px;">Project Field Configuration</h2></mat-card-title>
       </div>
-   
-
-    <hr class="input-header-hr" /> 
+      <div class="col text-right">
+       <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()">
+  <mat-icon>reply</mat-icon>
+</button>
+        
+      </div>
+  </mat-card-header>
+    </div>
+  <hr>
+  <mat-card-content class="b-t-1 scroll">
 
     <form [formGroup]="form" class="form-container">
         <div class="row">
@@ -50,18 +55,14 @@
 
         <div class="row">
           
-            <div class="col-md-4" (click)="onMapLabelClick()">
+            <div class="col-md-4">
               <label>Map Label</label>
               <app-cm-input
                 [formGroup]="form"
                 [controlName]="'maplabel'"
                 [_inputData]="inputFields.maplabel">
               </app-cm-input>
-
-  <div *ngIf="showMapLabelError" class="text-danger mt-1">
-    Please select a project first.
-  </div>
-                      <div *ngIf="f['maplabel'].touched && f['maplabel'].errors && f['maplabel'].enabled" class="text-danger mt-1">
+                      <div *ngIf="f['maplabel'].touched && f['maplabel'].errors" class="text-danger mt-1">
         {{ getErrorMessage('maplabel', 'Map Label', false, '') }}
       </div>
             </div>
@@ -71,13 +72,10 @@
    <div class="col-md-4 d-flex align-items-center justify-content-center">
     <div style="width: 100%; text-align: center;">
       <label class="toggle-label margin-top:4px">Is Same As</label><br />
-      <app-cm-toggle 
+      <app-cm-toggle
         [formGroup]="form"
         [settings]="isSameas">
       </app-cm-toggle>
-              <div *ngIf="f['isSameas'].touched && f['isSameas'].errors" class="text-danger mt-1">
-  {{ getErrorMessage('isSameas', 'isSameas', false, '') }}
-</div>
     </div>
   </div>
 
@@ -88,26 +86,16 @@
                   [controlName]="'apilabel'"
                   [_inputData]="inputFields.apilabel">
                 </app-cm-input>
-                        <div *ngIf="f['apilabel'].touched && f['apilabel'].errors && f['apilabel'].enabled" class="text-danger mt-1">
+                        <div *ngIf="f['apilabel'].touched && f['apilabel'].errors" class="text-danger mt-1">
         {{ getErrorMessage('apilabel', 'Api Label', false, '') }}
       </div>
               </div>
         </div>
        
-
-
-        
-
-
-     
-
         <div class="row">
             <div class="col-md-6">
                 <label class="toggle-label">Enabled</label>
                 <app-cm-toggle [formGroup]="form" [settings]="projectEnabled" style="margin-top: -35px;"></app-cm-toggle>
-               <div *ngIf="f['isActive'].touched && f['isActive'].errors" class="text-danger mt-1">
-  {{ getErrorMessage('isActive', 'isActive', false, '') }}
-</div>
             </div>
         </div>
         
@@ -121,4 +109,8 @@
           
       
     </form>
+
+
+     </mat-card-content>
+</mat-card>
 </div>

@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, Inject, Input, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, Input, OnInit,Output, EventEmitter, PLATFORM_ID } from '@angular/core';
 let L: any;
 //import 'leaflet-draw';
 
@@ -16,10 +16,15 @@ export class CmLeafletComponent implements OnInit {
   isBrowser = false;
 
   @Input() showMap: any;
+  @Input() existingPolygon: string | null = null;
+  @Output() polygonDrawn = new EventEmitter<any>();
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   async ngOnInit() {
+
+  
+  
   this.isBrowser = isPlatformBrowser(this.platformId);
 
   if (this.isBrowser) {
@@ -34,6 +39,21 @@ export class CmLeafletComponent implements OnInit {
     this.map = map;
     this.addDrawControl();
   }
+
+  if (this.existingPolygon) {
+  try {
+    const coords = JSON.parse(this.existingPolygon); 
+    const latlngs = coords[0].map(([lng, lat]: [number, number]) => L.latLng(lat, lng));
+    
+    const polygon = L.polygon(latlngs, { color: 'blue' }).addTo(this.map);
+    const drawnItems = new L.FeatureGroup();
+    drawnItems.addLayer(polygon);
+    this.map.fitBounds(polygon.getBounds()); 
+  } catch (e) {
+    console.error('Invalid polygon format:', e);
+  }
+}
+
 }
 
 private addDrawControl(): void {
@@ -67,15 +87,51 @@ private addDrawControl(): void {
   const drawEvent = (window as any).L?.Draw?.Event?.CREATED;
 
   if (drawEvent) {
+    // 🟢 Handle polygon creation
     this.map.on(drawEvent, (event: any) => {
       const layer = event.layer;
       drawnItems.addLayer(layer);
-      const coordinates = layer.getLatLngs();
-      console.log('Polygon Coordinates:', coordinates);
+
+      const latlngs = layer.getLatLngs();
+      const rawCoords = latlngs[0].map((latlng: any) => [latlng.lng, latlng.lat]);
+
+      if (
+        rawCoords.length > 0 &&
+        (rawCoords[0][0] !== rawCoords[rawCoords.length - 1][0] ||
+         rawCoords[0][1] !== rawCoords[rawCoords.length - 1][1])
+      ) {
+        rawCoords.push([...rawCoords[0]]);
+      }
+
+      const polygon = [rawCoords];
+      console.log('Polygon Created:', polygon);
+      this.polygonDrawn.emit(polygon);
     });
   } else {
     console.error('L.Draw.Event not found');
   }
+
+  // 🟢 Handle polygon editing
+  this.map.on('draw:edited', (event: any) => {
+    const layers = event.layers;
+    layers.eachLayer((layer: any) => {
+      const editedLatLngs = layer.getLatLngs()[0];
+      const coords = editedLatLngs.map((latlng: any) => [latlng.lng, latlng.lat]);
+
+      // Close polygon if needed
+      if (
+        coords.length > 0 &&
+        (coords[0][0] !== coords.at(-1)[0] || coords[0][1] !== coords.at(-1)[1])
+      ) {
+        coords.push([...coords[0]]);
+      }
+
+      const updatedPolygon = [coords];
+      console.log('Polygon Edited:', updatedPolygon);
+      this.polygonDrawn.emit(updatedPolygon);
+    });
+  });
 }
+
 
 }

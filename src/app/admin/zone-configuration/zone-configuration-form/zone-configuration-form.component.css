@@ -1,5 +1,5 @@
 .dialog-container {
-    max-width: 500px;
+  padding-bottom: 50px;
     width: 100%;
     max-height: 90vh;               
     display: flex;
@@ -8,20 +8,22 @@
     background: #fff;
     border-radius: 8px;
     box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
-       
-    overflow-x: hidden;   
-    overflow-y: auto;  
+        
   }
+  .scroll{
+  
+    overflow-x: auto;   
+    overflow-y: hidden; 
+}
   
   .form-container {
     flex: 1;
-    overflow-y: auto;              /* Enables scrolling if content overflows */
-    overflow-x: hidden;
     display: flex;
     flex-direction: column;
     gap: 20px;
     padding-right: 10px;          /* So scroll doesn’t cover content */
   }
+  
   
   app-cm-input {
     width: 100%;

@@ -8,9 +8,13 @@ import { MapConfigurationComponent } from "./map-configuration/map-configuration
 import { BulkUploadComponent } from "./bulk-upload/bulk-upload.component";
 import { SiteMngComponent } from "./site-configuration/site-mng/site-mng.component";
 import { ApiPlaygroundComponent } from "./api-playground/api-playground.component";
+import { ZoneConfigurationFormComponent } from "./zone-configuration/zone-configuration-form/zone-configuration-form.component";
 import { ApiListComponent } from "./api-playground/api-list/api-list.component";
 import { LoginComponent } from "../routes/login/login.component";
-import { RuleConfigComponent } from "./rule-engine/rule-config/rule-config.component";
+//import { RuleConfigComponent } from "./rule-engine/rule-config/rule-config.component";
+import { ProjectFieldConfigurationFormComponent } from "./project-field-configuration/project-field-configuration-form/project-field-configuration-form.component";
+import { ProjectConfigurationFormComponent } from "./project-configuration/project-configuration-form/project-configuration-form.component";
+import { MapConfigurationFormComponent } from "./map-configuration/map-configuration-form/map-configuration-form.component";
 //import { ProjectConfigurationComponent} from "./admin-dashboard/project-configuration.component";
 
 export const AdminRoutes: Routes = [
@@ -66,6 +70,50 @@ export const AdminRoutes: Routes = [
           urls: [
             { title: 'Admin Dashboard', url: '/admin/siteconfigmng' },
             { title: 'Site Configuration' },
+          ],
+        },
+      },
+       {
+        path: 'zoneform',
+        component: ZoneConfigurationFormComponent,
+        data: {
+          title: 'Zone Configuration form',
+          urls: [
+            { title: 'Admin Dashboard', url: '/admin/zoneform' },
+            { title: 'Zone Configuration form' },
+          ],
+        },
+      },
+          {
+        path: 'projform',
+        component: ProjectConfigurationFormComponent,
+        data: {
+          title: 'Project Configuration form',
+          urls: [
+            { title: 'Admin Dashboard', url: '/admin/projform' },
+            { title: 'Project Configuration form' },
+          ],
+        },
+      },
+             {
+        path: 'projfieldform',
+        component: ProjectFieldConfigurationFormComponent,
+        data: {
+          title: 'Project Field Configuration form',
+          urls: [
+            { title: 'Admin Dashboard', url: '/admin/projfieldform' },
+            { title: 'Project Field Configuration form' },
+          ],
+        },
+      },
+        {
+        path: 'mapform',
+        component: MapConfigurationFormComponent,
+        data: {
+          title: 'Map Configuration form',
+          urls: [
+            { title: 'Admin Dashboard', url: '/admin/mapform' },
+            { title: 'Map Configuration form' },
           ],
         },
       },
@@ -132,39 +180,6 @@ export const AdminRoutes: Routes = [
           urls: [
             { title: 'Api List View', url: '/admin/apilist' },
             { title: 'Api List View' },
-          ],
-        },
-      },
-      {
-        path: 'rulelist',
-        component: ApiListComponent,
-        data: {
-          title: 'Rules List View',
-          urls: [
-            { title: 'Rules List View', url: '/admin/rulelist' },
-            { title: 'Rules List View' },
-          ],
-        },
-      },
-      {
-        path: 'ruleengine',
-        component: RuleConfigComponent,
-        data: {
-          title: 'Rules List View',
-          urls: [
-            { title: 'Rules List View', url: '/admin/ruleengine' },
-            { title: 'Rules List View' },
-          ],
-        },
-      },
-          {
-        path: 'login',
-        component: LoginComponent,
-        data: {
-          title: 'login',
-          urls: [
-            { title: 'login', url: '/admin/login' },
-            { title: 'login' },
           ],
         },
       },

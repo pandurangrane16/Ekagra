@@ -1,5 +1,5 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component,inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CmTableComponent } from '../../common/cm-table/cm-table.component';
 import { CmSelectComponent } from '../../common/cm-select/cm-select.component';
@@ -10,6 +10,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { mapconfigservice } from '../../services/admin/mapconfig.service';
 import { InputRequest } from '../../models/request/inputreq.model';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
 import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 import { MapConfigurationFormComponent } from './map-configuration-form/map-configuration-form.component';
 
@@ -20,7 +22,7 @@ import { MapConfigurationFormComponent } from './map-configuration-form/map-conf
     CommonModule,
     CmTableComponent,
     CmInputComponent,
-    CmSelect2Component
+    CmSelect2Component,MatCardModule
     
   ],
   templateUrl: './map-configuration.component.html',
@@ -29,7 +31,7 @@ import { MapConfigurationFormComponent } from './map-configuration-form/map-conf
 
 export class MapConfigurationComponent  {
 
-
+router = inject(Router);
 _headerName = 'Project Configuration Table';
 headArr: any[] = [];
 isProjectOptionsLoaded = false;
@@ -66,6 +68,7 @@ searchInputSettings = {
 squareSettings = {
   labelHeader: 'Search',
   formFieldClass: 'cm-square-input',
+    placeholder: 'Search (minimum 3 letters)',
   appearance: 'outline',
   isDisabled: false
 };
@@ -223,6 +226,15 @@ GetMapList() {
     });
 
     this.projectSelectSettings.options = projectOptions;
+    this.form.controls['selectedProject'].setValue({
+  name: 'All',
+  value: null
+});
+
+this.form.controls['selectedStatus'].setValue({
+  name: 'All',
+  value: null
+});
     this.isProjectOptionsLoaded = true;
   }, error => {
     console.error('Error fetching project list', error);
@@ -252,6 +264,7 @@ onProjectChange(value: any) {
     //      this.items=items;
          const items = response.result?.items;
          this.items=items;
+           const totalCount=response.result?.totalCount;
 
 
         if (Array.isArray(items)) {
@@ -280,37 +293,42 @@ onProjectChange(value: any) {
 
          
           });
-          // var _length = data.totalCount / Number(this.recordPerPage);
-          // if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-          //   this.totalRecords = Number(this.recordPerPage) * (_length);
-          // else if (Math.floor(_length) == 0)
-          //   this.totalRecords = 10;
-          // else
-          //   this.totalRecords = data.totalRecords;
-          // this.totalPages = this.totalRecords / this.pager;
-          //this.getMediaByStatus(this.tabno);
+          var _length = totalCount / Number(this.recordPerPage);
+          if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+            this.totalRecords = Number(this.recordPerPage) * (_length);
+          else if (Math.floor(_length) == 0)
+            this.totalRecords = 10;
+          else
+            this.totalRecords = totalCount;
+          this.totalPages = this.totalRecords / this.pager;
         }
       })
     }  
-openDialog() {
-          const dialogRef = this.dialog.open(MapConfigurationFormComponent, {
+// openDialog() {
+//           const dialogRef = this.dialog.open(MapConfigurationFormComponent, {
             
-            width: '500px', 
+//             width: '500px', 
              
-            disableClose: true,  
-            autoFocus: false,   
-            data: {}               
-          });
+//             disableClose: true,  
+//             autoFocus: false,   
+//             data: {}               
+//           });
       
-          // Optional: handle result
-          dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-              console.log('Dialog result:', result);
+//           // Optional: handle result
+//           dialogRef.afterClosed().subscribe(result => {
+//             if (result) {
+//               console.log('Dialog result:', result);
              
-            }
-          });
+//             }
+//           });
+// }
+          openDialog() {
+      this.router.navigate(['/admin/mapform']);   
+          
 }
  submit(){
+      this.pager=0;
+         this.perPage=10;
   this.getFilteredList();
  }
 buildHeader() {  
@@ -363,7 +381,7 @@ deleteRow(rowData: any): void {
   panelClass: 'custom-confirm-dialog',
     data: {
       title: 'Confirm Delete',
-     message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.name}</b> will be deleted.</div>`,
+     message: `Are you sure?<div style="margin-top: 8px;">Map: <b>${rowData.name}</b> will be deleted.</div>`,
 
       type: 'delete',
       confirmButtonText: 'Confirm',
@@ -393,21 +411,14 @@ deleteRow(rowData: any): void {
     }
   });
 }
- editRow(rowData: any) {
-   const dialogRef = this.dialog.open(MapConfigurationFormComponent, {
-     width: '500px',
-  data: {
-   mode: 'edit',
-   record: rowData  
- }
-   });
- 
-   dialogRef.afterClosed().subscribe(result => {
-     if (result === 'updated') {
-       this.getMapConfigList(); 
-     }
-   });
- }    
+editRow(rowData: any) {
+  this.router.navigate(['/admin/mapform'], {
+    state: {
+      mode: 'edit',
+      record: rowData
+    }
+  });
+}   
 getMapConfigList() {
       this._request.currentPage = this.pager;
       this._request.pageSize = Number(this.recordPerPage);
@@ -418,6 +429,7 @@ getMapConfigList() {
          const items = response.result?.items;
          
          this.items=items;
+           const totalCount=response.result?.totalCount;
 
 
 
@@ -451,15 +463,14 @@ getMapConfigList() {
 
          
           });
-          // var _length = data.totalCount / Number(this.recordPerPage);
-          // if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-          //   this.totalRecords = Number(this.recordPerPage) * (_length);
-          // else if (Math.floor(_length) == 0)
-          //   this.totalRecords = 10;
-          // else
-          //   this.totalRecords = data.totalRecords;
-          // this.totalPages = this.totalRecords / this.pager;
-          //this.getMediaByStatus(this.tabno);
+         var _length = totalCount / Number(this.recordPerPage);
+          if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+            this.totalRecords = Number(this.recordPerPage) * (_length);
+          else if (Math.floor(_length) == 0)
+            this.totalRecords = 10;
+          else
+            this.totalRecords = totalCount;
+          this.totalPages = this.totalRecords / this.pager;
         }
       })
     }   

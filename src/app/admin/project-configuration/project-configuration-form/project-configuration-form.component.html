@@ -1,29 +1,38 @@
-<div class="dialog-container">
-    <div class="dialog-header">
-        <h2>Project Configuration</h2>
-        <button mat-icon-button (click)="close()" aria-label="Close">
-          <mat-icon>close</mat-icon>
-        </button>
+<div class="pageWrapper">
+<mat-card class="cardWithShadow theme-card">
+    <div class="row">
+  <mat-card-header>
+      <div class="col-md-11" style="padding-left: 40px;">
+        <mat-card-title><h2 style="margin-top: 10px;">Project Configuration</h2></mat-card-title>
       </div>
-   
+      <div class="col text-right">
+       <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()">
+  <mat-icon>reply</mat-icon>
+</button>
+        
+      </div>
+  </mat-card-header>
+    </div>
+  <hr>
+  <mat-card-content class="b-t-1 scroll">
 
-    <hr class="input-header-hr" /> 
     <form [formGroup]="form" class="form-container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <label>Name</label>
                 <app-cm-input
                   [formGroup]="form"
                   [controlName]="'name'"
                   [_inputData]="inputFields.name">
                 </app-cm-input>
+                <!-- <mat-error *ngIf="form.get('name')?.hasError('whitespace')">
+  Name cannot be empty or just spaces.
+</mat-error> -->
   <div *ngIf="f['name'].touched && f['name'].errors" class="text-danger mt-1">
     {{ getErrorMessage('name', 'Name', true, 'Special characters are not allowed') }}
   </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
+             <div class="col-md-6">
                 <label>Description</label>
                 <app-cm-input
                   [formGroup]="form"
@@ -37,10 +46,26 @@
             </div>
         </div>
 
+
+        <!-- <div class="row">
+            <div class="col-md-12">
+                <label>Description</label>
+                <app-cm-input
+                  [formGroup]="form"
+                  [controlName]="'description'"
+                  [_inputData]="inputFields.description">
+                </app-cm-input>
+                
+                   <div *ngIf="f['description'].touched && f['description'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('description', 'Description', false, '') }}
+      </div>
+            </div>
+        </div> -->
+
    
   
       <!-- Toggles -->
-      <div class="toggle-row">
+      <!-- <div class="toggle-row">
         <div class="toggle-column">
           <label class="toggle-label">Map?</label>
           <app-cm-toggle [formGroup]="form" [settings]="Maptoggle"  (returnObject)="ReturnValue($event)"></app-cm-toggle>
@@ -57,16 +82,14 @@
         {{ getErrorMessage('ruleEngineEnabled', 'Rule Engine', false, '') }}
       </div>
         </div>
-      </div>
+      </div> -->
       
   
       <!-- File Uploads -->
-      <div class="file-upload">
+      <!-- <div class="file-upload">
         <label>
           Map Icon*
           <input type="file" (change)="onFileSelect($event, 'mapIcon')" />
-         
-          <img *ngIf="previewUrls['mapIcon']" [src]="previewUrls['mapIcon']" width="50" height="50" alt="Map Icon Preview" style="border-radius: 4px;" />
     <div *ngIf="f['mapIcon'].touched && f['mapIcon'].errors" class="text-danger mt-1">
         {{ getErrorMessage('mapIcon', 'Map Icon', false, '') }}
       </div>
@@ -75,27 +98,72 @@
         <label>
           Project Icon*
           <input type="file" (change)="onFileSelect($event, 'projectIcon')"  />
-           <img *ngIf="previewUrls['projectIcon']" [src]="previewUrls['projectIcon']" width="50" height="50" alt="Project Icon Preview" style="border-radius: 4px;" />
             <div *ngIf="f['projectIcon'].touched && f['projectIcon'].errors" class="text-danger mt-1">
         {{ getErrorMessage('projectIcon', 'Project Icon', false, '') }}
       </div>
         </label>
-      </div>
+      </div> -->
   
-         <!-- Toggles -->
-         <div class="toggle-row">
-              <app-cm-toggle [formGroup]="form" [settings]="isactivetoggle"></app-cm-toggle>
-              <div *ngIf="f['isActive'].touched && f['isActive'].errors" class="text-danger mt-1">
-        {{ getErrorMessage('isActive', 'isActive', false, '') }}
-      </div>
-          </div>
-  
-      <!-- Action Buttons -->
+
+       <div class="row">
+
+  <div class="col-md-6" file-upload>
+    <label class="form-label">Map Icon*</label>
+    <input type="file" (change)="onFileSelect($event, 'mapIcon')" class="form-control" />
     
-    </form>
-      <div class="dialog-actions">
-        <button mat-button (click)="close()">Cancel</button>
-        <button mat-flat-button color="primary" (click)="submit()">Save</button>
-      </div>
+    <img *ngIf="previewUrls['mapIcon']"
+         [src]="previewUrls['mapIcon']"
+         width="70" height="70"
+         alt="Map Icon Preview"
+         class="mt-2"
+         style="border-radius: 4px;" />
+
+    <div *ngIf="f['mapIcon']?.touched && f['mapIcon']?.errors" class="text-danger mt-1">
+      {{ getErrorMessage('mapIcon', 'Map Icon', false, '') }}
+    </div>
   </div>
+
+  <div class="col-md-6" file-upload>
+    <label class="form-label">Project Icon*</label>
+    <input type="file" (change)="onFileSelect($event, 'projectIcon')" class="form-control" />
+    
+    <img *ngIf="previewUrls['projectIcon']"
+         [src]="previewUrls['projectIcon']"
+         width="70" height="70"
+         alt="Project Icon Preview"
+         class="mt-2"
+         style="border-radius: 4px;" />
+
+    <div *ngIf="f['projectIcon']?.touched && f['projectIcon']?.errors" class="text-danger mt-1">
+      {{ getErrorMessage('projectIcon', 'Project Icon', false, '') }}
+    </div>
+  </div>
+
+</div>
+
+
+
+         <!-- Toggles -->
+             <div class="row">
+            <div class="col-md-6">
+                <label class="toggle-label">Enabled</label>
+                <app-cm-toggle [formGroup]="form" [settings]="toggleSettingsWithoutHeader" style="margin-top: -35px;"></app-cm-toggle>
+            </div>
+        </div>
+  
+     
+        <!-- Action Buttons -->
+        <div class="dialog-actions">
+         
+          <button mat-stroked-button (click)="close()">Cancel</button>
+          <button mat-flat-button color="primary" (click)="submit()">Save</button>
+        </div>
+    </form>
+
+
+     </mat-card-content>
+</mat-card>
+</div>
+
+   
   

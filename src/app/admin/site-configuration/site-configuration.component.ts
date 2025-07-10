@@ -10,7 +10,10 @@ import { CmInputComponent } from '../../common/cm-input/cm-input.component';
 //import { SiteConfigurationFormComponent } from './site-configuration-form/site-configuration-form.component';
 import { Router } from '@angular/router';
 import { siteconfigservice } from '../../services/admin/siteconfig.service';
+import { MatCardModule } from '@angular/material/card';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
+import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 
 
 
@@ -22,8 +25,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
     CommonModule,
     CmTableComponent,
     CmInputComponent,
-    CmSelect2Component
-    
+    CmSelect2Component,
+    MatCardModule
   ],
   templateUrl: './site-configuration.component.html',
   styleUrl: './site-configuration.component.css'
@@ -60,6 +63,7 @@ searchInputSettings = {
 squareSettings = {
   labelHeader: 'Search',
   formFieldClass: 'cm-square-input',
+       placeholder: 'Search (minimum 3 letters)',
   appearance: 'outline',
   isDisabled: false
 };
@@ -73,7 +77,7 @@ projectSelectSettings = {
   labelHeader: 'Select Project',
   lableClass: 'form-label',
   formFieldClass: '', 
-  appearance: 'outline',
+  appearance: 'fill',
   options:[]
 };
 
@@ -115,7 +119,7 @@ gridArr = [
 
 
 constructor(private fb: FormBuilder,private service:siteconfigservice
-  //,private dialog: MatDialog
+  ,private dialog: MatDialog
   ) {}
 ngOnInit(): void {
    this.form = this.fb.group({
@@ -246,6 +250,15 @@ getProjList() {
     });
 
     this.projectSelectSettings.options = projectOptions;
+    this.form.controls['selectedProject'].setValue({
+  name: 'All',
+  value: null
+});
+
+this.form.controls['selectedStatus'].setValue({
+  name: 'All',
+  value: null
+});
     this.isProjectOptionsLoaded = true;
   }, error => {
     console.error('Error fetching project list', error);
@@ -254,6 +267,8 @@ getProjList() {
 
 
  submit(){
+      this.pager=0;
+         this.perPage=10;
   this.getFilteredList();
  }
   getFilteredList() {
@@ -357,46 +372,46 @@ onRowClicked(row: any) {
     this.editRow(data);
     console.log(data);
   } else if (event.type === 'delete') {
-   
+     this.deleteRow(data);
   }
 }
-// deleteRow(rowData: any): void {
-//   const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
-//     width: '400px',
-//       position: { top: '20px' },
-//   panelClass: 'custom-confirm-dialog',
-//     data: {
-//       title: 'Confirm Delete',
-//      message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.name}</b> will be deleted.</div>`,
+deleteRow(rowData: any): void {
+  const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
+    width: '400px',
+      position: { top: '20px' },
+  panelClass: 'custom-confirm-dialog',
+    data: {
+      title: 'Confirm Delete',
+     message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.name}</b> will be deleted.</div>`,
 
-//       type: 'delete',
-//       confirmButtonText: 'Confirm',
-//       cancelButtonText: 'Cancel'
-//     }
-//   });
+      type: 'delete',
+      confirmButtonText: 'Confirm',
+      cancelButtonText: 'Cancel'
+    }
+  });
 
-//   dialogRef.afterClosed().subscribe(result => {
-//     if (result) {
+  dialogRef.afterClosed().subscribe((result:any) => {
+    if (result) {
      
-//       this.service.Delete(rowData.id).subscribe({
-//         next: (res) => {
-//           if (res.success) {
-//             this.getProjfieldConfigList();
-//             console.log('Deleted successfully');
+      this.service.Delete(rowData.id).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.getSiteConfigList();
+            console.log('Deleted successfully');
            
-//           } else {
-//             console.error('Delete failed:', res.error);
-//           }
-//         },
-//         error: (err) => {
-//           console.error('API error:', err);
-//         }
-//       });
-//     } else {
-//       console.log('User cancelled');
-//     }
-//   });
-// }
+          } else {
+            console.error('Delete failed:', res.error);
+          }
+        },
+        error: (err) => {
+          console.error('API error:', err);
+        }
+      });
+    } else {
+      console.log('User cancelled');
+    }
+  });
+}
 
 editRow(rowData: any) {
   this.router.navigate(['/admin/siteconfigmng'], {

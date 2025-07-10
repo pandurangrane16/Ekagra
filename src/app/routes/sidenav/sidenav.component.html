@@ -1,4 +1,4 @@
-<div class="sidebar  mat-elevation-z2" [ngClass]="{ 'sidebar-collapsed': isSidebarCollapsed }">
+<div class="sidebar  mat-elevation-z2" [ngClass]="{ 'sidebar-collapsed': isSidebarCollapsed }" >
   <div class="sidebar-header">
     <!-- <a href="#" class="sidebar-logo">{{
       isSidebarCollapsed ? 'C' : 'CodeWithChintan'
@@ -6,46 +6,38 @@
     <a class="sidebar-logo" (click)="onClick($event)"><img src="assets/img/logo_small.png" alt=""></a>
   </div>
   <div class="sidebar-menu">
-
     <ul>
       <ng-container *ngFor="let item of menuItems">
         <li class="sidebar-menu-item">
-          @if(item.children?.length == 0 || item.children == undefined){
-          <a href="#" class="sidebar-item" [ngClass]="{
+          <a
+            href="#"
+            class="sidebar-item"
+            [ngClass]="{
               'has-children': item.children,
               'menu-item-active': item.isOpen
-            }" (click)="toggleMenuItem(item)" routerLinkActive="active-link" [routerLink]="[item.link]"
-            #rla="routerLinkActive">
+            }"
+            (click)="toggleMenuItem(item)"
+            routerLinkActive="active-link"
+            [routerLink]="[item.link]"
+            #rla="routerLinkActive"
+          >
             <!-- <i [class]="item.icon"></i> -->
-            <img [src]="rla.isActive ? item.activeIcon : item.icon" style="max-width: 20px; max-height: 20px;"
-              class="mr-1">
+            <img  [src]="rla.isActive ? item.activeIcon : item.icon" style="max-width: 20px; max-height: 20px;" class="mr-1">
 
             <span class="sidebar-item-text">{{ item.label }}</span>
-            <i *ngIf="item.children && !isSidebarCollapsed" class="fas fa-chevron-down sidebar-item-arrow"
-              [ngClass]="{ rotated: item.isOpen }"></i>
+            <i
+              *ngIf="item.children && !isSidebarCollapsed"
+              class="fas fa-chevron-down sidebar-item-arrow"
+              [ngClass]="{ rotated: item.isOpen }"
+            ></i>
           </a>
-          }
-          @else {
-             <button matButtonclass="sidebar-item" [ngClass]="{
-              'has-children': item.children,
-              'menu-item-active': item.isOpen
-            }" (click)="toggleMenuItem(item)">{{ item.label }}</button>
-          <!-- <a href="#" class="sidebar-item" [ngClass]="{
-              'has-children': item.children,
-              'menu-item-active': item.isOpen
-            }" (click)="toggleMenuItem(item)" routerLinkActive="active-link" #rla="routerLinkActive">
-            <img [src]="rla.isActive ? item.activeIcon : item.icon" style="max-width: 20px; max-height: 20px;"
-              class="mr-1">
 
-            <span class="sidebar-item-text">{{ item.label }}</span>
-            <i *ngIf="item.children && !isSidebarCollapsed" class="fas fa-chevron-down sidebar-item-arrow"
-              [ngClass]="{ rotated: item.isOpen }"></i>
-          </a> -->
-          }
-
-          <ul *ngIf="item.children && !isSidebarCollapsed && item.isOpen" class="sidebar-submenu">
+          <ul
+            *ngIf="item.children && !isSidebarCollapsed && item.isOpen"
+            class="sidebar-submenu"
+          >
             <li *ngFor="let child of item.children">
-              <a href="#" class="sidebar-item sidebar-subitem" [routerLink]="[child.link]">
+              <a href="#" class="sidebar-item sidebar-subitem">
                 <i [class]="child.icon"></i>
                 <span class="sidebar-item-text">{{ child.label }}</span>
               </a>
@@ -56,3 +48,4 @@
     </ul>
   </div>
 </div>
+

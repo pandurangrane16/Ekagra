@@ -16,14 +16,36 @@ ProjectCreate(_data: any) {
     return this._httpService._postMethod(_data, 'api/services/app/Project/Create');
   }
 
+GetAll() {
+    return this._httpService._getMethod('api/services/app/Project/GetAll');
+  }
 
-  CheckProjectName(projectName?: string, Id?: number, ) {
+GetProjectList() {
+    return this._httpService._getMethod('api/services/app/Project/GetProjectList');
+  }
+UploadFile(formData: FormData) {
+  return this._httpService._postMethod( formData,'api/services/app/FileUpload/UploadIcon');
+}
+
+
+    ProjectEdit(_data: any) {
+    return this._httpService._putMethod(_data, 'api/services/app/Project/Update');
+  }
+
+  Delete(id: number) {
+    return this._httpService._deleteMethod('api/services/app/Project/Delete?Id='+id);
+  }
+
+CheckProjectName(
+  projectName?: any,
+  Id?: any,
+ 
+) {
   let params: string[] = [];
 
   if (projectName !== null && projectName !== undefined) {
     params.push(`projectName=${projectName}`);
   }
-
 
 
   if (Id !== null && Id !== undefined) {
@@ -36,28 +58,13 @@ ProjectCreate(_data: any) {
   return this._httpService._postMethod(null,url);
 }
 
-
-  Delete(id: any) {
-    return this._httpService._deleteMethod('api/services/app/Project/Delete?Id='+id);
-  }
-
-
-GetAll() {
-    return this._httpService._getMethod('api/services/app/Project/GetAll');
-  }
-UploadFile(formData: FormData) {
-  return this._httpService._postMethod(formData, 'api/services/app/FileUpload/UploadIcon');
-}
-
-GetProjectList() {
-    return this._httpService._getMethod('api/services/app/Project/GetProjectList');
-  }
-
-    ProjectEdit(_data: any) {
-    return this._httpService._putMethod(_data, 'api/services/app/Project/Update');
-  }
-
-  GetFilteredList(ProjectId?: number, filter?: string, status?: boolean) {
+GetFilteredList(
+  ProjectId?: number,
+  filter?: string,
+  status?: boolean,
+  maxResultCount?: number,
+  skipCount?: number
+) {
   let params: string[] = [];
 
   if (ProjectId !== null && ProjectId !== undefined) {
@@ -70,6 +77,14 @@ GetProjectList() {
 
   if (status !== null && status !== undefined) {
     params.push(`IsActive=${status}`);
+  }
+
+  if (maxResultCount !== null && maxResultCount !== undefined) {
+    params.push(`MaxResultCount=${maxResultCount}`);
+  }
+
+  if (skipCount !== null && skipCount !== undefined) {
+    params.push(`SkipCount=${skipCount}`);
   }
 
   const queryString = params.length ? '?' + params.join('&') : '';

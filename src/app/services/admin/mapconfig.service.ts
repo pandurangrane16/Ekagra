@@ -30,11 +30,9 @@ GetAll() {
   MapEdit(_data: any) {
     return this._httpService._putMethod(_data, 'api/services/app/Map/Update');
   }
-
-   Delete(id: any) {
+  Delete(id: number) {
     return this._httpService._deleteMethod('api/services/app/Map/Delete?Id='+id);
   }
-
   GetFilteredList(
   ProjectId?: number,
   filter?: string,
