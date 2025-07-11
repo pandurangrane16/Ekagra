@@ -28,7 +28,7 @@ export const routes: Routes = [
       { path: 'air', component: AirQualityComponent },
       { path: 'alerts', component: AlertsPageComponent },
       { path: 'camera', component: SurveilienceCameraComponent },
-      { path: 'chat', component: ChatPageComponent },
+      //{ path: 'chat', component: ChatPageComponent },
       { path: 'setting', component: SettingPageComponent },
       //{ path: "**", redirectTo: "dashboard" },
        { path: 'project-filed-map', component: ProjectFieldMapComponent },

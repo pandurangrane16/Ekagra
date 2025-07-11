@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { HeaderService } from '../../services/header.service';
+import { MaterialModule } from '../../Material.module';
 
 
 interface MenuItem {
@@ -15,27 +16,28 @@ interface MenuItem {
   label: string;
   children?: MenuItem[];
   isOpen?: boolean;
-  link:string;
+  link: string;
 }
 
 @Component({
-    selector: 'app-sidenav',
-    imports: [
-        MatSidenavModule,
-        MatIconModule,
-        MatListModule,
-        MatTooltipModule,
-        MatButtonModule,
-        CommonModule,
-        RouterModule,
-    ],
-    providers: [HeaderService],
-    templateUrl: './sidenav.component.html',
-    styleUrl: './sidenav.component.css'
+  selector: 'app-sidenav',
+  imports: [
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule,
+    MatTooltipModule,
+    MatButtonModule,
+    CommonModule,
+    RouterModule,
+    MaterialModule
+  ],
+  providers: [HeaderService],
+  templateUrl: './sidenav.component.html',
+  styleUrl: './sidenav.component.css'
 })
 export class SidenavComponent {
   isSidebarCollapsed = true;
-  
+
   @Output() logoShow = new EventEmitter<Event>();
   @Output() sidebarToggle = new EventEmitter<void>();
   @Input()
@@ -50,14 +52,14 @@ export class SidenavComponent {
 
   onClick(event: Event) {
     this.eventChange.emit(event);
-       
-  }
-
-  constructor(public headerService : HeaderService,public routes: Router,private route: ActivatedRoute){
 
   }
-  toggleLogoMain(){
-    this.headerService.showLogo=!this.headerService.showLogo;
+
+  constructor(public headerService: HeaderService, public routes: Router, private route: ActivatedRoute) {
+
+  }
+  toggleLogoMain() {
+    this.headerService.showLogo = !this.headerService.showLogo;
     console.log(this.headerService.showLogo);
   }
   toggle() {
@@ -83,7 +85,7 @@ export class SidenavComponent {
       icon: './assets/img/icon_surveillance.svg',
       activeIcon: './assets/img/icon_surveillance1.svg',
       label: 'Surveillance',
-      link:'surveilience',
+      link: 'surveilience',
       // isOpen: false,
       // children: [
       //   { icon: 'fas fa-user', label: 'Profile' },
@@ -94,43 +96,76 @@ export class SidenavComponent {
       icon: './assets/img/icon_parking.svg',
       activeIcon: './assets/img/icon_parking1.svg',
       label: 'Parking',
-      link:'parking'
+      link: 'parking'
     },
     {
       icon: './assets/img/icon_ATCS.svg',
       activeIcon: './assets/img/icon_ATCS1.svg',
       label: 'ATCS',
-      link:'atcs',
+      link: 'atcs',
     },
     {
       icon: './assets/img/icon_airQuality.svg',
       activeIcon: './assets/img/icon_airQuality1.svg',
       label: 'Air Quality',
-      link:'air',
+      link: 'air',
     },
     {
       icon: './assets/img/icon_alerts.svg',
       activeIcon: './assets/img/icon_alerts1.svg',
       label: 'Alerts',
-      link:'alerts',
+      link: 'alerts',
     },
     {
       icon: './assets/img/icon_SOPs.svg',
       activeIcon: './assets/img/icon_SOPs1.svg',
       label: 'SOPs',
-      link:'#',
+      link: '#',
     },
     {
       icon: './assets/img/icon_Chat.svg',
       activeIcon: './assets/img/icon_Chat1.svg',
       label: 'Chat',
-      link:'chat',
+      link: 'chat',
     },
     {
       icon: './assets/img/icon_settings.svg',
       activeIcon: './assets/img/icon_settings1.svg',
       label: 'Settings',
-      link:'setting',
+      link: 'setting',
+    },
+    {
+      icon: './assets/img/icon_settings.svg',
+      activeIcon: './assets/img/icon_settings1.svg',
+      label: 'Admin',
+      link: '', 
+      isOpen: true,
+      children: [{
+        icon: './assets/img/icon_settings.svg',
+        activeIcon: './assets/img/icon_settings1.svg',
+        label: 'Dashboard',
+        link: 'admin/dashboard',
+      }, {
+        icon: './assets/img/icon_settings.svg',
+        activeIcon: './assets/img/icon_settings1.svg',
+        label: 'Project Configuration',
+        link: 'admin/projconfig',
+      }, {
+        icon: './assets/img/icon_settings.svg',
+        activeIcon: './assets/img/icon_settings1.svg',
+        label: 'Site Configuration',
+        link: 'admin/siteconfig',
+      }, {
+        icon: './assets/img/icon_settings.svg',
+        activeIcon: './assets/img/icon_settings1.svg',
+        label: 'Zone Configuration',
+        link: 'admin/zoneform',
+      }, {
+        icon: './assets/img/icon_settings.svg',
+        activeIcon: './assets/img/icon_settings1.svg',
+        label: 'Map Configuration',
+        link: 'admin/mapform',
+      }]
     }
   ];
 

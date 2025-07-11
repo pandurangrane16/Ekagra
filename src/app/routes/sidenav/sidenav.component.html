@@ -1,4 +1,4 @@
-<div class="sidebar  mat-elevation-z2" [ngClass]="{ 'sidebar-collapsed': isSidebarCollapsed }" >
+<div class="sidebar  mat-elevation-z2" [ngClass]="{ 'sidebar-collapsed': isSidebarCollapsed }">
   <div class="sidebar-header">
     <!-- <a href="#" class="sidebar-logo">{{
       isSidebarCollapsed ? 'C' : 'CodeWithChintan'
@@ -9,43 +9,33 @@
     <ul>
       <ng-container *ngFor="let item of menuItems">
         <li class="sidebar-menu-item">
-          <a
-            href="#"
-            class="sidebar-item"
-            [ngClass]="{
+          @if(item.isOpen != true){
+          <a href="#" class="sidebar-item" [ngClass]="{
               'has-children': item.children,
               'menu-item-active': item.isOpen
-            }"
-            (click)="toggleMenuItem(item)"
-            routerLinkActive="active-link"
-            [routerLink]="[item.link]"
-            #rla="routerLinkActive"
-          >
+            }" (click)="toggleMenuItem(item)" routerLinkActive="active-link" [routerLink]="[item.link]"
+            #rla="routerLinkActive">
             <!-- <i [class]="item.icon"></i> -->
-            <img  [src]="rla.isActive ? item.activeIcon : item.icon" style="max-width: 20px; max-height: 20px;" class="mr-1">
+            <img [src]="rla.isActive ? item.activeIcon : item.icon" style="max-width: 20px; max-height: 20px;"
+              class="mr-1">
 
             <span class="sidebar-item-text">{{ item.label }}</span>
-            <i
-              *ngIf="item.children && !isSidebarCollapsed"
-              class="fas fa-chevron-down sidebar-item-arrow"
-              [ngClass]="{ rotated: item.isOpen }"
-            ></i>
+            <i *ngIf="item.children && !isSidebarCollapsed" class="fas fa-chevron-down sidebar-item-arrow"
+              [ngClass]="{ rotated: item.isOpen }"></i>
           </a>
+          }
+          @else {
+          <button matButton [matMenuTriggerFor]="menu">{{ item.label }}</button>
+          <mat-menu #menu="matMenu">
+            <a href="#" class="sidebar-item" routerLinkActive="active-link" [routerLink]="[child.link]"
+              #rla="routerLinkActive" *ngFor="let child of item.children">
+              {{child.label}}
+            </a>
+          </mat-menu>
+          }
 
-          <ul
-            *ngIf="item.children && !isSidebarCollapsed && item.isOpen"
-            class="sidebar-submenu"
-          >
-            <li *ngFor="let child of item.children">
-              <a href="#" class="sidebar-item sidebar-subitem">
-                <i [class]="child.icon"></i>
-                <span class="sidebar-item-text">{{ child.label }}</span>
-              </a>
-            </li>
-          </ul>
         </li>
       </ng-container>
     </ul>
   </div>
 </div>
-

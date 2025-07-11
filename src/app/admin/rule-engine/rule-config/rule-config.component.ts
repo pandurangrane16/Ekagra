@@ -142,7 +142,7 @@ export class RuleConfigComponent {
   }
 
   CheckConnection(){
-    
+    this.signalRService.initializeSignalRConnection();
   }
 
 }

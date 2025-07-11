@@ -1,21 +1,26 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { FooterComponent } from '../footer/footer.component';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatIconModule} from '@angular/material/icon';
-import {MatInputModule} from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
+import { SessionService } from '../../services/common/session.service';
 
 @Component({
-    selector: 'app-login',
-    imports: [CommonModule, SlickCarouselModule, FooterComponent, MatFormFieldModule, MatInputModule, MatIconModule, RouterModule],
-    templateUrl: './login.component.html',
-    styleUrl: './login.component.css',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-login',
+  imports: [CommonModule, SlickCarouselModule, FooterComponent, MatFormFieldModule, MatInputModule, MatIconModule, RouterModule],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent {
+  version: string = "2.0.0.0";
+  sessionService = inject(SessionService);
+  constructor() {
 
+  }
   slideConfig = {
     infinite: true,
     slidesToShow: 1,
@@ -24,8 +29,8 @@ export class LoginComponent {
     autoplay: true,
     autoplaySpeed: 3000,
     fadeSpeed: 1000,
-    fade:true,
-    arrows:false,
+    fade: true,
+    arrows: false,
     responsive: [
       {
         breakpoint: 1024,
