@@ -155,7 +155,7 @@ export class MapConfigurationFormComponent {
       displayname: ['', [Validators.required,this.noWhitespaceValidator()]],
       minzoom: ['', Validators.required],
       maxzoom: ['', Validators.required],
-      sourceurl: ['', Validators.required],
+      sourceurl: ['', [Validators.required,Validators.pattern(/^(https?:\/\/)[^\s]+$/)]],
       lat: ['', Validators.required],
       long: ['', Validators.required],
       wmslayer :['',Validators.required],

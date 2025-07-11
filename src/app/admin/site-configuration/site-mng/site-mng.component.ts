@@ -163,6 +163,7 @@ foreditmode : boolean =false;
    
     name: 'isActive',
     defaultValue: true,
+    formControlName: 'isActive',
     data: [
       { value: true, displayName: 'Yes' },
       { value: false, displayName: 'No' }
@@ -246,7 +247,7 @@ allowOnlyNumbers(event: KeyboardEvent) {
       pincode: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
       description: ['', [Validators.required, this.noWhitespaceValidator() ] ],
       isActive: [''],
-      locationDropdown: [''],
+      locationDropdown: ['' , [this.noWhitespaceValidator()]],
       address: ['' , [this.noWhitespaceValidator()]],
       areaname: ['',[this.noWhitespaceValidator()]],
       roadname: ['',[this.noWhitespaceValidator()]],
@@ -519,6 +520,39 @@ this.form.get('address')?.setValue(formattedAddress);
     this.isLocationsOptionsLoaded = false;
   });
 }
+updateRequiredValidators(required: boolean) {
+  const set1 = ['areaname', 'roadname', 'taluka', 'district'];
+  const set2 = ['locationDropdown', 'address'];
+
+  if (required) {
+  
+    set1.forEach(field => {
+      const validators = [Validators.required, this.noWhitespaceValidator()];
+      this.form.controls[field].setValidators(validators);
+      this.form.controls[field].updateValueAndValidity();
+    });
+
+    set2.forEach(field => {
+      const validators = [this.noWhitespaceValidator()];
+      this.form.controls[field].setValidators(validators);
+      this.form.controls[field].updateValueAndValidity();
+    });
+  } else {
+    
+    set2.forEach(field => {
+      const validators = [Validators.required, this.noWhitespaceValidator()];
+      this.form.controls[field].setValidators(validators);
+      this.form.controls[field].updateValueAndValidity();
+    });
+
+    set1.forEach(field => {
+      const validators = [this.noWhitespaceValidator()];
+      this.form.controls[field].setValidators(validators);
+      this.form.controls[field].updateValueAndValidity();
+    });
+  }
+}
+
 
   fetchLocationByPincode(pincode: number) {
   this.service.GetLocationByPincode(pincode).subscribe(response => {
@@ -538,6 +572,7 @@ console.log("response" + response)
           })
      
       this.noLocationFound = true;
+        this.updateRequiredValidators(this.noLocationFound);
        this.isLocationsOptionsLoaded = false;
       // this.locationDropdownSettings.options = []; 
 console.log("hello")
@@ -545,6 +580,9 @@ console.log("hello")
     }
 
   this.noLocationFound = false;
+
+  
+  this.updateRequiredValidators(this.noLocationFound);
   
     const locationsOptions = items.map((item: any) => ({
       road: item.road, 
@@ -627,66 +665,9 @@ submit() {
     return;
   }
 
-  // Helper to create and call SiteCreate after we have locationId
-  const createSite = (finalLocationId: string) => {
-    let _siteconfigmodel = new siteconfigmodel();
+  else{
 
-    _siteconfigmodel.description = this.form.controls['description'].value;
-    _siteconfigmodel.isActive = this.form.controls['isActive'].value;
-    _siteconfigmodel.creationTime = "2025-06-20T05:32:25.067Z";
-    _siteconfigmodel.creatorUserId = 0;
-    _siteconfigmodel.deleterUserId = 0;
-    _siteconfigmodel.deletionTime = "2025-06-20T05:32:25.067Z";
-    _siteconfigmodel.lastModificationTime = "2025-06-20T05:32:25.067Z";
-    _siteconfigmodel.lastModifierUserId = "2";
-    _siteconfigmodel.isDeleted = false;
-    _siteconfigmodel.projectId = this.form.controls['name'].value?.value;
-    _siteconfigmodel.siteId = this.form.controls['siteId'].value;
-    _siteconfigmodel.siteName = this.form.controls['siteName'].value;
-    _siteconfigmodel.lat = this.form.controls['lat'].value;
-    _siteconfigmodel.long = this.form.controls['long'].value;
-
-    const state = history.state;
-    if (state?.mode === 'edit' && state?.record){
-
-    _siteconfigmodel.id = state.record.id;
-    _siteconfigmodel.locationId =state.record.locationId;
-
-      this.service.SiteEdit(_siteconfigmodel).subscribe({
-    next: () => {
-      console.log('Updated successfully');
-
-       this.toast.success('Updated successfully'); 
-       this.router.navigate(['/admin/siteconfig']);
     
-     
-      
-    },
-    error: (err) => {
-      console.error('Update failed:', err);
-      this.toast.error('Failed to update Site');
-    }
-  });
-
-  return;
-
-  }
-    _siteconfigmodel.locationId = finalLocationId;
-
-    this.service.SiteCreate(_siteconfigmodel).subscribe({
-      next: () => {
-        console.log('Site saved successfully');
-        this.toast.success('Site saved successfully'); 
-        this.router.navigate(['/admin/siteconfig']);
-      },
-      error: (err) => {
-        console.error('Site save failed:', err);
-        this.toast.error('Failed to save Site');
-      }
-    });
-  };
-
-  // If noLocationFound, first create location
   if (this.noLocationFound) {
     let _locationmodel = new locationmodel();
 
@@ -710,19 +691,83 @@ submit() {
         const newId = res?.result?.locationId || _locationmodel.locationId;
         this.toast.success('Location saved successfully with ID:', newId);
         console.log('Location saved successfully with ID:', newId);
-        createSite(newId); 
+        this.createSite(newId); 
       },
       error: (err) => {
         console.error('Location save failed:', err);
         this.toast.error('Location save failed:', err);
+        return;
       }
     });
   } else {
-    // Use selected location from dropdown
+    
     const selectedLocationId = this.form.controls['locationDropdown'].value?.locationId;
-    createSite(selectedLocationId);
+    this.createSite(selectedLocationId);
   }
+
+  }
+
 }
+
+    
+   createSite = (finalLocationId: string) => {
+    let _siteconfigmodel = new siteconfigmodel();
+
+    _siteconfigmodel.description = this.form.controls['description'].value;
+    _siteconfigmodel.isActive = this.form.controls['isActive'].value;
+    _siteconfigmodel.creationTime = "2025-06-20T05:32:25.067Z";
+    _siteconfigmodel.creatorUserId = 0;
+    _siteconfigmodel.deleterUserId = 0;
+    _siteconfigmodel.deletionTime = "2025-06-20T05:32:25.067Z";
+    _siteconfigmodel.lastModificationTime = "2025-06-20T05:32:25.067Z";
+    _siteconfigmodel.lastModifierUserId = "2";
+    _siteconfigmodel.isDeleted = false;
+    _siteconfigmodel.projectId = this.form.controls['name'].value?.value;
+    _siteconfigmodel.siteId = this.form.controls['siteId'].value;
+    _siteconfigmodel.siteName = this.form.controls['siteName'].value;
+    _siteconfigmodel.lat = this.form.controls['lat'].value;
+    _siteconfigmodel.long = this.form.controls['long'].value;
+
+    const state = history.state;
+    if (state?.mode === 'edit' && state?.record){
+
+    _siteconfigmodel.id = state.record.id;
+    _siteconfigmodel.locationId =finalLocationId;
+
+      this.service.SiteEdit(_siteconfigmodel).subscribe({
+    next: () => {
+      console.log('Updated successfully');
+
+       this.toast.success('Updated successfully'); 
+       this.router.navigate(['/admin/siteconfig']);
+    
+    },
+    error: (err) => {
+      console.error('Update failed:', err);
+      this.toast.error('Failed to update Site');
+    }
+  });
+
+  return;
+
+  }
+  else{
+        _siteconfigmodel.locationId = finalLocationId;
+
+    this.service.SiteCreate(_siteconfigmodel).subscribe({
+      next: () => {
+        console.log('Site saved successfully');
+        this.toast.success('Site saved successfully'); 
+        this.router.navigate(['/admin/siteconfig']);
+      },
+      error: (err) => {
+        console.error('Site save failed:', err);
+        this.toast.error('Failed to save Site');
+      }
+    });
+  }
+
+  };
 
     get f() {
   return this.form.controls;

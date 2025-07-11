@@ -23,7 +23,7 @@ export class HttpService {
  
   _configDataBS$ = new BehaviorSubject<any[]>([]);
   _configData$ = this._configDataBS$.asObservable();
-  public _api_url = "https://172.19.32.210:8002/";
+  public _api_url = "https://172.19.32.220:8002/";
   public _swagger_url = "";
 
 
