@@ -15,16 +15,26 @@ import { CmInputComponent } from '../../common/cm-input/cm-input.component';
 import { CmTableComponent } from '../../common/cm-table/cm-table.component';
 import { FormBuilder,FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CmSelect2Component } from '../../common/cm-select2/cm-select2.component';
+// import { AppCustomSelectComponent } from '../../common/custom-select/custom-select.component';
 import { OnInit } from '@angular/core';
 import { projconfigservice } from '../../services/admin/progconfig.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { InputRequest } from '../../models/request/inputreq.model';
 import { PramglobalService } from '../../services/admin/pramglobal.service';
+import { ContactConfigService } from '../../services/admin/contact-config.service';
+import { CommonModule } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { ContactConfigurationFormComponent } from './contact-configuration-form/contact-configuration-form.component';
+import { getErrorMsg } from '../../utils/utils';
+
 @Component({
   selector: 'app-contact-configuration',
-  imports: [CmInputComponent,
+  imports: [
+    CommonModule,        
+    CmInputComponent,
     CmSelect2Component,
     CmTableComponent
+    // AppCustomSelectComponent
   ],
   templateUrl: './contact-configuration.component.html',
   styleUrl: './contact-configuration.component.css'
@@ -32,6 +42,7 @@ import { PramglobalService } from '../../services/admin/pramglobal.service';
 
 export class ContactConfigurationComponent implements OnInit{
   _headerName = 'Contact Configuration Table';
+  isContactLoaded : boolean = false;
       headArr: any[] = [];
       items:any;
       _request: any = new InputRequest();
@@ -49,12 +60,26 @@ export class ContactConfigurationComponent implements OnInit{
        perPage = 10;
        collectionSize = 2;
        list!:any;
-       isProjectOptionsLoaded = false;
-
+       iscontactOptionsLoaded = false;
+squareSettings = {
+          labelHeader: 'Search',
+          formFieldClass: 'cm-square-input',
+        
+          isDisabled: false
+        };
+ContactTypeSettings: Select2Settings = {
+  labelHeader: '',
+  lableClass: 'form-label',
+  formFieldClass: '', 
+  appearance: 'fill',
+  options: []
+};
            constructor(private fb: FormBuilder,
               //  private dialog: MatDialog,
                private service: projconfigservice,
-               private PramglobalService:PramglobalService
+               private PramglobalService:PramglobalService,
+                private ContactConfigService:ContactConfigService,
+                 private dialog: MatDialog
                ) {}
 
   ngOnInit(): void {
@@ -64,10 +89,10 @@ export class ContactConfigurationComponent implements OnInit{
                         searchText: [''],
                          ContactType: ['']
                       });
-                      this.loadContactTypes('10','20');
+                      this.loadContactTypes('Contact','Type');
                       this.buildHeader();
-                      this.getProjConfigList();
-                      this.getProjList();
+                      this.getContactConfigList();
+                      this.getContactList();
             
             
                         this.form.get('searchText')?.valueChanges
@@ -90,10 +115,10 @@ export class ContactConfigurationComponent implements OnInit{
           }
 
                getFilteredList() {
-    const selectedProjectId = this.form.controls['selectedProject'].value.value;
-     const selectedStatus = this.form.controls['selectedStatus'].value.value;
+    const selectedType = this.form.controls['ContactType'].value.value;
+    //  const selectedStatus = this.form.controls['selectedStatus'].value.value;
      const search = this.form.controls['searchText'].value
-     this.service.GetFilteredList(selectedProjectId,search,selectedStatus).subscribe(response => {
+     this.ContactConfigService.GetAllContactMasterPage(selectedType,search).subscribe(response => {
     //  const items = response?.result || [];
          
     //      this.items=items;
@@ -107,11 +132,12 @@ export class ContactConfigurationComponent implements OnInit{
            
 
             //let _data = JSON.parse(element);
-             element.name = element.name;
-            element.description = element.description;
+             element.type = element.type;
+            element.name = element.name;
+             element.contact = element.contact;
             element.isActive = !!element.isActive; 
-            element.ruleEngine = !!element.ruleEngine;
-            element.map =!! element.map;
+            // element.ruleEngine = !!element.ruleEngine;
+            // element.map =!! element.map;
             
               element.button = [
     { label: 'Edit', icon: 'edit', type: 'edit' },
@@ -129,23 +155,26 @@ export class ContactConfigurationComponent implements OnInit{
     }    
 
              buildHeader() {  
-          this.headArr = [
-            { header: 'Name', fieldValue: 'name', position: 1 },
-            { header: 'Description', fieldValue: 'description', position: 2 },
-            { header: 'Status', fieldValue: 'isActive',"type": "boolean", position: 3 },
-           
-            { header: 'Rule Engine', fieldValue: 'ruleEngine',"type": "boolean", position: 4 },
-            { header: 'Map', fieldValue: 'map',"type": "boolean", position: 5 },
-            { header: 'Action', fieldValue: 'button', position: 6 }
+       this.headArr = [
+              { header: 'Contact Type', fieldValue: 'type', position: 1 },
+              { header: 'Name', fieldValue: 'name', position: 2 },
+              { header: 'contact', fieldValue: 'contact', position: 3 },
+                   { header: 'Status', fieldValue: 'isActive',type:'boolean', position: 4 },
+              { header: 'Action', fieldValue: 'button', position: 5 }
           ];
           ;}
       
-               getProjConfigList() {
+               getContactConfigList() {
       this._request.currentPage = this.pager;
       this._request.pageSize = Number(this.recordPerPage);
       this._request.startId = this.startId;
       this._request.searchItem = this.searchText;
-      this.service.GetAll().subscribe(response => {
+      
+      // ✅ Get selected type from form control
+  const selectedType = this.form.get('ContactType')?.value?.value;
+  this._request.type = selectedType || '';
+
+      this.ContactConfigService.GetAll().subscribe(response => {
 
          const items = response.result?.items;
          
@@ -163,87 +192,69 @@ export class ContactConfigurationComponent implements OnInit{
            
 
             //let _data = JSON.parse(element);
+            element.type = element.type;
             element.name = element.name;
-            element.description = element.description;
-            element.isActive = !!element.isActive; 
-            element.ruleEngine = !!element.ruleEngine;
-            element.map =!! element.map;
+            element.contact = element.contact; 
+              element.isActive = !!element.isActive; 
+            // element.ruleEngine = !!element.ruleEngine;
+            // element.map =!! element.map;
 
                        element.button = [
     { label: 'Edit', icon: 'edit', type: 'edit' },
     { label: 'Delete', icon: 'delete', type: 'delete' }
   ];
-            
-
-
-
-
-         
+                
           });
           
         }
       })
     } 
-    getProjList() {
-  this.service.GetProjectList().subscribe(response => {
-    const items = response?.result || [];
+    getContactList() {
+      debugger;
+  // this.ContactConfigService.GetAll().subscribe(response => {
+  //   const items = response?.result?.items || [];
 
-    const projectOptions = items.map((item: any) => ({
-      name: item.name || item.shortCode,
-      value: item.id
-    }));
+  //   const contactOptions = items.map((item: any) => ({
+  //     name: item.name || item.shortCode,
+  //     value: item.id
+  //   }));
 
-  
-    // projectOptions.unshift({
-    //   name: 'All',
-    //   value: null
-    // });
-
-    // this.projectSelectSettings.options = projectOptions;
-    this.isProjectOptionsLoaded = true;
-  }, error => {
-    console.error('Error fetching project list', error);
-  });
+  //   this.ContactTypeSettings.options = contactOptions;
+  //   this.isContactLoaded = true;
+  //   console.log('Contact options loaded:', contactOptions);
+  //    }, error => {
+  //   console.error('Error fetching contact list', error);
+  // });
 }
      
- squareSettings = {
-          labelHeader: 'Search',
-          formFieldClass: 'cm-square-input',
-        
-          isDisabled: false
-        };
-          ContactTypeSettings: Select2Settings = {
-  labelHeader: 'Select Contact',
-  lableClass: 'form-label',
-  formFieldClass: '', 
-  appearance: 'fill',
-  options: []
-};
+ 
+
  onContactTypeSelected(event: any) {
           console.log('Selected Project:', event);
         }
 
               submit(){
-  // this.getFilteredList();
+   this.getFilteredList();
  }
 
  openDialog() {
-            //  const dialogRef = this.dialog.open(ProjectFieldConfigurationFormComponent, {
+    (document.activeElement as HTMLElement)?.blur();
+             const dialogRef = this.dialog.open(ContactConfigurationFormComponent, {
                
-            //    width: '500px', 
+               width: '500px', 
                 
-            //    disableClose: true,  
-            //    autoFocus: false,   
-            //    data: {}               
-            //  });
+               disableClose: true,  
+               autoFocus: false,   
+               data: {}               
+             });
          
-            //  // Optional: handle result
-            //  dialogRef.afterClosed().subscribe(result => {
-            //    if (result) {
-            //      console.log('Dialog result:', result);
+             // Optional: handle result
+             dialogRef.afterClosed().subscribe(result => {
+               if (result) {
+                 console.log('Dialog result:', result);
                 
-            //    }
-            //  });
+               }
+             });
    }
     onPageRecordsChange(event:{type:string,perPage: number}) {
               console.log('Records Per Page:', event.perPage);
@@ -278,24 +289,59 @@ editRow(rowData: any) {
        
     
 
-loadContactTypes(Module: string, unit: string) {
-  this.PramglobalService.GetAllGlobalValues(Module, unit).subscribe({
-    next: (response) => {
-      const contactOptions = (response.result || []).map((item: any) => ({
-        name: item.apiName,
-        value: item.id
-      }));
-      
-      this.ContactType = contactOptions;
+// loadContactTypes(Module: string, unit: string) {
+//   debugger;
+//   this.PramglobalService.GetAllGlobalValues(Module, unit).subscribe({
+//     next: (response) => {
+//       debugger;
+//       const contactOptions = (response.result || []).map((item: any) => ({
+//         name: item.rfu1,
+//         value: item.prmvalue
+//       }));
+//       debugger;
+//       console.log(contactOptions);
+//       this.ContactType = contactOptions;
 
-      // ✅ Set the options in the settings object after data is fetched
-      this.ContactTypeSettings.options = contactOptions;
-    },
-    error: (error) => {
-      console.error('Error while loading API list:', error);
-    }
+//       // ✅ Set the options in the settings object after data is fetched
+//       // this.ContactTypeSettings.options = contactOptions;
+//       this.ContactTypeSettings = {
+//   ...this.ContactTypeSettings,
+//   options: contactOptions
+// };
+//     },
+//     error: (error) => {
+//       console.error('Error while loading API list:', error);
+//     }
+//   });
+// }
+
+
+loadContactTypes(Module: string, unit: string) {
+  debugger;
+  this.PramglobalService.GetAllGlobalValues(Module, unit).subscribe(response => {
+    const items = response?.result || [];
+
+    const contactOptions = items.map((item: any) => ({
+      name: item.rfu1,
+      value: item.prmvalue
+    }));
+
+  
+    // contactOptions.unshift({
+    //   name: 'All',
+    //   value: null
+    // });
+    console.log(contactOptions);
+    this.ContactTypeSettings.options = contactOptions;
+     this.isContactLoaded = true;
+  }, error => {
+    console.error('Error fetching Contact Type list', error);
   });
 }
+     
+       
+
+
 
 
 

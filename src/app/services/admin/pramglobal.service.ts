@@ -29,6 +29,9 @@ GetPrmGlobalList() {
   if (Module !== null && Module !== undefined) {
     params.push(`Module=${Module}`);
   }
+  if (unit !== null && unit !== undefined) {
+    params.push(`unit=${unit}`);
+  }
 
   const queryString = params.length ? '?' + params.join('&') : '';
   const url = `api/services/app/PrmGlobal/GetAllGlobalValues${queryString}`;

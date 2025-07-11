@@ -47,11 +47,23 @@ export class HttpService {
       .pipe(take(1))
       .subscribe((_config: any) => {
         this._sessionService._setSessionValue("swagger_url", _config.swagger_url);
+        this._sessionService._setSessionValue("ruleConditions", _config.ruleConditions);
+      })
+  }
+
+  _setRuleConditions(){
+    return this.http.get("../../../../assets/config/config.json")
+      .pipe(take(1))
+      .subscribe((_config: any) => {
+        this._sessionService._setSessionValue("ruleConditions", _config.ruleConditions);
       })
   }
 
   _getSwaggerUrl() {
     return this._sessionService._getSessionValue("swagger_url");
+  }
+ _getRuleConditions() {
+    return this._sessionService._getSessionValue("ruleConditions");
   }
 
   _postMethod(_object: any, _appendUrl: string, options?: any): Observable<any> {

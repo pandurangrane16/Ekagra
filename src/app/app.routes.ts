@@ -16,7 +16,9 @@ import { UserRoutes } from '../app/user/user.routes';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ProjectFieldMapComponent } from './admin/project-field-map/project-field-map.component';
 import { BulkUploadComponent } from './admin/bulk-upload/bulk-upload.component';
+import { ContactConfigurationComponent } from './admin/contact-configuration/contact-configuration.component';
 export const routes: Routes = [
+      { path: "", component: LoginComponent, },
       { path: "login", component: LoginComponent, },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'surveilience', component: SurveiliencePageComponent },
@@ -28,9 +30,10 @@ export const routes: Routes = [
       { path: 'chat', component: ChatPageComponent },
       { path: 'setting', component: SettingPageComponent },
       //{ path: "**", redirectTo: "dashboard" },
-       { path: 'project-filed-map', component: ProjectFieldMapComponent },
+       { path: 'ProjectFieldMap', component: ProjectFieldMapComponent },
       {path:'projconf', component: ProjectConfigurationComponent},
             {path:'BulkUpload', component: BulkUploadComponent},
+            {path:'ContactConf', component: ContactConfigurationComponent},
             
       {
             path: 'admin',
