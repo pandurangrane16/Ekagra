@@ -6,15 +6,17 @@ import { CmInputComponent } from '../../../common/cm-input/cm-input.component';
 import { CmSelect2Component } from '../../../common/cm-select2/cm-select2.component';
 import { CmToggleComponent } from '../../../common/cm-toggle/cm-toggle.component';
 import { RuleEngineService } from '../../../services/admin/rule-engine.service';
+import { SignalRService } from '../../../services/common/signal-r.service';
 
 @Component({
   selector: 'app-rule-config',
-  imports: [MaterialModule, CommonModule, ReactiveFormsModule],
+  imports: [MaterialModule, CommonModule, ReactiveFormsModule,CmInputComponent],
   templateUrl: './rule-config.component.html',
   styleUrl: './rule-config.component.css'
 })
 export class RuleConfigComponent {
   private _formBuilder = inject(FormBuilder);
+  signalRService = inject(SignalRService);
   ruleService = inject(RuleEngineService);
   categorySettings = {
     labelHeader: 'Category*',
@@ -124,7 +126,7 @@ export class RuleConfigComponent {
     }
   }
 
-  steps = ['Personal Information', 'Education', 'Work Experience', 'User Photo'];
+  steps = ['Rule Information', 'Rule Design', 'Rule Schedule'];
   currentStep = 0;
 
   nextStep() {
@@ -137,6 +139,10 @@ export class RuleConfigComponent {
     if (this.currentStep > 0) {
       this.currentStep--;
     }
+  }
+
+  CheckConnection(){
+    
   }
 
 }
