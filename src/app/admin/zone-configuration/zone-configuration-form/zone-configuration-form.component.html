@@ -1,18 +1,25 @@
-<div class="dialog-container">
-    <div class="dialog-header">
-        <h2>Zone Configuration</h2>
-        <button mat-icon-button (click)="close()" aria-label="Close">
-          <mat-icon>close</mat-icon>
-        </button>
+<div class="pageWrapper">
+<mat-card class="cardWithShadow theme-card">
+    <div class="row">
+  <mat-card-header>
+      <div class="col-md-11" style="padding-left: 40px;">
+        <mat-card-title><h2 style="margin-top: 10px;">Zone Configuration</h2></mat-card-title>
       </div>
-   
+      <div class="col text-right">
+          <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()">
+  <mat-icon>reply</mat-icon>
+</button>
+      </div>
+  </mat-card-header>
+    </div>
+  <hr>
+  <mat-card-content class="b-t-1 scroll">
 
-    <hr class="input-header-hr" /> 
+    <!-- <div class="dialog-container"> -->
+      
 
-    <form [formGroup]="form" class="form-container">
-       
-          
-        <div class="row">
+      <form [formGroup]="form" class="form-container">
+              <div class="row">
            
             <div class="col-md-6">
               <label>Zone Name</label>
@@ -50,9 +57,12 @@
                 <app-cm-toggle [formGroup]="form" [settings]="toggleSettingsWithoutHeader" style="margin-top: -35px;"></app-cm-toggle>
             </div>
         </div>
+
+
+        
         <div>
-          <div  #mapContainer id="map" style="height: 400px;">
-            <button mat-flat-button (click)="showMap()"
+          <div>
+            <button mat-flat-button
         style="
         background-color: rgb(114, 113, 113);
         color: white;
@@ -64,21 +74,45 @@
         text-transform: none;
         white-space: nowrap;
         display: flex ; gap:420px ;margin-top: 28px;   
-        ">
-        Draw Co-ordinates
+        " (click)="Draw()">
+        {{ state?.mode === 'edit' ? 'Edit Coordinates' : 'Draw Coordinates' }}
 
         </button>
         </div>
         </div>
-        
-         <!-- Action Buttons -->
-         <div class="dialog-actions">
-            <button mat-button (click)="close()">Cancel</button>
-            <button mat-flat-button color="primary" (click)="submit()">Save</button>
-          </div>
-        
-           
-          
+
+
+        <div class="row" >
+    <app-cm-leaflet *ngIf="isMap" [showMap]="isMap"  (polygonDrawn)="onPolygonDrawn($event)"   [existingPolygon]="zoneCordinate" ></app-cm-leaflet>
+</div>
+     
+
+
       
-    </form>
+
+
+       
+
+
+
+
+
+
+
+     
+
+        <!-- Action Buttons -->
+        <div class="dialog-actions">
+         
+          <button mat-stroked-button (click)="close()">Cancel</button>
+          <button mat-flat-button color="primary" (click)="submit()">Save</button>
+        </div>
+
+
+
+
+      </form>
+    <!-- </div> -->
+  </mat-card-content>
+</mat-card>
 </div>

@@ -47,11 +47,23 @@ export class HttpService {
       .pipe(take(1))
       .subscribe((_config: any) => {
         this._sessionService._setSessionValue("swagger_url", _config.swagger_url);
+        this._sessionService._setSessionValue("ruleConditions", _config.ruleConditions);
+      })
+  }
+
+  _setRuleConditions(){
+    return this.http.get("../../../../assets/config/config.json")
+      .pipe(take(1))
+      .subscribe((_config: any) => {
+        this._sessionService._setSessionValue("ruleConditions", _config.ruleConditions);
       })
   }
 
   _getSwaggerUrl() {
     return this._sessionService._getSessionValue("swagger_url");
+  }
+ _getRuleConditions() {
+    return this._sessionService._getSessionValue("ruleConditions");
   }
 
   _postMethod(_object: any, _appendUrl: string, options?: any): Observable<any> {
@@ -66,6 +78,11 @@ export class HttpService {
   _getMethod(_appendUrl: string,header?:any): Observable<any> {
     return this.http.get(this._api_url + _appendUrl,{headers:header});
   }
+
+  
+  _deleteMethod(_appendUrl: string, options?: any): Observable<any> {
+  return this.http.delete(this._api_url + _appendUrl, options);
+}
 
 //   _getMethodNotCommon(_appendUrl: string, _token: string): Observable<any> {
 //     _token = _token;

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MaterialModule } from '../../Material.module';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
@@ -9,7 +9,11 @@ import { FormGroup } from '@angular/forms';
   templateUrl: './cm-toggle.component.html',
   styleUrl: './cm-toggle.component.css'
 })
-export class CmToggleComponent {
+export class CmToggleComponent implements OnInit {
+  ngOnInit(): void {
+    console.log(this.formGroup);
+    console.log(this.settings);
+  }
   @Input() settings:any;
   @Input() formGroup : any;
  

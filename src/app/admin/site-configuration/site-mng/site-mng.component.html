@@ -6,9 +6,9 @@
         <mat-card-title><h2 style="margin-top: 10px;">Site Configuration</h2></mat-card-title>
       </div>
       <div class="col text-right">
-        <button mat-icon-button (click)="close()" aria-label="Close">
-          <mat-icon>close</mat-icon>
-        </button>
+       <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()">
+  <mat-icon>reply</mat-icon>
+</button>
       </div>
   </mat-card-header>
     </div>
@@ -87,7 +87,7 @@
         {{ getErrorMessage('long', 'Longitude', false, '') }}
       </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-4" >
             <label>Pincode</label>
             <app-cm-input [formGroup]="form" [controlName]="'pincode'" [_inputData]="inputFields.pincode" >
             </app-cm-input>
@@ -103,7 +103,7 @@
             <label style="position: relative; top: 6px; display: block;">Location/Area</label>
 
             <div>
-              <app-cm-select2  [formGroup]="form" [controlName]="'locationDropdown'" [settings]="locationDropdownSettings"
+              <app-cm-select2 *ngIf="isLocationsOptionsLoaded" [formGroup]="form" [controlName]="'locationDropdown'" [settings]="locationDropdownSettings"
                 (returnObject)="onLocationSelected($event)" class="full-width-select">
               </app-cm-select2>
                                                         <div *ngIf="f['locationDropdown'].touched && f['locationDropdown'].errors" class="text-danger mt-1">

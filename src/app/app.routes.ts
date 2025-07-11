@@ -18,6 +18,7 @@ import { ProjectFieldMapComponent } from './admin/project-field-map/project-fiel
 import { BulkUploadComponent } from './admin/bulk-upload/bulk-upload.component';
 import { ContactConfigurationComponent } from './admin/contact-configuration/contact-configuration.component';
 export const routes: Routes = [
+      { path: "", component: LoginComponent, },
       { path: "login", component: LoginComponent, },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'surveilience', component: SurveiliencePageComponent },

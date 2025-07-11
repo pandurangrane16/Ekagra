@@ -1,5 +1,5 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component,inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CmTableComponent } from '../../common/cm-table/cm-table.component';
 import { CmSelectComponent } from '../../common/cm-select/cm-select.component';
@@ -10,7 +10,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { InputRequest } from '../../models/request/inputreq.model';
 import { projconfigservice } from '../../services/admin/progconfig.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-
+import { Router } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 
 import { ProjectConfigurationFormComponent } from './project-configuration-form/project-configuration-form.component';
 
@@ -22,7 +24,9 @@ import { ProjectConfigurationFormComponent } from './project-configuration-form/
       CommonModule,
       CmTableComponent,
       CmInputComponent,
-      CmSelect2Component
+      CmSelect2Component,
+      MatCardModule
+      
     ],
     templateUrl: './project-configuration.component.html',
     // styleUrl: './project-configuration.component.css',
@@ -32,13 +36,17 @@ import { ProjectConfigurationFormComponent } from './project-configuration-form/
  
 
     export class ProjectConfigurationComponent implements OnInit {
-
+router = inject(Router);
       _headerName = 'Project Configuration Table';
       headArr: any[] = [];
       items:any;
       _request: any = new InputRequest();
       totalPages: number = 1;
       pager: number = 1;
+        MaxResultCount=10;
+  SkipCount=0;
+  perPage=10;
+  pageNo=0;
       totalRecords!: number;
       recordPerPage: number = 10;
       startId!: number;
@@ -48,7 +56,7 @@ import { ProjectConfigurationFormComponent } from './project-configuration-form/
       selectedProject: any;
       selectedStatus: any;
       form!: FormGroup;
-      perPage = 10;
+     
       collectionSize = 2;
       list!:any;
       isProjectOptionsLoaded = false;
@@ -101,7 +109,7 @@ import { ProjectConfigurationFormComponent } from './project-configuration-form/
       squareSettings = {
           labelHeader: 'Search',
           formFieldClass: 'cm-square-input',
-        
+          placeholder: 'Search (minimum 3 letters)',
           isDisabled: false
         };
         
@@ -136,8 +144,13 @@ import { ProjectConfigurationFormComponent } from './project-configuration-form/
               )
               .subscribe(value => {
                    if (value && value.length >= 3) {
+                       this.perPage=10;
+                 this.pager=0;
                 this.getFilteredList();
               } else if (!value || value.length === 0) {
+
+                 this.perPage=10;
+                 this.pager=0;
                  this.getFilteredList();
               }
               });
@@ -160,23 +173,16 @@ import { ProjectConfigurationFormComponent } from './project-configuration-form/
           console.log('Selected Project:', event);
         }
          submit(){
+          this.pager=0;
+          this.perPage=10;
   this.getFilteredList();
  }
-      openDialog() {
-          const dialogRef = this.dialog.open(ProjectConfigurationFormComponent, {
-            width: '500px',         
-            disableClose: true,     
-            data: {}               
-          });
-      
-          // Optional: handle result
-          dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-              console.log('Dialog result:', result);
-             
-            }
-          });
-        }
+    
+
+        openDialog() {
+      this.router.navigate(['/admin/projform']);   
+          
+}
         buildHeader() {  
           this.headArr = [
             { header: 'Name', fieldValue: 'name', position: 1 },
@@ -208,12 +214,38 @@ import { ProjectConfigurationFormComponent } from './project-configuration-form/
         handleSearch(term: string) {
           console.log('Search term:', term);
         }
-               onPageChange(event:{type:string,pageNo: number}) {
-          console.log('Page Changed:', event.pageNo);
-        }
-        onPageRecordsChange(event:{type:string,perPage: number}) {
-              console.log('Records Per Page:', event.perPage);
-        }
+
+          onPageChange(event:any) {
+    console.log(event);
+  if (event.type === 'pageChange') {
+    this.pager = event.pageNo;
+  this.getFilteredList();
+  }
+}
+
+
+onPageRecordsChange(event:any ) {
+  console.log(event);
+  if (event.type === 'perPageChange') {
+    this.perPage = event.perPage;
+    this.pager = 0;
+    this.getFilteredList();
+  }
+}
+
+
+onPaginationChanged(event: { pageNo: number; perPage: number }) {
+  if (this.perPage !== event.perPage) {
+    this.perPage = event.perPage;
+    this.pager = 0; 
+  } else {
+    this.pager = event.pageNo;
+  }
+
+  this.getFilteredList(); 
+}
+        
+      
         onRowClicked(row: any) {
                 console.log('Row clicked:', row);
                }
@@ -223,22 +255,51 @@ import { ProjectConfigurationFormComponent } from './project-configuration-form/
     this.editRow(data);
     console.log(data);
   } else if (event.type === 'delete') {
-    
+    this.deleteRow(data);
   }
 }
+deleteRow(rowData: any): void {
+  const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
+    width: '400px',
+      position: { top: '20px' },
+  panelClass: 'custom-confirm-dialog',
+    data: {
+      title: 'Confirm Delete',
+     message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.name}</b> will be deleted.</div>`,
 
-editRow(rowData: any) {
-  const dialogRef = this.dialog.open(ProjectConfigurationFormComponent, {
-    width: '500px',
- data: {
-  mode: 'edit',
-  record: rowData  
-}
+      type: 'delete',
+      confirmButtonText: 'Confirm',
+      cancelButtonText: 'Cancel'
+    }
   });
 
   dialogRef.afterClosed().subscribe(result => {
-    if (result === 'updated') {
-      this.getProjConfigList(); 
+    if (result) {
+     
+      this.service.Delete(rowData.id).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.getProjConfigList();
+            console.log('Deleted successfully');
+           
+          } else {
+            console.error('Delete failed:', res.error);
+          }
+        },
+        error: (err) => {
+          console.error('API error:', err);
+        }
+      });
+    } else {
+      console.log('User cancelled');
+    }
+  });
+}
+editRow(rowData: any) {
+  this.router.navigate(['/admin/projform'], {
+    state: {
+      mode: 'edit',
+      record: rowData
     }
   });
 }
@@ -253,6 +314,7 @@ editRow(rowData: any) {
          const items = response.result?.items;
          
          this.items=items;
+            const totalCount=response.result?.totalCount;
 
 
 
@@ -283,15 +345,14 @@ editRow(rowData: any) {
 
          
           });
-          // var _length = data.totalCount / Number(this.recordPerPage);
-          // if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-          //   this.totalRecords = Number(this.recordPerPage) * (_length);
-          // else if (Math.floor(_length) == 0)
-          //   this.totalRecords = 10;
-          // else
-          //   this.totalRecords = data.totalRecords;
-          // this.totalPages = this.totalRecords / this.pager;
-          //this.getMediaByStatus(this.tabno);
+          var _length = totalCount / Number(this.recordPerPage);
+          if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+            this.totalRecords = Number(this.recordPerPage) * (_length);
+          else if (Math.floor(_length) == 0)
+            this.totalRecords = 10;
+          else
+            this.totalRecords = totalCount;
+          this.totalPages = this.totalRecords / this.pager;
         }
       })
     }    
@@ -299,12 +360,17 @@ editRow(rowData: any) {
     const selectedProjectId = this.form.controls['selectedProject'].value.value;
      const selectedStatus = this.form.controls['selectedStatus'].value.value;
      const search = this.form.controls['searchText'].value
-     this.service.GetFilteredList(selectedProjectId,search,selectedStatus).subscribe(response => {
+        this.MaxResultCount=this.perPage;
+      this.SkipCount=this.MaxResultCount*this.pager;
+      this.recordPerPage=this.perPage;
+ 
+     this.service.GetFilteredList(selectedProjectId,search,selectedStatus,this.MaxResultCount,this.SkipCount).subscribe(response => {
     //  const items = response?.result || [];
          
     //      this.items=items;
          const items = response.result?.items;
          this.items=items;
+           const totalCount=response.result?.totalCount;
 
 
         if (Array.isArray(items)) {
@@ -327,20 +393,18 @@ editRow(rowData: any) {
 
 
 
-         
-          });
-          // var _length = data.totalCount / Number(this.recordPerPage);
-          // if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-          //   this.totalRecords = Number(this.recordPerPage) * (_length);
-          // else if (Math.floor(_length) == 0)
-          //   this.totalRecords = 10;
-          // else
-          //   this.totalRecords = data.totalRecords;
-          // this.totalPages = this.totalRecords / this.pager;
-          //this.getMediaByStatus(this.tabno);
+                  });
+              var _length = totalCount / Number(this.recordPerPage);
+          if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+            this.totalRecords = Number(this.recordPerPage) * (_length);
+          else if (Math.floor(_length) == 0)
+            this.totalRecords = 10;
+          else
+            this.totalRecords = totalCount;
+          this.totalPages = this.totalRecords / this.pager;
         }
       })
-    }     
+    }  
        
 getProjList() {
   this.service.GetProjectList().subscribe(response => {
@@ -358,6 +422,15 @@ getProjList() {
     });
 
     this.projectSelectSettings.options = projectOptions;
+this.form.controls['selectedProject'].setValue({
+  name: 'All',
+  value: null
+});
+
+this.form.controls['selectedStatus'].setValue({
+  name: 'All',
+  value: null
+});
     this.isProjectOptionsLoaded = true;
   }, error => {
     console.error('Error fetching project list', error);

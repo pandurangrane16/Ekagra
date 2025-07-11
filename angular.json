@@ -28,7 +28,6 @@
             "assets": [
               "src/favicon.ico",
               "src/assets"
-              
             ],
             "styles": [
               "src/styles.css",
@@ -36,13 +35,26 @@
               "src/custom-theme.scss",
               "node_modules/slick-carousel/slick/slick.css",
               "node_modules/ol/ol.css",
+              "node_modules/leaflet/dist/leaflet.css",
+               "node_modules/ngx-toastr/toastr.css",
               "node_modules/leaflet/dist/leaflet.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/slick-carousel/slick/slick.min.js"
-              ],
-              
+            ],
+            "allowedCommonJsDependencies": [
+              "leaflet",
+              "leaflet-draw",
+              "moment",
+              "highcharts",
+              "highcharts/highcharts-more",
+              "highcharts/modules/solid-gauge",
+              "lodash.throttle",
+              "lerc",
+              "xml-utils/get-attribute.js",
+              "xml-utils/find-tags-by-name.js"
+            ],
             "server": "src/main.server.ts",
             "prerender": true,
             "ssr": {
@@ -54,13 +66,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "3mb"
+                  "maximumWarning": "3mb",
+                  "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "14kb",
-                  "maximumError": "20kb"
+                  "maximumWarning": "3mb",
+                  "maximumError": "5mb"
                 }
               ],
               "outputHashing": "all"
@@ -105,7 +117,8 @@
             ],
             "styles": [
               "src/styles.css",
-              "node_modules/leaflet/dist/leaflet.css"
+              "node_modules/leaflet/dist/leaflet.css",
+               "node_modules/ngx-toastr/toastr.css"
             ],
             "scripts": []
           }
