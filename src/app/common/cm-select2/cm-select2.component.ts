@@ -5,10 +5,15 @@ import { MaterialModule } from '../../Material.module';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 
+import { ViewChild } from '@angular/core';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
 @Component({
   selector: 'app-cm-select2',
   standalone: true,
-  imports: [MaterialModule,CommonModule],
+  imports: [MaterialModule,CommonModule, MatAutocompleteModule, MatFormFieldModule],
   templateUrl: './cm-select2.component.html',
   styleUrl: './cm-select2.component.css'
 })
@@ -94,5 +99,20 @@ this.filteredOptions = this.stateCtrl.valueChanges.pipe(
   toggleDisable() {
     this.settings.isDisabled = !this.settings.isDisabled;
     this.cdRef.detectChanges();  // Manually trigger change detection if necessary
+  }
+
+   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
+
+  isPanelOpen = false;
+
+  ngAfterViewInit(): void {
+    this.autocompleteTrigger.panelClosingActions.subscribe(() => {
+      this.isPanelOpen = false;
+      this.cdRef.detectChanges();  // To update icon
+    });
+  }
+
+  onInputClick(): void {
+    this.isPanelOpen = true;
   }
 }
