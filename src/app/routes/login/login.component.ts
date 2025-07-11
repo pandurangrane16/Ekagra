@@ -59,4 +59,41 @@ export class LoginComponent {
     { img: '/assets/img/login_bg3.jpg' },
     { img: '/assets/img/login_bg4.jpg' },
   ];
+
+    ngOnInit(): void {
+    this.loginForm = this.fb.group({
+      userNameOrEmailAddress: ['', Validators.required],
+      password: ['', Validators.required]
+    });
+  }
+  showPassword: boolean = false;
+
+togglePasswordVisibility(): void {
+  this.showPassword = !this.showPassword;
+}
+
+   onLogin(): void {
+    const credentials = this.loginForm.value;
+
+    this.service.Login(credentials).subscribe({
+      next: (res) => {
+        const accessToken = res?.result?.accessToken;
+        if (accessToken) {
+      
+          this.router.navigate(['/dashboard']);
+        } else {
+          alert('Login failed: No token received');
+        }
+      },
+      error: (err) => {
+        console.error('Login error:', err);
+        alert('Login failed: Invalid credentials or server error');
+          this.loginForm.reset(); 
+      }
+    });
+  }
+
+
+
+
 }
