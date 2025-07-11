@@ -158,7 +158,7 @@ export class MapConfigurationFormComponent {
       sourceurl: ['', [Validators.required,Validators.pattern(/^(https?:\/\/)[^\s]+$/)]],
       lat: ['', Validators.required],
       long: ['', Validators.required],
-      wmslayer :['',Validators.required],
+      wmslayer :['', [Validators.required,Validators.pattern(/^(https?:\/\/)[^\s]+$/)]],
       isActive: [Validators.required],
 
       

@@ -62,7 +62,7 @@
         {{ getErrorMessage('sourceurl', 'Source Url', false, '') }}
       </div>
         <div *ngIf="f['sourceurl'].touched && f['sourceurl'].errors" class="text-danger mt-1">
-    {{ getErrorMessage(form, 'sourceurl', 'Source Url', true, 'Enter a valid URL without spaces') }}
+    {{ getErrorMessage( 'sourceurl', 'Source Url', true, 'Enter a valid URL without spaces') }}
   </div>
             </div>
           
@@ -136,6 +136,9 @@
                    <div *ngIf="f['wmslayer'].touched && f['wmslayer'].errors" class="text-danger mt-1">
         {{ getErrorMessage('wmslayer', 'WmsLayer', false, '') }}
       </div>
+        <div *ngIf="f['wmslayer'].touched && f['wmslayer'].errors" class="text-danger mt-1">
+    {{ getErrorMessage( 'wmslayer', 'wmslayer', true, 'Enter a valid URL without spaces') }}
+  </div>
             </div>
           
            
