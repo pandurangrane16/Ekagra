@@ -118,9 +118,69 @@
         <div class="row">
             <mat-card-content>
 
-                
+                <div class="container">
+                    <!-- Stepper Sidebar -->
+                    <div class="sidebar">
+                        <h2>Step {{ currentStep + 1 }}</h2>
+                        <p class="subtitle">Enter your personal information to get closer to companies.</p>
+                        <div class="steps">
+                            <div *ngFor="let step of steps; let i = index" class="step">
+                                <div class="circle" [class.active]="i === currentStep">{{ i + 1 }}</div>
+                                <div class="label" [class.active]="i === currentStep">{{ step }}</div>
+                            </div>
+                        </div>
+                    </div>
 
+                    <!-- Step Content -->
+                    <div class="content">
+                        <div *ngIf="currentStep === 0">
+                            <h3>Rule Information</h3>
+                            <p class="info-text">Enter rule details.</p>
+                            <form class="form-grid">
+                                <div [formGroup]="firstFormGroup">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label style="position: relative; top: 6px; display: block;">Policy Name*</label>
+                                            <div>
+                                                <app-cm-input [formGroup]="firstFormGroup" [controlName]="'policyName'"
+                                                    [_inputData]="inputFields.policyName">
+                                                </app-cm-input>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="text" placeholder="First Name" />
+                                <input type="text" placeholder="Last Name" />
+                                <input type="text" placeholder="Phone number" />
+                                <input type="email" placeholder="E-mail Address" />
+                                <select>
+                                    <option>Select Country</option>
+                                </select>
+                                <select>
+                                    <option>Select City</option>
+                                </select>
+                            </form>
+                        </div>
+
+                        <div *ngIf="currentStep === 1">
+                            <h3>Education</h3>
+                            <p class="info-text">Add your education details here...</p>
+                        </div>
+
+                        <div *ngIf="currentStep === 2">
+                            <h3>Work Experience</h3>
+                            <p class="info-text">Add your work experience here...</p>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button (click)="CheckConnection()" >CLick</button>
+                    </div>
+                </div>
             </mat-card-content>
         </div>
     </mat-card>
-</div>
+</div>>

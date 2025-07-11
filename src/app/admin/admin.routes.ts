@@ -15,6 +15,7 @@ import { LoginComponent } from "../routes/login/login.component";
 import { ProjectFieldConfigurationFormComponent } from "./project-field-configuration/project-field-configuration-form/project-field-configuration-form.component";
 import { ProjectConfigurationFormComponent } from "./project-configuration/project-configuration-form/project-configuration-form.component";
 import { MapConfigurationFormComponent } from "./map-configuration/map-configuration-form/map-configuration-form.component";
+import { RuleConfigComponent } from "./rule-engine/rule-config/rule-config.component";
 //import { ProjectConfigurationComponent} from "./admin-dashboard/project-configuration.component";
 
 export const AdminRoutes: Routes = [
@@ -180,6 +181,17 @@ export const AdminRoutes: Routes = [
           urls: [
             { title: 'Api List View', url: '/admin/apilist' },
             { title: 'Api List View' },
+          ],
+        },
+      },
+      {
+        path: 'ruleengine',
+        component: RuleConfigComponent,
+        data: {
+          title: 'Rule Engine',
+          urls: [
+            { title: 'Rule Engine', url: '/admin/ruleengine' },
+            { title: 'Rule Engine' },
           ],
         },
       },

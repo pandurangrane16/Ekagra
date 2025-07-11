@@ -16,6 +16,7 @@ import { UserRoutes } from '../app/user/user.routes';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ProjectFieldMapComponent } from './admin/project-field-map/project-field-map.component';
 import { BulkUploadComponent } from './admin/bulk-upload/bulk-upload.component';
+import { RuleEngineComponent } from './admin/rule-engine/rule-engine.component';
 import { ContactConfigurationComponent } from './admin/contact-configuration/contact-configuration.component';
 export const routes: Routes = [
       { path: "", component: LoginComponent, },
@@ -30,10 +31,9 @@ export const routes: Routes = [
       { path: 'chat', component: ChatPageComponent },
       { path: 'setting', component: SettingPageComponent },
       //{ path: "**", redirectTo: "dashboard" },
-       { path: 'ProjectFieldMap', component: ProjectFieldMapComponent },
+       { path: 'project-filed-map', component: ProjectFieldMapComponent },
       {path:'projconf', component: ProjectConfigurationComponent},
             {path:'BulkUpload', component: BulkUploadComponent},
-            {path:'ContactConf', component: ContactConfigurationComponent},
             
       {
             path: 'admin',
@@ -49,23 +49,9 @@ export const routes: Routes = [
                   },
             ],
       },
-      // {
-      //       path: 'user',
-      //       //component: AdminDashboardComponent,
-      //       children: [
-      //             {
-      //                   path: '',
-      //                   loadChildren: () =>
-      //                         import('../app/user/user.routes').then(
-      //                               (m) => m.UserRoutes
-      //                         ),
-      //             },
-      //       ],
-      // },
-
       {
-  path: 'user',
-  children: UserRoutes
-}
+            path: 'user',
+            children: UserRoutes
+      }
 
 ];
