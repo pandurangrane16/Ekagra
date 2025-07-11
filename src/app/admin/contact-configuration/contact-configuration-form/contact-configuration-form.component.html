@@ -1,0 +1,80 @@
+<div class="dialog-container">
+    <div class="dialog-header">
+        <h2>Contact Configuration</h2>
+        <button mat-icon-button (click)="close()" aria-label="Close">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+   
+
+    <hr class="input-header-hr" /> 
+    <form [formGroup]="form" class="form-container">
+        <div class="row">
+            <div class="col-md-12">
+                <label>Select Type</label>
+               <app-cm-select2
+*ngIf="isContactLoaded"
+    [formGroup]="form"
+    [controlName]="'ContactType'"
+    [settings]="ContactTypeSettings"
+    (optionSelected)="onContactTypeSelected($event)">
+  </app-cm-select2>
+
+                   <!-- <div *ngIf="f['ContactType'].touched && f['ContactType'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('ContactType', 'ContactType', false, '') }}
+      </div> -->
+      <div *ngIf="f['ContactType']?.touched && f['ContactType']?.errors" class="text-danger mt-1">
+  {{ getErrorMessage('ContactType', 'ContactType', false, '') }}
+</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Name</label>
+                <app-cm-input
+                  [formGroup]="form"
+                  [controlName]="'name'"
+                  [_inputData]="inputFields.name">
+                </app-cm-input>
+
+                   <div *ngIf="f['name'].touched && f['name'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('name', 'Name', false, '') }}
+            </div>
+        </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Contact</label>
+                <app-cm-input
+                  [formGroup]="form"
+                  [controlName]="'contact'"
+                  [_inputData]="inputFields.contact">
+                </app-cm-input>
+
+                   <div *ngIf="f['contact'].touched && f['contact'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('contact', 'contact', false, '') }}
+            </div>
+        </div>
+        </div>
+   
+  
+    
+      
+  
+         <!-- Toggles -->
+         <div class="toggle-row">
+              <app-cm-toggle [formGroup]="form" [settings]="isactivetoggle"></app-cm-toggle>
+              <div *ngIf="f['isActive'].touched && f['isActive'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('isActive', 'isActive', false, '') }}
+      </div>
+          </div>
+  
+      <!-- Action Buttons -->
+    
+    </form>
+      <div class="dialog-actions">
+        <button mat-button (click)="close()">Cancel</button>
+        <button mat-flat-button color="primary" (click)="submit()">Save</button>
+      </div>
+  </div>
+  

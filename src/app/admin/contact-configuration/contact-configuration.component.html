@@ -3,13 +3,19 @@
 <div class="card">
     <div class="card-body"  id="editForm">
 <div class="filter-row" style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px;">
-  
+ 
+  <div class="row">
+            <div class="col-md-12">
+               <label>Select Type</label>
 <app-cm-select2
+*ngIf="isContactLoaded"
     [formGroup]="form"
     [controlName]="'ContactType'"
     [settings]="ContactTypeSettings"
     (optionSelected)="onContactTypeSelected($event)">
   </app-cm-select2>
+            </div>
+  </div>
 
 
   <button mat-flat-button
@@ -70,7 +76,7 @@
   (searchWithId)="onRowClicked($event)"
   (btnAction)="onButtonClicked($event)">
 </app-cm-table>
-    </div>
 </div>
-    </div>
+</div>
+</div>
 </div>

@@ -5,10 +5,15 @@ import { MaterialModule } from '../../Material.module';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 
+import { ViewChild } from '@angular/core';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
 @Component({
   selector: 'app-cm-select2',
   standalone: true,
-  imports: [MaterialModule,CommonModule],
+  imports: [MaterialModule,CommonModule, MatAutocompleteModule, MatFormFieldModule],
   templateUrl: './cm-select2.component.html',
   styleUrl: './cm-select2.component.css'
 })
@@ -26,10 +31,12 @@ export class CmSelect2Component {
   filteredOptions: Observable<any[]>;
 
   constructor(private cdRef: ChangeDetectorRef) {
-    this.filteredOptions = this.stateCtrl.valueChanges.pipe(
+    if(this.settings != undefined){
+this.filteredOptions = this.stateCtrl.valueChanges.pipe(
       startWith(''),
       map(state => (state ? this._filterStates(state) : this.settings.options.slice())),
     );
+    }
   }
   private _filterStates(value: string): any[] {
     const filterValue = value.toLowerCase();
@@ -37,14 +44,28 @@ export class CmSelect2Component {
     return this.settings.options.filter((state: any) => state.name.toLowerCase().includes(filterValue));
   }
   ngOnInit(): void {
+    console.log(this.settings);
     if (!this.settings || !this.settings.options) {
       console.error('Settings or options not provided');
       return;
     }
+    // this.filteredOptions = this.stateCtrl.valueChanges.pipe(
+    //   startWith(''),
+    //   map(state => (typeof state === 'string' ? this._filterStates(state) : this.settings.options.slice())),
+    // );
     this.filteredOptions = this.stateCtrl.valueChanges.pipe(
-      startWith(''),
-      map(state => (typeof state === 'string' ? this._filterStates(state) : this.settings.options.slice())),
-    );
+  startWith(''),
+  map(state => (typeof state === 'string' ? this._filterStates(state) : this.settings.options.slice()))
+);
+
+ const control = this.formGroup.get(this.controlName);
+  if (control) {
+    if (this.settings?.isDisabled) {
+      control.disable();
+    } else {
+      control.enable();
+    }
+  }
   }
   displayFn(option: any): string {
     return option && option.name ? option.name : '';
@@ -78,5 +99,20 @@ export class CmSelect2Component {
   toggleDisable() {
     this.settings.isDisabled = !this.settings.isDisabled;
     this.cdRef.detectChanges();  // Manually trigger change detection if necessary
+  }
+
+   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
+
+  isPanelOpen = false;
+
+  ngAfterViewInit(): void {
+    this.autocompleteTrigger.panelClosingActions.subscribe(() => {
+      this.isPanelOpen = false;
+      this.cdRef.detectChanges();  // To update icon
+    });
+  }
+
+  onInputClick(): void {
+    this.isPanelOpen = true;
   }
 }

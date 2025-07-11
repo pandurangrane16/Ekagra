@@ -1,7 +1,21 @@
+
+
 <div class="row mt-1">
     <div class="col-md-12">
 <div class="card">
     <div class="card-body"  id="editForm">
+
+  <div class="row">
+  <mat-card-header>
+      <div class="col-md-11" style="padding-left: 10px;">
+        <mat-card-title><h2 style="margin-top: 10px;">API List</h2></mat-card-title>
+      </div>
+     
+  </mat-card-header>
+    </div>
+
+<hr>
+
 <div class="filter-row" style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px;">
 
   <!-- Left Filters -->
@@ -10,6 +24,14 @@
     [formGroup]="form"
     [controlName]="'selectedProject'"
     [settings]="projectSelectSettings"
+    (optionSelected)="onProjectSelected($event)">
+  </app-cm-select2>
+
+    <app-cm-select2
+   *ngIf="isProjectOptionsLoaded"
+    [formGroup]="form"
+    [controlName]="'selectedProjType'"
+    [settings]="projectTypeSettings"
     (optionSelected)="onProjectSelected($event)">
   </app-cm-select2>
 
@@ -31,10 +53,10 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         text-transform: none;
         white-space: nowrap;
-        display: flex ; gap:420px ;margin-top: 32px;margin-left:25px;   
-       ">
+        display: flex ; gap:420px ;margin-top: 32px;margin-left:25px;   " (click)="submit()"  
+       >
         Submit
-        </button>
+    </button>
 
         
 
