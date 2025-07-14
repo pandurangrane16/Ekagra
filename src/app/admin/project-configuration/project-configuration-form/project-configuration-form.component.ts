@@ -240,7 +240,7 @@ onFileSelect(event: any, type: 'mapIcon' | 'projectIcon') {
   }
 
 loadExistingIcons(): void {
-  const basePath = 'https://172.19.32.210:8002/UploadedFiles/Icons/';
+  const basePath = 'https://172.19.32.220:8002/UploadedFiles/Icons/';
 
   if (this.state?.record?.mapIcon) {
     const mapIconUrl = basePath + this.state.record.mapIcon;
