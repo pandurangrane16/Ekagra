@@ -16,16 +16,20 @@ import { CmTableComponent } from '../../common/cm-table/cm-table.component';
 import { FormBuilder,FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CmSelect2Component } from '../../common/cm-select2/cm-select2.component';
 // import { AppCustomSelectComponent } from '../../common/custom-select/custom-select.component';
-import { OnInit } from '@angular/core';
+import { inject,OnInit } from '@angular/core';
 import { projconfigservice } from '../../services/admin/progconfig.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { InputRequest } from '../../models/request/inputreq.model';
 import { PramglobalService } from '../../services/admin/pramglobal.service';
 import { ContactConfigService } from '../../services/admin/contact-config.service';
 import { CommonModule } from '@angular/common';
-import { MatDialog } from '@angular/material/dialog';
+ import { MatDialog } from '@angular/material/dialog';
 import { ContactConfigurationFormComponent } from './contact-configuration-form/contact-configuration-form.component';
 import { getErrorMsg } from '../../utils/utils';
+import { Router } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-contact-configuration',
@@ -33,7 +37,9 @@ import { getErrorMsg } from '../../utils/utils';
     CommonModule,        
     CmInputComponent,
     CmSelect2Component,
-    CmTableComponent
+    CmTableComponent,
+    MatCardModule,
+    CmConfirmationDialogComponent
     // AppCustomSelectComponent
   ],
   templateUrl: './contact-configuration.component.html',
@@ -41,6 +47,8 @@ import { getErrorMsg } from '../../utils/utils';
 })
 
 export class ContactConfigurationComponent implements OnInit{
+  contactTypeMap: { [key: string]: string } = {};
+  router = inject(Router);
   _headerName = 'Contact Configuration Table';
   isContactLoaded : boolean = false;
       headArr: any[] = [];
@@ -78,8 +86,9 @@ ContactTypeSettings: Select2Settings = {
               //  private dialog: MatDialog,
                private service: projconfigservice,
                private PramglobalService:PramglobalService,
-                private ContactConfigService:ContactConfigService,
-                 private dialog: MatDialog
+                private ContactConfigService:ContactConfigService
+                  ,private dialog: MatDialog
+                  , private toast: ToastrService 
                ) {}
 
   ngOnInit(): void {
@@ -115,7 +124,8 @@ ContactTypeSettings: Select2Settings = {
           }
 
                getFilteredList() {
-    const selectedType = this.form.controls['ContactType'].value.value;
+               debugger;
+    const selectedType = this.form.controls['ContactType'].value.value==null?"": this.form.controls['ContactType'].value.value;
     //  const selectedStatus = this.form.controls['selectedStatus'].value.value;
      const search = this.form.controls['searchText'].value
      this.ContactConfigService.GetAllContactMasterPage(selectedType,search).subscribe(response => {
@@ -130,9 +140,11 @@ ContactTypeSettings: Select2Settings = {
          
            items.forEach((element: any) => {
            
-
+ debugger;
             //let _data = JSON.parse(element);
-             element.type = element.type;
+            //  element.type = element.type;
+                    element.type = this.contactTypeMap[element.type] ?? element.type;
+
             element.name = element.name;
              element.contact = element.contact;
             element.isActive = !!element.isActive; 
@@ -165,6 +177,7 @@ ContactTypeSettings: Select2Settings = {
           ;}
       
                getContactConfigList() {
+                debugger;
       this._request.currentPage = this.pager;
       this._request.pageSize = Number(this.recordPerPage);
       this._request.startId = this.startId;
@@ -192,7 +205,9 @@ ContactTypeSettings: Select2Settings = {
            
 
             //let _data = JSON.parse(element);
-            element.type = element.type;
+            // element.type = element.type;
+           element.type = this.contactTypeMap[element.type] ?? element.type;
+
             element.name = element.name;
             element.contact = element.contact; 
               element.isActive = !!element.isActive; 
@@ -237,25 +252,17 @@ ContactTypeSettings: Select2Settings = {
    this.getFilteredList();
  }
 
- openDialog() {
-    (document.activeElement as HTMLElement)?.blur();
-             const dialogRef = this.dialog.open(ContactConfigurationFormComponent, {
-               
-               width: '500px', 
-                
-               disableClose: true,  
-               autoFocus: false,   
-               data: {}               
-             });
-         
-             // Optional: handle result
-             dialogRef.afterClosed().subscribe(result => {
-               if (result) {
-                 console.log('Dialog result:', result);
-                
-               }
-             });
-   }
+  openDialog() {
+  try {
+    this.router.navigate(['/admin/contactform']);
+  } catch (ex) {
+    if (ex instanceof Error) {
+      console.error(ex.message);
+    } else {
+      console.error('Unexpected error:', ex);
+    }
+  }
+}
     onPageRecordsChange(event:{type:string,perPage: number}) {
               console.log('Records Per Page:', event.perPage);
         }
@@ -268,19 +275,62 @@ ContactTypeSettings: Select2Settings = {
     this.editRow(data);
     console.log(data);
   } else if (event.type === 'delete') {
-    
+    this.deleteRow(data);
   }
 }
 
-editRow(rowData: any) {
-//   const dialogRef = this.dialog.open(ProjectConfigurationFormComponent, {
-//     width: '500px',
-//  data: {
-//   mode: 'edit',
-//   record: rowData  
-// }
-//   });
+deleteRow(rowData: any): void {
+  const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
+    width: '400px',
+      position: { top: '20px' },
+  panelClass: 'custom-confirm-dialog',
+    data: {
+      title: 'Confirm Delete',
+     message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.name}</b> will be deleted.</div>`,
 
+      type: 'delete',
+      confirmButtonText: 'Confirm',
+      cancelButtonText: 'Cancel'
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+     
+      this.ContactConfigService.Delete(rowData.id).subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.getContactConfigList();
+            console.log('Deleted successfully');
+             this.toast.success('Contact Deleted successfully');
+          this.router.navigate(['/ContactConf']);
+          } else {
+             this.toast.error('Delete failed:', res.error);      
+          }
+        },
+        error: (err) => {
+          console.error('API error:', err);
+        }
+      });
+    } else {
+      console.log('User cancelled');
+    }
+  });
+}
+
+editRow(rowData: any) {
+  this.router.navigate(['/admin/contactform'], {
+    state: {
+      mode: 'edit',
+      record: rowData
+    }
+  });
+ this.router.navigate(['/admin/contactform'], {
+    state: {
+      mode: 'edit',
+      record: rowData
+    }
+  });
 }
 
  onPageChange(event:{type:string,pageNo: number}) {
@@ -326,12 +376,25 @@ loadContactTypes(Module: string, unit: string) {
       value: item.prmvalue
     }));
 
-  
+       // Fix: Add type annotations to `map` and `item`
+    this.contactTypeMap = contactOptions.reduce((map: { [key: string]: string }, item: { name: string; value: string }) => {
+      map[item.value] = item.name;
+      return map;
+    }, {} as { [key: string]: string });
+console.log(this.contactTypeMap);
+
+
+    
+  this.form.controls['ContactType'].setValue({
+  name: 'All',
+  value: null
+});
     // contactOptions.unshift({
     //   name: 'All',
     //   value: null
     // });
     console.log(contactOptions);
+
     this.ContactTypeSettings.options = contactOptions;
      this.isContactLoaded = true;
   }, error => {

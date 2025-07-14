@@ -17,6 +17,9 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ProjectFieldMapComponent } from './admin/project-field-map/project-field-map.component';
 import { BulkUploadComponent } from './admin/bulk-upload/bulk-upload.component';
 import { ContactConfigurationComponent } from './admin/contact-configuration/contact-configuration.component';
+import { ContactConfigurationFormComponent } from './admin/contact-configuration/contact-configuration-form/contact-configuration-form.component';
+import { SiteConfigurationComponent } from './admin/site-configuration/site-configuration.component';
+import { Component } from '@angular/core';
 export const routes: Routes = [
       { path: "", component: LoginComponent, },
       { path: "login", component: LoginComponent, },
@@ -34,7 +37,8 @@ export const routes: Routes = [
       {path:'projconf', component: ProjectConfigurationComponent},
             {path:'BulkUpload', component: BulkUploadComponent},
             {path:'ContactConf', component: ContactConfigurationComponent},
-            
+             {path:'contactconfig', component: ContactConfigurationFormComponent},
+     {path:'siteconf', component: SiteConfigurationComponent},
       {
             path: 'admin',
             //  component: AdminDashboardComponent,
