@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { FooterComponent } from '../footer/footer.component';
@@ -16,7 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'app-login',
-    imports: [CommonModule, SlickCarouselModule,MatButtonModule,ReactiveFormsModule, FooterComponent, MatFormFieldModule, MatInputModule, MatIconModule, RouterModule],
+    imports: [CommonModule, SlickCarouselModule, MatButtonModule, ReactiveFormsModule,MatButtonModule,ReactiveFormsModule, FooterComponent, MatFormFieldModule, MatInputModule, MatIconModule, RouterModule],
     templateUrl: './login.component.html',
     styleUrl: './login.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -24,13 +24,13 @@ import { MatButtonModule } from '@angular/material/button';
 export class LoginComponent {
 
   loginForm!: FormGroup;
-
-    constructor(
+  version: string = "2.0.0.0";
+  constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private router: Router,
-    private service :loginservice
-  ) {}
+    private service: loginservice
+  ) { }
 
 
 
@@ -73,7 +73,7 @@ export class LoginComponent {
     { img: '/assets/img/login_bg4.jpg' },
   ];
 
-    ngOnInit(): void {
+  ngOnInit(): void {
     this.loginForm = this.fb.group({
       userNameOrEmailAddress: ['', Validators.required],
       password: ['', Validators.required]
@@ -81,18 +81,18 @@ export class LoginComponent {
   }
   showPassword: boolean = false;
 
-togglePasswordVisibility(): void {
-  this.showPassword = !this.showPassword;
-}
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
 
-   onLogin(): void {
+  onLogin(): void {
     const credentials = this.loginForm.value;
 
     this.service.Login(credentials).subscribe({
       next: (res) => {
         const accessToken = res?.result?.accessToken;
         if (accessToken) {
-      
+
           this.router.navigate(['/dashboard']);
         } else {
           alert('Login failed: No token received');
@@ -101,7 +101,7 @@ togglePasswordVisibility(): void {
       error: (err) => {
         console.error('Login error:', err);
         alert('Login failed: Invalid credentials or server error');
-          this.loginForm.reset(); 
+        this.loginForm.reset();
       }
     });
   }

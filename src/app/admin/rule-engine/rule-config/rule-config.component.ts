@@ -10,7 +10,7 @@ import { SignalRService } from '../../../services/common/signal-r.service';
 
 @Component({
   selector: 'app-rule-config',
-  imports: [MaterialModule, CommonModule, ReactiveFormsModule,CmInputComponent],
+  imports: [MaterialModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,CmToggleComponent],
   templateUrl: './rule-config.component.html',
   styleUrl: './rule-config.component.css'
 })
@@ -18,18 +18,6 @@ export class RuleConfigComponent {
   private _formBuilder = inject(FormBuilder);
   signalRService = inject(SignalRService);
   ruleService = inject(RuleEngineService);
-  categorySettings = {
-    labelHeader: 'Category*',
-    lableClass: 'form-label',
-    formFieldClass: '',
-    appearance: 'outline',
-    options: [
-      { name: 'Select Category', value: '0' },
-      { name: 'Low', value: '1' },
-      { name: 'Medium', value: '2' },
-      { name: 'High', value: '3' }
-    ]
-  };
   userGroupSettings = {
     labelHeader: 'User Group*',
     lableClass: 'form-label',
@@ -81,6 +69,18 @@ export class RuleConfigComponent {
       { value: true, displayName: 'Yes' },
       { value: false, displayName: 'No' }
     ]
+  };
+    categorySelectSettings = {
+    labelHeader: 'Select Category',
+    lableClass: 'form-label',
+    formFieldClass: '', 
+    appearance: 'outline',
+    options: [
+      { name: 'Low', value: 'L' },
+      { name: 'Medium', value: 'M' },
+      { name: 'High', value: 'H' }
+    ],
+    
   };
   firstFormGroup = this._formBuilder.group({
     policyName: ['', Validators.required],

@@ -136,30 +136,52 @@
                         <div *ngIf="currentStep === 0">
                             <h3>Rule Information</h3>
                             <p class="info-text">Enter rule details.</p>
-                            <form class="form-grid">
-                                <div [formGroup]="firstFormGroup">
+                            <div [formGroup]="firstFormGroup">
+                                <form>
                                     <div class="row">
-                                        <div class="col-md-4">
-                                            <label style="position: relative; top: 6px; display: block;">Policy Name*</label>
+                                        <div class="col-md-6">
+                                            <label style="position: relative; top: 6px; display: block;">Policy
+                                                Name*</label>
                                             <div>
                                                 <app-cm-input [formGroup]="firstFormGroup" [controlName]="'policyName'"
                                                     [_inputData]="inputFields.policyName">
                                                 </app-cm-input>
                                             </div>
                                         </div>
+                                        <div class="col-md-6">
+                                            <app-cm-select2 [formGroup]="firstFormGroup"
+                                                [controlName]="'selectedCategory'" [settings]="categorySelectSettings">
+                                            </app-cm-select2>
+                                        </div>
                                     </div>
-                                </div>
-                                <input type="text" placeholder="First Name" />
-                                <input type="text" placeholder="Last Name" />
-                                <input type="text" placeholder="Phone number" />
-                                <input type="email" placeholder="E-mail Address" />
-                                <select>
-                                    <option>Select Country</option>
-                                </select>
-                                <select>
-                                    <option>Select City</option>
-                                </select>
-                            </form>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <app-cm-select2 [formGroup]="firstFormGroup"
+                                                [controlName]="'selectedUserGroup'" [settings]="userGroupSettings">
+                                            </app-cm-select2>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label style="position: relative; top: 6px; display: block;">Interval
+                                                (Minutes)</label>
+                                            <div>
+                                                <app-cm-input [formGroup]="firstFormGroup"
+                                                    [controlName]="'intervalTime'"
+                                                    [_inputData]="inputFields.intervalTime">
+                                                </app-cm-input>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="toggle-label">Enabled</label>
+                                            <app-cm-toggle [formGroup]="firstFormGroup" [settings]="isActiveToggle"
+                                                style="margin-top: -35px;"></app-cm-toggle>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
 
                         <div *ngIf="currentStep === 1">
@@ -177,7 +199,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <button (click)="CheckConnection()" >CLick</button>
+                        <button (click)="CheckConnection()">CLick</button>
                     </div>
                 </div>
             </mat-card-content>
