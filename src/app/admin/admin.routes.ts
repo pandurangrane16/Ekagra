@@ -17,7 +17,8 @@ import { ProjectConfigurationFormComponent } from "./project-configuration/proje
 import { MapConfigurationFormComponent } from "./map-configuration/map-configuration-form/map-configuration-form.component";
 import { RuleConfigComponent } from "./rule-engine/rule-config/rule-config.component";
 //import { ProjectConfigurationComponent} from "./admin-dashboard/project-configuration.component";
-
+import { ContactConfigurationFormComponent } from "./contact-configuration/contact-configuration-form/contact-configuration-form.component";
+import { ContactConfigurationComponent } from "./contact-configuration/contact-configuration.component";
 export const AdminRoutes: Routes = [
     {
       path: '',
@@ -52,6 +53,17 @@ export const AdminRoutes: Routes = [
           ],
         },
       },
+          {
+  path: 'contactform',
+  component: ContactConfigurationFormComponent,
+  data: {
+    title: 'Project Configuration form',
+    urls: [
+      { title: 'Admin Dashboard', url: '/admin/contactform' },
+      { title: 'Project Configuration form' }
+    ]
+  }
+},
       {
         path: 'siteconfig',
         component: SiteConfigurationComponent,

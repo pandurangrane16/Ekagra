@@ -16,7 +16,8 @@ export class CmToggleComponent implements OnInit {
   }
   @Input() settings:any;
   @Input() formGroup : any;
- 
+ @Input() controlName!: string;
+
   
   @Output() returnObject = new EventEmitter<any>();
 

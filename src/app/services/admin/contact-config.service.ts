@@ -77,5 +77,12 @@ GetAllContactMasterPage(Type: number, Filter:string) {
 
   return this._httpService._getMethod(url);
   }
+
+    Delete(id: number) {
+    return this._httpService._deleteMethod('api/services/app/contact/Delete?Id='+id);
+  }
+
+
+
 }
 

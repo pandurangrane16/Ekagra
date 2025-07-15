@@ -18,6 +18,9 @@ import { ProjectFieldMapComponent } from './admin/project-field-map/project-fiel
 import { BulkUploadComponent } from './admin/bulk-upload/bulk-upload.component';
 import { RuleEngineComponent } from './admin/rule-engine/rule-engine.component';
 import { ContactConfigurationComponent } from './admin/contact-configuration/contact-configuration.component';
+import { ContactConfigurationFormComponent } from './admin/contact-configuration/contact-configuration-form/contact-configuration-form.component';
+import { SiteConfigurationComponent } from './admin/site-configuration/site-configuration.component';
+import { Component } from '@angular/core';
 export const routes: Routes = [
       { path: "", component: LoginComponent, },
       { path: "login", component: LoginComponent, },
@@ -34,7 +37,9 @@ export const routes: Routes = [
        { path: 'project-filed-map', component: ProjectFieldMapComponent },
       {path:'projconf', component: ProjectConfigurationComponent},
             {path:'BulkUpload', component: BulkUploadComponent},
-            
+            {path:'ContactConf', component: ContactConfigurationComponent},
+             {path:'contactconfig', component: ContactConfigurationFormComponent},
+     {path:'siteconf', component: SiteConfigurationComponent},
       {
             path: 'admin',
             //  component: AdminDashboardComponent,
