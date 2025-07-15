@@ -184,7 +184,7 @@ export class MapConfigurationFormComponent {
 
 
 
-
+debugger;
 this.editid=this.state.record.id;
     this.form.patchValue({
       description: this.state.record.description,
@@ -197,7 +197,7 @@ this.editid=this.state.record.id;
       sourceurl: this.state.record.sourceURL,
       displayname: this.state.record.displayName,
       name: this.state.record.name,
-      
+      wmsLayer:this.state.wmsLayer
     });
 
     console.log('Edit form data patched:', this.state.record);
@@ -222,7 +222,7 @@ this.editid=this.state.record.id;
         this.form.markAllAsTouched(); 
          
           let _mapconfigmodel = new mapconfigmodel();
-    
+    debugger;
     _mapconfigmodel.name = this.form.controls['name'].value;
     _mapconfigmodel.description = this.form.controls['description'].value;
     _mapconfigmodel.isActive=this.form.controls['isActive'].value;
@@ -233,14 +233,14 @@ this.editid=this.state.record.id;
     _mapconfigmodel.id=0
     _mapconfigmodel.lastModificationTime="2025-06-20T05:32:25.067Z"
     _mapconfigmodel.lastModifierUserId="2"
-    _mapconfigmodel.isDeleted=true;
+    _mapconfigmodel.isDeleted=false;
     _mapconfigmodel.displayName=this.form.controls['displayname'].value;;
     _mapconfigmodel.lat=this.form.controls['lat'].value;
     _mapconfigmodel.long=this.form.controls['long'].value;
     _mapconfigmodel.minZoom=this.form.controls['minzoom'].value;
     _mapconfigmodel.maxZoom=this.form.controls['maxzoom'].value;
     _mapconfigmodel.sourceURL=this.form.controls['sourceurl'].value;
-    
+    _mapconfigmodel.wmsLayer=this.form.controls['wmslayer'].value;
 
     
       if (this.state?.mode === 'edit' && this.state?.record?.id){

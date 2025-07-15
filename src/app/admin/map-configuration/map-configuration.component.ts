@@ -271,7 +271,7 @@ onProjectChange(value: any) {
          
            items.forEach((element: any) => {
            
-
+debugger;
                 element.name = element.name;
            element.displayName = element.displayName;
            element.sourceURL = element.sourceURL;
@@ -282,7 +282,7 @@ onProjectChange(value: any) {
            element.lat = element.lat;
            element.long = element.long;
            element.isActive = !!element.isActive;  
-            
+           
               element.button = [
     { label: 'Edit', icon: 'edit', type: 'edit' },
     { label: 'Delete', icon: 'delete', type: 'delete' }

@@ -19,6 +19,7 @@ import { RuleConfigComponent } from "./rule-engine/rule-config/rule-config.compo
 //import { ProjectConfigurationComponent} from "./admin-dashboard/project-configuration.component";
 import { ContactConfigurationFormComponent } from "./contact-configuration/contact-configuration-form/contact-configuration-form.component";
 import { ContactConfigurationComponent } from "./contact-configuration/contact-configuration.component";
+import { ProjectFieldMapComponent } from "./project-field-map/project-field-map.component";
 export const AdminRoutes: Routes = [
     {
       path: '',
@@ -53,17 +54,7 @@ export const AdminRoutes: Routes = [
           ],
         },
       },
-          {
-  path: 'contactform',
-  component: ContactConfigurationFormComponent,
-  data: {
-    title: 'Project Configuration form',
-    urls: [
-      { title: 'Admin Dashboard', url: '/admin/contactform' },
-      { title: 'Project Configuration form' }
-    ]
-  }
-},
+  
       {
         path: 'siteconfig',
         component: SiteConfigurationComponent,
@@ -207,4 +198,37 @@ export const AdminRoutes: Routes = [
           ],
         },
       },
+              {
+  path: 'contactform',
+  component: ContactConfigurationFormComponent,
+  data: {
+    title: 'Contact Configuration form',
+    urls: [
+      { title: 'Admin Dashboard', url: '/admin/contactform' },
+      { title: 'Contact Configuration form' }
+    ]
+  }
+},
+        {
+  path: 'projfieldmap',
+  component: ProjectFieldMapComponent,
+  data: {
+    title: 'Project Filed Map',
+    urls: [
+      { title: 'Admin Dashboard', url: '/admin/projfieldmap' },
+      { title: 'Project Filed Map' }
+    ]
+  }
+},
+        {
+  path: 'ContactConf',
+  component: ContactConfigurationComponent,
+  data: {
+    title: 'Contact Configuration',
+    urls: [
+      { title: 'Admin Dashboard', url: '/admin/ContactConf' },
+      { title: 'Contact Configuration' }
+    ]
+  }
+}
 ]
