@@ -25,7 +25,11 @@
           </a>
           }
           @else {
-          <button matButton [matMenuTriggerFor]="menu">{{ item.label }}</button>
+          <!-- <button matButton [matMenuTriggerFor]="menu">{{ item.label }}</button> -->
+          <button mat-button [matMenuTriggerFor]="menu" class="sidebar-item with-icon">
+    <img src="assets/img/icon_settings.svg" alt="settings icon" class="sidebar-icon" />
+    {{ item.label }}
+  </button>
           <mat-menu #menu="matMenu">
             <a href="#" class="sidebar-item" routerLinkActive="active-link" [routerLink]="[child.link]"
               #rla="routerLinkActive" *ngFor="let child of item.children">

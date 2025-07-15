@@ -34,7 +34,7 @@ export const routes: Routes = [
       //{ path: 'chat', component: ChatPageComponent },
       { path: 'setting', component: SettingPageComponent },
       //{ path: "**", redirectTo: "dashboard" },
-       { path: 'project-filed-map', component: ProjectFieldMapComponent },
+       { path: 'projfieldmap', component: ProjectFieldMapComponent },
       {path:'projconf', component: ProjectConfigurationComponent},
             {path:'BulkUpload', component: BulkUploadComponent},
             {path:'ContactConf', component: ContactConfigurationComponent},

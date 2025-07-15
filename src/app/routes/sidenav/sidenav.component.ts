@@ -134,9 +134,10 @@ export class SidenavComponent {
       label: 'Settings',
       link: 'setting',
     },
+    
     {
-      icon: './assets/img/icon_settings.svg',
-      activeIcon: './assets/img/icon_settings1.svg',
+      icon: './assets/img/icon_Chat.svg',
+      activeIcon: './assets/img/icon_Chat1.svg',
       label: 'Admin',
       link: '', 
       isOpen: true,
@@ -165,6 +166,16 @@ export class SidenavComponent {
         activeIcon: './assets/img/icon_settings1.svg',
         label: 'Map Configuration',
         link: 'admin/mapform',
+      }, {
+        icon: './assets/img/icon_settings.svg',
+        activeIcon: './assets/img/icon_settings1.svg',
+        label: 'Project Filed Map',
+        link: 'admin/projfieldmap',
+      }, {
+        icon: './assets/img/icon_settings.svg',
+        activeIcon: './assets/img/icon_settings1.svg',
+        label: 'Contact Configuration',
+        link: 'admin/ContactConf',
       }]
     }
   ];
