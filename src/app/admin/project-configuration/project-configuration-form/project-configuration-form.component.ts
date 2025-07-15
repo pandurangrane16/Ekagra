@@ -31,6 +31,7 @@ export class ProjectConfigurationFormComponent {
   router = inject(Router);
   form!: FormGroup;
   MatButtonToggleChange:any;
+  basepath:any;
   ruleEngineStatus:any;
   mapStatus :any;
  previewUrls: { [key: string]: string } = {};
@@ -201,6 +202,10 @@ onFileSelect(event: any, type: 'mapIcon' | 'projectIcon') {
 
 
   ngOnInit(): void {
+this.service.getKeysDataForConfig('basePath').subscribe(basePath => {
+  console.log('basePath:', basePath); 
+  this.basepath=basePath;
+});
 
       this.state = history.state;
          const state = this.state;
@@ -240,8 +245,15 @@ onFileSelect(event: any, type: 'mapIcon' | 'projectIcon') {
   }
 
 loadExistingIcons(): void {
-  const basePath = 'https://172.19.32.220:8002/UploadedFiles/Icons/';
 
+// this.service.getKeysDataForConfig('basePath').subscribe(data => {
+//   const basePath = data
+//   console.log(basePath);
+// });
+
+
+  //const basePath = 'https://172.19.32.220:8002/UploadedFiles/Icons/';
+const basePath=this.basepath
   if (this.state?.record?.mapIcon) {
     const mapIconUrl = basePath + this.state.record.mapIcon;
     this.selectedFilePaths['mapIcon'] =  this.state?.record?.mapIcon;

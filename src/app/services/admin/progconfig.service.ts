@@ -1,5 +1,7 @@
 import { Injectable, OnInit } from '@angular/core';
 import { HttpService } from '../common/http.service';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 
 import { Observable } from 'rxjs';
 
@@ -8,9 +10,16 @@ import { Observable } from 'rxjs';
 })
 export class projconfigservice {
   constructor(
-    private _httpService: HttpService) { }
+    private _httpService: HttpService,
+  private http: HttpClient) { }
 
  jsonurl: string = '/assets/config/config.json';
+
+getKeysDataForConfig(key: string): Observable<any> {
+  return this.http.get('/assets/config/config.json').pipe(
+    map((config: any) => config[key])
+  );
+}
 
 ProjectCreate(_data: any) {
     return this._httpService._postMethod(_data, 'api/services/app/Project/Create');

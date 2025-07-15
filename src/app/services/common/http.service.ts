@@ -17,30 +17,30 @@ export class HttpService {
     
   private authService : SessionService) {
      
-  //this.getConfigDetails();
+  this.getConfigDetails();
   }
 
  
   _configDataBS$ = new BehaviorSubject<any[]>([]);
   _configData$ = this._configDataBS$.asObservable();
-  public _api_url = "https://172.19.32.220:8002/";
+  public _api_url = '';
   public _swagger_url = "";
 
 
 
-//   getConfigDetails() {
-//     return this.http.get("../../../../assets/config/config.json")
-//       .pipe(take(1))
-//       .subscribe((_config: any) => {
-//         this._configDataBS$.next(_config);
-//         //this._sessionService._setSessionValue("config_data", this._configData$);
-//         this._api_url = _config.api_url;
-//         this._sessionService._setSessionValue("swagger_url", _config.swaggerUrl);
-//         //this._sessionService._setSessionValue("api_url", _config.api_url);
-//         //this._sessionService.setNetworkReportXlsPath(_config.networkReportPath);
-//         //this._sessionService.setPreviewPath(_config.PreviewPath);
-//       })
-//   }
+  getConfigDetails() {
+    return this.http.get("../../../../assets/config/config.json")
+      .pipe(take(1))
+      .subscribe((_config: any) => {
+        this._configDataBS$.next(_config);
+        //this._sessionService._setSessionValue("config_data", this._configData$);
+        this._api_url = _config.api_url;
+        this._sessionService._setSessionValue("swagger_url", _config.swaggerUrl);
+        this._sessionService._setSessionValue("api_url", _config.api_url);
+        //this._sessionService.setNetworkReportXlsPath(_config.networkReportPath);
+        //this._sessionService.setPreviewPath(_config.PreviewPath);
+      })
+  }
 
   _setSwaggerUrl() {
     return this.http.get("../../../../assets/config/config.json")
@@ -65,6 +65,8 @@ export class HttpService {
  _getRuleConditions() {
     return this._sessionService._getSessionValue("ruleConditions");
   }
+
+  
 
   _postMethod(_object: any, _appendUrl: string, options?: any): Observable<any> {
     return this.http.post(this._api_url + _appendUrl, _object, options);
