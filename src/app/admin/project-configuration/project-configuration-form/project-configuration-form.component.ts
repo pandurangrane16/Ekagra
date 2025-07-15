@@ -215,9 +215,8 @@ else{
 this.service.getKeysDataForConfig('basePath').subscribe(basePath => {
   console.log('basePath:', basePath); 
   this.basepath=basePath;
-});
 
-      this.state = history.state;
+        this.state = history.state;
          const state = this.state;
          if (state?.mode === 'edit' && state?.record) {
 
@@ -248,6 +247,10 @@ this.service.getKeysDataForConfig('basePath').subscribe(basePath => {
   });
  
   
+});
+
+
+  
 
 }
   getErrorMessage(_controlName: any, _controlLable: any, _isPattern: boolean = false, _msg: string) {
@@ -266,8 +269,11 @@ loadExistingIcons(): void {
 const basePath=this.basepath
   if (this.state?.record?.mapIcon) {
     const mapIconUrl = basePath + this.state.record.mapIcon;
+     console.log("map:",mapIconUrl)
+      console.log("base",basePath)
     this.selectedFilePaths['mapIcon'] =  this.state?.record?.mapIcon;
     this.previewUrls['mapIcon'] = mapIconUrl;
+    
   }
 
   if (this.state?.record?.projectIcon) {
