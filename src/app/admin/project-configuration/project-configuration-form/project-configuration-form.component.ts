@@ -156,11 +156,20 @@ onFileSelect(event: any, type: 'mapIcon' | 'projectIcon') {
   if (file) {
     // ✅ Check if the file is an image
     if (!file.type.startsWith('image/')) {
+        this.form.patchValue({
+     [type]: null
+    });
+       control?.setValue(null);
+      control?.setErrors({ invalidFile: true });
+     this.previewUrls[type] = '';
+this.selectedFilePaths[type] = '';
+  event.target.value = ''; 
       this.toast.error('Please upload a valid image file.');
       return;
     }
 
-    // ✅ Set preview image
+else{
+      // ✅ Set preview image
     const objectUrl = URL.createObjectURL(file);
     this.previewUrls[type] = objectUrl;
     console.log('Preview URL set for', type, ':', objectUrl);
@@ -196,6 +205,7 @@ onFileSelect(event: any, type: 'mapIcon' | 'projectIcon') {
         this.toast.error('Upload error:', err);
       }
     });
+}
   }
 }
 

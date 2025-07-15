@@ -110,7 +110,7 @@
   <div class="col-md-6" file-upload>
     <label class="form-label">Map Icon*</label>
     <input type="file" (change)="onFileSelect($event, 'mapIcon')" class="form-control" />
-    
+      <small class="text-muted d-block mt-1">Only JPEG or PNG images are allowed.</small>
     <img *ngIf="previewUrls['mapIcon']"
          [src]="previewUrls['mapIcon']"
          width="70" height="70"
@@ -126,6 +126,8 @@
   <div class="col-md-6" file-upload>
     <label class="form-label">Project Icon*</label>
     <input type="file" (change)="onFileSelect($event, 'projectIcon')" class="form-control" />
+
+    <small class="text-muted d-block mt-1">Only JPEG or PNG images are allowed.</small>
     
     <img *ngIf="previewUrls['projectIcon']"
          [src]="previewUrls['projectIcon']"
