@@ -293,6 +293,9 @@ debugger;
   });
 
 
+
+
+
   this.setupFormValueListeners(); 
   //this.loadPosts();               
   this.getProjList();
@@ -346,6 +349,14 @@ setupFormValueListeners() {
       this.fetchPincode(lat, lon);
     });
 
+      this.form.get('name')?.valueChanges
+  .pipe(
+    debounceTime(300), 
+    distinctUntilChanged()
+  )
+  .subscribe(() => {
+    this.form.patchValue({ siteId: null });
+  });
   this.form.get('pincode')?.valueChanges
     .pipe(
       debounceTime(300),
@@ -467,6 +478,7 @@ fetchlocationByLocationId(locationid: number) {
   
 
   this.noLocationFound = false;
+   this.updateRequiredValidators(this.noLocationFound);
   
     const locationsOptions = items.map((item: any) => ({
       road: item.road, 
@@ -533,11 +545,13 @@ updateRequiredValidators(required: boolean) {
       this.form.controls[field].updateValueAndValidity();
     });
 
-    set2.forEach(field => {
-      const validators = [this.noWhitespaceValidator()];
-      this.form.controls[field].setValidators(validators);
-      this.form.controls[field].updateValueAndValidity();
-    });
+   set2.forEach(field => {
+    const control = this.form.get(field);
+    if (control) {
+      control.clearValidators(); 
+      control.updateValueAndValidity();
+    }
+  });
   } else {
     
     set2.forEach(field => {
@@ -546,11 +560,13 @@ updateRequiredValidators(required: boolean) {
       this.form.controls[field].updateValueAndValidity();
     });
 
-    set1.forEach(field => {
-      const validators = [this.noWhitespaceValidator()];
-      this.form.controls[field].setValidators(validators);
-      this.form.controls[field].updateValueAndValidity();
-    });
+   set1.forEach(field => {
+    const control = this.form.get(field);
+    if (control) {
+      control.clearValidators(); 
+      control.updateValueAndValidity();
+    }
+  });
   }
 }
 
