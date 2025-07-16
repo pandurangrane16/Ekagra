@@ -147,12 +147,36 @@ if (selectedType === '2' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.form.control
       _Contactconfigmodel.name = this.form.controls['name'].value;
       _Contactconfigmodel.contact = this.form.controls['contact'].value;
 
-      const isActiveToggle = this.form.controls['isactivetoggle']?.value;
-      _Contactconfigmodel.isActive = isActiveToggle?.value ?? isActiveToggle ?? true;
+     const isActiveToggle = this.form.controls['isActive']?.value;
+_Contactconfigmodel.isActive = isActiveToggle?.value ?? isActiveToggle ?? true;
 
       _Contactconfigmodel.isDeleted = false;
       _Contactconfigmodel.id = 0;
 
+       const state = history.state;
+    if (state?.mode === 'edit' && state?.record){
+
+    _Contactconfigmodel.id = state.record.id;
+   
+debugger;
+      this.service.ContactUpdate(_Contactconfigmodel).subscribe({
+    next: () => {
+      console.log('Updated successfully');
+
+       this.toast.success('Updated successfully'); 
+       this.router.navigate(['/ContactConf']);
+    
+    },
+    error: (err) => {
+      console.error('Update failed:', err);
+      this.toast.error('Failed to update Site');
+    }
+  });
+
+  return;
+
+  }
+  else{
       this.service.ContactCreate(_Contactconfigmodel).subscribe({
         next: () => {
           this.toast.success('Contact saved successfully');
@@ -163,6 +187,7 @@ if (selectedType === '2' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.form.control
           this.toast.error('Failed to save project');
         }
       });
+    }
     } else {
       this.toast.error('Form is not valid');
     }

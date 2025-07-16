@@ -287,7 +287,7 @@ this.form.get('siteId')?.valueChanges
         this.form.patchValue({ siteId: null }); 
         return;
       }
-
+debugger;
       this.checkSiteIdExists(siteId, projectId);
     }
   });
@@ -304,6 +304,7 @@ this.form.get('siteId')?.valueChanges
 
   
 checkSiteIdExists(siteId: string, projectid: any): void {
+  debugger;
   this.service.CheckSiteId(siteId, projectid).subscribe({
     next: (response) => {
       if (response.result === 1) {

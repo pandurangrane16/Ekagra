@@ -54,6 +54,11 @@ export class ContactConfigurationComponent implements OnInit{
       headArr: any[] = [];
       items:any;
       _request: any = new InputRequest();
+
+  MaxResultCount=10;
+  SkipCount=0;
+  pageNo=0;
+
        totalPages: number = 1;
        pager: number = 1;
        totalRecords!: number;
@@ -125,17 +130,23 @@ ContactTypeSettings: Select2Settings = {
 
                getFilteredList() {
                debugger;
+      this.MaxResultCount=this.perPage;
+      this.SkipCount=this.MaxResultCount*this.pager;
+      this.recordPerPage=this.perPage;
+      const selectedProjectId = this.form.controls['selectedProject'].value.value;
+      const selectedStatus = this.form.controls['selectedStatus'].value.value;
+  
     const selectedType = this.form.controls['ContactType'].value.value==null?"": this.form.controls['ContactType'].value.value;
     //  const selectedStatus = this.form.controls['selectedStatus'].value.value;
      const search = this.form.controls['searchText'].value
-     this.ContactConfigService.GetAllContactMasterPage(selectedType,search).subscribe(response => {
+     this.ContactConfigService.GetAllContactMasterPage(selectedType,search,this.MaxResultCount,this.SkipCount).subscribe(response => {
     //  const items = response?.result || [];
          
     //      this.items=items;
          const items = response.result?.items;
          this.items=items;
 
-
+const totalCount=response.result?.totalCount;
         if (Array.isArray(items)) {
          
            items.forEach((element: any) => {
@@ -161,7 +172,14 @@ ContactTypeSettings: Select2Settings = {
 
          
           });
-        
+         var _length = totalCount / Number(this.recordPerPage);
+          if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+            this.totalRecords = Number(this.recordPerPage) * (_length);
+          else if (Math.floor(_length) == 0)
+            this.totalRecords = 10;
+          else
+            this.totalRecords = totalCount;
+          this.totalPages = this.totalRecords / this.pager;
         }
       })
     }    
@@ -249,6 +267,8 @@ ContactTypeSettings: Select2Settings = {
         }
 
               submit(){
+                 this.pager=0;
+         this.perPage=10;
    this.getFilteredList();
  }
 
@@ -263,9 +283,7 @@ ContactTypeSettings: Select2Settings = {
     }
   }
 }
-    onPageRecordsChange(event:{type:string,perPage: number}) {
-              console.log('Records Per Page:', event.perPage);
-        }
+  
         onRowClicked(row: any) {
                 console.log('Row clicked:', row);
                }
@@ -333,11 +351,35 @@ editRow(rowData: any) {
   });
 }
 
- onPageChange(event:{type:string,pageNo: number}) {
-          console.log('Page Changed:', event.pageNo);
-        }
-       
-    
+  onPageChange(event:any) {
+    console.log(event);
+  if (event.type === 'pageChange') {
+    this.pager = event.pageNo;
+  this.getFilteredList();
+  }
+}
+
+
+onPageRecordsChange(event:any ) {
+  console.log(event);
+  if (event.type === 'perPageChange') {
+    this.perPage = event.perPage;
+    this.pager = 0;
+    this.getFilteredList();
+  }
+}
+
+
+onPaginationChanged(event: { pageNo: number; perPage: number }) {
+  if (this.perPage !== event.perPage) {
+    this.perPage = event.perPage;
+    this.pager = 0; 
+  } else {
+    this.pager = event.pageNo;
+  }
+
+  this.getFilteredList(); 
+}
 
 // loadContactTypes(Module: string, unit: string) {
 //   debugger;

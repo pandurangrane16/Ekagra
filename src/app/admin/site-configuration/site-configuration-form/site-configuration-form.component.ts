@@ -90,7 +90,7 @@ export class SiteConfigurationFormComponent {
     private fb: FormBuilder
   ) {
     this.form = this.fb.group({
-      name: ['', Validators.required],
+      name: ['', Validators.required,],
       description: ['', Validators.required],
       selectedStatus: [''],
       
