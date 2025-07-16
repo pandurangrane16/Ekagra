@@ -292,6 +292,16 @@ this.form.get('siteId')?.valueChanges
     }
   });
 
+  this.form.get('name')?.valueChanges
+  .pipe(
+    debounceTime(300), 
+    distinctUntilChanged()
+  )
+  .subscribe(() => {
+    this.form.patchValue({ siteId: null });
+  });
+
+
 
   this.setupFormValueListeners(); 
   //this.loadPosts();               
