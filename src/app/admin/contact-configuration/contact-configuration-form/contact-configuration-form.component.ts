@@ -122,58 +122,205 @@ get f() {
     return getErrorMsg(this.form, _controlName, _controlLable, _isPattern, _msg);
   }
 
- submit() {
+//  submit() {
+//   try {
+//     debugger;
+
+//     const selectedType = this.form.controls['ContactType'].value?.value;
+
+// if (selectedType === '1' && !/^\d{10}$/.test(this.form.controls['contact'].value)) {
+//   this.toast.error('Please enter a valid 10-digit number');
+//   return;
+// }
+
+// if (selectedType === '2' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.form.controls['contact'].value)) {
+//   this.toast.error('Please enter a valid email address');
+//   return;
+// }
+
+// //check if contact is already exists
+//   const name = this.form.controls['name'].value;
+//     const contact = this.form.controls['contact'].value;
+//     let id =0;
+//      const state1 = history.state;
+//      if(state1?.mode === 'edit' && state1?.record)
+//      {id = state1?.record?.id ?? 0;}else{id = 0;}
+        
+// let ContactStatus=false;
+//  this.service.CheckContactNameExists(name, selectedType, contact, id).subscribe({
+//       next: (res: any) => {
+//         if (res?.result === 0) {
+//          ContactStatus=true;
+//           this.toast.error('Contact already exists');
+//          return;
+//         }
+//       }});
+
+// if(ContactStatus==false)
+// {
+//     this.form.markAllAsTouched();
+
+//     if (this.form.valid) {
+//       let _Contactconfigmodel = new Contactconfigmodel();
+
+//       _Contactconfigmodel.type = this.form.controls['ContactType'].value?.value ?? this.form.controls['ContactType'].value ?? '';
+//       _Contactconfigmodel.name = this.form.controls['name'].value;
+//       _Contactconfigmodel.contact = this.form.controls['contact'].value;
+
+//      const isActiveToggle = this.form.controls['isActive']?.value;
+// _Contactconfigmodel.isActive = isActiveToggle?.value ?? isActiveToggle ?? true;
+
+     
+
+//        const state = history.state;
+//         _Contactconfigmodel.id = state?.record?.id ?? 0;
+
+//     if (state?.mode === 'edit' && state?.record){
+
+   
+   
+
+//       this.service.ContactUpdate(_Contactconfigmodel).subscribe({
+//     next: () => {
+//       console.log('Updated successfully');
+
+//        this.toast.success('Updated successfully'); 
+//        this.router.navigate(['/ContactConf']);
+    
+//     },
+//     error: (err) => {
+//       console.error('Update failed:', err);
+//       this.toast.error('Failed to update Site');
+//     }
+//   });
+
+//   return;
+
+//   }
+//   else{
+//      _Contactconfigmodel.isDeleted = false;
+//       _Contactconfigmodel.id = 0;
+//       this.service.ContactCreate(_Contactconfigmodel).subscribe({
+//         next: () => {
+//           this.toast.success('Contact saved successfully');
+//           this.router.navigate(['/ContactConf']);
+//         },
+//         error: (err) => {
+//           console.error('Save failed:', err);
+//           this.toast.error('Failed to save project');
+//         }
+//       });
+//     }
+//     } else {
+//       this.toast.error('Form is not valid');
+//     }
+//     }
+
+//   } catch (ex) {
+//     console.error('Exception caught:', ex);
+//     this.toast.error('An unexpected error occurred');
+//   }
+// }
+
+
+
+submitInProgress = false;
+
+submit() {
+  if (this.submitInProgress) return;
+
   try {
     debugger;
 
     const selectedType = this.form.controls['ContactType'].value?.value;
 
-if (selectedType === '1' && !/^\d{10}$/.test(this.form.controls['contact'].value)) {
-  this.toast.error('Please enter a valid 10-digit number');
-  return;
-}
-
-if (selectedType === '2' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.form.controls['contact'].value)) {
-  this.toast.error('Please enter a valid email address');
-  return;
-}
-
-    this.form.markAllAsTouched();
-
-    if (this.form.valid) {
-      let _Contactconfigmodel = new Contactconfigmodel();
-
-      _Contactconfigmodel.type = this.form.controls['ContactType'].value?.value ?? this.form.controls['ContactType'].value ?? '';
-      _Contactconfigmodel.name = this.form.controls['name'].value;
-      _Contactconfigmodel.contact = this.form.controls['contact'].value;
-
-      const isActiveToggle = this.form.controls['isactivetoggle']?.value;
-      _Contactconfigmodel.isActive = isActiveToggle?.value ?? isActiveToggle ?? true;
-
-      _Contactconfigmodel.isDeleted = false;
-      _Contactconfigmodel.id = 0;
-
-      this.service.ContactCreate(_Contactconfigmodel).subscribe({
-        next: () => {
-          this.toast.success('Contact saved successfully');
-          this.router.navigate(['/ContactConf']);
-        },
-        error: (err) => {
-          console.error('Save failed:', err);
-          this.toast.error('Failed to save project');
-        }
-      });
-    } else {
-      this.toast.error('Form is not valid');
+    // Local validation before async check
+    if (selectedType === '1' && !/^\d{10}$/.test(this.form.controls['contact'].value)) {
+      this.toast.error('Please enter a valid 10-digit number');
+      return;
     }
 
+    if (selectedType === '2' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.form.controls['contact'].value)) {
+      this.toast.error('Please enter a valid email address');
+      return;
+    }
+
+    const name = this.form.controls['name'].value;
+    const contact = this.form.controls['contact'].value;
+    const state1 = history.state;
+    const id = (state1?.mode === 'edit' && state1?.record) ? state1?.record?.id ?? 0 : 0;
+
+    this.submitInProgress = true;
+
+    this.service.CheckContactNameExists(name, selectedType, contact, id).subscribe({
+      next: (res: any) => {
+        if (res?.result === 0) {
+          this.toast.error('Contact already exists');
+          this.submitInProgress = false;
+          return;
+        }
+
+        // If not duplicate, proceed to submit
+        this.form.markAllAsTouched();
+
+        if (!this.form.valid) {
+          this.toast.error('Form is not valid');
+          this.submitInProgress = false;
+          return;
+        }
+
+        const _Contactconfigmodel = new Contactconfigmodel();
+        _Contactconfigmodel.type = selectedType;
+        _Contactconfigmodel.name = name;
+        _Contactconfigmodel.contact = contact;
+
+        const isActiveToggle = this.form.controls['isActive']?.value;
+        _Contactconfigmodel.isActive = isActiveToggle?.value ?? isActiveToggle ?? true;
+
+        _Contactconfigmodel.id = id;
+
+        if (state1?.mode === 'edit' && state1?.record) {
+          this.service.ContactUpdate(_Contactconfigmodel).subscribe({
+            next: () => {
+              this.toast.success('Updated successfully');
+              this.router.navigate(['/ContactConf']);
+              this.submitInProgress = false;
+            },
+            error: (err) => {
+              console.error('Update failed:', err);
+              this.toast.error('Failed to update contact');
+              this.submitInProgress = false;
+            }
+          });
+        } else {
+          _Contactconfigmodel.isDeleted = false;
+          _Contactconfigmodel.id = 0;
+          this.service.ContactCreate(_Contactconfigmodel).subscribe({
+            next: () => {
+              this.toast.success('Contact saved successfully');
+              this.router.navigate(['/ContactConf']);
+              this.submitInProgress = false;
+            },
+            error: (err) => {
+              console.error('Save failed:', err);
+              this.toast.error('Failed to save contact');
+              this.submitInProgress = false;
+            }
+          });
+        }
+      },
+      error: (err) => {
+        console.error('Contact check failed:', err);
+        this.toast.error('Failed to validate contact');
+        this.submitInProgress = false;
+      }
+    });
   } catch (ex) {
     console.error('Exception caught:', ex);
     this.toast.error('An unexpected error occurred');
+    this.submitInProgress = false;
   }
 }
-
-
 
 
 

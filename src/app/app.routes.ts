@@ -20,6 +20,7 @@ import { RuleEngineComponent } from './admin/rule-engine/rule-engine.component';
 import { ContactConfigurationComponent } from './admin/contact-configuration/contact-configuration.component';
 import { ContactConfigurationFormComponent } from './admin/contact-configuration/contact-configuration-form/contact-configuration-form.component';
 import { SiteConfigurationComponent } from './admin/site-configuration/site-configuration.component';
+import { ProjectFieldConfigurationComponent } from './admin/project-field-configuration/project-field-configuration.component';
 import { Component } from '@angular/core';
 export const routes: Routes = [
       { path: "", component: LoginComponent, },
@@ -40,6 +41,7 @@ export const routes: Routes = [
             {path:'ContactConf', component: ContactConfigurationComponent},
              {path:'contactconfig', component: ContactConfigurationFormComponent},
      {path:'siteconf', component: SiteConfigurationComponent},
+    {path:'projfieldconfig',component: ProjectFieldConfigurationComponent},
       {
             path: 'admin',
             //  component: AdminDashboardComponent,

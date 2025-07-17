@@ -67,10 +67,15 @@
   [settings]="isactivetoggle">
 </app-cm-toggle> -->
  <label>Status</label>
-<app-cm-toggle
+<!-- <app-cm-toggle
   [settings]="isactivetoggle"
   [formGroup]="form"
   [controlName]="'isactivetoggle'">
+</app-cm-toggle> -->
+<app-cm-toggle
+  [settings]="isactivetoggle"
+  [formGroup]="form"
+  [controlName]="'isActive'">
 </app-cm-toggle>
               <div *ngIf="f['isActive'].touched && f['isActive'].errors" class="text-danger mt-1">
         {{ getErrorMessage('isActive', 'isActive', false, '') }}

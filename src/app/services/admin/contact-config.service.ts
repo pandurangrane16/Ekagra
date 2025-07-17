@@ -14,6 +14,9 @@ export class ContactConfigService {
 ContactCreate(_data: any) {
     return this._httpService._postMethod(_data, 'api/services/app/contact/Create');
   }
+  ContactUpdate(_data: any) {
+    return this._httpService._putMethod(_data, 'api/services/app/contact/Update');
+  }
 GetAll() {
     return this._httpService._getMethod('api/services/app/contact/GetAll');
   }  
@@ -33,7 +36,10 @@ GetAll() {
   GetDuplicateContacts(_data: any) {
     return this._httpService._putMethod(_data, 'api/services/app/contact/Update');
   }
-GetAllContactMasterPage(Type: number, Filter:string) {
+GetAllContactMasterPage(Type: number, Filter:string,  maxResultCount?: number,skipCount?: number) {
+
+  
+
    let params: string[] = [];
      if (name !== null && name !== undefined) {
     params.push(`Type=${Type}`);
@@ -41,6 +47,15 @@ GetAllContactMasterPage(Type: number, Filter:string) {
      if (Filter !== null && Filter !== undefined) {
     params.push(`Filter=${Filter}`);
   }
+
+  if (maxResultCount !== null && maxResultCount !== undefined) {
+    params.push(`MaxResultCount=${maxResultCount}`);
+  }
+
+  if (skipCount !== null && skipCount !== undefined) {
+    params.push(`SkipCount=${skipCount}`);
+  }
+
   const queryString = params.length ? '?' + params.join('&') : '';
   const url = `api/services/app/contact/GetAllContactMasterPage${queryString}`;
 
@@ -75,7 +90,7 @@ GetAllContactMasterPage(Type: number, Filter:string) {
   const queryString = params.length ? '?' + params.join('&') : '';
   const url = `api/services/app/contact/CheckContactNameExists${queryString}`;
 
-  return this._httpService._getMethod(url);
+  return this._httpService._postMethod({},url);
   }
 
     Delete(id: number) {

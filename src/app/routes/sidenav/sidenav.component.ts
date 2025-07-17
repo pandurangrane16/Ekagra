@@ -156,7 +156,13 @@ export class SidenavComponent {
         activeIcon: './assets/img/icon_settings1.svg',
         label: 'Site Configuration',
         link: 'admin/siteconfig',
-      }, {
+      }, 
+      {
+        icon: './assets/img/icon_settings.svg',
+        activeIcon: './assets/img/icon_settings1.svg',
+        label: 'Project field Configuration',
+        link: 'admin/projfieldconfig',
+      },{
         icon: './assets/img/icon_settings.svg',
         activeIcon: './assets/img/icon_settings1.svg',
         label: 'Zone Configuration',
