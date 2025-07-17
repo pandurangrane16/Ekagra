@@ -90,7 +90,7 @@ GetAllContactMasterPage(Type: number, Filter:string,  maxResultCount?: number,sk
   const queryString = params.length ? '?' + params.join('&') : '';
   const url = `api/services/app/contact/CheckContactNameExists${queryString}`;
 
-  return this._httpService._getMethod(url);
+  return this._httpService._postMethod({},url);
   }
 
     Delete(id: number) {
