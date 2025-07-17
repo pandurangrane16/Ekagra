@@ -20,7 +20,8 @@ export class FailuresComponent implements OnInit {
         { "name": "Detector", "y": 109, "color": "#66CC66"},
         { "name": "CDT", "y": 45, "color": "#53CEE7"},
         { "name": "Communication", "y": 320, "color": "#FFD200"},
-        { "name": "RTC", "y": 50, "color": "#FC4F64"}
+        { "name": "RTC", "y": 50, "color": "#FC4F64"},
+     
     ]
 };
 Highcharts: typeof Highcharts = Highcharts;
