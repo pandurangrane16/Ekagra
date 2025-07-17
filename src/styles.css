@@ -55,7 +55,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   overflow-y: hidden;
 }
 
+.text-right {
+    text-align: right;
+  }
 
+.text-left {
+    text-align: left;
+  }
 
 
 

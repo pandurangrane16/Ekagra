@@ -195,3 +195,16 @@ button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
+
+
+.grey-box {
+  background-color: grey;
+  color: white;
+  padding: 16px;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+
+.rmBtn {
+  padding: 16px;
+}
