@@ -83,6 +83,17 @@ export class RuleConfigComponent {
     ],
 
   };
+
+  expressionSettings = {
+    labelHeader: 'Expression',
+    lableClass: 'form-label',
+    formFieldClass: '',
+    appearance: 'outline',
+    options: [
+      { name: 'And', value: '0' },
+      { name: 'Or', value: '1' }
+    ]
+  }
   firstFormGroup = this._formBuilder.group({
     policyName: ['', Validators.required],
     selectedCategory: ['', Validators.required],
@@ -152,13 +163,43 @@ export class RuleConfigComponent {
   createGroup() {
     let len = this.secondFormGroup.controls['groups'].length;
     const group = this._formBuilder.group({
-      qsNo: [{ value: (len == undefined ? 1 : len + 1), disabled: true }],
-      qsKey: ['', Validators.required],
-      qsValue: ['', Validators.required]
+      seqNo: [{ value: (len == undefined ? 1 : len + 1), disabled: true }],
+      projId: [Validators.required],
+      selectedMainExpression: ['', Validators.required],
+      arrayGroup: this._formBuilder.array([]),
     });
     this.groupsFormArray.push(group);
 
     console.log(this.groupsFormArray);
+  }
+  getExpressionGroup(index: any): FormArray<FormGroup> {
+    // Index is the position in the FormArray
+    let i = index.controls.seqNo.value;
+    if (i != 1)
+      return this.groupsFormArray.at(i).get('arrayGroup') as FormArray<FormGroup>;
+    else {
+      const formArr = this.createFormArrayGroup();
+      var expressionGroup = this.getExpression(i);
+      expressionGroup.push(formArr);
+      return this.groupsFormArray.at(i).get('arrayGroup') as FormArray<FormGroup>;
+    }
+  }
+  getExprGroupCreate(userIndex: number) {
+    const expGroup = this.groupsFormArray.at(userIndex);
+    const expArrGroup = expGroup.get('arrayGroup') as FormArray;
+    var _len = expArrGroup.length;
+    return (expArrGroup.at(_len) as FormArray);
+  }
+  getExpression(idx: number): FormArray {
+    return (this.groupsFormArray.at(idx).get('arrayGroup') as FormArray);
+  }
+
+  createFormArrayGroup() {
+    return this._formBuilder.group({
+      fieldName: ['',Validators.required],
+      expression: [Validators.required],
+      fieldValue: ['', Validators.required],
+    });
   }
 
 }
