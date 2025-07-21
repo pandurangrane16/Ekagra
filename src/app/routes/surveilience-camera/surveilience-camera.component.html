@@ -8,29 +8,29 @@
                     <mat-icon matSuffix>filter_list</mat-icon>
                 </mat-form-field> 
 
-                <mat-accordion class="mt-1">
-                   
-                    <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
-                      <mat-expansion-panel-header>
-                        <mat-panel-title> Bhandup </mat-panel-title>
-                        
-                      </mat-expansion-panel-header>
-                      @for (location of locations; track location) {
-                      <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
-                        <mat-expansion-panel-header>
-                          <mat-panel-title> {{location.name}} </mat-panel-title>
-                          
-                        </mat-expansion-panel-header>
-                       
-                                      <p *ngFor="let c of location.cam" class="m-0 ms-2 mb-1">{{c}}</p> 
-                              
-  
-  
-                      </mat-expansion-panel>
-                    }
+            <mat-accordion class="mt-1">
+  <mat-expansion-panel *ngFor="let site of sites">
+    <mat-expansion-panel-header>
+      <mat-panel-title>{{ site.name }}</mat-panel-title>
+    </mat-expansion-panel-header>
 
-                    </mat-expansion-panel>
-                  </mat-accordion>
+    <mat-accordion>
+      <mat-expansion-panel *ngFor="let loc of site.locations">
+        <mat-expansion-panel-header>
+          <mat-panel-title>{{ loc.name }}</mat-panel-title>
+        </mat-expansion-panel-header>
+
+       <div 
+  *ngFor="let cam of loc.cameras"
+  class="ps-3 mb-1"
+  (click)="onCameraSelect(site.id, loc.id, cam.id)"
+  style="cursor: pointer">
+  <p class="m-0">{{ cam.name }}</p>
+</div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-expansion-panel>
+</mat-accordion>
             </div>
         </div>
     </div>
