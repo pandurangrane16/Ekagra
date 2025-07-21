@@ -39,7 +39,6 @@ import { ToastrService } from 'ngx-toastr';
     CmSelect2Component,
     CmTableComponent,
     MatCardModule,
-    CmConfirmationDialogComponent
     // AppCustomSelectComponent
   ],
   templateUrl: './contact-configuration.component.html',

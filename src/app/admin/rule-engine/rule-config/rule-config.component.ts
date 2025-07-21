@@ -1,16 +1,17 @@
 import { Component, inject } from '@angular/core';
 import { MaterialModule } from '../../../Material.module';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CmInputComponent } from '../../../common/cm-input/cm-input.component';
 import { CmSelect2Component } from '../../../common/cm-select2/cm-select2.component';
 import { CmToggleComponent } from '../../../common/cm-toggle/cm-toggle.component';
 import { RuleEngineService } from '../../../services/admin/rule-engine.service';
 import { SignalRService } from '../../../services/common/signal-r.service';
+import { CmButtonComponent } from "../../../common/cm-button/cm-button.component";
 
 @Component({
   selector: 'app-rule-config',
-  imports: [MaterialModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,CmToggleComponent],
+  imports: [MaterialModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component, CmToggleComponent, CmButtonComponent],
   templateUrl: './rule-config.component.html',
   styleUrl: './rule-config.component.css'
 })
@@ -70,18 +71,29 @@ export class RuleConfigComponent {
       { value: false, displayName: 'No' }
     ]
   };
-    categorySelectSettings = {
-    labelHeader: 'Select Category',
+  categorySelectSettings = {
+    labelHeader: 'Select Category*',
     lableClass: 'form-label',
-    formFieldClass: '', 
+    formFieldClass: '',
     appearance: 'outline',
     options: [
       { name: 'Low', value: 'L' },
       { name: 'Medium', value: 'M' },
       { name: 'High', value: 'H' }
     ],
-    
+
   };
+
+  expressionSettings = {
+    labelHeader: 'Expression',
+    lableClass: 'form-label',
+    formFieldClass: '',
+    appearance: 'outline',
+    options: [
+      { name: 'And', value: '0' },
+      { name: 'Or', value: '1' }
+    ]
+  }
   firstFormGroup = this._formBuilder.group({
     policyName: ['', Validators.required],
     selectedCategory: ['', Validators.required],
@@ -91,6 +103,7 @@ export class RuleConfigComponent {
   });
   secondFormGroup = this._formBuilder.group({
     selectedProject: ['', Validators.required],
+    groups: this._formBuilder.array([]),
   });
   thirdFormGroup = this._formBuilder.group({
     secondCtrl: ['', Validators.required],
@@ -108,7 +121,7 @@ export class RuleConfigComponent {
   ruleConditions: any;
   constructor() {
     this.ruleConditions = this.ruleService.getRuleConditions();
-    if(this.ruleConditions == null) {
+    if (this.ruleConditions == null) {
       this.ruleService.setRulesStorage();
       this.ruleConditions = this.ruleService.getRuleConditions();
     }
@@ -141,8 +154,52 @@ export class RuleConfigComponent {
     }
   }
 
-  CheckConnection(){
-    this.signalRService.initializeSignalRConnection();
+  CheckConnection() {
+    //this.signalRService.initializeSignalRConnection();
+  }
+  get groupsFormArray(): FormArray<FormGroup> {
+    return this.secondFormGroup.get('groups') as FormArray<FormGroup>;
+  }
+  createGroup() {
+    let len = this.secondFormGroup.controls['groups'].length;
+    const group = this._formBuilder.group({
+      seqNo: [{ value: (len == undefined ? 1 : len + 1), disabled: true }],
+      projId: [Validators.required],
+      selectedMainExpression: ['', Validators.required],
+      arrayGroup: this._formBuilder.array([]),
+    });
+    this.groupsFormArray.push(group);
+
+    console.log(this.groupsFormArray);
+  }
+  getExpressionGroup(index: any): FormArray<FormGroup> {
+    // Index is the position in the FormArray
+    let i = index.controls.seqNo.value;
+    if (i != 1)
+      return this.groupsFormArray.at(i).get('arrayGroup') as FormArray<FormGroup>;
+    else {
+      const formArr = this.createFormArrayGroup();
+      var expressionGroup = this.getExpression(i);
+      expressionGroup.push(formArr);
+      return this.groupsFormArray.at(i).get('arrayGroup') as FormArray<FormGroup>;
+    }
+  }
+  getExprGroupCreate(userIndex: number) {
+    const expGroup = this.groupsFormArray.at(userIndex);
+    const expArrGroup = expGroup.get('arrayGroup') as FormArray;
+    var _len = expArrGroup.length;
+    return (expArrGroup.at(_len) as FormArray);
+  }
+  getExpression(idx: number): FormArray {
+    return (this.groupsFormArray.at(idx).get('arrayGroup') as FormArray);
+  }
+
+  createFormArrayGroup() {
+    return this._formBuilder.group({
+      fieldName: ['',Validators.required],
+      expression: [Validators.required],
+      fieldValue: ['', Validators.required],
+    });
   }
 
 }

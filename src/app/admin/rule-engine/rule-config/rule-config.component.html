@@ -135,7 +135,8 @@
                     <div class="content">
                         <div *ngIf="currentStep === 0">
                             <h3>Rule Information</h3>
-                            <p class="info-text">Enter rule details.</p>
+
+                            <hr>
                             <div [formGroup]="firstFormGroup">
                                 <form>
                                     <div class="row">
@@ -185,21 +186,68 @@
                         </div>
 
                         <div *ngIf="currentStep === 1">
-                            <h3>Education</h3>
-                            <p class="info-text">Add your education details here...</p>
+                            <h3>Rule Design</h3>
+                            <hr>
+                            <div [formGroup]="secondFormGroup">
+                                <form>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <app-cm-select2 [formGroup]="secondFormGroup"
+                                                [controlName]="'selectedProject'" [settings]="projectSettings">
+                                            </app-cm-select2>
+                                        </div>
+                                        <div class="col-md-1 text-left" style="padding-top : 30px">
+                                            <app-cm-button color="primary" type="stroked" class="m-r-8" return="submit"
+                                                (click)="createGroup()">Add</app-cm-button>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div *ngIf="groupsFormArray.value.length > 0" class="grey-box">
+                                        <div class="row" *ngFor="let arr of groupsFormArray.controls; let i as index"
+                                            [formGroup]="arr">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <h4>VMS</h4>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <app-cm-select2 [formGroup]="arr"
+                                                        [controlName]="'selectedMainExpression'"
+                                                        [settings]="expressionSettings">
+                                                    </app-cm-select2>
+                                                </div>
+                                            </div>
+                                            @if(getExpressionGroup.length > 0){
+                                            <div class="row"
+                                                *ngFor="let group of getExpressionGroup(i).controls; let j as index"
+                                                [formGroup]="group">
+                                                <div class="col-md-10">
+                                                    {{group | json}}
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <app-cm-button color="primary" type="stroked" class="m-r-8 rmBtn"
+                                                        return="remove">Remove</app-cm-button>
+                                                </div>
+                                            </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
 
                         <div *ngIf="currentStep === 2">
                             <h3>Work Experience</h3>
                             <p class="info-text">Add your work experience here...</p>
                         </div>
+                        <div class="row">
+                            <div class="col-md-12 text-right">
+                                <button (click)="goNext()">Next</button>
+                            </div>
+                        </div>
 
 
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <button (click)="CheckConnection()">CLick</button>
                     </div>
                 </div>
             </mat-card-content>
