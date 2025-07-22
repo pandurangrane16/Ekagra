@@ -1,0 +1,17 @@
+<div [formGroup]="formGroup" *ngIf="formGroup">
+    <!-- Optional label -->
+    <ng-container *ngIf="_inputData.labelHeader && _inputData.labelHeader !== 'Search'">
+        <label class="label">{{ _inputData.labelHeader }}</label>
+        <hr />
+    </ng-container>
+
+    <ng-container formArrayName="{{ controlName }}">
+        <div class="row">
+            <div class="col" *ngFor="let opt of _inputData.options; let i = index">
+                <mat-checkbox [formControlName]="i" (change)="onCheckboxChange(i)">
+                    {{ opt.label }}
+                </mat-checkbox>
+            </div>
+        </div>
+    </ng-container>
+</div>
