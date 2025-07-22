@@ -22,7 +22,7 @@ interface Junction{
 }
 @Component({
     selector: 'app-atcs',
-    imports: [MapviewComponent,CmLeafletComponent, NotificationComponent, ZonalComponent, CorridorComponent, FailuresComponent, CycleComponent, MatFormFieldModule, MatSelectModule, MatInputModule, FormsModule, MatButtonModule, MatIconModule, CommonModule],
+    imports: [CmLeafletComponent, NotificationComponent, ZonalComponent, CorridorComponent, FailuresComponent, CycleComponent, MatFormFieldModule, MatSelectModule, MatInputModule, FormsModule, MatButtonModule, MatIconModule, CommonModule],
     templateUrl: './atcs.component.html',
     styleUrl: './atcs.component.css'
 })

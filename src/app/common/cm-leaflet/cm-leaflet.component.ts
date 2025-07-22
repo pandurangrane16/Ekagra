@@ -47,7 +47,7 @@ export class CmLeafletComponent implements OnInit {
       this.L = leaflet.default ?? leaflet;
 
       await import('leaflet-draw');
-      await import('leaflet.markercluster');
+      //await import('leaflet.markercluster');
 
       const map = this.L.map('map').setView([51.505, -0.09], 13);
       this.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
