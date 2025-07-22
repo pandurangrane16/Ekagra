@@ -1,0 +1,22 @@
+<div [formGroup]="formGroup">
+    <br>
+    <mat-form-field [appearance]="settings.appearance || 'fill'" class="full-width">
+        <mat-label>{{settings.labelHeader}}</mat-label>
+        <input type="text" placeholder="Search and select..." matInput [formControl]="searchCtrl"
+            [matAutocomplete]="auto" [value]="selectedValues.join(', ')" (click)="openAutocomplete = true">
+
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>
+            <mat-checkbox [checked]="isAllSelected()" [indeterminate]="isIndeterminate()"
+                    (change)="toggleSelectAll($event.checked)">
+                    Select All
+                </mat-checkbox>
+            <mat-option *ngFor="let option of settings.options" [value]="option"
+                (onSelectionChange)="toggleSelection(option.value)">
+                <mat-checkbox [checked]="selectedValues.includes(option.value)" (click)="$event.stopPropagation()"
+                    (change)="toggleSelection(option.value)">
+                    {{ option.name }}
+                </mat-checkbox>
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+</div>
