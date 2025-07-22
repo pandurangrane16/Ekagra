@@ -273,6 +273,7 @@ const basePath=this.basepath
       console.log("base",basePath)
     this.selectedFilePaths['mapIcon'] =  this.state?.record?.mapIcon;
     this.previewUrls['mapIcon'] = mapIconUrl;
+    console.log("hi",mapIconUrl)
     
   }
 
@@ -288,6 +289,8 @@ const basePath=this.basepath
   });
 
   console.log('Edit Preview URLs:', this.previewUrls);
+    console.log('Edit Preview URLs:2', this.form.controls['mapIcon'].value);
+
 }
 
 
