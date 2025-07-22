@@ -4,7 +4,7 @@ export class projfieldconfigmodel {
   description!: any;
   dataType!: any;
   isActive!: any;
-  isMap!: any;
+  isMapLabel!: any;
   mapLabel!: any;
   isDeleted!: any;
   deleterUserId!: any;

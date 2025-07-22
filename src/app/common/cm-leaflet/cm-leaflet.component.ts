@@ -17,18 +17,22 @@ export class CmLeafletComponent implements OnInit {
 
   @Input() showMap: any;
   @Input() existingPolygon: string | null = null;
+  @Input() labelList: any[] = [];
+  @Input() siteData: any[] = [];
   @Output() polygonDrawn = new EventEmitter<any>();
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
 
   async ngOnInit() {
 
-
+ console.log("received data2",this.siteData)
+  console.log("received data3",this.labelList)
 
     this.isBrowser = isPlatformBrowser(this.platformId);
 
     if (this.isBrowser) {
       // this.L = await import('leaflet');
+
       // await import('leaflet-draw');
 
       // const map = this.L.map('map').setView([51.505, -0.09], 13);
@@ -43,6 +47,7 @@ export class CmLeafletComponent implements OnInit {
       this.L = leaflet.default ?? leaflet;
 
       await import('leaflet-draw');
+      await import('leaflet.markercluster');
 
       const map = this.L.map('map').setView([51.505, -0.09], 13);
       this.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -66,6 +71,10 @@ export class CmLeafletComponent implements OnInit {
         console.error('Invalid polygon format:', e);
       }
     }
+    if (this.siteData?.length > 0) {
+      console.log("received data",this.siteData)
+  this.plotSitesOnMap(this.siteData);
+}
 
   }
 
@@ -146,6 +155,80 @@ export class CmLeafletComponent implements OnInit {
       });
     });
   }
+private plotSitesOnMap(sites: any[]): void {
+  if (!this.map || !this.L) return;
+
+  const bounds = this.L.latLngBounds([]);
+
+  let plottedCount = 0;
+
+  for (const site of sites) {
+    const lat = parseFloat(site.lat);
+    const lng = parseFloat(site.long);
+
+    if (isNaN(lat) || isNaN(lng)) continue;
+
+    const latlng = this.L.latLng(lat, lng);
+    bounds.extend(latlng);
+
+    const icon = this.L.icon({
+      iconUrl: site.mapIconUrl,
+      iconSize: [30, 30],
+      iconAnchor: [15, 30],
+      popupAnchor: [0, -30],
+      className: 'custom-map-icon'
+    });
+
+    const marker = this.L.marker(latlng, { icon });
+
+// const mapLabelsHtml = this.labelList
+//   .filter(label => label.mapLabel) 
+//   .map(label => `<div>${label.mapLabel}</div>`)
+//   .join('');
+
+// marker.bindPopup(`
+//   <strong>${site.siteName}</strong><br>
+ 
+//   Lat: ${lat}<br>Lng: ${lng}<br>
+//   ${mapLabelsHtml}
+// `);
+const mapLabelsHtml = this.labelList
+  .filter(label => label.mapLabel)
+  .map(label => `<li>${label.mapLabel}</li>`)
+  .join('');
+
+const popupHtml = `
+  <div style="font-family: Arial, sans-serif; font-size: 11px; line-height: 1.2; max-width: 180px;">
+    <strong style="font-size: 12px;">${site.siteName}</strong>
+    <p style="margin: 2px 0;"><strong>Coords:</strong> ${lat}, ${lng}</p>
+    <div style="margin-top: 2px;">
+      <strong>Labels:</strong>
+      <ul style="padding-left: 14px; margin: 2px 0;">
+        ${mapLabelsHtml}
+      </ul>
+    </div>
+  </div>
+`;
+
+marker.bindPopup(popupHtml);
+
+
+    marker.addTo(this.map); 
+    plottedCount++;
+  }
+
+  console.log(`✅ Total sites plotted on map: ${plottedCount}`);
+
+  if (bounds.isValid()) {
+    this.map.fitBounds(bounds, { padding: [30, 30] });
+  }
+}
+
+
+
+
+
+
 
 
 }
