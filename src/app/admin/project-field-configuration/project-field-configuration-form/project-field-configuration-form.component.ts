@@ -78,7 +78,7 @@ export class ProjectFieldConfigurationFormComponent  implements OnInit{
   projectEnabled = {
    
     name: 'isActive',
-    defaultValue: true,
+   
      formControlName: 'isActive',
     data: [
       { value: true, displayName: 'Yes' },
@@ -291,7 +291,7 @@ _projfieldconfigmodel.deletionTime="2025-06-20T05:32:25.067Z"
 _projfieldconfigmodel.lastModificationTime="2025-06-20T05:32:25.067Z"
 _projfieldconfigmodel.lastModifierUserId="2"
 _projfieldconfigmodel.isDeleted=false
-_projfieldconfigmodel.isMap=this.form.controls['isSameas'].value;
+_projfieldconfigmodel.isMapLabel=this.form.controls['isSameas'].value;
 _projfieldconfigmodel.label=this.form.controls['apilabel'].value;
 _projfieldconfigmodel.dataType="string"
 _projfieldconfigmodel.mapLabel=this.form.controls['maplabel'].value;
@@ -322,7 +322,7 @@ _projfieldconfigmodel.projectId = this.form.controls['selectedProject'].value?.v
   if (this.state?.mode === 'edit' && this.state?.record?.id){
 
     _projfieldconfigmodel.id = this.state.record.id;
-
+      
       this.service.ProjectfieldEdit(_projfieldconfigmodel).subscribe({
     next: () => {
       console.log('Updated successfully');
@@ -342,7 +342,9 @@ _projfieldconfigmodel.projectId = this.form.controls['selectedProject'].value?.v
 
   }
 
-  else{  this.service.ProjectfieldCreate(_projfieldconfigmodel).subscribe({
+  else{  
+    console.log("hi",_projfieldconfigmodel)
+    this.service.ProjectfieldCreate(_projfieldconfigmodel).subscribe({
     next: () => {
       console.log('Saved successfully');
 

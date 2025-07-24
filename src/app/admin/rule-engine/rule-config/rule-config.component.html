@@ -193,8 +193,8 @@
                                     <div class="row">
                                         <div class="col-md-4">
                                             <app-cm-select2 [formGroup]="secondFormGroup"
-                                                [controlName]="'selectedProject'" [settings]="projectSettings">
-                                            </app-cm-select2>
+                                                [controlName]="'selectedProject'"
+                                                [settings]="projectSettings"></app-cm-select2>
                                         </div>
                                         <div class="col-md-1 text-left" style="padding-top : 30px">
                                             <app-cm-button color="primary" type="stroked" class="m-r-8" return="submit"
@@ -202,49 +202,121 @@
                                         </div>
                                     </div>
                                     <hr>
-                                    <div *ngIf="groupsFormArray.value.length > 0" class="grey-box">
-                                        <div class="row" *ngFor="let arr of groupsFormArray.controls; let i as index"
+                                    <div *ngIf="groupsFormArray.length > 0">
+                                        <div class="row" *ngFor="let arr of groupsFormArray.controls; let i = index"
                                             [formGroup]="arr">
                                             <div class="row">
-                                                <div class="col-md-12">
+                                                <div class="col">
                                                     <h4>VMS</h4>
                                                 </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <app-cm-select2 [formGroup]="arr"
-                                                        [controlName]="'selectedMainExpression'"
-                                                        [settings]="expressionSettings">
-                                                    </app-cm-select2>
+                                                <div class="col text-right">
+
+                                                    <span class="material-icons" (click)="removeGroup(i)">
+                                                        close
+                                                    </span>
                                                 </div>
                                             </div>
-                                            @if(getExpressionGroup.length > 0){
-                                            <div class="row"
-                                                *ngFor="let group of getExpressionGroup(i).controls; let j as index"
-                                                [formGroup]="group">
-                                                <div class="col-md-10">
-                                                    {{group | json}}
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <app-cm-button color="primary" type="stroked" class="m-r-8 rmBtn"
-                                                        return="remove">Remove</app-cm-button>
+                                            <div *ngIf="getExpressionGroup(i).value.length > 0">
+                                                <div class="grey-box">
+                                                    <div class="row">
+                                                        <div class="col text-right">
+                                                            <app-cm-button color="primary" type="stroked" class="rmBtn"
+                                                                return="remove"
+                                                                (click)="addFormArrayGroup(i)">Add</app-cm-button>
+                                                            <app-cm-button color="primary" type="stroked" class="rmBtn"
+                                                                return="remove">Remove</app-cm-button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row rmBtn">
+                                                        <div class="col">
+                                                            <app-cm-select2 [formGroup]="arr"
+                                                                [controlName]="'condition'"
+                                                                [settings]="conditionSelectSettings">
+                                                            </app-cm-select2>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row"
+                                                        *ngFor="let group of getExpressionGroup(i).controls; let j = index"
+                                                        [formGroup]="group">
+                                                        <div class="col">
+                                                            <app-cm-select2 [formGroup]="group"
+                                                                [controlName]="'fieldName'"
+                                                                [settings]="fieldSettings"></app-cm-select2>
+                                                        </div>
+                                                        <div class="col">
+                                                            <app-cm-select2 [formGroup]="group"
+                                                                [controlName]="'expression'"
+                                                                [settings]="expressionSettings"></app-cm-select2>
+                                                        </div>
+                                                        <div class="col">
+                                                            <label
+                                                                style="position: relative; top: 6px; display: block;">Field
+                                                                Value*</label>
+                                                            <div>
+                                                                <app-cm-input [formGroup]="group"
+                                                                    [controlName]="'fieldValue'"
+                                                                    [_inputData]="inputFields.fieldValue">
+                                                                </app-cm-input>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            }
+
                                         </div>
                                     </div>
                                 </form>
                             </div>
+
                         </div>
 
                         <div *ngIf="currentStep === 2">
-                            <h3>Work Experience</h3>
+                            <h3>Rule Schedule</h3>
                             <p class="info-text">Add your work experience here...</p>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12 text-right">
-                                <button (click)="goNext()">Next</button>
+                            <hr>
+                            <div [formGroup]="thirdFormGroup">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <app-cm-select-check [formGroup]="thirdFormGroup" [controlName]="'minute'"
+                                            [settings]="minuteSettings"></app-cm-select-check>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <app-cm-select-check [formGroup]="thirdFormGroup" [controlName]="'hour'"
+                                            [settings]="hourSettings"></app-cm-select-check>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <app-cm-select-check [formGroup]="thirdFormGroup" [controlName]="'dayOfMonth'"
+                                            [settings]="dayMonthSettings"></app-cm-select-check>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <app-cm-select-check [formGroup]="thirdFormGroup" [controlName]="'month'"
+                                            [settings]="monthSettings"></app-cm-select-check>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <app-cm-select-check [formGroup]="thirdFormGroup" [controlName]="'dayOfWeek'"
+                                            [settings]="dayWeekSettings"></app-cm-select-check>
+                                    </div>
+                                </div>
                             </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6 text-left" *ngIf="currentStep != 0 ">
+                                <button (click)="goBack()">Previous</button>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                @if(currentStep == 2){
+                                <button (click)="goNext()">Submit</button>
+                                }
+                                @else {
+                                <button (click)="goNext()">Next</button>
+                                }
+                            </div>
+
                         </div>
 
 
@@ -253,4 +325,4 @@
             </mat-card-content>
         </div>
     </mat-card>
-</div>>
+</div>

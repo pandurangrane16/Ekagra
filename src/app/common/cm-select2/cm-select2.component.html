@@ -25,31 +25,25 @@
 
 <div [formGroup]="formGroup">
   <mat-label>{{settings.labelHeader}}</mat-label>
-<br>
+  <br>
 
- <mat-form-field [appearance]="settings.appearance || 'fill'" [class]="settings.formFieldClass">
-  <input matInput
-         aria-label="State"
-         [matAutocomplete]="auto"
-         [formControlName]="controlName"
-         (click)="onInputClick()"
-         [attr.disabled]="settings?.isDisabled ? true : null" />
+  <mat-form-field [appearance]="settings.appearance || 'fill'" [class]="settings.formFieldClass">
+    <input matInput aria-label="State" [matAutocomplete]="auto" [formControlName]="controlName" (click)="onInputClick()"
+      [attr.disabled]="settings?.isDisabled ? true : null" />
 
-  <!-- Arrow icon -->
-  <button mat-icon-button matSuffix disableRipple tabIndex="-1" style="margin-left: -8px;">
-    <mat-icon>{{ isPanelOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
-  </button>
+    <!-- Arrow icon -->
+    <button mat-icon-button matSuffix disableRipple tabIndex="-1" style="margin-left: -8px;">
+      <mat-icon>{{ isPanelOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
+    </button>
 
-  <mat-autocomplete #auto="matAutocomplete"
-                    [displayWith]="displayWith"
-                    (optionSelected)="ChangeSelection($event)">
-    @if(settings.options != undefined){
-    @for (state of filteredOptions | async; track state) {
-    <mat-option [value]="state">
-      <span>{{ state.name }}</span>
-    </mat-option>
-    }
-    }
-  </mat-autocomplete>
-</mat-form-field>
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith" (optionSelected)="ChangeSelection($event)">
+      @if(settings.options != undefined){
+      @for (state of filteredOptions | async; track state) {
+      <mat-option [value]="state">
+        <span>{{ state.name }}</span>
+      </mat-option>
+      }
+      }
+    </mat-autocomplete>
+  </mat-form-field>
 </div>

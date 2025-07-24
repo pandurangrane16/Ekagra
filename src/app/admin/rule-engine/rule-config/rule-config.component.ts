@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MaterialModule } from '../../../Material.module';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -8,14 +8,17 @@ import { CmToggleComponent } from '../../../common/cm-toggle/cm-toggle.component
 import { RuleEngineService } from '../../../services/admin/rule-engine.service';
 import { SignalRService } from '../../../services/common/signal-r.service';
 import { CmButtonComponent } from "../../../common/cm-button/cm-button.component";
+import { CmCheckboxGroupComponent } from '../../../common/cm-checkbox-group/cm-checkbox-group.component';
+import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-select-check.component";
 
 @Component({
   selector: 'app-rule-config',
-  imports: [MaterialModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component, CmToggleComponent, CmButtonComponent],
+  imports: [MaterialModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,
+    CmToggleComponent, CmButtonComponent, CmSelectCheckComponent],
   templateUrl: './rule-config.component.html',
   styleUrl: './rule-config.component.css'
 })
-export class RuleConfigComponent {
+export class RuleConfigComponent implements OnInit {
   private _formBuilder = inject(FormBuilder);
   signalRService = inject(SignalRService);
   ruleService = inject(RuleEngineService);
@@ -60,6 +63,13 @@ export class RuleConfigComponent {
       color: 'primary',
       formFieldClass: "w-100"
     },
+    fieldValue: {
+      placeholder: 'Value',
+      appearance: 'outline',
+      isDisabled: false,
+      color: 'primary',
+      formFieldClass: "w-100"
+    },
   }
   isActiveToggle = {
 
@@ -84,16 +94,138 @@ export class RuleConfigComponent {
 
   };
 
+  conditionSelectSettings = {
+    labelHeader: 'Condition',
+    lableClass: 'form-label',
+    formFieldClass: '',
+    appearance: 'outline',
+    options: [
+      { name: 'AND', value: 'and' },
+      { name: 'OR', value: 'or' },
+    ],
+
+  };
+
+  fieldSettings = {
+    labelHeader: 'Field Name',
+    lableClass: 'form-label',
+    formFieldClass: '',
+    appearance: 'outline',
+    options: [
+      { name: 'PT', value: 'pt' },
+      { name: 'Network Status', value: 'networkstatus' },
+      { name: 'Power Status', value: 'powerstatus' },
+      { name: 'Snapshot', value: 'snapshot' },
+    ],
+  };
+
   expressionSettings = {
     labelHeader: 'Expression',
     lableClass: 'form-label',
     formFieldClass: '',
     appearance: 'outline',
     options: [
-      { name: 'And', value: '0' },
-      { name: 'Or', value: '1' }
+      { name: 'Equal', value: '==' },
+      { name: 'Not Equal', value: '!=' },
+      { name: 'Greater Than', value: '>' },
+      { name: 'Greater Than Equal To', value: '>=' },
+      { name: 'Less Than', value: '<' },
+      { name: 'Less Than Equal To', value: '<=' },
+      { name: 'Is Null', value: 'isnull' },
+      { name: 'Is Not Null', value: 'notnull' },
+      { name: 'Begins With', value: 'beginwith' },
+      { name: 'Doesn\'t Begins With', value: 'dbegin' },
+      { name: 'Contains', value: 'contain' },
+      { name: 'Doesn\'t Contains', value: 'dcontain' },
     ]
   }
+
+  minuteSettings = {
+    labelHeader: 'Minute',
+    lableClass: 'form-label',
+    formFieldClass: '',
+    appearance: 'outline',
+    options: [
+      { name: 'Every Minute', value: '-' },
+      ...Array.from({ length: 60 }, (_, i) => ({
+        name: i.toString().padStart(2, '0'),
+        value: i.toString()
+      }))
+    ]
+  }
+
+  hourSettings = {
+    labelHeader: 'Hour',
+    lableClass: 'form-label',
+    formFieldClass: '',
+    appearance: 'outline',
+    options: [
+      { name: 'Every Hour', value: '-' },
+      ...Array.from({ length: 24 }, (_, i) => ({
+        name: i.toString().padStart(2, '0'),
+        value: i.toString()
+      }))
+    ]
+  }
+
+
+  dayMonthSettings = {
+    labelHeader: 'Day Of Month',
+    lableClass: 'form-label',
+    formFieldClass: '',
+    appearance: 'outline',
+    options: [
+      { name: 'Every Day', value: '-' },
+      ...Array.from({ length: 31 }, (_, i) => ({
+        name: Number(i + 1).toString().padStart(2, '0'),
+        value: Number(i + 1).toString()
+      }))
+    ]
+  }
+
+
+  monthSettings = {
+    labelHeader: 'Month',
+    lableClass: 'form-label',
+    formFieldClass: '',
+    appearance: 'outline',
+    options: [
+      { name: 'Every Month', value: '00' },
+      { name: 'January', value: '01' },
+      { name: 'February', value: '02' },
+      { name: 'March', value: '03' },
+      { name: 'April', value: '04' },
+      { name: 'May', value: '05' },
+      { name: 'June', value: '06' },
+      { name: 'July', value: '07' },
+      { name: 'August', value: '08' },
+      { name: 'September', value: '09' },
+      { name: 'October', value: '10' },
+      { name: 'November', value: '11' },
+      { name: 'December', value: '12' },
+    ]
+  }
+
+
+  dayWeekSettings = {
+    labelHeader: 'Day Of Week',
+    lableClass: 'form-label',
+    formFieldClass: '',
+    appearance: 'outline',
+    options: [
+      { name: 'Every Day Of Week', value: '00' },
+      { name: 'Monday', value: '01' },
+      { name: 'Tuesdat', value: '02' },
+      { name: 'Wednesday', value: '03' },
+      { name: 'Thursday', value: '04' },
+      { name: 'Friday', value: '05' },
+      { name: 'Saturday', value: '06' },
+      { name: 'Sunday', value: '07' },
+    ]
+  }
+
+  checkBoxSettings: any;
+
   firstFormGroup = this._formBuilder.group({
     policyName: ['', Validators.required],
     selectedCategory: ['', Validators.required],
@@ -106,7 +238,11 @@ export class RuleConfigComponent {
     groups: this._formBuilder.array([]),
   });
   thirdFormGroup = this._formBuilder.group({
-    secondCtrl: ['', Validators.required],
+    minute: ['', Validators.required],
+    hour: ['', Validators.required],
+    dayOfMonth: ['', Validators.required],
+    month: ['', Validators.required],
+    dayOfWeek: ['', Validators.required],
   });
   isLinear = false;
 
@@ -126,10 +262,29 @@ export class RuleConfigComponent {
       this.ruleConditions = this.ruleService.getRuleConditions();
     }
   }
+  ngOnInit(): void {
+    this.checkBoxSettings = {
+      labelHeader: '',
+      placeholder: 'Choose',
+      isDisabled: true,
+      isRequired: false,
+      mode: 'single',
+      options: [
+        { label: 'AND', value: 'and' },
+        { label: 'OR', value: 'or' }
+      ]
+    }
+  }
 
   goNext() {
     if (this.currentStep < this.steps.length - 1) {
       this.currentStep++;
+    }
+  }
+
+  goBack() {
+    if (this.currentStep > 0) {
+      this.currentStep--;
     }
   }
 
@@ -166,21 +321,25 @@ export class RuleConfigComponent {
       seqNo: [{ value: (len == undefined ? 1 : len + 1), disabled: true }],
       projId: [Validators.required],
       selectedMainExpression: ['', Validators.required],
+      condition: [{ value: '', disabled: true }],
       arrayGroup: this._formBuilder.array([]),
     });
     this.groupsFormArray.push(group);
-
+    const formArr = this.createFormArrayGroup();
+    console.log(formArr);
+    var expressionGroup = this.getExpression(len);
+    expressionGroup.push(formArr);
     console.log(this.groupsFormArray);
   }
   getExpressionGroup(index: any): FormArray<FormGroup> {
     // Index is the position in the FormArray
-    let i = index.controls.seqNo.value;
+    let i = index;
     if (i != 1)
       return this.groupsFormArray.at(i).get('arrayGroup') as FormArray<FormGroup>;
     else {
-      const formArr = this.createFormArrayGroup();
-      var expressionGroup = this.getExpression(i);
-      expressionGroup.push(formArr);
+      //const formArr = this.createFormArrayGroup();
+      //var expressionGroup = this.getExpression(i);
+      //expressionGroup.push(formArr);
       return this.groupsFormArray.at(i).get('arrayGroup') as FormArray<FormGroup>;
     }
   }
@@ -193,13 +352,31 @@ export class RuleConfigComponent {
   getExpression(idx: number): FormArray {
     return (this.groupsFormArray.at(idx).get('arrayGroup') as FormArray);
   }
-
+  removeGroup(i: number) {
+    this.groupsFormArray.removeAt(i);
+  }
   createFormArrayGroup() {
     return this._formBuilder.group({
-      fieldName: ['',Validators.required],
-      expression: [Validators.required],
+      fieldName: ['', Validators.required],
+      expression: [{ value: '' }, Validators.required],
       fieldValue: ['', Validators.required],
     });
+  }
+
+  addFormArrayGroup(len: number) {
+    console.log(len);
+    const formArr = this.createFormArrayGroup();
+    var expressionGroup = this.getExpression(len);
+    expressionGroup.push(formArr);
+  }
+
+  checkboxOptions = [
+    { label: 'AND', value: 'and' },
+    { label: 'OR', value: 'or' }
+  ];
+
+  onCheckboxChange(selected: any) {
+    console.log('Selected:', selected);
   }
 
 }

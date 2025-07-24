@@ -7,7 +7,14 @@
             <h6 class="mb-0">Zonal Overview</h6>
 <app-zonal></app-zonal>
         </div>
-        <div class="col-md-9"><app-mapview></app-mapview></div>
+        <div class="col-md-9"> 
+             <app-cm-leaflet
+              *ngIf="isMap && labelList && labelList.length > 0"
+               [showMap]="isMap" 
+               [siteData]="siteList"
+               [labelList]="labelList"
+              >
+             </app-cm-leaflet></div>
     </div>
    
 
@@ -48,15 +55,17 @@
             <div class="card-body">
                 <mat-form-field class="w-100">
                  
-                    <mat-select placeholder="Select Junction">
+                    <mat-select placeholder="Select Junction"  [(value)]="selectedJunction" (selectionChange)="onJunctionChange($event)">
                       @for (junction of junctions; track junction) {
                         <mat-option [value]="junction.value">{{junction.viewValue}}</mat-option>
                       }
                     </mat-select>
+
+
                   </mat-form-field>
-                  <div class="d-flex align-items-center justify-content-between" style="font-size: 13px;">  <mat-icon>arrow_back_ios</mat-icon>  S Bridge Jn (1161) - Cycle Time  <mat-icon>arrow_forward_ios</mat-icon>
+                  <div class="d-flex align-items-center justify-content-between" style="font-size: 13px;">  <mat-icon>arrow_back_ios</mat-icon>  {{ getSelectedJunctionName() }} <mat-icon>arrow_forward_ios</mat-icon>
        </div>
-                    <app-cycle></app-cycle>
+                   <app-cycle [junctionName]="selectedJunction"></app-cycle>
         </div>
         </div>
     </div>

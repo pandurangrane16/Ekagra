@@ -199,7 +199,7 @@ button:disabled {
 
 .grey-box {
   background-color: grey;
-  color: white;
+  /* color: white; */
   padding: 16px;
   margin-top: 10px;
   border-radius: 8px;
