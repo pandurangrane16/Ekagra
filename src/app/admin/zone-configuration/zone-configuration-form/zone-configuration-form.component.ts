@@ -223,6 +223,8 @@ submit() {
   _zoneconfigmodel.isDeleted = false;
   _zoneconfigmodel.zoneCategory = "string";
 
+ 
+
   //  Handle zone coordinates logic
  
   if (state?.mode === 'edit' && state?.record) {
@@ -232,6 +234,28 @@ submit() {
 
     _zoneconfigmodel.id = state.record.id;
 
+  }
+  else{
+ _zoneconfigmodel.zoneCordinate = this.polygonCoordinates;
+  }
+
+
+
+    this.service.CheckZoneExists( this.form.controls['zonename'].value,
+          0,
+          _zoneconfigmodel.zoneCordinate,
+          this.state?.record?.id).subscribe(response => {
+            debugger;
+        if (response.result === 1) {
+          this.toast.error("Zone Name already exists in the System.");
+          this.form.setErrors({ duplicateName: true });
+          return;
+        }
+else
+    {
+   
+
+ if (state?.mode === 'edit' && state?.record) {
     //  Update Zone
     this.service.ZoneEdit(_zoneconfigmodel).subscribe({
       next: () => {
@@ -252,7 +276,7 @@ submit() {
 
   else{
       //  Create Zone
-  _zoneconfigmodel.zoneCordinate = this.polygonCoordinates;
+ 
 
   this.service.ZoneCreate(_zoneconfigmodel).subscribe({
     next: () => {
@@ -268,7 +292,12 @@ submit() {
   }
 
 
+    }});
+
+
+
 }
+
 getZoneConfigList() {
       this._request.currentPage = this.pager;
       this._request.pageSize = Number(this.recordPerPage);

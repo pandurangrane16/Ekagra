@@ -17,7 +17,12 @@
     width: 250px;
   }
  
-
+::ng-deep .wrap-text {
+  white-space: normal !important;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 300px; /* Optional, limits how wide the cell can go */
+}
 
   
   .form-label {

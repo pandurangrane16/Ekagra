@@ -335,11 +335,11 @@ buildHeader() {
           this.headArr = [
             { header: 'Name', fieldValue: 'name', position: 1 },
             { header: 'Display Name', fieldValue: 'displayName', position: 2 },
-            { header: 'SourceUrl', fieldValue: 'sourceURL', position: 3 },
+            { header: 'SourceUrl', fieldValue: 'sourceURL', position: 3 , cellClass: 'wrap-text' },
             { header: 'Description', fieldValue: 'description', position: 4 },
             { header: 'MinZoom', fieldValue: 'minZoom', position: 5 },
             { header: 'MaxZoom', fieldValue: 'maxZoom', position: 6 },
-            { header: 'WmsLayer', fieldValue: 'wmsLayer', position: 7 },
+            { header: 'WmsLayer', fieldValue: 'wmsLayer', position: 7 , cellClass: 'wrap-text' },
             { header: 'Lat', fieldValue: 'lat', position: 8 },
             { header: 'Long', fieldValue: 'long', position: 9 },
             { header: 'Status', fieldValue: 'isActive', type:'boolean',position: 10 },

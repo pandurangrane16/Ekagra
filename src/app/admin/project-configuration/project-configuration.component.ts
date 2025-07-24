@@ -189,9 +189,9 @@ router = inject(Router);
             { header: 'Description', fieldValue: 'description', position: 2 },
             { header: 'Status', fieldValue: 'isActive',"type": "boolean", position: 3 },
            
-            { header: 'Rule Engine', fieldValue: 'ruleEngine',"type": "boolean", position: 4 },
-            { header: 'Map', fieldValue: 'map',"type": "boolean", position: 5 },
-            { header: 'Action', fieldValue: 'button', position: 6 }
+            // { header: 'Rule Engine', fieldValue: 'ruleEngine',"type": "boolean", position: 4 },
+            // { header: 'Map', fieldValue: 'map',"type": "boolean", position: 5 },
+            { header: 'Action', fieldValue: 'button', position: 4 }
           ];
           ;}
       

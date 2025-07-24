@@ -254,6 +254,7 @@ deleteRow(rowData: any): void {
   });
 
   dialogRef.afterClosed().subscribe(result => {
+    debugger;
     if (result) {
      
       this.service.Delete(rowData.id).subscribe({
@@ -261,7 +262,7 @@ deleteRow(rowData: any): void {
           if (res.success) {
             this.getProjfieldConfigList();
             console.log('Deleted successfully');
-           
+           console.error('Deleted successfully',Response);
           } else {
             console.error('Delete failed:', res.error);
           }

@@ -14,7 +14,9 @@
           <tr *ngFor="let item of gridArr; let sr = index" (click)="ShowForm(item)" class="text-center">
             <td class="td-css">{{ sr + 1 }}</td>
 
-            <td *ngFor="let head of headArr" class="td-css">
+            <td *ngFor="let head of headArr" [ngClass]="{
+  'wrap-text': head.fieldValue === 'sourceURL' || head.fieldValue === 'wmsLayer'
+}" class="td-css">
 
               @if (head.fieldValue === 'check')
               {
