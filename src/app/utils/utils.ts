@@ -20,13 +20,16 @@ export function getErrorMsg(
     if (control.hasError('email')) {
         return `Not a valid ${controlLabel}`;
     }
-
+debugger;
     if (control.hasError('whitespace')) {
         return `${controlLabel} is required`;
     }
 
     if (isPattern && control.hasError('pattern')) {
         return patternMsg;
+    }
+    if (control.hasError('specialChars')) {
+        return `${controlLabel} should not contain special characters.`;
     }
 
     return patternMsg;

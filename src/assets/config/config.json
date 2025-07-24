@@ -1,6 +1,6 @@
     {
-        "version" : "2.0.0.0",
-        "api_url": "https://172.19.32.220:8002/",
+        "version" : "2.0.2",
+        "api_url": "https://172.19.32.51:8089/",
         "ruleConditions" : [
             {"key" : "Equal","value" : "equal"},
             {"key" : "Not Equal","value" : "not_equal"},
@@ -14,7 +14,7 @@
             {"key" : "Is Null","value" : "is_null"},
             {"key" : "Is Not Null","value" : "is_not_null"}
         ],
-       "basePath" : "https://172.19.32.220:8002/UploadedFiles/Icons/"
+       "basePath" : "https://172.19.32.51:8089/UploadedFiles/Icons/"
         
 
       

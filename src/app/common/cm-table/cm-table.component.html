@@ -14,7 +14,9 @@
           <tr *ngFor="let item of gridArr; let sr = index" (click)="ShowForm(item)" class="text-center">
             <td>{{ sr + 1 }}</td>
 
-            <td *ngFor="let head of headArr">
+            <td *ngFor="let head of headArr" [ngClass]="{
+  'wrap-text': head.fieldValue === 'sourceURL' || head.fieldValue === 'wmsLayer'
+}">
 
 
               

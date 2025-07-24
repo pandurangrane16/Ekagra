@@ -217,7 +217,7 @@ this.editid=this.state.record.id;
   }
 
   submit() {
-     
+     try {
       if (!this.form.invalid) {
         this.form.markAllAsTouched(); 
          
@@ -242,6 +242,18 @@ this.editid=this.state.record.id;
     _mapconfigmodel.sourceURL=this.form.controls['sourceurl'].value;
     _mapconfigmodel.wmsLayer=this.form.controls['wmslayer'].value;
 
+         this.service.CheckMapExists(this.form.controls['sourceurl'].value,
+          this.form.controls['lat'].value,
+          this.form.controls['long'].value,
+          this.state?.record?.id).subscribe(response => {
+            debugger;
+        if (response.result === 1) {
+          this.toast.error("Source URL, Lat, Long already exists in the System.");
+          this.form.setErrors({ duplicateName: true });
+          return;
+        }
+else
+    {
     
       if (this.state?.mode === 'edit' && this.state?.record?.id){
 
@@ -287,7 +299,7 @@ this.editid=this.state.record.id;
         }
       });
     
-    
+    }});
     
       }
       else {
@@ -296,7 +308,10 @@ this.editid=this.state.record.id;
       return;
         
       }
-    
+    } catch (error) {
+    console.error('Unexpected error in submit:', error);
+    this.toast.error('An unexpected error occurred');
+  }
     
       }
 

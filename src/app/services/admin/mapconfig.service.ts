@@ -72,4 +72,41 @@ GetAll() {
 
   return this._httpService._getMethod(url);
 }
+
+
+
+CheckMapExists(
+  SourceURL?: string,
+  Lat?: string,
+  Long?: string,
+  Id?: number
+) {
+  let params: string[] = [];
+
+  if (SourceURL !== null && SourceURL !== undefined) {
+    params.push(`SourceURL=${SourceURL}`);
+  }
+
+  if (Lat !== null && Lat !== undefined && Lat.trim() !== '') {
+    params.push(`Lat=${encodeURIComponent(Lat)}`);
+  }
+
+  if (Long !== null && Long !== undefined) {
+    params.push(`Long=${Long}`);
+  }
+
+  if (Id !== null && Id !== undefined) {
+    params.push(`Id=${Id}`);
+  }
+
+ 
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/Map/CheckMapExists${queryString}`;
+
+  // return this._httpService._getMethod(url);
+  return this._httpService._postMethod({}, url);
+}
+
+
+
 }

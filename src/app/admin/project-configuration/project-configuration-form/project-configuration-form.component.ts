@@ -292,7 +292,7 @@ const basePath=this.basepath
 
 
   submit() {
- 
+  try {
   if (!this.form.invalid) {
     this.form.markAllAsTouched(); 
      
@@ -396,7 +396,10 @@ _projconfigmodel.isDeleted=false;
     
   }
 
-
+} catch (error) {
+    console.error('Unexpected error in submit:', error);
+    this.toast.error('An unexpected error occurred');
+  }
   }
 
 
