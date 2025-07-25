@@ -2,6 +2,7 @@ import { OnInit, Component, ElementRef, Renderer2, ViewChild } from '@angular/co
 import { HighchartsChartModule } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
 import { CommonModule } from '@angular/common';
+import { atcsDashboardservice } from '../../../../services/atcs/atcsdashboard.service';
 
 @Component({
     selector: 'app-zonal',
@@ -12,17 +13,14 @@ import { CommonModule } from '@angular/common';
 export class ZonalComponent implements OnInit {
   @ViewChild('customLegend')
   customLegend!: ElementRef;
-  constructor(private renderer: Renderer2, private el: ElementRef) {}
+  constructor(private renderer: Renderer2, private el: ElementRef,private service:atcsDashboardservice) {}
   public element: any;
-  jsonData = {
-    "data": [
-        { "name": "Faulty Junction", "y": 0.8, "color": "#FF5757"},
-        { "name": "Faulty Detector", "y": 31, "color": "#F19238"},
-        { "name": "Functional Junction", "y": 50, "color": "#61C267"},
-        { "name": "Delayed Junction", "y": 0, "color": "#FFD200"},
-        { "name": "Disconnected Junction", "y": 50, "color": "#344BFD"}
-    ]
+public jsonData: { data: { name: string; y: number; color: string }[] } = {
+  data: [
+  
+  ]
 };
+updateFlag = false; 
 Highcharts: typeof Highcharts = Highcharts;
   chartOptions: Highcharts.Options = {
     chart: {
@@ -118,8 +116,54 @@ Highcharts: typeof Highcharts = Highcharts;
   }
   };
 
-  ngOnInit(): void {
+  getUnprocessedConnectedCtrlData(): void {
+    const zoneNames = ['T1', 'T2', 'T3'];
+  const from = '2025-07-01 04:28:01.785';
+  const to = '2025-07-23 04:28:01.786';
+
+    this.service.getUnprocessedConnectedCtrlData(zoneNames,from, to).subscribe(response => {
+   const rawData = Object.values(response.result || {});
+
+    // Step 1: Count occurrences of each Status
+    const statusCountMap: { [key: string]: number } = {};
+    rawData.forEach((item: any) => {
+      const status = item.Status || 'Unknown';
+      statusCountMap[status] = (statusCountMap[status] || 0) + 1;
+    });
+
+    const total = rawData.length;
+
+    const colors = ['#344BFD', '#66CC66', '#53CEE7', '#FFD200', '#FC4F64', '#FF5733', '#C70039', '#900C3F', '#581845', '#1ABC9C', '#2ECC71'];
+
+    // Step 2: Format data for chart
+    const formattedData = Object.entries(statusCountMap).map(([status, count], index) => ({
+      name: status,
+      y: +(count / total * 100).toFixed(2), // percentage with 2 decimal places
+      color: colors[index % colors.length]
+    }));
+  this.jsonData = {
+    data: formattedData  
+   };
+
+     this.chartOptions.series = [{
+       type: 'pie',
+    innerSize: '50%',
+    borderRadius: 0,
+    data:this.jsonData.data,
+}];
+
+
+
+  this.updateFlag = true; 
+
+ 
    
+     
+    });
+  }
+
+  ngOnInit(): void {
+   this.getUnprocessedConnectedCtrlData();
   } 
 
 }

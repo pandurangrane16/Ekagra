@@ -340,11 +340,19 @@ editRow(rowData: any) {
 
             console.log(element.type)
          
-             element.name = element.projectName;
+             //element.name = element.projectName;
             element.apiname = element.apiName;
             element.isActive = !!element.isActive; 
               element.method = element.httpMethod;
              element.baseurl = element.baseURL;
+
+
+const matched2 = (this.projectSelectSettings.options as { name: string; value: any }[])
+  .find(opt => String(opt.value) === String(element.projectId));
+
+element.name = matched2 ? matched2.name : element.projectId;
+
+
 
 const matched = (this.projectTypeSettings.options as { name: string; value: any }[])
   .find(opt => String(opt.value) === String(element.type));

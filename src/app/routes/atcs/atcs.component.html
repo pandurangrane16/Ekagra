@@ -13,6 +13,9 @@
                [showMap]="isMap" 
                [siteData]="siteList"
                [labelList]="labelList"
+               [popupData]="popupData"
+               (markerClicked)="onMarkerClicked($event)"
+               
               >
              </app-cm-leaflet></div>
     </div>
@@ -63,8 +66,8 @@
 
 
                   </mat-form-field>
-                  <div class="d-flex align-items-center justify-content-between" style="font-size: 13px;">  <mat-icon>arrow_back_ios</mat-icon>  {{ getSelectedJunctionName() }} <mat-icon>arrow_forward_ios</mat-icon>
-       </div>
+                  <!-- <div class="d-flex align-items-center justify-content-between" style="font-size: 13px;">  <mat-icon>arrow_back_ios</mat-icon>  {{ getSelectedJunctionName() }} <mat-icon>arrow_forward_ios</mat-icon>
+       </div> -->
                    <app-cycle [junctionName]="selectedJunction"></app-cycle>
         </div>
         </div>

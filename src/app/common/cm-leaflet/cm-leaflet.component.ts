@@ -20,6 +20,10 @@ export class CmLeafletComponent implements OnInit {
   @Input() labelList: any[] = [];
   @Input() siteData: any[] = [];
   @Output() polygonDrawn = new EventEmitter<any>();
+ @Output() markerClicked = new EventEmitter<string>();
+ @Input() popupData: { [siteId: string]: any } = {};
+ sites: any[] = []; 
+markerMap: Map<string, any> = new Map(); 
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
 
@@ -155,12 +159,15 @@ export class CmLeafletComponent implements OnInit {
       });
     });
   }
+
+
 private plotSitesOnMap(sites: any[]): void {
   if (!this.map || !this.L) return;
 
   const bounds = this.L.latLngBounds([]);
-
   let plottedCount = 0;
+
+  this.sites = sites; 
 
   for (const site of sites) {
     const lat = parseFloat(site.lat);
@@ -181,39 +188,16 @@ private plotSitesOnMap(sites: any[]): void {
 
     const marker = this.L.marker(latlng, { icon });
 
-// const mapLabelsHtml = this.labelList
-//   .filter(label => label.mapLabel) 
-//   .map(label => `<div>${label.mapLabel}</div>`)
-//   .join('');
+    // Store marker reference by siteId so we can bind popup later
+    if (!this.markerMap) this.markerMap = new Map<string, any>();
+    this.markerMap.set(site.siteId, marker);
 
-// marker.bindPopup(`
-//   <strong>${site.siteName}</strong><br>
- 
-//   Lat: ${lat}<br>Lng: ${lng}<br>
-//   ${mapLabelsHtml}
-// `);
-const mapLabelsHtml = this.labelList
-  .filter(label => label.mapLabel)
-  .map(label => `<li>${label.mapLabel}</li>`)
-  .join('');
+    marker.on('click', () => {
+      this.markerClicked.emit(site.siteId); 
+      this.waitAndBindPopup(site.siteId, marker);
+    });
 
-const popupHtml = `
-  <div style="font-family: Arial, sans-serif; font-size: 11px; line-height: 1.2; max-width: 180px;">
-    <strong style="font-size: 12px;">${site.siteName}</strong>
-    <p style="margin: 2px 0;"><strong>Coords:</strong> ${lat}, ${lng}</p>
-    <div style="margin-top: 2px;">
-      <strong>Labels:</strong>
-      <ul style="padding-left: 14px; margin: 2px 0;">
-        ${mapLabelsHtml}
-      </ul>
-    </div>
-  </div>
-`;
-
-marker.bindPopup(popupHtml);
-
-
-    marker.addTo(this.map); 
+    marker.addTo(this.map);
     plottedCount++;
   }
 
@@ -223,6 +207,77 @@ marker.bindPopup(popupHtml);
     this.map.fitBounds(bounds, { padding: [30, 30] });
   }
 }
+private waitAndBindPopup(siteId: string, marker: any): void {
+  const maxAttempts = 10;
+  let attempts = 0;
+
+  const checkAndBind = () => {
+    const siteData = this.popupData?.[siteId];
+
+    if (siteData) {
+      const popupHtml = this.generatePopupHtml(siteId, this.popupData);
+      marker.bindPopup(popupHtml).openPopup();
+           marker.on('popupclose', () => {
+        delete this.popupData[siteId];
+      });
+    } else if (attempts < maxAttempts) {
+      attempts++;
+      setTimeout(checkAndBind, 200); 
+    } else {
+      console.warn(`Popup data not available after waiting for siteId: ${siteId}`);
+    }
+  };
+
+  checkAndBind();
+}
+
+private generatePopupHtml(siteId: string, statusData: any): string {
+  const site = this.sites.find(s => s.siteId === siteId);
+  const lat = site?.lat ?? '';
+  const lng = site?.long ?? '';
+
+  const controllerData =statusData?.[siteId]?.controller ?? {};
+  const controllerKeys = Object.keys(controllerData);
+
+  const mapLabelsHtml = this.labelList
+    .filter(label => label.mapLabel)
+    .map(label => {
+      const labelKey = label.mapLabel;
+      let value;
+
+      if (controllerData.hasOwnProperty(labelKey)) {
+        value = controllerData[labelKey];
+      } else {
+        const randomKey = controllerKeys[Math.floor(Math.random() * controllerKeys.length)];
+        value = controllerData[randomKey];
+      }
+
+      // Format value for display
+      if (Array.isArray(value)) {
+        value = value.join(', ');
+      } else if (value === null || value === undefined) {
+        value = '—';
+      }
+
+      return `<li><strong>${labelKey}:</strong> ${value}</li>`;
+    })
+    .join('');
+
+  return `
+    <div style="font-family: Arial, sans-serif; font-size: 11px; line-height: 1.2; max-width: 200px;">
+      <strong style="font-size: 12px;">${site?.siteName ?? 'Unknown Site'}</strong>
+      <p style="margin: 2px 0;"><strong>Coords:</strong> ${lat}, ${lng}</p>
+      <div style="margin-top: 4px;">
+        <strong>Status Info:</strong>
+        <ul style="padding-left: 14px; margin: 2px 0;">
+          ${mapLabelsHtml}
+        </ul>
+      </div>
+    </div>
+  `;
+}
+
+
 
 
 
