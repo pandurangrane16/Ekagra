@@ -46,3 +46,7 @@ background-color:#EDF2F6;
   padding: 4px 8px;
   background-color: transparent !important;
 }
+
+.td-css{
+  border-spacing: 0cap;
+}

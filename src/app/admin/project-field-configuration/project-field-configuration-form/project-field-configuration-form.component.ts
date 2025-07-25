@@ -130,8 +130,8 @@ export class ProjectFieldConfigurationFormComponent  implements OnInit{
 this.form = this.fb.group({
   description: ['',[ Validators.required, this.noWhitespaceValidator()]  ],
   isActive: [ Validators.required],
-  maplabel: [{ value: '', disabled: true }, [Validators.required, this.noWhitespaceValidator()]  ],
-  apilabel: [{ value: '', disabled: true }, [Validators.required, this.noWhitespaceValidator() ] ],
+  maplabel: [{ value: '', disabled: true }, [Validators.required, this.noWhitespaceValidator(), this.noSpecialCharValidator()]  ],
+  apilabel: [{ value: '', disabled: true }, [Validators.required, this.noWhitespaceValidator(), this.noSpecialCharValidator() ] ],
   isSameas: [ Validators.required],
   selectedProject: ['',[ Validators.required, this.noWhitespaceValidator()]  ],
 });
@@ -149,10 +149,28 @@ noWhitespaceValidator(): ValidatorFn {
   };
 }
 
+
+noSpecialCharValidator(): ValidatorFn {
+  debugger;
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const value = control.value;
+    if (typeof value !== 'string') return null;
+
+    // Allow only alphanumeric, underscores, hyphens and spaces (customize as needed)
+    const valid = /^[a-zA-Z0-9_\- ]*$/.test(value);
+    return !valid ? { specialChars: true } : null;
+  };
+}
+
   ngOnInit(): void {
     
     this.state = history.state;
          const state = this.state;
+
+              if (state?.mode === 'edit') {
+    this.form.get('selectedProject')?.disable();   // Disables the project name dropdown
+  }
+
    this.getProjList();
   this.form.get('selectedProject')?.valueChanges.subscribe(selected => {
     const selectedProject = selected?.value;
@@ -388,5 +406,13 @@ _projfieldconfigmodel.projectId = this.form.controls['selectedProject'].value?.v
   getErrorMessage(_controlName: any, _controlLable: any, _isPattern: boolean = false, _msg: string) {
     return getErrorMsg(this.form, _controlName, _controlLable, _isPattern, _msg);
   }
+
+//   getErrorMessage(controlName: string, label: string): string {
+//   const control = this.form.get(controlName);
+//   if (control?.hasError('required')) return `${label} is required.`;
+//   if (control?.hasError('whitespace')) return `${label} cannot be empty or whitespace.`;
+//   if (control?.hasError('specialChars')) return `${label} should not contain special characters.`;
+//   return '';
+// }
 
 }

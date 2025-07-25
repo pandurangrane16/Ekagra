@@ -1,5 +1,5 @@
     {
-        "version" : "2.0.0.0",
+        "version" : "2.0.2",
         "api_url": "https://172.19.32.51:8089/",
         "ruleConditions" : [
             {"key" : "Equal","value" : "equal"},

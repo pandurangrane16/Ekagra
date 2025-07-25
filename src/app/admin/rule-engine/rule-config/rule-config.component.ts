@@ -9,11 +9,12 @@ import { RuleEngineService } from '../../../services/admin/rule-engine.service';
 import { SignalRService } from '../../../services/common/signal-r.service';
 import { CmButtonComponent } from "../../../common/cm-button/cm-button.component";
 import { CmCheckboxGroupComponent } from '../../../common/cm-checkbox-group/cm-checkbox-group.component';
+import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-select-check.component";
 
 @Component({
   selector: 'app-rule-config',
   imports: [MaterialModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,
-    CmToggleComponent, CmButtonComponent],
+    CmToggleComponent, CmButtonComponent, CmSelectCheckComponent],
   templateUrl: './rule-config.component.html',
   styleUrl: './rule-config.component.css'
 })
@@ -93,7 +94,7 @@ export class RuleConfigComponent implements OnInit {
 
   };
 
-   conditionSelectSettings = {
+  conditionSelectSettings = {
     labelHeader: 'Condition',
     lableClass: 'form-label',
     formFieldClass: '',
@@ -106,7 +107,7 @@ export class RuleConfigComponent implements OnInit {
   };
 
   fieldSettings = {
-   labelHeader: 'Field Name',
+    labelHeader: 'Field Name',
     lableClass: 'form-label',
     formFieldClass: '',
     appearance: 'outline',
@@ -139,6 +140,90 @@ export class RuleConfigComponent implements OnInit {
     ]
   }
 
+  minuteSettings = {
+    labelHeader: 'Minute',
+    lableClass: 'form-label',
+    formFieldClass: '',
+    appearance: 'outline',
+    options: [
+      { name: 'Every Minute', value: '-' },
+      ...Array.from({ length: 60 }, (_, i) => ({
+        name: i.toString().padStart(2, '0'),
+        value: i.toString()
+      }))
+    ]
+  }
+
+  hourSettings = {
+    labelHeader: 'Hour',
+    lableClass: 'form-label',
+    formFieldClass: '',
+    appearance: 'outline',
+    options: [
+      { name: 'Every Hour', value: '-' },
+      ...Array.from({ length: 24 }, (_, i) => ({
+        name: i.toString().padStart(2, '0'),
+        value: i.toString()
+      }))
+    ]
+  }
+
+
+  dayMonthSettings = {
+    labelHeader: 'Day Of Month',
+    lableClass: 'form-label',
+    formFieldClass: '',
+    appearance: 'outline',
+    options: [
+      { name: 'Every Day', value: '-' },
+      ...Array.from({ length: 31 }, (_, i) => ({
+        name: Number(i + 1).toString().padStart(2, '0'),
+        value: Number(i + 1).toString()
+      }))
+    ]
+  }
+
+
+  monthSettings = {
+    labelHeader: 'Month',
+    lableClass: 'form-label',
+    formFieldClass: '',
+    appearance: 'outline',
+    options: [
+      { name: 'Every Month', value: '00' },
+      { name: 'January', value: '01' },
+      { name: 'February', value: '02' },
+      { name: 'March', value: '03' },
+      { name: 'April', value: '04' },
+      { name: 'May', value: '05' },
+      { name: 'June', value: '06' },
+      { name: 'July', value: '07' },
+      { name: 'August', value: '08' },
+      { name: 'September', value: '09' },
+      { name: 'October', value: '10' },
+      { name: 'November', value: '11' },
+      { name: 'December', value: '12' },
+    ]
+  }
+
+
+  dayWeekSettings = {
+    labelHeader: 'Day Of Week',
+    lableClass: 'form-label',
+    formFieldClass: '',
+    appearance: 'outline',
+    options: [
+      { name: 'Every Day Of Week', value: '00' },
+      { name: 'Monday', value: '01' },
+      { name: 'Tuesdat', value: '02' },
+      { name: 'Wednesday', value: '03' },
+      { name: 'Thursday', value: '04' },
+      { name: 'Friday', value: '05' },
+      { name: 'Saturday', value: '06' },
+      { name: 'Sunday', value: '07' },
+    ]
+  }
+
   checkBoxSettings: any;
 
   firstFormGroup = this._formBuilder.group({
@@ -153,7 +238,11 @@ export class RuleConfigComponent implements OnInit {
     groups: this._formBuilder.array([]),
   });
   thirdFormGroup = this._formBuilder.group({
-    secondCtrl: ['', Validators.required],
+    minute: ['', Validators.required],
+    hour: ['', Validators.required],
+    dayOfMonth: ['', Validators.required],
+    month: ['', Validators.required],
+    dayOfWeek: ['', Validators.required],
   });
   isLinear = false;
 
@@ -193,6 +282,12 @@ export class RuleConfigComponent implements OnInit {
     }
   }
 
+  goBack() {
+    if (this.currentStep > 0) {
+      this.currentStep--;
+    }
+  }
+
   goPrevious() {
     if (this.currentStep > 0) {
       this.currentStep--;
@@ -226,6 +321,7 @@ export class RuleConfigComponent implements OnInit {
       seqNo: [{ value: (len == undefined ? 1 : len + 1), disabled: true }],
       projId: [Validators.required],
       selectedMainExpression: ['', Validators.required],
+      condition: [{ value: '', disabled: true }],
       arrayGroup: this._formBuilder.array([]),
     });
     this.groupsFormArray.push(group);
@@ -256,18 +352,27 @@ export class RuleConfigComponent implements OnInit {
   getExpression(idx: number): FormArray {
     return (this.groupsFormArray.at(idx).get('arrayGroup') as FormArray);
   }
+  removeGroup(i: number) {
+    this.groupsFormArray.removeAt(i);
+  }
 
+removeArray(i: number, j: number) {
+  const arrayGroup = this.groupsFormArray.at(i).get('arrayGroup') as FormArray;
+  arrayGroup.removeAt(j);
+}
   createFormArrayGroup() {
     return this._formBuilder.group({
       fieldName: ['', Validators.required],
-      condition: [{ value: '', disabled: true }],
       expression: [{ value: '' }, Validators.required],
       fieldValue: ['', Validators.required],
     });
   }
 
-  addFormArrayGroup(){
-    
+  addFormArrayGroup(len: number) {
+    console.log(len);
+    const formArr = this.createFormArrayGroup();
+    var expressionGroup = this.getExpression(len);
+    expressionGroup.push(formArr);
   }
 
   checkboxOptions = [

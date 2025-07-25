@@ -12,65 +12,37 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of gridArr; let sr = index" (click)="ShowForm(item)" class="text-center">
-            <td>{{ sr + 1 }}</td>
+            <td class="td-css">{{ sr + 1 }}</td>
 
-            <td *ngFor="let head of headArr">
+            <td *ngFor="let head of headArr" [ngClass]="{
+  'wrap-text': head.fieldValue === 'sourceURL' || head.fieldValue === 'wmsLayer'
+}" class="td-css">
 
-
-              
-
-
-
-              <!-- Case: Checkboxes -->
-              <ng-container *ngIf="head.fieldValue === 'check'; else notCheck">
-                <div *ngFor="let chk of item.check" class="d-inline-block me-2">
-                  <mat-checkbox color="primary">{{ chk.label }}</mat-checkbox>
-                </div>
-              </ng-container>
-
-              <!-- Case: Buttons -->
-              <ng-template #notCheck>
-                <ng-container *ngIf="head.fieldValue === 'button'; else defaultText">
-                  <div *ngFor="let btn of item.button" class="d-inline-block me-2">
-                    <!-- <button mat-flat-button color="primary" (click)="GoToBtnAction(btn, item)">
-
-                       <mat-icon>{{ btn.icon || 'add' }}</mat-icon> -->
-
-
-<button mat-icon-button color="primary" (click)="GoToBtnAction(btn, item)" [matTooltip]="btn.label">
-  <mat-icon>{{ btn.icon || 'add' }}</mat-icon>
-</button>
-
-
-
-
-<!-- 
-                      <mat-icon>add</mat-icon>
-                      {{ btn.label }} -->
-                    <!-- </button> -->
-                  </div>
-                </ng-container>
-              </ng-template>
-
-              <!-- Case: Plain text -->
-              <ng-template #defaultText>
-      <ng-container *ngIf="head.type === 'boolean'; else normalText">
-    <button
-      mat-flat-button
-      [ngClass]="item[head.fieldValue] ? 'bg-success text-white' : 'bg-secondary text-white'"
-      disabled>
-      {{ item[head.fieldValue] ? 'Enable' : 'Disable' }}
-    </button>
-  </ng-container>
-
-  <ng-template #normalText>
-    {{ item[head.fieldValue] }}
-  </ng-template>
-              </ng-template>
+              @if (head.fieldValue === 'check')
+              {
+              <div *ngFor="let chk of item.check" class="d-inline-block me-2">
+                <mat-checkbox color="primary">{{ chk.label }}</mat-checkbox>
+              </div>
+              }
+              @else if(head.fieldValue === 'button') {
+              <div *ngFor="let btn of item.button" class="d-inline-block me-2">
+                <button mat-icon-button color="primary" (click)="GoToBtnAction(btn, item)" [matTooltip]="btn.label">
+                  <mat-icon>{{ btn.icon || 'add' }}</mat-icon>
+                </button>
+              </div>
+              }
+              @else if(head.type === 'boolean') {
+              <button mat-flat-button
+                [ngClass]="item[head.fieldValue] ? 'bg-success text-white' : 'bg-secondary text-white'" disabled>
+                {{ item[head.fieldValue] ? 'Enable' : 'Disable' }}
+              </button>
+              }
+              @else {
+              {{ item[head.fieldValue] }}
+              }
             </td>
 
-            <!-- Extra Cell if type == 'control' -->
-            <td *ngIf="item.type === 'control'">
+            <!-- <td *ngIf="item.type === 'control'">
               <div *ngFor="let cntr of item.control" class="d-inline-block me-2">
                 <mat-checkbox *ngIf="cntr.type === 'check'" class="example-margin">
                   {{ cntr.header }}
@@ -78,10 +50,9 @@
               </div>
             </td>
 
-            <!-- Fallback Cell if type != control -->
             <td *ngIf="item.type !== 'control'">
               {{ item.FieldName }}
-            </td>
+            </td> -->
           </tr>
         </tbody>
       </table>
@@ -91,13 +62,8 @@
     <div class="container mt-3">
       <div class="row">
         <div class="col-md-12" *ngIf="pagination || pagination == undefined">
-          <app-cm-pagination
-            [totalRecords]="totalRecords"
-            [recordsPerPage]="perPage"
-            [collectionSize]="collectionSize"
-            [totalPages]="totalPages"
-            (pageno)="onPageChange($event)"
-            (perPage)="onPageRecordsChange($event)">
+          <app-cm-pagination [totalRecords]="totalRecords" [recordsPerPage]="perPage" [collectionSize]="collectionSize"
+            [totalPages]="totalPages" (pageno)="onPageChange($event)" (perPage)="onPageRecordsChange($event)">
           </app-cm-pagination>
         </div>
       </div>

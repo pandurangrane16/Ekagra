@@ -74,5 +74,41 @@ GetAll() {
 }
 
 
+
+
+
+CheckZoneExists(
+  ZoneName?: string,
+  ProjectId?: number,
+  ZoneCordinate?: string,
+  Id?: number
+) {
+  let params: string[] = [];
+
+  if (ZoneName !== null && ZoneName !== undefined) {
+    params.push(`ZoneName=${ZoneName}`);
+  }
+
+  if (ProjectId !== null && ProjectId !== undefined) {
+    params.push(`ProjectId=${encodeURIComponent(ProjectId)}`);
+  }
+
+  if (ZoneCordinate !== null && ZoneCordinate !== undefined) {
+    params.push(`ZoneCordinate=${ZoneCordinate}`);
+  }
+
+  if (Id !== null && Id !== undefined) {
+    params.push(`Id=${Id}`);
+  }
+
+ 
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/Zone/CheckZoneExists${queryString}`;
+
+  // return this._httpService._getMethod(url);
+  return this._httpService._postMethod({}, url);
+}
+
+
   
 }
