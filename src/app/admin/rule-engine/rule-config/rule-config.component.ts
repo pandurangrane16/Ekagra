@@ -355,6 +355,11 @@ export class RuleConfigComponent implements OnInit {
   removeGroup(i: number) {
     this.groupsFormArray.removeAt(i);
   }
+
+removeArray(i: number, j: number) {
+  const arrayGroup = this.groupsFormArray.at(i).get('arrayGroup') as FormArray;
+  arrayGroup.removeAt(j);
+}
   createFormArrayGroup() {
     return this._formBuilder.group({
       fieldName: ['', Validators.required],
