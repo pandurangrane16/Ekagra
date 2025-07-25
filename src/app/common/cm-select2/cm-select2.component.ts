@@ -58,14 +58,14 @@ this.filteredOptions = this.stateCtrl.valueChanges.pipe(
   map(state => (typeof state === 'string' ? this._filterStates(state) : this.settings.options.slice()))
 );
 
- const control = this.formGroup.get(this.controlName);
-  if (control) {
-    if (this.settings?.isDisabled) {
-      control.disable();
-    } else {
-      control.enable();
-    }
-  }
+//  const control = this.formGroup.get(this.controlName);
+//   if (control) {
+//     if (this.settings?.isDisabled) {
+//       control.disable();
+//     } else {
+//       control.enable();
+//     }
+//   }
   }
   displayFn(option: any): string {
     return option && option.name ? option.name : '';

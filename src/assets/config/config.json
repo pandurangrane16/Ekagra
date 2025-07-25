@@ -14,7 +14,7 @@
             {"key" : "Is Null","value" : "is_null"},
             {"key" : "Is Not Null","value" : "is_not_null"}
         ],
-       "basePath" : "https://172.19.32.220:8002/UploadedFiles/Icons/"
+       "basePath" : "https://172.19.32.51:8089/UploadedFiles/Icons/"
         
 
       

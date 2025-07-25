@@ -25,7 +25,7 @@
 
             <div>
               <app-cm-select2 *ngIf="isProjectOptionsLoaded" [formGroup]="form" [controlName]="'name'" [settings]="projectSelectSettings"
-                (returnObject)="onProjectSelected($event)" class="full-width-select">
+                (returnObject)="onProjectSelected($event)" class="full-width-select" >
               </app-cm-select2>
                        <div *ngIf="f['name'].touched && f['name'].errors" class="text-danger mt-1">
         {{ getErrorMessage('name', 'Projectname', false, '') }}

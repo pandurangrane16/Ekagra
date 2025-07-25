@@ -29,7 +29,7 @@
 
   <mat-form-field [appearance]="settings.appearance || 'fill'" [class]="settings.formFieldClass">
     <input matInput aria-label="State" [matAutocomplete]="auto" [formControlName]="controlName" (click)="onInputClick()"
-      [attr.disabled]="settings?.isDisabled ? true : null" />
+ [disabled]="!!formGroup.get(controlName)?.disabled"/>
 
     <!-- Arrow icon -->
     <button mat-icon-button matSuffix disableRipple tabIndex="-1" style="margin-left: -8px;">

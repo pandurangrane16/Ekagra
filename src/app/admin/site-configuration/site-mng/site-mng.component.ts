@@ -269,6 +269,14 @@ allowOnlyNumbers(event: KeyboardEvent) {
 
   }
   ngOnInit(): void {
+    debugger;
+ 
+
+     const state1 = history.state;
+
+  if (state1?.mode === 'edit') {
+    this.form.get('name')?.disable();   // Disables the project name dropdown
+  }
 
 this.form.get('siteId')?.valueChanges
   .pipe(
@@ -277,6 +285,7 @@ this.form.get('siteId')?.valueChanges
   )
   .subscribe((siteId: string) => {
       const state = history.state;
+  
     if (state?.mode === 'edit') return;
 
     if (siteId) {
@@ -299,10 +308,6 @@ debugger;
   this.setupFormValueListeners(); 
   //this.loadPosts();               
   this.getProjList();
-
-
-    
-
   }
 
   
@@ -794,4 +799,5 @@ submit() {
     this.router.navigate(['/admin/siteconfig']);
   }
 
+  
 }
