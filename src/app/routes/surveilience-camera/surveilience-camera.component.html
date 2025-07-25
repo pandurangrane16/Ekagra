@@ -8,25 +8,23 @@
                     <mat-icon matSuffix>filter_list</mat-icon>
                 </mat-form-field> 
 
-            <mat-accordion class="mt-1">
+           <mat-accordion>
   <mat-expansion-panel *ngFor="let site of sites">
     <mat-expansion-panel-header>
-      <mat-panel-title>{{ site.name }}</mat-panel-title>
+      <mat-panel-title>{{ site.siteName }}</mat-panel-title>
     </mat-expansion-panel-header>
 
     <mat-accordion>
-      <mat-expansion-panel *ngFor="let loc of site.locations">
+      <mat-expansion-panel *ngFor="let location of site.locations">
         <mat-expansion-panel-header>
-          <mat-panel-title>{{ loc.name }}</mat-panel-title>
+          <mat-panel-title>{{ location.locationName  }}</mat-panel-title>
         </mat-expansion-panel-header>
 
-       <div 
-  *ngFor="let cam of loc.cameras"
-  class="ps-3 mb-1"
-  (click)="onCameraSelect(site.id, loc.id, cam.id)"
-  style="cursor: pointer">
-  <p class="m-0">{{ cam.name }}</p>
-</div>
+        <ul>
+          <li *ngFor="let camera of location.cameras">
+            {{ camera.cameraName  }}
+          </li>
+        </ul>
       </mat-expansion-panel>
     </mat-accordion>
   </mat-expansion-panel>
