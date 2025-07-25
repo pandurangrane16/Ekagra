@@ -45,6 +45,7 @@ export class AtcsComponent {
   isCardExpanded = false;
 siteList: any[] = [];
 labelList: any[] = [];
+popupData: { [siteId: string]: any } = {};
 
 
 
@@ -52,6 +53,11 @@ labelList: any[] = [];
 
 
     ngOnInit(): void {
+
+
+
+
+
 
     this.service.getKeysDataForConfig('basePath').subscribe(basePath => {
   console.log('basePath:', basePath); 
@@ -65,12 +71,52 @@ labelList: any[] = [];
   
     
   }
+onMarkerClicked(siteId: string) {
+  this.service.login().subscribe({
+    next: (res) => {
+      const token = res?.token;
+      if (!token) {
+        console.error("Token missing in login response");
+        return;
+      }
+
+      const headers = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+
+      this.service.sitedata(siteId, headers).subscribe({
+        next: (siteRes) => {
+          console.log("Fetched site data:", siteRes);
+
+         
+        this.popupData = {
+  [siteId]: siteRes
+};
+        },
+        error: (err) => {
+          console.error("Error fetching site data:", err);
+        }
+      });
+    },
+    error: (err) => {
+      console.error("Login failed:", err);
+    }
+  });
+}
+
+
+
 
 getSelectedJunctionName(): string {
   const selected = this.junctions.find(j => j.value === this.selectedJunction);
   console.log(selected ? selected.viewValue : 'No junction selected');
   return selected ? selected.viewValue : 'Select a junction';
 }
+
+
+
 
 loadpoints(): void {
   //const basePath = 'https://172.19.32.51:8089/UploadedFiles/Icons/';

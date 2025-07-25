@@ -16,7 +16,7 @@
 
 
             <form [formGroup]="form" class="form-container">
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col-md-3" style="margin-top: -10px;">
                         <label style="position: relative; top: 6px; display: block;">Enter Name</label>
                         <div>
@@ -37,7 +37,99 @@
                             (optionSelected)="onProjectSelected($event)">
                         </app-cm-select2>
                     </div>
-                </div>
+                </div> -->
+<div class="filter-row" style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 15px;">
+
+  <!-- Left Filters -->
+  <app-cm-select2
+   *ngIf="isProjectOptionsLoaded"
+    [formGroup]="form"
+    [controlName]="'selectedProject'"
+    [settings]="projectSelectSettings"
+    (optionSelected)="onProjectSelected($event)">
+  </app-cm-select2>
+ 
+
+    <app-cm-select2
+   *ngIf="isProjtypeOptionsLoaded"
+    [formGroup]="form"
+    [controlName]="'selectedProjType'"
+    [settings]="projectTypeSettings"
+    (optionSelected)="onProjectSelected($event)">
+  </app-cm-select2>
+      <app-cm-select2
+  
+    [formGroup]="form"
+    [controlName]="'method'"
+    [settings]="apiTypeSettings"
+    (optionSelected)="onProjectSelected($event)">
+  </app-cm-select2>
+
+
+   <div class="col-md-3" style="margin-top: -15px;">
+                        <label style="position: relative; top: 6px; display: block;">API Name</label>
+                        <div>
+                            <app-cm-input [formGroup]="form" [controlName]="'apiName'"
+                                [_inputData]="inputFields.apiName">
+                            </app-cm-input>
+                        </div>
+                    </div>
+
+
+
+                    
+                      <div class="col-md-2" style="margin-top: -9px;">
+                <label class="toggle-label">Is Required Auth.</label>
+                <app-cm-toggle [formGroup]="form" [settings]="isrequireauth" style="margin-top: -35px;"></app-cm-toggle>
+            </div>
+                  
+
+
+
+   <div class="col-md-6" style="margin-top: -10px;">
+                        <label style="position: relative; top: 6px; display: block;">Enter URL</label>
+                        <div>
+                            <app-cm-input [formGroup]="form" [controlName]="'apiUrl'" [_inputData]="inputFields.apiUrl">
+                            </app-cm-input>
+                        </div>
+                    </div>
+                      <div class="col-md-1" style="margin-top: -10px;">
+                        <label style="position: relative; top: 6px; display: block;">Api Seq</label>
+                        <div>
+                            <app-cm-input [formGroup]="form" [controlName]="'apiseq'"
+                                [_inputData]="inputFields.apiSeq">
+                            </app-cm-input>
+                        </div>
+                    </div>
+
+
+
+                    
+
+
+<div style="margin-left: 260px; margin-top: 3px;">
+  <app-cm-select2
+    *ngIf="authRequiredFlag"
+    [formGroup]="form"
+    [controlName]="'selectedapi'"
+    [settings]="Apitype_forauth"
+    (optionSelected)="onProjectSelected($event)">
+  </app-cm-select2>
+</div>
+
+
+            
+
+
+</div>
+
+
+
+
+
+
+
+               
 
                 <hr>
                 <div class="row">
@@ -223,6 +315,42 @@
                         </mat-tab-group>
                     </div>
                 </div>
+
+
+<div class="row">
+
+
+<div class="col-md-12 d-flex justify-content-end mb-2">
+  <button class="btn btn-dark" style="padding: 6px 18px; font-size: 15px; border-radius: 6px;" (click)="onSend()">
+    Send
+  </button>
+</div>
+
+  <!-- Response display area -->
+  <div class="col-md-12">
+    <label for="responseBox">Response</label>
+    <textarea id="responseBox"
+              class="form-control"
+              rows="4"
+              readonly
+              [value]="responseText">
+    </textarea>
+  </div>
+
+  <!-- Toggle section -->
+  <div class="col-md-6" style="margin-top: 10px;">
+    <label class="toggle-label">Enabled</label>
+    <app-cm-toggle [formGroup]="form" [settings]="projectEnabled" style="margin-top: -35px;"></app-cm-toggle>
+  </div>
+</div>
+
+
+                
+
+
+
+
+
 <hr>
                 <div class="row">
                     <div class="col-md-12 d-flex justify-content-end">
