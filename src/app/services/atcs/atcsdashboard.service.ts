@@ -74,6 +74,24 @@ getUnprocessedConnectedCtrlData(zones: string[], from?: string, to?: string): Ob
 
     return this._httpService._getMethod(url);
   }
+
+
+   getAlerts(fromDate?: string, toDate?: string): Observable<any> {
+    const params: string[] = [];
+
+    if (fromDate) {
+      params.push(`fromDate=${encodeURIComponent(fromDate)}`);
+    }
+
+    if (toDate) {
+      params.push(`toDate=${encodeURIComponent(toDate)}`);
+    }
+
+     const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/ATCSGraph/getActiveAlerts${queryString}`;
+
+    return this._httpService._getMethod(url);
+  }
     getJunctioneData(siteId?:any ,fromDate?: string, toDate?: string): Observable<any> {
     const params: string[] = [];
 
@@ -112,6 +130,11 @@ getKeysDataForConfig(key: string): Observable<any> {
   getlabels(id: number) {
     return this._httpService._getMethod('api/services/app/ProjectField/GetAllProjectFieldMasterPage?ProjectId='+id);
   }
+
+  
+
+
+
 
 //   GetProjectFieldsOnProjectIDForATCS
 

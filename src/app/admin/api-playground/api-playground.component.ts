@@ -510,9 +510,9 @@ RemoveHeader(index:any){
     itemsArray.removeAt(index);
   }
 submit(): void {
-  if (this.form.invalid) {
-    return;
-  }
+  // if (this.form.invalid) {
+  //   return;
+  // }
 
   const formValues = this.form.value;
 
@@ -532,7 +532,7 @@ submit(): void {
     authenticationHeader: formValues.authenticationHeader,
     commType: formValues.commType,
     bodyType: formValues.bodyType,
-    body: formValues.body,
+    body:"string",
     responseStatusCode: null,  
     response: null,            
     isActive: true,            
