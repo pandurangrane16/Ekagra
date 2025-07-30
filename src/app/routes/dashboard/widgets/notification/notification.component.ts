@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
 import { AlertsService } from '../../../../services/alerts.service';
+import { atcsDashboardservice } from '../../../../services/atcs/atcsdashboard.service';
 // export interface Section {
 //   name: string;
 //   updated: any;
@@ -22,13 +23,43 @@ import { AlertsService } from '../../../../services/alerts.service';
 export class NotificationComponent  implements OnInit {
 
   alertsData: any[] = [];
-  constructor(private alertsService: AlertsService) {}
+  
+  constructor(private alertsService: AlertsService,private service:atcsDashboardservice) {}
   ngOnInit(): void {
-    this.alertsData = this.alertsService.getData();
-
-    console.log(this.alertsData);
+    // this.alertsData = this.alertsService.getData();
+     //console.log("hi4",this.alertsData);
+    this.fetchAlerts();
+    //console.log("hi",this.alertsData);
 
     }
+
+  fetchAlerts(): void {
+      const from = '2025-07-01 04:28:01.785';
+  const to = '2025-07-23 04:28:01.786';
+    const defaultImg = 'assets/img/icon_user.png';
+    this.service.getAlerts(from,to).subscribe({
+      next: (data) => {
+          console.log("hi2",data);
+
+        this.alertsData = data.result;
+        this.alertsData = (data.result || []).map((alert:any)=> ({
+        ...alert,
+        img: defaultImg
+      }));
+        
+         console.log("hi3",this.alertsData);
+      },
+      error: (err) => {
+        console.error('Error fetching alerts:', err);
+      }
+    });
+  }
+
+showAlertDetails(alertData: any) {
+  alert(JSON.stringify(alertData, null, 2)); 
+}
+
+
 //   alerts: Section[] = [
 //     {
 //       name: 'Alert 1',
