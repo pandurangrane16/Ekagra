@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component,inject } from '@angular/core';
 import { ProjectConfigurationFormComponent } from '../project-configuration/project-configuration-form/project-configuration-form.component';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -7,6 +7,8 @@ import { InputRequest } from '../../models/request/inputreq.model';
 import { CmTableComponent } from '../../common/cm-table/cm-table.component';
 import { CmSelect2Component } from '../../common/cm-select2/cm-select2.component';
 import { CmInputComponent } from '../../common/cm-input/cm-input.component';
+import { LoaderService } from '../../services/common/loader.service';
+import { withLoader } from '../../services/common/common';
 
 @Component({
   selector: 'app-rule-engine',
@@ -15,7 +17,7 @@ import { CmInputComponent } from '../../common/cm-input/cm-input.component';
   styleUrl: './rule-engine.component.css'
 })
 export class RuleEngineComponent {
-
+ loaderService=inject(LoaderService)
       _headerName = 'Rule Engine';
       headArr: any[] = [];
       items:any;
@@ -193,7 +195,7 @@ export class RuleEngineComponent {
       this._request.pageSize = Number(this.recordPerPage);
       this._request.startId = this.startId;
       this._request.searchItem = this.searchText;
-      this.service.GetAll().subscribe((response:any) => {
+      this.service.GetAll().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
 
          const items = response.result?.items;
          
@@ -238,7 +240,7 @@ export class RuleEngineComponent {
     }       
        
   getProjList() {
-  this.service.GetProjectList().subscribe((response:any) => {
+  this.service.GetProjectList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
     const items = response?.result || [];
 
  

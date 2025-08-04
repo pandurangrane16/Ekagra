@@ -1,7 +1,9 @@
-import { OnInit, Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
+import { OnInit, Component, ElementRef, Renderer2, ViewChild, inject } from '@angular/core';
 import { HighchartsChartModule } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
 import { CommonModule } from '@angular/common';
+import { LoaderService } from '../../../../services/common/loader.service';
+import { withLoader } from '../../../../services/common/common';
 import { atcsDashboardservice } from '../../../../services/atcs/atcsdashboard.service';
 
 @Component({
@@ -11,6 +13,9 @@ import { atcsDashboardservice } from '../../../../services/atcs/atcsdashboard.se
     styleUrl: './zonal.component.css'
 })
 export class ZonalComponent implements OnInit {
+
+  loaderService=inject(LoaderService)
+
   @ViewChild('customLegend')
   customLegend!: ElementRef;
   constructor(private renderer: Renderer2, private el: ElementRef,private service:atcsDashboardservice) {}
@@ -121,7 +126,7 @@ Highcharts: typeof Highcharts = Highcharts;
   const from = '2025-07-01 04:28:01.785';
   const to = '2025-07-23 04:28:01.786';
 
-    this.service.getUnprocessedConnectedCtrlData(zoneNames,from, to).subscribe(response => {
+    this.service.getUnprocessedConnectedCtrlData(zoneNames,from, to).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
    const rawData = Object.values(response.result || {});
 
     // Step 1: Count occurrences of each Status

@@ -17,6 +17,8 @@ import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AbstractControl, ValidatorFn } from '@angular/forms';
+import { LoaderService } from '../../../services/common/loader.service';
+import { withLoader } from '../../../services/common/common';
 
 @Component({
   selector: 'app-map-configuration-form',
@@ -28,6 +30,7 @@ import { AbstractControl, ValidatorFn } from '@angular/forms';
 
 
 export class MapConfigurationFormComponent {
+    loaderService = inject(LoaderService);
     router = inject(Router);
   form!: FormGroup;
   MatButtonToggleChange:any;
@@ -245,7 +248,7 @@ this.editid=this.state.record.id;
          this.service.CheckMapExists(this.form.controls['sourceurl'].value,
           this.form.controls['lat'].value,
           this.form.controls['long'].value,
-          this.state?.record?.id).subscribe(response => {
+          this.state?.record?.id).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
             debugger;
         if (response.result === 1) {
           this.toast.error("Source URL, Lat, Long already exists in the System.");
@@ -259,7 +262,7 @@ else
 
     _mapconfigmodel.id = this.state.record.id;
 
-      this.service.MapEdit(_mapconfigmodel).subscribe({
+      this.service.MapEdit(_mapconfigmodel).pipe(withLoader(this.loaderService)).subscribe({
     next: () => {
       console.log('Updated successfully');
         this.router.navigate(['/admin/mapconfig']);   
@@ -283,7 +286,7 @@ else
      
     
     
-      this.service.MapCreate(_mapconfigmodel).subscribe({
+      this.service.MapCreate(_mapconfigmodel).pipe(withLoader(this.loaderService)).subscribe({
         next: () => {
           console.log('Saved successfully');
       this.router.navigate(['/admin/mapconfig']);   

@@ -13,6 +13,8 @@ import { apiplaygroundservice } from '../../../services/admin/apiplayground.serv
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
+import { LoaderService } from '../../../services/common/loader.service';
+import { withLoader } from '../../../services/common/common';
 import { CmConfirmationDialogComponent } from '../../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 
 
@@ -36,6 +38,7 @@ import { CmConfirmationDialogComponent } from '../../../common/cm-confirmation-d
  
 
     export class ApiListComponent implements OnInit {
+       loaderService = inject(LoaderService);
 router = inject(Router);
       _headerName = 'API List';
       headArr: any[] = [];
@@ -287,8 +290,8 @@ deleteRow(rowData: any): void {
   dialogRef.afterClosed().subscribe(result => {
     if (result) {
      
-      this.service.Delete(rowData.id).subscribe({
-        next: (res) => {
+      this.service.Delete(rowData.id).pipe(withLoader(this.loaderService)).subscribe({
+        next: (res:any) => {
           if (res.success) {
             this.getApiList();
             console.log('Deleted successfully');
@@ -320,7 +323,7 @@ editRow(rowData: any) {
       this._request.pageSize = Number(this.recordPerPage);
       this._request.startId = this.startId;
       this._request.searchItem = this.searchText;
-      this.service.GetAll().subscribe(response => {
+      this.service.GetAll().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
 
          const items = response.result?.items;
          
@@ -392,7 +395,7 @@ console.log(this.projectTypeSettings.options)
       this.SkipCount=this.MaxResultCount*this.pager;
       this.recordPerPage=this.perPage;
  
-     this.service.GetFilteredList(selectedProjectId, projtype,search,selectedStatus,this.MaxResultCount,this.SkipCount).subscribe(response => {
+     this.service.GetFilteredList(selectedProjectId, projtype,search,selectedStatus,this.MaxResultCount,this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
     //  const items = response?.result || [];
          
     //      this.items=items;
@@ -442,7 +445,7 @@ element.type2 = matched ? matched.name : element.type;
     }  
       
 getProjList() {
-  this.service.GetProjectList().subscribe(response => {
+  this.service.GetProjectList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
     const items = response?.result || [];
 
     const projectOptions = items.map((item: any) => ({
