@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+
+import { Component,inject, OnInit } from '@angular/core';
 import { MapviewComponent } from "../dashboard/widgets/mapview/mapview.component";
 import { NotificationComponent } from "../dashboard/widgets/notification/notification.component";
 import { ZonalComponent } from "./widgets/zonal/zonal.component";
@@ -17,6 +18,8 @@ import { atcsDashboardservice } from '../../services/atcs/atcsdashboard.service'
 import { CmLeafletComponent } from '../../common/cm-leaflet/cm-leaflet.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { LoaderService } from '../../services/common/loader.service';
+import { withLoader } from '../../services/common/common';
 
 interface Junction {
   value: string;
@@ -30,7 +33,8 @@ interface Junction {
   providers: [provideNativeDateAdapter()]
 })
 export class AtcsComponent {
-
+ 
+  loaderService=inject(LoaderService)
   constructor(private service: atcsDashboardservice) { }
   selectedJunction: string = '';
   isMap: boolean = false;
@@ -62,7 +66,7 @@ popupData: { [siteId: string]: any } = {};
 
 
 
-    this.service.getKeysDataForConfig('basePath').subscribe(basePath => {
+    this.service.getKeysDataForConfig('basePath').pipe(withLoader(this.loaderService)).subscribe(basePath => {
       console.log('basePath:', basePath);
       this.basepath = basePath;
 
@@ -75,8 +79,8 @@ popupData: { [siteId: string]: any } = {};
 
   }
 onMarkerClicked(siteId: string) {
-  this.service.login().subscribe({
-    next: (res) => {
+  this.service.login().pipe(withLoader(this.loaderService)).subscribe({
+    next: (res:any) => {
       const token = res?.token;
       if (!token) {
         console.error("Token missing in login response");
@@ -89,7 +93,7 @@ onMarkerClicked(siteId: string) {
         }
       };
 
-      this.service.sitedata(siteId, headers).subscribe({
+      this.service.sitedata(siteId, headers).pipe(withLoader(this.loaderService)).subscribe({
         next: (siteRes) => {
           console.log("Fetched site data:", siteRes);
 
@@ -124,8 +128,8 @@ onMarkerClicked(siteId: string) {
 loadpoints(): void {
   //const basePath = 'https://172.19.32.51:8089/UploadedFiles/Icons/';
   const basePath=this.basepath
-  this.service.GetSiteMasterByProjectId(1).subscribe({
-    next: (res) => {
+  this.service.GetSiteMasterByProjectId(1).pipe(withLoader(this.loaderService)).subscribe({
+    next: (res:any) => {
       const rawSites = res?.result || [];
 
         if (rawSites.length === 0) {
@@ -151,7 +155,7 @@ loadpoints(): void {
     });
   }
   loadpopuplabels(): void {
-    this.service.getlabels(1).subscribe((res: any) => {
+    this.service.getlabels(1).pipe(withLoader(this.loaderService)).subscribe((res: any) => {
       if (res && res.result && Array.isArray(res.result.items)) {
         this.labelList = res.result.items;
         this.islabel = true
@@ -163,7 +167,7 @@ loadpoints(): void {
   }
 
   loadJunctions(): void {
-    this.service.GetAll().subscribe((res) => {
+    this.service.GetAll().pipe(withLoader(this.loaderService)).subscribe((res:any) => {
       if (res?.result?.items) {
         this.junctions = res.result.items.map((item: any) => ({
           value: item.siteId.toString(),

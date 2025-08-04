@@ -1,8 +1,10 @@
-import { OnInit, Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
+import { OnInit, Component,inject, ElementRef, Renderer2, ViewChild } from '@angular/core';
 import { HighchartsChartModule } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
 import { CommonModule } from '@angular/common';
 import { atcsDashboardservice } from '../../../../services/atcs/atcsdashboard.service';
+import { LoaderService } from '../../../../services/common/loader.service';
+import { withLoader } from '../../../../services/common/common';
 
 @Component({
     selector: 'app-failures',
@@ -11,6 +13,8 @@ import { atcsDashboardservice } from '../../../../services/atcs/atcsdashboard.se
     styleUrl: './failures.component.css'
 })
 export class FailuresComponent implements OnInit {
+
+  loaderService=inject(LoaderService)
   @ViewChild('customLegend')
   customLegend!: ElementRef;
   constructor(private renderer: Renderer2, private el: ElementRef, private service:atcsDashboardservice) {}
@@ -129,7 +133,7 @@ fetchFailureData(): void {
     const fromDate = '2025-07-10 00:00:00';
     const toDate = '2025-07-18 00:00:00';
 
-    this.service.getFailureData(fromDate, toDate).subscribe(response => {
+    this.service.getFailureData(fromDate, toDate).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
       const rawData = response.result || [];
 
       const colors = ['#344BFD', '#66CC66', '#53CEE7', '#FFD200', '#FC4F64', '#FF5733', '#C70039', '#900C3F', '#581845', '#1ABC9C', '#2ECC71'];

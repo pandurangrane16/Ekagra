@@ -16,6 +16,8 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { LoaderService } from '../../../services/common/loader.service';
+import { withLoader } from '../../../services/common/common';
 
 
 
@@ -29,7 +31,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 export class ProjectFieldConfigurationFormComponent  implements OnInit{
   router = inject(Router);
-  
+
+   loaderService = inject(LoaderService);
   form!: FormGroup;
   MatButtonToggleChange:any;
   showMapLabelError : boolean = false;
@@ -239,7 +242,7 @@ onMapLabelClick(): void {
   }
 
       getProjList() {
-  this.service.GetProjectList().subscribe(response => {
+  this.service.GetProjectList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
     const items = response?.result || [];
 
  
@@ -302,7 +305,7 @@ _projfieldconfigmodel.dataType="string"
 _projfieldconfigmodel.mapLabel=this.form.controls['maplabel'].value;
 _projfieldconfigmodel.projectId = this.form.controls['selectedProject'].value?.value;
 
-    this.service.CheckMapLabel(_projfieldconfigmodel.projectId,_projfieldconfigmodel.mapLabel,this.state?.record?.id).subscribe(response => {
+    this.service.CheckMapLabel(_projfieldconfigmodel.projectId,_projfieldconfigmodel.mapLabel,this.state?.record?.id).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
         if (response.result === true) {
           this.toast.error(" Map Label exists in the System.");
           
@@ -313,7 +316,7 @@ _projfieldconfigmodel.projectId = this.form.controls['selectedProject'].value?.v
 
 
 
-          this.service.CheckMapLabel(_projfieldconfigmodel.projectId,_projfieldconfigmodel.label,this.state?.record?.id).subscribe(response => {
+          this.service.CheckMapLabel(_projfieldconfigmodel.projectId,_projfieldconfigmodel.label,this.state?.record?.id).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
         if (response.result === true) {
           this.toast.error(" Api Label exists in the System.");
           
@@ -328,7 +331,7 @@ _projfieldconfigmodel.projectId = this.form.controls['selectedProject'].value?.v
 
     _projfieldconfigmodel.id = this.state.record.id;
       
-      this.service.ProjectfieldEdit(_projfieldconfigmodel).subscribe({
+      this.service.ProjectfieldEdit(_projfieldconfigmodel).pipe(withLoader(this.loaderService)).subscribe({
     next: () => {
       console.log('Updated successfully');
 
@@ -349,7 +352,7 @@ _projfieldconfigmodel.projectId = this.form.controls['selectedProject'].value?.v
 
   else{  
     console.log("hi",_projfieldconfigmodel)
-    this.service.ProjectfieldCreate(_projfieldconfigmodel).subscribe({
+    this.service.ProjectfieldCreate(_projfieldconfigmodel).pipe(withLoader(this.loaderService)).subscribe({
     next: () => {
       console.log('Saved successfully');
 

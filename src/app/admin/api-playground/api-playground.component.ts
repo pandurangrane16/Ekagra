@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,inject } from '@angular/core';
 import { MaterialModule } from '../../Material.module';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -14,6 +14,7 @@ import { projapimodel } from '../../models/admin/projectapi.model';
 import { ToastrService } from 'ngx-toastr';
 import { consumemodel } from '../../models/admin/consume.model';
 import { getErrorMsg } from '../../utils/utils';
+import { withLoader } from '../../services/common/common';
 import { projapirequestmodel } from '../../models/admin/projectapirequest.model';
 import { AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 
@@ -26,6 +27,7 @@ import { AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
   standalone: true
 })
 export class ApiPlaygroundComponent implements OnInit {
+   loaderService = inject(LoaderService);
    tabs = [
     { label: 'Params', content : "Test Param" },
     { label: 'Body', content : "Test Body" }
@@ -227,7 +229,7 @@ this.form.get('apiUrl')?.valueChanges.subscribe((url: string) => {
     this.form.get('isrequireauth')?.updateValueAndValidity();
 
       if (value?.value) { 
-    this.service.Apiseq(value.value).subscribe({
+    this.service.Apiseq(value.value).pipe(withLoader(this.loaderService)).subscribe({
       next: (res: any) => {
         if (res?.success && res?.result != null) {
           this.form.get('apiseq')?.setValue(res.result);
@@ -310,7 +312,7 @@ updateRequestParam(): void {
 
   console.log('Final updatedRecord:', updatedRecord);
 
-  this.service.UpdateProjectApi(updatedRecord).subscribe({
+  this.service.UpdateProjectApi(updatedRecord).pipe(withLoader(this.loaderService)).subscribe({
     next: res => console.log('API update success', res),
     error: err => console.error('API update failed', err)
   });
@@ -527,7 +529,7 @@ group.get('qsValue')?.valueChanges.subscribe((selectedOption: any) => {
 }
 
   getProjList() {
-  this.service.GetProjectList().subscribe(response => {
+  this.service.GetProjectList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
     const items = response?.result || [];
 
     const projectOptions = items.map((item: any) => ({
@@ -555,7 +557,7 @@ group.get('qsValue')?.valueChanges.subscribe((selectedOption: any) => {
 }
 
   getType() {
-  this.service.GetType().subscribe(response => {
+  this.service.GetType().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
     const items = response?.result || [];
     const projectOptions = items.map((item: any) => ({
       name: item.prmidentifier,
@@ -569,7 +571,7 @@ group.get('qsValue')?.valueChanges.subscribe((selectedOption: any) => {
   });
 }
   getInputType() {
-  this.service.GetInputType().subscribe(response => {
+  this.service.GetInputType().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
     const items = response?.result || [];
     const projectOptions = items.map((item: any) => ({
       name: item.prmidentifier,
@@ -583,7 +585,7 @@ group.get('qsValue')?.valueChanges.subscribe((selectedOption: any) => {
   });
 }
   getUserDefinedType() {
-  this.service.GetUserDefinedValue().subscribe(response => {
+  this.service.GetUserDefinedValue().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
     const items = response?.result || [];
     const projectOptions = items.map((item: any) => ({
       name: item.prmidentifier,
@@ -595,7 +597,7 @@ group.get('qsValue')?.valueChanges.subscribe((selectedOption: any) => {
   });
 }
   GetSystemAutoValue() {
-  this.service.GetSystemAutoValue().subscribe(response => {
+  this.service.GetSystemAutoValue().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
     const items = response?.result || [];
     const projectOptions = items.map((item: any) => ({
       name: item.prmidentifier,
@@ -608,7 +610,7 @@ group.get('qsValue')?.valueChanges.subscribe((selectedOption: any) => {
   });
 }
   GetDateTypes() {
-  this.service.GetDateTypes().subscribe(response => {
+  this.service.GetDateTypes().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
     const items = response?.result || [];
     const projectOptions = items.map((item: any) => ({
       name: item.prmidentifier,
@@ -622,7 +624,7 @@ group.get('qsValue')?.valueChanges.subscribe((selectedOption: any) => {
   });
 }
   GetGuidType() {
-  this.service.GetGuidType().subscribe(response => {
+  this.service.GetGuidType().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
     const items = response?.result || [];
     const projectOptions = items.map((item: any) => ({
       name: item.prmidentifier,
@@ -638,7 +640,7 @@ group.get('qsValue')?.valueChanges.subscribe((selectedOption: any) => {
   getapilist() {
   const selectedProjectId = this.form.controls['selectedProject'].value.value;
   console.log("hi",selectedProjectId);
-  this.service.GetApiList(selectedProjectId).subscribe(response => {
+  this.service.GetApiList(selectedProjectId).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
     const items = response?.result || [];
     this.apilist =items;
 
@@ -676,7 +678,7 @@ private buildBodyObject(): any {
   }
 }
 GetProjectType() {
-  this.service.GetProjectType().subscribe(response => {
+  this.service.GetProjectType().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
     const items = response?.result || [];
 
     const projectOptions = items.map((item: any) => ({
@@ -981,7 +983,7 @@ const payload = {
     CreatorUserId: ""
   };
 
-  this.service.Consume(payload).subscribe({
+  this.service.Consume(payload).pipe(withLoader(this.loaderService)).subscribe({
     next: (res: any) => {
       let parsedResult;
       this.responsebox=true;
@@ -1078,8 +1080,8 @@ console.log(creationTime);
     id: 0
   };
 
-  this.service.CreateProjectApi(model).subscribe({
-    next: (res) => {
+  this.service.CreateProjectApi(model).pipe(withLoader(this.loaderService)).subscribe({
+    next: (res:any) => {
       this.createdId = res.result.id;
       this.toast.success('ProjectAPI saved successfully with ID:',this.createdId);
       console.log('API created successfully:', res);
@@ -1133,7 +1135,7 @@ requestModels.push(methodKeyModel);
 
 console.log(requestModels);
 requestModels.forEach(model => {
-  this.service.CreateProjectApiRequest(model).subscribe({
+  this.service.CreateProjectApiRequest(model).pipe(withLoader(this.loaderService)).subscribe({
    next: (res) => {
    this.toast.success('ProjectAPIRequest saved successfully.');
       
