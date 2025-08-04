@@ -190,7 +190,7 @@ router = inject(Router);
     
 
         openDialog() {
-    //  this.router.navigate(['/admin/projform']);   
+     this.router.navigate(['/admin/apiplayground']);   
           
 }
         buildHeader() {  

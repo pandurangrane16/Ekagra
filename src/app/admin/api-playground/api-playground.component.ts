@@ -15,6 +15,8 @@ import { ToastrService } from 'ngx-toastr';
 import { consumemodel } from '../../models/admin/consume.model';
 import { getErrorMsg } from '../../utils/utils';
 import { projapirequestmodel } from '../../models/admin/projectapirequest.model';
+import { AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
+
 
 @Component({
   selector: 'app-api-playground',
@@ -205,6 +207,7 @@ apiTypeSettings = {
 this.queryStringsFormArray.valueChanges.subscribe((qsArray) => {
  console.log("h1");
 });
+
 
 
 
@@ -500,10 +503,29 @@ group.get('qsValue')?.valueChanges.subscribe((selectedOption: any) => {
   }
   createBody() {
     const group = this.fb.group({
-      bodyValue: [''],
+      bodyValue: ['',this.jsonValidator()],
     });
     this.bodyFormArray.push(group);
   }
+  jsonValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const bodyType = this.form?.get('bodyType')?.value;
+   
+
+    if (bodyType === 'json') {
+      try {
+        JSON.parse(control.value);
+        return null; 
+      } catch (e) {
+        return { invalidJson: true };
+        
+      }
+    }
+
+    return null; 
+  };
+}
+
   getProjList() {
   this.service.GetProjectList().subscribe(response => {
     const items = response?.result || [];
@@ -885,20 +907,20 @@ this.isProjtypeOptionsLoaded=true;
 
 onSend() {
 
-  const isAuthRequired = this.form.get('isrequireauth')?.value;
-  const selectedProjType = this.form.get('selectedProjType')?.value.value;
-  console.log(selectedProjType)
-    if (selectedProjType === '4') {
-    this.toast.error('Please select authorization type in Auth Tab');
-    return;
-  }
+  //  const isAuthRequired = this.form.get('isrequireauth')?.value;
+  //  const selectedProjType = this.form.get('selectedProjType')?.value.value;
+  // console.log(selectedProjType)
+  //   if (selectedProjType === '4') {
+  //   this.toast.error('Please select authorization type in Auth Tab');
+  //   return;
+  // }
 
-  else{
-  if (isAuthRequired && this.selectedKeys.size === 0) {
-    this.toast.error('At least one key must be selected for request parameter.');
-    return; 
-  }
-  else{
+  
+  // if (isAuthRequired && this.selectedKeys.size === 0) {
+  //   this.toast.error('At least one key must be selected for request parameter.');
+  //   return; 
+  // }
+  
   if (this.form.invalid) {
 
     this.toast.error('Please select all the values before Sending.');
@@ -907,7 +929,24 @@ onSend() {
   }
 
   else{
-const creationTime = new Date();
+
+       const isAuthRequired = this.form.get('isrequireauth')?.value;
+   const selectedProjType = this.form.get('selectedProjType')?.value.value;
+
+     if (selectedProjType === '4') {
+     this.toast.error('Please select authorization type in Auth Tab');
+    return;
+   }
+   
+else{
+
+    if (isAuthRequired && this.selectedKeys.size === 0) {
+    this.toast.error('At least one key must be selected for request parameter.');
+    return; 
+    }
+
+else{
+    const creationTime = new Date();
 const formValues = this.form.value;
 const bodyObject = this.buildBodyObject();
 const bodyJsonString = JSON.stringify(bodyObject); 
@@ -956,10 +995,24 @@ const payload = {
       this.responseText = JSON.stringify(parsedResult, null, 2);
     }
   });
-  }
-  }
+}
+  
+
+
+
+
+
+
+
+
+
+
+}
 
   }
+  
+
+  
 
 
 }
