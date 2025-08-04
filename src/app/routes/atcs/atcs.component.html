@@ -1,4 +1,21 @@
 <div class="row mb-2 mt-2 d-flex">
+    <div class="col-md-9"></div>
+    <div class="col-md-3">
+        <div class="card text-left">
+            <mat-form-field>
+                <mat-label>Enter a date range</mat-label>
+                <mat-date-range-input [rangePicker]="picker">
+                    <input matStartDate placeholder="Start date" (dateChange)="DateWiseFilter($event,'start')">
+                    <input matEndDate placeholder="End date" (dateChange)="DateWiseFilter($event,'end')">
+                </mat-date-range-input>
+                <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+            </mat-form-field>
+        </div>
+    </div>
+</div>
+<div class="row mb-2 mt-2 d-flex">
     <div class="col-md-10">
 <div class="card" style="height: 365px;">
 <div class="card-body" >
@@ -21,26 +38,30 @@
     </div>
    
 
-</div>
-</div>
-</div>
-<div class="col-md-2">
-    <div class="card">
-    <div class="card-body">
-        <h6>Alerts & Notification</h6>
-        <app-notification></app-notification>
+
+            </div>
         </div>
-    </div></div>
+    </div>
+    <div class="col-md-2">
+        <div class="card">
+            <div class="card-body">
+                <h6>Alerts & Notification</h6>
+                <app-notification></app-notification>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="row d-flex align-items-stretch">
     <div class="col-md-6">
-        <div class="card"  [ngClass]="{ fullscreen: isCardExpanded }">
+        <div class="card" [ngClass]="{ fullscreen: isCardExpanded }">
             <div class="card-body">
-                <div class="d-flex justify-content-between my-1" style="align-items: center;"><h6 class="ms-2 mb-0">Corridor View</h6> 
+                <div class="d-flex justify-content-between my-1" style="align-items: center;">
+                    <h6 class="ms-2 mb-0">Corridor View</h6>
                     <div class="action mb-1">
-                    <span (click)="expand()"><img src="assets/img/ci_expand.svg" alt=""></span>
-                    <span><img src="assets/img/more-horiz.svg" alt=""></span>
-                  </div></div>
+                        <span (click)="expand()"><img src="assets/img/ci_expand.svg" alt=""></span>
+                        <span><img src="assets/img/more-horiz.svg" alt=""></span>
+                    </div>
+                </div>
                 <app-corridor></app-corridor>
             </div>
         </div>
@@ -48,20 +69,21 @@
     <div class="col-md-3">
         <div class="card">
             <div class="card-body">
-        <h6><img src="assets/img/sign-Y.png" alt="" class="me-1">Failures in Functional Junctions</h6>
-        <app-failures></app-failures>
-        </div>
+                <h6><img src="assets/img/sign-Y.png" alt="" class="me-1">Failures in Functional Junctions</h6>
+                <app-failures></app-failures>
+            </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card">
             <div class="card-body">
                 <mat-form-field class="w-100">
-                 
-                    <mat-select placeholder="Select Junction"  [(value)]="selectedJunction" (selectionChange)="onJunctionChange($event)">
-                      @for (junction of junctions; track junction) {
+
+                    <mat-select placeholder="Select Junction" [(value)]="selectedJunction"
+                        (selectionChange)="onJunctionChange($event)">
+                        @for (junction of junctions; track junction) {
                         <mat-option [value]="junction.value">{{junction.viewValue}}</mat-option>
-                      }
+                        }
                     </mat-select>
 
 

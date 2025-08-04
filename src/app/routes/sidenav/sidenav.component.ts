@@ -182,6 +182,11 @@ export class SidenavComponent {
         activeIcon: './assets/img/icon_settings1.svg',
         label: 'Contact Configuration',
         link: 'admin/ContactConf',
+      }, {
+        icon: './assets/img/icon_settings.svg',
+        activeIcon: './assets/img/icon_settings1.svg',
+        label: 'API Playground',
+        link: 'admin/apilist',
       }]
     }
   ];
