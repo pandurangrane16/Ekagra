@@ -51,6 +51,7 @@ interface Camera {
 
 export class SurveilienceCameraComponent {
 
+private currentSiteId: number | null = null;
 
 loading: boolean = false;
 
@@ -186,6 +187,17 @@ async onSiteClick(siteId: number): Promise<void> {
     this.loading = true; // 🔄 Show loader
 
   try {
+
+    // 🛑 Stop previous stream
+    if (this.currentSiteId && this.currentSiteId !== siteId) {
+      await firstValueFrom(
+        this.surveillanceService.stopLiveStream(this.currentSiteId) 
+      );
+      this.currentSiteId=0;
+      console.log(`Stopped stream for site ${this.currentSiteId}`);
+    }
+
+// ✅ Start new stream
     const globalRes: any = await firstValueFrom(
       this.PramglobalService.GetAllGlobalValues('Project', siteId.toString())
     );
@@ -199,11 +211,20 @@ async onSiteClick(siteId: number): Promise<void> {
       );
 
       const embedUrl = streamRes.data?.embedurl + this.rfu2;
+      
+      setTimeout(() => {
       this.activeEmbedUrl = this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
+      // Trigger change detection manually
+        this.cd.detectChanges();
+}, 100);
+
       console.log('activeEmbedUrl:', this.activeEmbedUrl);
     } else {
       this.activeEmbedUrl = null;
     }
+ 
+
+    this.currentSiteId = siteId; // 🔁 Update currently active site
   } catch (err) {
     console.error('Error fetching stream URL:', err);
     this.activeEmbedUrl = null;
@@ -212,6 +233,40 @@ async onSiteClick(siteId: number): Promise<void> {
     this.cd.detectChanges();
   }
 }
+
+onClosePreview(): void {
+  debugger;
+  this.loading = true;
+
+  if (!this.embedUrl || !this.rfu2 || !this.currentSiteId) {
+    this.activeEmbedUrl = null;
+    this.embedUrl = null;
+    this.rfu2 = null;
+    this.loading = false;
+    this.cd.detectChanges(); // ensure loader is hidden
+    return;
+  }
+
+  this.surveillanceService.stopLiveStream(this.currentSiteId).subscribe({
+    next: () => {
+      console.log('Streaming stopped.');
+    },
+    error: (err) => {
+      console.error('Error stopping stream:', err);
+    },
+    complete: () => {
+      this.activeEmbedUrl = null;
+      this.embedUrl = null;
+      this.rfu2 = null;
+      this.loading = false;
+      this.cd.detectChanges(); // ensure UI updates after stream stops
+    }
+  });
+}
+
+
+
+
 }
 
 
