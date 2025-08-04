@@ -443,7 +443,7 @@ export class SiteMngComponent implements OnInit {
   }
 
   loadPosts() {
-    this.apiService.getPosts().subscribe((res: any) => {
+    this.apiService.getPosts().pipe(withLoader(this.loaderService)).subscribe((res: any) => {
       this.posts = res;
       console.log(this.posts);
     })
@@ -476,7 +476,7 @@ export class SiteMngComponent implements OnInit {
         const item = items[0];
         const formattedAddress = `${item.areaName}, ${item.road}, ${item.district}, ${item.taluka}`;
 
-        this.service.GetLocationByPincode(item.pinCode).subscribe(response => {
+        this.service.GetLocationByPincode(item.pinCode).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
 
           console.log(response)
 

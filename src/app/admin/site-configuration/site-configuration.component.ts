@@ -130,25 +130,25 @@ export class SiteConfigurationComponent {
       searchText: ['']
     });
     this.buildHeader();
-    //this.getProjList();
+    this.getProjList();
     this.getSiteConfigList();
 
-    //  this.form.get('searchText')?.valueChanges
-    //    .pipe(
-    //      debounceTime(300), 
-    //      distinctUntilChanged() 
-    //    )
-    //    .subscribe(value => {
-    //         if (value && value.length >= 3) {
-    //             this.pager=0;
-    //      this.perPage=10;
-    //      this.getFilteredList();
-    //    } else if (!value || value.length === 0) {
-    //       this.pager=0;
-    //      this.perPage=10;
-    //       this.getFilteredList();
-    //    }
-    //    });
+     this.form.get('searchText')?.valueChanges
+       .pipe(
+         debounceTime(300), 
+         distinctUntilChanged() 
+       )
+       .subscribe(value => {
+            if (value && value.length >= 3) {
+                this.pager=0;
+         this.perPage=10;
+         this.getFilteredList();
+       } else if (!value || value.length === 0) {
+          this.pager=0;
+         this.perPage=10;
+          this.getFilteredList();
+       }
+       });
 
 
   }
@@ -393,8 +393,8 @@ export class SiteConfigurationComponent {
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
 
-        this.service.Delete(rowData.id).subscribe({
-          next: (res) => {
+        this.service.Delete(rowData.id).pipe(withLoader(this.loaderService)).subscribe({
+          next: (res:any) => {
             if (res.success) {
               this.getSiteConfigList();
               console.log('Deleted successfully');
