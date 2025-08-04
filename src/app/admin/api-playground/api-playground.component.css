@@ -10,6 +10,55 @@
     flex: 0 0 auto;
     width: 250px;
   }
+.narrow-select-wrapper ::ng-deep app-cm-select2 .mat-mdc-text-field-wrapper {
+  max-width: 100px !important;
+  width: 100% !important;
+  display: inline-block;
+   
+}
+
+.json-tree {
+  font-family: monospace;
+  font-size: 13px;
+  line-height: 1.4;
+  background-color: #f8f9fa;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  margin: 0;
+  overflow-x: auto;
+}
+
+.json-dict {
+  list-style-type: none;
+  padding-left: 1rem;
+  margin: 0;
+}
+
+.json-dict li {
+  margin: 2px 0;
+  white-space: nowrap;
+}
+
+.json-key {
+  color: #007bff;
+  font-weight: 500;
+  margin-right: 4px;
+}
+
+.json-string {
+  color: #28a745;
+}
+
+.pick-path {
+  cursor: pointer;
+  margin-left: 6px;
+  color: #6c757d;
+  font-size: 12px;
+}
+
+
+
     
   .toggle-label {
     font-weight: 500;
