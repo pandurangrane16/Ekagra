@@ -909,6 +909,7 @@ this.isProjtypeOptionsLoaded=true;
 
 onSend() {
 
+   console.log(this.form.controls['apiseq'].value )
   //  const isAuthRequired = this.form.get('isrequireauth')?.value;
   //  const selectedProjType = this.form.get('selectedProjType')?.value.value;
   // console.log(selectedProjType)
@@ -934,11 +935,12 @@ onSend() {
 
        const isAuthRequired = this.form.get('isrequireauth')?.value;
    const selectedProjType = this.form.get('selectedProjType')?.value.value;
-
-     if (selectedProjType === '4') {
-     this.toast.error('Please select authorization type in Auth Tab');
-    return;
-   }
+const authType =this.form.get('authType')?.value;
+if (selectedProjType === '4' && !authType) {
+  this.toast.error('Please select authorization type in Auth Tab');
+  return;
+}
+  
    
 else{
 
@@ -1030,7 +1032,8 @@ submit(): void {
   //   this.form.markAllAsTouched(); 
   //   return;
   // }
-
+ console.log(this.form.controls['apiseq'].value )
+ const apiseq=this.form.controls['apiseq'].value
 const bodyArray = this.form.get('body')?.value;
 const bodyValue = bodyArray?.[0]?.bodyValue || null;
 console.log("body2", bodyValue);
@@ -1061,7 +1064,7 @@ console.log(creationTime);
     authReq: formValues.isrequireauth,
     authAPIId: formValues.authAPIId,
     authenticatioType: formValues.authType,
-    apiSeq:  formValues.apiseq - 1,
+    apiSeq:  apiseq,
     authenticationHeader:null,
     commType: 0,
     bodyType: formValues.bodyType,
