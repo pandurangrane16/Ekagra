@@ -12,6 +12,8 @@ import { projfieldconfigservice } from '../../services/admin/projfieldconfig.ser
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
+import { LoaderService } from '../../services/common/loader.service';
+import { withLoader } from '../../services/common/common';
 import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 import { ProjectFieldConfigurationFormComponent } from './project-field-configuration-form/project-field-configuration-form.component';
 
@@ -35,6 +37,7 @@ import { ProjectFieldConfigurationFormComponent } from './project-field-configur
 export class ProjectFieldConfigurationComponent  {
 
 router = inject(Router);
+loaderService=inject(LoaderService)
   _headerName = 'Project Configuration Table';
   headArr: any[] = [];
   isProjectOptionsLoaded =false;
@@ -179,7 +182,7 @@ router = inject(Router);
       this.MaxResultCount=this.perPage;
       this.SkipCount=this.MaxResultCount*this.pager;
       this.recordPerPage=this.perPage;
-      this.service.GetAll(this.MaxResultCount,this.SkipCount).subscribe(response => {
+      this.service.GetAll(this.MaxResultCount,this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
 
          const items = response.result?.items;
          const totalCount=response.result?.totalCount;
@@ -257,8 +260,8 @@ deleteRow(rowData: any): void {
     debugger;
     if (result) {
      
-      this.service.Delete(rowData.id).subscribe({
-        next: (res) => {
+      this.service.Delete(rowData.id).pipe(withLoader(this.loaderService)).subscribe({
+        next: (res:any) => {
           if (res.success) {
             this.getProjfieldConfigList();
             console.log('Deleted successfully');
@@ -313,7 +316,7 @@ deleteRow(rowData: any): void {
             ];
           }   
 getProjList() {
-  this.service.GetProjectList().subscribe(response => {
+  this.service.GetProjectList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
     const items = response?.result || [];
 
     const projectOptions = items.map((item: any) => ({
@@ -356,7 +359,7 @@ this.form.controls['selectedStatus'].setValue({
     const selectedProjectId = this.form.controls['selectedProject'].value.value;
      const selectedStatus = this.form.controls['selectedStatus'].value.value;
      const search = this.form.controls['searchText'].value
-     this.service.GetFilteredList(selectedProjectId,search,selectedStatus,this.MaxResultCount,this.SkipCount).subscribe(response => {
+     this.service.GetFilteredList(selectedProjectId,search,selectedStatus,this.MaxResultCount,this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
     //  const items = response?.result || [];
          
     //      this.items=items;

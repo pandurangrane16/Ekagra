@@ -17,7 +17,7 @@ export class CmPaginationComponent {
   selectedPageValue:number = 10;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @Output() pageno = new EventEmitter<number>();
-  pageIndex :number = 10;
+  pageIndex :number = 0;
   @Output() perPage = new EventEmitter<number>();
   @Input() collectionSize =1;
   public pages: number[] = [];

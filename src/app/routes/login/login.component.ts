@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, inject,Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { FooterComponent } from '../footer/footer.component';
@@ -11,6 +11,8 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { loginservice } from '../../services/admin/login.service';
 import { MatButtonModule } from '@angular/material/button';
+import { LoaderService } from '../../services/common/loader.service';
+import { withLoader } from '../../services/common/common';
 
 
 
@@ -22,9 +24,9 @@ import { MatButtonModule } from '@angular/material/button';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent {
-
+loaderService=inject(LoaderService)
   loginForm!: FormGroup;
-  version: string = "2.0.3";
+  version: string = "2.0.4";
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
@@ -88,8 +90,8 @@ export class LoginComponent {
   onLogin(): void {
     const credentials = this.loginForm.value;
 
-    this.service.Login(credentials).subscribe({
-      next: (res) => {
+    this.service.Login(credentials).pipe(withLoader(this.loaderService)).subscribe({
+      next: (res:any) => {
         const accessToken = res?.result?.accessToken;
         if (accessToken) {
 

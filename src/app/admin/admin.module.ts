@@ -4,6 +4,7 @@ import { CmTableComponent } from '../common/cm-table/cm-table.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
+import { LoaderInterceptor } from '../services/interceptors/loader.interceptor';
 
 @Injectable({
   providedIn:'root'
@@ -18,6 +19,6 @@ import { FormsModule } from '@angular/forms';
     HttpClientModule,
     CommonModule,
     ToastrModule
-  ]
+  ],
 })
 export class AdminModule { }

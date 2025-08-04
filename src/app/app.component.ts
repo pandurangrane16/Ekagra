@@ -55,9 +55,12 @@ export class AppComponent implements OnInit{
     @Inject(DOCUMENT) private document: Document,
     private renderer: Renderer2, 
     public headerService : HeaderService,public routes: Router, private route: ActivatedRoute,
+    public loaderService : LoaderService
   ) {}
 
  
-  ngOnInit()  {}
+  ngOnInit()  {
+    //this.loaderService.isLoader =true;
+  }
 
 }

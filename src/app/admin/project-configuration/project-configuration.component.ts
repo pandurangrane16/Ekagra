@@ -12,6 +12,8 @@ import { projconfigservice } from '../../services/admin/progconfig.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
+import { LoaderService } from '../../services/common/loader.service';
+import { withLoader } from '../../services/common/common';
 import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 
 import { ProjectConfigurationFormComponent } from './project-configuration-form/project-configuration-form.component';
@@ -36,6 +38,7 @@ import { ProjectConfigurationFormComponent } from './project-configuration-form/
  
 
     export class ProjectConfigurationComponent implements OnInit {
+     loaderService = inject(LoaderService);
 router = inject(Router);
       _headerName = 'Project Configuration Table';
       headArr: any[] = [];
@@ -276,8 +279,8 @@ deleteRow(rowData: any): void {
   dialogRef.afterClosed().subscribe(result => {
     if (result) {
      
-      this.service.Delete(rowData.id).subscribe({
-        next: (res) => {
+      this.service.Delete(rowData.id).pipe(withLoader(this.loaderService)).subscribe({
+        next: (res:any) => {
           if (res.success) {
             this.getProjConfigList();
             console.log('Deleted successfully');
@@ -309,7 +312,7 @@ editRow(rowData: any) {
       this._request.pageSize = Number(this.recordPerPage);
       this._request.startId = this.startId;
       this._request.searchItem = this.searchText;
-      this.service.GetAll().subscribe(response => {
+      this.service.GetAll().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
 
          const items = response.result?.items;
          
@@ -364,7 +367,7 @@ editRow(rowData: any) {
       this.SkipCount=this.MaxResultCount*this.pager;
       this.recordPerPage=this.perPage;
  
-     this.service.GetFilteredList(selectedProjectId,search,selectedStatus,this.MaxResultCount,this.SkipCount).subscribe(response => {
+     this.service.GetFilteredList(selectedProjectId,search,selectedStatus,this.MaxResultCount,this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
     //  const items = response?.result || [];
          
     //      this.items=items;
@@ -407,7 +410,7 @@ editRow(rowData: any) {
     }  
        
 getProjList() {
-  this.service.GetProjectList().subscribe(response => {
+  this.service.GetProjectList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
     const items = response?.result || [];
 
     const projectOptions = items.map((item: any) => ({

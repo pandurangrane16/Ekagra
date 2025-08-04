@@ -1,34 +1,35 @@
 <header class="container-fluid">
-    <div class="row d-flex justify-content-between align-item-center">
-        <div class="col-6"> 
-        
-         <img src="assets/img/logo2.svg" alt="" class="logo2"  (click)="onClick($event)" *ngIf="headerService.showLogo"></div>
-        <div class="col-6 text-right justify-content-end align-content-end d-flex">  <mat-form-field>
-            <mat-icon matPrefix>search</mat-icon>
-            <input matInput placeholder="Placeholder"> </mat-form-field> 
-            <button mat-icon-button (click)="changeTheme()" *ngIf="theaming">
-             
-         <mat-icon outline>{{mode}}</mat-icon>
-      
+  <div class="row d-flex justify-content-between align-item-center">
+    <div class="col-6">
+
+      <img src="assets/img/logo2.svg" alt="" class="logo2" (click)="onClick($event)" *ngIf="headerService.showLogo">
+    </div>
+    <div class="col-6 text-right justify-content-end align-content-end d-flex">
+       <!-- <mat-form-field>
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput placeholder="Placeholder"> </mat-form-field> -->
+      <button mat-icon-button (click)="changeTheme()" *ngIf="theaming">
+
+        <mat-icon outline>{{mode}}</mat-icon>
+
       </button>
 
-    
-            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu p-0">
-                <img src="assets/img/user.png" alt="" class="rounded-5"> <span class="online rounded-5" *ngIf="online"></span>
-              </button>
-              <mat-menu #menu="matMenu">
-                <button mat-menu-item  routerLink="login">
-                  <mat-icon>logout</mat-icon>
-                  <span>Logout</span>
-                </button>
-                <button mat-menu-item (click)="onToggleEdit()" *ngIf="hideCustomisation">
-                  <mat-icon>design_services</mat-icon>
-                  <span>Customize Dashboard</span>
-                </button>
-               
-              </mat-menu>
-            </div>
+
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu p-0">
+        <img src="assets/img/user.png" alt="" class="rounded-5"> <span class="online rounded-5" *ngIf="online"></span>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item routerLink="login">
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+        <button mat-menu-item (click)="onToggleEdit()" *ngIf="hideCustomisation">
+          <mat-icon>design_services</mat-icon>
+          <span>Customize Dashboard</span>
+        </button>
+
+      </mat-menu>
     </div>
+  </div>
 
 </header>
-

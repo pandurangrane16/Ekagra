@@ -1,0 +1,30 @@
+export class consumemodel {
+  projectId!: any;
+  type!: any;
+  apiName!: any;
+  baseURL!: any;
+  requestURL!: any;
+  httpMethod!: any;
+  requestParam!: any;
+  header!: any;
+  authReq!: any;
+  authAPIId!: any;
+  authenticatioType!: any;
+  apiSeq!: any;
+  authenticationHeader!: any;
+  commType!: any;
+  bodyType!: any;
+  body!: any;
+  responseStatusCode!: any;
+  response!: any;
+  isActive!: any;
+  projectName!: any;
+  isDeleted!: any;
+  deleterUserId!: any;
+  deletionTime!: any;
+  lastModificationTime!: any;
+  lastModifierUserId!: any;
+  creationTime!: any;
+  creatorUserId!: any;
+  id!: any;
+}

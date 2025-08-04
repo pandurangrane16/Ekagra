@@ -15,6 +15,8 @@ import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { LoaderService } from '../../../services/common/loader.service';
+import { withLoader } from '../../../services/common/common';
 
 import { ToastrService } from 'ngx-toastr';
 
@@ -28,6 +30,7 @@ import { ToastrService } from 'ngx-toastr';
   providers:[ToastrService]
 })
 export class ProjectConfigurationFormComponent {
+   loaderService = inject(LoaderService);
   router = inject(Router);
   form!: FormGroup;
   MatButtonToggleChange:any;
@@ -179,8 +182,8 @@ else{
     formData.append('File', file); // Use 'File' with capital F if backend expects it
 
     // ✅ Call upload service
-    this.service.UploadFile(formData).subscribe({
-      next: (response) => {
+    this.service.UploadFile(formData).pipe(withLoader(this.loaderService)).subscribe({
+      next: (response:any) => {
         if (response?.result?.success) {
           const uploadedFileName = response.result.fileName;
 
@@ -212,7 +215,7 @@ else{
 
 
   ngOnInit(): void {
-this.service.getKeysDataForConfig('basePath').subscribe(basePath => {
+this.service.getKeysDataForConfig('basePath').pipe(withLoader(this.loaderService)).subscribe(basePath => {
   console.log('basePath:', basePath); 
   this.basepath=basePath;
 
@@ -321,7 +324,7 @@ _projconfigmodel.roles="2"
 _projconfigmodel.isDeleted=false;
 
 
-     this.service.CheckProjectName(this.form.controls['name'].value,this.state?.record?.id).subscribe(response => {
+     this.service.CheckProjectName(this.form.controls['name'].value,this.state?.record?.id).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
         if (response.result === true) {
           this.toast.error(" Name already exists in the System.");
           this.form.setErrors({ duplicateName: true });
@@ -335,7 +338,7 @@ _projconfigmodel.isDeleted=false;
 
     _projconfigmodel.id = this.state.record.id;
 
-      this.service.ProjectEdit(_projconfigmodel).subscribe({
+      this.service.ProjectEdit(_projconfigmodel).pipe(withLoader(this.loaderService)).subscribe({
     next: () => {
       console.log('Updated successfully');
 
@@ -357,7 +360,7 @@ _projconfigmodel.isDeleted=false;
   }
 
   else{
-  this.service.ProjectCreate(_projconfigmodel).subscribe({
+  this.service.ProjectCreate(_projconfigmodel).pipe(withLoader(this.loaderService)).subscribe({
     next: () => {
       console.log('Saved successfully');
 

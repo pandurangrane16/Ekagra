@@ -14,6 +14,8 @@ import { MatCardModule } from '@angular/material/card';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
+import { LoaderService } from '../../services/common/loader.service';
+import { withLoader } from '../../services/common/common';
 
 
 
@@ -31,105 +33,105 @@ import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dial
   templateUrl: './site-configuration.component.html',
   styleUrl: './site-configuration.component.css'
 })
-export class SiteConfigurationComponent  {
+export class SiteConfigurationComponent {
+  loaderService = inject(LoaderService);
+  router = inject(Router);
+  isProjectOptionsLoaded = false;
+  _headerName = 'Project Configuration Table';
+  headArr: any[] = [];
+  selectedProject: any;
+  MaxResultCount = 10;
+  SkipCount = 0;
+  perPage = 10;
+  pageNo = 0;
+  recordPerPage: number = 10;
+  pager: number = 0;
+  selectedStatus: any;
+  form!: FormGroup;
+  totalRecords = 2;
+  items: any;
 
-router = inject(Router);
-isProjectOptionsLoaded = false;
-_headerName = 'Project Configuration Table';
-headArr: any[] = [];
-selectedProject: any;
-  MaxResultCount=10;
-  SkipCount=0;
-  perPage=10;
-  pageNo=0;
-   recordPerPage: number = 10;
-     pager: number = 0;
-selectedStatus: any;
-form!: FormGroup;
-totalRecords = 2;
-items :any;
+  totalPages = 1;
+  collectionSize = 2;
+  searchInputSettings = {
+    labelHeader: 'Search',
+    placeholder: 'Type to search...',
+    formFieldClass: '',
+    labelClass: 'form-label',
+    appearance: 'fill',
+    isDisabled: false,
+    color: 'primary'
+  };
+  squareSettings = {
+    labelHeader: 'Search',
+    formFieldClass: 'cm-square-input',
+    placeholder: 'Search (minimum 3 letters)',
+    appearance: 'outline',
+    isDisabled: false
+  };
+  roundedSettings = {
+    labelHeader: 'Search',
+    formFieldClass: 'cm-pill-input',
+    appearance: 'fill',
+    isDisabled: false
+  };
+  projectSelectSettings = {
+    labelHeader: 'Select Project',
+    lableClass: 'form-label',
+    formFieldClass: '',
+    appearance: 'fill',
+    options: []
+  };
 
-totalPages = 1;
-collectionSize = 2;
-searchInputSettings = {
-  labelHeader: 'Search',
-  placeholder: 'Type to search...',
-  formFieldClass: '', 
-  labelClass: 'form-label',
-  appearance: 'fill',
-  isDisabled: false,
-  color: 'primary'
-};
-squareSettings = {
-  labelHeader: 'Search',
-  formFieldClass: 'cm-square-input',
-       placeholder: 'Search (minimum 3 letters)',
-  appearance: 'outline',
-  isDisabled: false
-};
-roundedSettings = {
-  labelHeader: 'Search',
-  formFieldClass: 'cm-pill-input',
-  appearance: 'fill',
-  isDisabled: false
-};
-projectSelectSettings = {
-  labelHeader: 'Select Project',
-  lableClass: 'form-label',
-  formFieldClass: '', 
-  appearance: 'fill',
-  options:[]
-};
+  statusSelectSettings = {
+    labelHeader: 'Select Status',
+    lableClass: 'form-label',
+    formFieldClass: 'w-100',
+    appearance: 'fill',
+    options: [
+      { name: 'Enable', value: true },
+      { name: 'Disable', value: false },
+      { name: 'All', value: null }
+    ]
+  };
+  gridArr = [
+    {
+      projectname: 'Alpha Project',
+      siteid: 'as',
+      sitename: 'as',
+      lat: '1',
+      long: '1',
+      description: 'as',
+      status: 'Active',
+      action: ''
 
-   statusSelectSettings = {
-        labelHeader: 'Select Status',
-          lableClass: 'form-label',
-          formFieldClass: 'w-100',
-          appearance: 'fill',
-          options: [
-            { name: 'Enable', value: true },
-            { name: 'Disable', value: false },
-            { name: 'All', value: null }
-          ]
-        };
-gridArr = [
-  {
-   projectname: 'Alpha Project',
-   siteid:'as',
-   sitename:'as',
-   lat:'1',
-   long:'1',
-   description:'as',
-   status: 'Active',
-   action:''
-    
-  },
-  {
-    projectname: 'Alpha Project',
-    siteid:'as',
-    sitename:'as',
-    lat:'1',
-    long:'1',
-    description:'as',
-    status: 'Active',
-    action:''
-     
-   }
-];
+    },
+    {
+      projectname: 'Alpha Project',
+      siteid: 'as',
+      sitename: 'as',
+      lat: '1',
+      long: '1',
+      description: 'as',
+      status: 'Active',
+      action: ''
+
+    }
+  ];
 
 
-constructor(private fb: FormBuilder,private service:siteconfigservice
-  ,private dialog: MatDialog
-  ) {}
-ngOnInit(): void {
-   this.form = this.fb.group({
-     selectedProject: [''],
-     selectedStatus: [''],
-     searchText: ['']
-   });
-   this.buildHeader();
-   this.getProjList();
-   this.getSiteConfigList();
+  constructor(private fb: FormBuilder, private service: siteconfigservice
+    , private dialog: MatDialog
+  ) { }
+  ngOnInit(): void {
+    this.form = this.fb.group({
+      selectedProject: [''],
+      selectedStatus: [''],
+      searchText: ['']
+    });
+    this.buildHeader();
+    this.getProjList();
+    this.getSiteConfigList();
 
      this.form.get('searchText')?.valueChanges
        .pipe(
@@ -147,279 +149,277 @@ ngOnInit(): void {
           this.getFilteredList();
        }
        });
-   
 
-}
-  onPageChange(event:any) {
-    console.log(event);
-  if (event.type === 'pageChange') {
-    this.pager = event.pageNo;
-  this.getFilteredList();
+
   }
-}
+  onPageChange(event: any) {
+    console.log(event);
+    if (event.type === 'pageChange') {
+      this.pager = event.pageNo;
+      this.getFilteredList();
+    }
+  }
 
 
-onPageRecordsChange(event:any ) {
-  console.log(event);
-  if (event.type === 'perPageChange') {
-    this.perPage = event.perPage;
-    this.pager = 0;
+  onPageRecordsChange(event: any) {
+    console.log(event);
+    if (event.type === 'perPageChange') {
+      this.perPage = event.perPage;
+      this.pager = 0;
+      this.getFilteredList();
+    }
+  }
+
+
+  onPaginationChanged(event: { pageNo: number; perPage: number }) {
+    if (this.perPage !== event.perPage) {
+      this.perPage = event.perPage;
+      this.pager = 0;
+    } else {
+      this.pager = event.pageNo;
+    }
+
     this.getFilteredList();
   }
-}
+
+  getSiteConfigList() {
+    //this.loaderService.showLoader();
+    this.MaxResultCount = this.perPage;
+    this.SkipCount = this.MaxResultCount * this.pager;
+    this.recordPerPage = this.perPage;
+    const selectedProjectId = this.form.controls['selectedProject'].value.value;
+    const selectedStatus = this.form.controls['selectedStatus'].value.value;
+    const search = this.form.controls['searchText'].value
+    this.service.GetAll(this.MaxResultCount, this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+
+      const items = response.result?.items;
+      const totalCount = response.result?.totalCount;
+      console.log("List before mapping:", items);
+      this.items = items.map((element: any) => ({
+        ...element,
 
 
-onPaginationChanged(event: { pageNo: number; perPage: number }) {
-  if (this.perPage !== event.perPage) {
-    this.perPage = event.perPage;
-    this.pager = 0; 
-  } else {
-    this.pager = event.pageNo;
+        siteId: element.siteId,
+        siteName: element.siteName,
+        lat: element.lat,
+        long: element.long,
+        description: element.description,
+        name: element.projectName,
+        isActive: !!element.isActive,
+        button: [
+          { label: 'Edit', icon: 'edit', type: 'edit' },
+          { label: 'Delete', icon: 'delete', type: 'delete' }
+        ]
+      }));
+      console.log("list2: " + this.items)
+
+
+
+      if (Array.isArray(items)) {
+
+
+        var _length = totalCount / Number(this.recordPerPage);
+        if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+          this.totalRecords = Number(this.recordPerPage) * (_length);
+        else if (Math.floor(_length) == 0)
+          this.totalRecords = 10;
+        else
+          this.totalRecords = totalCount;
+        this.totalPages = this.totalRecords / this.pager;
+
+      }
+    })
+  }
+  onProjectSelected(event: any) {
+    console.log('Selected Project:', event);
+  }
+  getProjList() {
+    this.service.GetProjectList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+      const items = response?.result || [];
+
+      const projectOptions = items.map((item: any) => ({
+        name: item.name || item.shortCode,
+        value: item.id
+      }));
+
+
+      projectOptions.unshift({
+        name: 'All',
+        value: null
+      });
+
+      this.projectSelectSettings.options = projectOptions;
+      this.form.controls['selectedProject'].setValue({
+        name: 'All',
+        value: null
+      });
+
+      this.form.controls['selectedStatus'].setValue({
+        name: 'All',
+        value: null
+      });
+      this.isProjectOptionsLoaded = true;
+    }, error => {
+      console.error('Error fetching project list', error);
+    });
   }
 
-  this.getFilteredList(); 
-}
 
- getSiteConfigList() {
-      
-      this.MaxResultCount=this.perPage;
-      this.SkipCount=this.MaxResultCount*this.pager;
-      this.recordPerPage=this.perPage;
-      const selectedProjectId = this.form.controls['selectedProject'].value.value;
-     const selectedStatus = this.form.controls['selectedStatus'].value.value;
-     const search = this.form.controls['searchText'].value
-      this.service.GetAll(this.MaxResultCount,this.SkipCount).subscribe(response => {
-       
-         const items = response.result?.items;
-         const totalCount=response.result?.totalCount;
-       
+  submit() {
+    this.pager = 0;
+    this.perPage = 10;
+    this.getFilteredList();
+  }
+  getFilteredList() {
+    this.MaxResultCount = this.perPage;
+    this.SkipCount = this.MaxResultCount * this.pager;
+    this.recordPerPage = this.perPage;
+    const selectedProjectId = this.form.controls['selectedProject'].value.value;
+    const selectedStatus = this.form.controls['selectedStatus'].value.value;
+    const search = this.form.controls['searchText'].value
+    this.service.GetFilteredList(selectedProjectId, search, selectedStatus, this.MaxResultCount, this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+      //  const items = response?.result || [];
+
+      //      this.items=items;
+      const items = response.result?.items;
+      this.items = items;
+
+      const totalCount = response.result?.totalCount;
+      if (Array.isArray(items)) {
+
+        items.forEach((element: any) => {
+
+          element.siteId = element.siteId;
+          element.siteName = element.siteName;
+          element.lat = element.lat;
+          element.long = element.long;
+          element.description = element.description;
+          element.name = element.projectName;
+
+          element.isActive = !!element.isActive;
+
+          element.button = [
+            { label: 'Edit', icon: 'edit', type: 'edit' },
+            { label: 'Delete', icon: 'delete', type: 'delete' }
+          ];
 
 
-         console.log("List before mapping:", items);
-         this.items = items.map((element: any) => ({
-  ...element,
-
- 
-    siteId : element.siteId,
-    siteName : element.siteName,
-    lat:element.lat,
-    long:element.long,
-    description:element.description,
-    name: element.projectName,
-    isActive: !!element.isActive,
-    button: [
-    { label: 'Edit', icon: 'edit', type: 'edit' },
-    { label: 'Delete', icon: 'delete', type: 'delete' }
-  ]
-}));
- console.log("list2: " + this.items)
 
 
 
-        if (Array.isArray(items)) {
-         
-        
-           var _length = totalCount / Number(this.recordPerPage);
-          if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-            this.totalRecords = Number(this.recordPerPage) * (_length);
-          else if (Math.floor(_length) == 0)
-            this.totalRecords = 10;
-          else
-            this.totalRecords = totalCount;
-          this.totalPages = this.totalRecords / this.pager;
-          
-        }
-      })
-    }  
-onProjectSelected(event: any) {
-  console.log('Selected Project:', event);
-}
-getProjList() {
-  this.service.GetProjectList().subscribe(response => {
-    const items = response?.result || [];
+        });
+        var _length = totalCount / Number(this.recordPerPage);
+        if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+          this.totalRecords = Number(this.recordPerPage) * (_length);
+        else if (Math.floor(_length) == 0)
+          this.totalRecords = 10;
+        else
+          this.totalRecords = totalCount;
+        this.totalPages = this.totalRecords / this.pager;
+      }
+    })
+  }
+  onStatusChange(value: any) {
+    this.selectedStatus = value;
+    console.log('Selected Status:', value);
+    // Apply filtering or logic here
+  }
+  onProjectChange(value: any) {
+    this.selectedProject = value;
+    console.log('Selected Project:', value);
+    // Apply filtering or logic here
+  }
+  openDialog() {
 
-    const projectOptions = items.map((item: any) => ({
-      name: item.name || item.shortCode,
-      value: item.id
-    }));
+    this.router.navigate(['/admin/siteconfigmng']);
 
-  
-    projectOptions.unshift({
-      name: 'All',
-      value: null
+  }
+  buildHeader() {
+    this.headArr = [
+      { header: 'Project Name', fieldValue: 'name', position: 1 },
+      { header: 'Site Id', fieldValue: 'siteId', position: 2 },
+      { header: 'Site Name', fieldValue: 'siteName', position: 3 },
+      { header: 'Lat', fieldValue: 'lat', position: 4 },
+      { header: 'Long', fieldValue: 'long', position: 5 },
+      { header: 'Description', fieldValue: 'description', position: 6 },
+      { header: 'Status', fieldValue: 'isActive', type: 'boolean', position: 5 },
+      { header: 'Action', fieldValue: 'button', position: 7 }
+    ];
+    ;
+  }
+  handleBtnAction(e: any) {
+    console.log('Button Action:', e);
+  }
+  handlePageChange(pageno: number) {
+    console.log('Page Changed to:', pageno);
+  }
+  handlePerPageChange(records: number) {
+    console.log('Records Per Page:', records);
+  }
+  handleSearchWithId(item: any) {
+    console.log('Row clicked:', item);
+  }
+  handleSearch(term: string) {
+    console.log('Search term:', term);
+  }
+
+  onRowClicked(row: any) {
+    console.log('Row clicked:', row);
+  }
+  onButtonClicked({ event, data }: { event: any; data: any }) {
+    if (event.type === 'edit') {
+      console.log(data);
+      this.editRow(data);
+      console.log(data);
+    } else if (event.type === 'delete') {
+      this.deleteRow(data);
+    }
+  }
+  deleteRow(rowData: any): void {
+    const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
+      width: '400px',
+      position: { top: '20px' },
+      panelClass: 'custom-confirm-dialog',
+      data: {
+        title: 'Confirm Delete',
+        message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.name}</b> will be deleted.</div>`,
+
+        type: 'delete',
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel'
+      }
     });
 
-    this.projectSelectSettings.options = projectOptions;
-    this.form.controls['selectedProject'].setValue({
-  name: 'All',
-  value: null
-});
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result) {
 
-this.form.controls['selectedStatus'].setValue({
-  name: 'All',
-  value: null
-});
-    this.isProjectOptionsLoaded = true;
-  }, error => {
-    console.error('Error fetching project list', error);
-  });
-}
+        this.service.Delete(rowData.id).pipe(withLoader(this.loaderService)).subscribe({
+          next: (res:any) => {
+            if (res.success) {
+              this.getSiteConfigList();
+              console.log('Deleted successfully');
 
-
- submit(){
-      this.pager=0;
-         this.perPage=10;
-  this.getFilteredList();
- }
-  getFilteredList() {
-     this.MaxResultCount=this.perPage;
-      this.SkipCount=this.MaxResultCount*this.pager;
-      this.recordPerPage=this.perPage;
-    const selectedProjectId = this.form.controls['selectedProject'].value.value;
-     const selectedStatus = this.form.controls['selectedStatus'].value.value;
-     const search = this.form.controls['searchText'].value
-     this.service.GetFilteredList(selectedProjectId,search,selectedStatus,this.MaxResultCount,this.SkipCount).subscribe(response => {
-    //  const items = response?.result || [];
-         
-    //      this.items=items;
-         const items = response.result?.items;
-         this.items=items;
-
-const totalCount=response.result?.totalCount;
-        if (Array.isArray(items)) {
-         
-           items.forEach((element: any) => {
-               
-        element.siteId = element.siteId;
-            element.siteName = element.siteName;
-            element.lat=element.lat;
-            element.long=element.long;
-            element.description=element.description;
-            element.name=element.projectName;
-            
-            element.isActive = !!element.isActive; 
-
-              element.button = [
-    { label: 'Edit', icon: 'edit', type: 'edit' },
-    { label: 'Delete', icon: 'delete', type: 'delete' }
-  ];
-        
-
-
-
-         
-          });
-         var _length = totalCount / Number(this.recordPerPage);
-          if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-            this.totalRecords = Number(this.recordPerPage) * (_length);
-          else if (Math.floor(_length) == 0)
-            this.totalRecords = 10;
-          else
-            this.totalRecords = totalCount;
-          this.totalPages = this.totalRecords / this.pager;
-        }
-      })
-    }  
-onStatusChange(value: any) {
-  this.selectedStatus = value;
-  console.log('Selected Status:', value);
-  // Apply filtering or logic here
-}
-onProjectChange(value: any) {
-  this.selectedProject = value;
-  console.log('Selected Project:', value);
-  // Apply filtering or logic here
-}
-openDialog() {
-
-this.router.navigate(['/admin/siteconfigmng']);
-          
-}
-buildHeader() {  
-          this.headArr = [
-            { header: 'Project Name', fieldValue: 'name', position: 1 },
-            { header: 'Site Id', fieldValue: 'siteId', position: 2 },
-            { header: 'Site Name', fieldValue: 'siteName', position: 3 },
-            { header: 'Lat', fieldValue: 'lat', position: 4 },
-            { header: 'Long', fieldValue: 'long', position: 5 },
-            { header: 'Description', fieldValue: 'description', position: 6 },
-            { header: 'Status', fieldValue: 'isActive',type:'boolean', position: 5 },
-            { header: 'Action', fieldValue: 'button', position: 7 }
-          ];
-;}     
-handleBtnAction(e: any) {
-          console.log('Button Action:', e);
-}
-handlePageChange(pageno: number) {
-  console.log('Page Changed to:', pageno);
-}
-handlePerPageChange(records: number) {
-  console.log('Records Per Page:', records);
-}
-handleSearchWithId(item: any) {
-  console.log('Row clicked:', item);
-}
-handleSearch(term: string) {
-  console.log('Search term:', term);
-}
-
-onRowClicked(row: any) {
-        console.log('Row clicked:', row);
-}
-    onButtonClicked({ event, data }: { event: any; data: any }) {
-  if (event.type === 'edit') {
-       console.log(data);
-    this.editRow(data);
-    console.log(data);
-  } else if (event.type === 'delete') {
-     this.deleteRow(data);
-  }
-}
-deleteRow(rowData: any): void {
-  const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
-    width: '400px',
-      position: { top: '20px' },
-  panelClass: 'custom-confirm-dialog',
-    data: {
-      title: 'Confirm Delete',
-     message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.name}</b> will be deleted.</div>`,
-
-      type: 'delete',
-      confirmButtonText: 'Confirm',
-      cancelButtonText: 'Cancel'
-    }
-  });
-
-  dialogRef.afterClosed().subscribe((result:any) => {
-    if (result) {
-     
-      this.service.Delete(rowData.id).subscribe({
-        next: (res) => {
-          if (res.success) {
-            this.getSiteConfigList();
-            console.log('Deleted successfully');
-           
-          } else {
-            console.error('Delete failed:', res.error);
+            } else {
+              console.error('Delete failed:', res.error);
+            }
+          },
+          error: (err) => {
+            console.error('API error:', err);
           }
-        },
-        error: (err) => {
-          console.error('API error:', err);
-        }
-      });
-    } else {
-      console.log('User cancelled');
-    }
-  });
-}
+        });
+      } else {
+        console.log('User cancelled');
+      }
+    });
+  }
 
-editRow(rowData: any) {
-  this.router.navigate(['/admin/siteconfigmng'], {
-    state: {
-      mode: 'edit',
-      record: rowData
-    }
-  });
-}
-       
+  editRow(rowData: any) {
+    this.router.navigate(['/admin/siteconfigmng'], {
+      state: {
+        mode: 'edit',
+        record: rowData
+      }
+    });
+  }
+
 }
