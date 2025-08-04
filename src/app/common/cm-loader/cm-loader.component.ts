@@ -1,4 +1,9 @@
-import { Component, Input } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  NgZone
+} from '@angular/core';
 import { LoaderService } from '../../services/common/loader.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -6,14 +11,27 @@ import { MaterialModule } from '../../Material.module';
 
 @Component({
   selector: 'app-cm-loader',
-  imports: [FormsModule,CommonModule,MaterialModule],
+  standalone: true,
+  imports: [FormsModule, CommonModule, MaterialModule],
   templateUrl: './cm-loader.component.html',
-  styleUrl: './cm-loader.component.css',
-  standalone:true
+  styleUrl: './cm-loader.component.css'
 })
-export class CmLoaderComponent {
-  loaderVal : any;
- constructor(public loaderService: LoaderService) {
- 
- }
+export class CmLoaderComponent implements OnInit {
+  loaderVal = false;
+
+  constructor(
+    private loaderService: LoaderService,
+    private cdr: ChangeDetectorRef,
+    private zone: NgZone
+  ) {}
+
+  ngOnInit(): void {
+    this.loaderService.isLoading$.subscribe((val) => {
+      this.zone.run(() => {
+        this.loaderVal = val;
+        console.log("Loader Value : " + this.loaderVal);
+        this.cdr.detectChanges(); // Force view update
+      });
+    });
+  }
 }

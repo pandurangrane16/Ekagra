@@ -1,25 +1,38 @@
-// loader.interceptor.ts
 import { Injectable } from '@angular/core';
 import {
-  HttpInterceptor,
+  HttpInterceptorFn,
   HttpRequest,
-  HttpHandler,
+  HttpHandlerFn,
   HttpEvent
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { inject } from '@angular/core';
 import { LoaderService } from '../common/loader.service';
+import { finalize, Observable } from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+// export const LoaderInterceptor: HttpInterceptorFn = (
+//   req: HttpRequest<any>,
+//   next: HttpHandlerFn
+// ): Observable<HttpEvent<any>> => {
+//   const loader = inject(LoaderService);
+//   loader.showLoader();
 
-export class LoaderInterceptor implements HttpInterceptor {
-  constructor(private loaderService: LoaderService) {}
+//   return next(req).pipe(
+//     finalize(() => loader.hideLoader())
+//   );
+// };
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    this.loaderService.show();
-    return next.handle(req).pipe(
-      finalize(() => setTimeout(() => {
-        this.loaderService.hide(); console.log("Loader Hides")}, 5000))
-    );
-  }
-}
+
+export const LoaderInterceptor: HttpInterceptorFn = (req, next) => {
+  const loader = inject(LoaderService);
+  loader.showLoader();
+  console.log('Loader ON');
+
+  return next(req).pipe(
+    finalize(() => {
+      //console.log('Loader OFF');
+      loader.hideLoader();
+    })
+  );
+};
+
+

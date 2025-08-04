@@ -141,7 +141,7 @@ export class RuleConfigComponent implements OnInit {
   }
 
   minuteSettings = {
-    labelHeader: 'Minute',
+    labelHeader: 'Minute (Numeric)',
     lableClass: 'form-label',
     formFieldClass: '',
     appearance: 'outline',
@@ -155,7 +155,7 @@ export class RuleConfigComponent implements OnInit {
   }
 
   hourSettings = {
-    labelHeader: 'Hour',
+    labelHeader: 'Hour (Numeric)',
     lableClass: 'form-label',
     formFieldClass: '',
     appearance: 'outline',
