@@ -8,6 +8,8 @@ import { CmToggleComponent } from '../../../common/cm-toggle/cm-toggle.component
 import { RuleEngineService } from '../../../services/admin/rule-engine.service';
 import { SignalRService } from '../../../services/common/signal-r.service';
 import { CmButtonComponent } from "../../../common/cm-button/cm-button.component";
+import { withLoader } from '../../../services/common/common';
+import { LoaderService } from '../../../services/common/loader.service';
 import { CmCheckboxGroupComponent } from '../../../common/cm-checkbox-group/cm-checkbox-group.component';
 import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-select-check.component";
 
@@ -19,9 +21,13 @@ import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-selec
   styleUrl: './rule-config.component.css'
 })
 export class RuleConfigComponent implements OnInit {
+  
+  loaderService=inject(LoaderService)
   private _formBuilder = inject(FormBuilder);
   signalRService = inject(SignalRService);
   ruleService = inject(RuleEngineService);
+  isProjectOptionsLoaded:any;
+  AndFlag:any;
   userGroupSettings = {
     labelHeader: 'User Group*',
     lableClass: 'form-label',
@@ -41,10 +47,7 @@ export class RuleConfigComponent implements OnInit {
     formFieldClass: '',
     appearance: 'outline',
     options: [
-      { name: 'VMS', value: '0' },
-      { name: 'ATCS', value: '1' },
-      { name: 'TEST', value: '2' },
-      { name: 'TEST 2', value: '3' }
+   
     ]
   };
   inputFields = {
@@ -87,9 +90,9 @@ export class RuleConfigComponent implements OnInit {
     formFieldClass: '',
     appearance: 'outline',
     options: [
-      { name: 'Low', value: 'L' },
-      { name: 'Medium', value: 'M' },
-      { name: 'High', value: 'H' }
+      { name: 'Low', value: '0' },
+      { name: 'Medium', value: '1' },
+      { name: 'High', value: '2' }
     ],
 
   };
@@ -263,6 +266,7 @@ export class RuleConfigComponent implements OnInit {
     }
   }
   ngOnInit(): void {
+    this.getProjList();
     this.checkBoxSettings = {
       labelHeader: '',
       placeholder: 'Choose',
@@ -274,6 +278,48 @@ export class RuleConfigComponent implements OnInit {
         { label: 'OR', value: 'or' }
       ]
     }
+
+//     this.secondFormGroup.get('selectedProject')?.valueChanges.subscribe((value:any) => {
+//     this.AndFlag = false; 
+
+
+//       if (value?.value) { 
+//         this.AndFlag = true; 
+//   }
+
+    
+  
+// });
+
+
+  }
+
+    getProjList() {
+    this.ruleService.GetProjectList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+      const items = response?.result || [];
+  
+      const projectOptions = items.map((item: any) => ({
+        name: item.name || item.shortCode,
+        value: item.id
+      }));
+  
+    
+      // projectOptions.unshift({
+      //   name: 'All',
+      //   value: null
+      // });
+  
+     this.projectSettings.options = projectOptions;
+  // this.form.controls['selectedProject'].setValue({
+  //   name: 'All',
+  //   value: null
+  // });
+  
+  
+      this.isProjectOptionsLoaded = true;
+    }, error => {
+      console.error('Error fetching project list', error);
+    });
   }
 
   goNext() {

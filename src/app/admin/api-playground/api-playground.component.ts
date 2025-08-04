@@ -14,6 +14,7 @@ import { projapimodel } from '../../models/admin/projectapi.model';
 import { ToastrService } from 'ngx-toastr';
 import { consumemodel } from '../../models/admin/consume.model';
 import { getErrorMsg } from '../../utils/utils';
+import { Router } from '@angular/router';
 import { withLoader } from '../../services/common/common';
 import { projapirequestmodel } from '../../models/admin/projectapirequest.model';
 import { AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
@@ -27,6 +28,7 @@ import { AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
   standalone: true
 })
 export class ApiPlaygroundComponent implements OnInit {
+    router = inject(Router);
    loaderService = inject(LoaderService);
    tabs = [
     { label: 'Params', content : "Test Param" },
@@ -974,7 +976,7 @@ const payload = {
     Body: bodyJsonString,
     ResponseStatusCode: "",
     Response: "",
-    IsActive: true,
+    IsActive: formValues.IsActive,
     ProjectName: "",
     IsDeleted: false,
     DeleterUserId: "",
@@ -1028,11 +1030,14 @@ RemoveHeader(index:any){
     itemsArray.removeAt(index);
   }
 submit(): void {
-  // if (this.form.invalid) {
-  //   this.form.markAllAsTouched(); 
-  //   return;
-  // }
- console.log(this.form.controls['apiseq'].value )
+  console.log(this.form.controls['isActive'].value )
+  if (this.form.invalid) {
+    this.toast.error('Please select all the values before Submit.');
+    this.form.markAllAsTouched(); 
+    return;
+  }
+ else{
+  console.log(this.form.controls['apiseq'].value )
  const apiseq=this.form.controls['apiseq'].value
 const bodyArray = this.form.get('body')?.value;
 const bodyValue = bodyArray?.[0]?.bodyValue || null;
@@ -1071,7 +1076,7 @@ console.log(creationTime);
     body:bodyArray?.[0]?.bodyValue || null,
     responseStatusCode: 200,  
     response: this.responseText,            
-    isActive: true,            
+    isActive: formValues.isActive,            
     projectName:  this.form.controls['selectedProject'].value.name,
     isDeleted: false,
     deleterUserId: 0,
@@ -1141,6 +1146,7 @@ requestModels.forEach(model => {
   this.service.CreateProjectApiRequest(model).pipe(withLoader(this.loaderService)).subscribe({
    next: (res) => {
    this.toast.success('ProjectAPIRequest saved successfully.');
+    this.router.navigate(['/admin/apilist']);  
       
    },
     error: (err) => {
@@ -1158,10 +1164,11 @@ requestModels.forEach(model => {
       console.error('Error creating API:', err);
     }
   });
+ }
 }
-
-
   close() {
-
+      this.router.navigate(['/admin/apilist']);   
   }
+
+
 }
