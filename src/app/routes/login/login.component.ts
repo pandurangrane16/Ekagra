@@ -24,7 +24,7 @@ import { MatButtonModule } from '@angular/material/button';
 export class LoginComponent {
 
   loginForm!: FormGroup;
-  version: string = "2.0.2";
+  version: string = "2.0.3";
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
