@@ -17,19 +17,26 @@
 </div>
 <div class="row mb-2 mt-2 d-flex">
     <div class="col-md-10">
-        <div class="card" style="height: 365px;">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-3">
-                        <h6 class="mb-0">Zonal Overview</h6>
-                        <app-zonal></app-zonal>
-                    </div>
-                    <div class="col-md-9">
-                        <app-cm-leaflet *ngIf="isMap && labelList && labelList.length > 0" [showMap]="isMap"
-                            [siteData]="siteList" [labelList]="labelList">
-                        </app-cm-leaflet>
-                    </div>
-                </div>
+<div class="card" style="height: 365px;">
+<div class="card-body" >
+    <div class="row">
+        <div class="col-md-3">
+            <h6 class="mb-0">Zonal Overview</h6>
+<app-zonal></app-zonal>
+        </div>
+        <div class="col-md-9"> 
+             <app-cm-leaflet
+              *ngIf="isMap && labelList && labelList.length > 0"
+               [showMap]="isMap" 
+               [siteData]="siteList"
+               [labelList]="labelList"
+               [popupData]="popupData"
+               (markerClicked)="onMarkerClicked($event)"
+               
+              >
+             </app-cm-leaflet></div>
+    </div>
+   
 
 
             </div>
@@ -80,13 +87,11 @@
                     </mat-select>
 
 
-                </mat-form-field>
-                <div class="d-flex align-items-center justify-content-between" style="font-size: 13px;">
-                    <mat-icon>arrow_back_ios</mat-icon> {{ getSelectedJunctionName() }}
-                    <mat-icon>arrow_forward_ios</mat-icon>
-                </div>
-                <app-cycle [junctionName]="selectedJunction"></app-cycle>
-            </div>
+                  </mat-form-field>
+                  <!-- <div class="d-flex align-items-center justify-content-between" style="font-size: 13px;">  <mat-icon>arrow_back_ios</mat-icon>  {{ getSelectedJunctionName() }} <mat-icon>arrow_forward_ios</mat-icon>
+       </div> -->
+                   <app-cycle [junctionName]="selectedJunction"></app-cycle>
+        </div>
         </div>
     </div>
 </div>

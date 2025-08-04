@@ -166,12 +166,12 @@ export class SidenavComponent {
         icon: './assets/img/icon_settings.svg',
         activeIcon: './assets/img/icon_settings1.svg',
         label: 'Zone Configuration',
-        link: 'admin/zoneform',
+        link: 'admin/zoneconfig',
       }, {
         icon: './assets/img/icon_settings.svg',
         activeIcon: './assets/img/icon_settings1.svg',
         label: 'Map Configuration',
-        link: 'admin/mapform',
+        link: 'admin/mapconfig',
       }, {
         icon: './assets/img/icon_settings.svg',
         activeIcon: './assets/img/icon_settings1.svg',

@@ -16,7 +16,7 @@
 
 
             <form [formGroup]="form" class="form-container">
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col-md-3" style="margin-top: -10px;">
                         <label style="position: relative; top: 6px; display: block;">Enter Name</label>
                         <div>
@@ -37,7 +37,117 @@
                             (optionSelected)="onProjectSelected($event)">
                         </app-cm-select2>
                     </div>
-                </div>
+                </div> -->
+<div class="filter-row" style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 15px;">
+
+  <!-- Left Filters -->
+  <app-cm-select2
+   *ngIf="isProjectOptionsLoaded"
+    [formGroup]="form"
+    [controlName]="'selectedProject'"
+    [settings]="projectSelectSettings"
+    (optionSelected)="onProjectSelected($event)">
+  </app-cm-select2>
+
+                 <!-- <div *ngIf="f['selectedProject'].touched && f['selectedProject'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('selectedProject', 'Project Name', false, '') }}
+      </div> -->
+ 
+
+    <app-cm-select2
+   *ngIf="isProjtypeOptionsLoaded"
+    [formGroup]="form"
+    [controlName]="'selectedProjType'"
+    [settings]="projectTypeSettings"
+    (optionSelected)="onProjectSelected($event)">
+  </app-cm-select2>
+
+     <!-- <div *ngIf="f['selectedProjType'].touched && f['selectedProjType'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('selectedProjType', 'Project Type', false, '') }}
+      </div> -->
+
+      <app-cm-select2
+
+      
+  
+    [formGroup]="form"
+    [controlName]="'method'"
+    [settings]="apiTypeSettings"
+    (optionSelected)="onProjectSelected($event)">
+  </app-cm-select2>
+
+           <!-- <div *ngIf="f['method'].touched && f['method'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('method', 'Method', false, '') }}
+      </div> -->
+
+
+   <div class="col-md-3" style="margin-top: -15px;">
+                        <label style="position: relative; top: 6px; display: block;">API Name</label>
+                        <div>
+                            <app-cm-input [formGroup]="form" [controlName]="'apiName'"
+                                [_inputData]="inputFields.apiName">
+                            </app-cm-input>
+                        </div>
+                    </div>
+
+
+
+                    
+                      <div class="col-md-2" style="margin-top: -9px;">
+                <label class="toggle-label">Is Required Auth.</label>
+                <app-cm-toggle [formGroup]="form" [settings]="isrequireauth" style="margin-top: -35px;"></app-cm-toggle>
+            </div>
+                  
+
+
+
+   <div class="col-md-6" style="margin-top: -10px;">
+                        <label style="position: relative; top: 6px; display: block;">Enter URL</label>
+                        <div>
+                            <app-cm-input [formGroup]="form" [controlName]="'apiUrl'" [_inputData]="inputFields.apiUrl">
+                            </app-cm-input>
+                                 <div *ngIf="f['apiUrl'].touched && f['apiUrl'].errors" class="text-danger mt-1">
+    {{ getErrorMessage('apiUrl', 'Api Url', true, 'Enter a valid URL without spaces') }}
+  </div>
+                        </div>
+                    </div>
+                      <div class="col-md-1" style="margin-top: -10px;">
+                        <label style="position: relative; top: 6px; display: block;">Api Seq</label>
+                        <div>
+                            <app-cm-input [formGroup]="form" [controlName]="'apiseq'"
+                                [_inputData]="inputFields.apiSeq">
+                            </app-cm-input>
+                        </div>
+                    </div>
+
+
+
+                    
+
+
+<div style="margin-left: 260px; margin-top: 3px;">
+  <app-cm-select2
+    *ngIf="authRequiredFlag"
+    [formGroup]="form"
+    [controlName]="'selectedapi'"
+    [settings]="Apitype_forauth"
+    (optionSelected)="onProjectSelected($event)">
+  </app-cm-select2>
+</div>
+
+
+            
+
+
+</div>
+
+
+
+
+
+
+
+               
 
                 <hr>
                 <div class="row">
@@ -49,7 +159,7 @@
                                 <ng-container>
                                     <div class="query-container">
                                         <button mat-flat-button color="accent" class="add-query"
-                                            (click)="createQueryStrings()">Add
+                                             >Add
                                             New Query</button>
                                         <div *ngIf="form.get('queryStrings')">
                                             <div class="row">
@@ -58,38 +168,147 @@
                                                         <label class="col-md-1">
                                                             Sr No.
                                                         </label>
-                                                        <label class="col-md-5">
+                                                          <label class="col-md-2">
+                                                            Type
+                                                        </label>
+                                                        <label class="col-md-3">
                                                             Key
                                                         </label>
-                                                        <label class="col-md-5">
-                                                            Value
+                                                        <label class="col-md-2">
+                                                            Input Type
+                                                        </label>
+                                                        <label class="col-md-2">
+                                                             Input Value
                                                         </label>
 
-                                                        <label class="col-md-1">
-                                                            Action
+                                                        <label class="col-md-2">
+                                                            Selected Type
                                                         </label>
                                                     </div>
                                                     <div *ngFor="let group of queryStringsFormArray.controls; let i = index"
                                                         [formGroup]="group" class="row mb-2">
-                                                        <div class="col-md-1 text-center">
+
+                                                        <div class="col-md-1 text-center" style="margin-top: 20px;">
                                                             <app-cm-input [formGroup]="group" [controlName]="'qsNo'"
                                                                 [_inputData]="inputFields.apiUrl">
                                                             </app-cm-input>
                                                         </div>
-                                                        <div class="col-md-5 text-center">
-                                                            <app-cm-input [formGroup]="group" [controlName]="'qsKey'"
-                                                                [_inputData]="inputFields.qsKey">
-                                                            </app-cm-input>
+
+
+                                                        <div class="col-md-2 text-center narrow-select-wrapper" style="min-width: 100px;">
+                                                        <app-cm-select2
+                                                         *ngIf="isTypeOptionsLoaded"
+                                                          [formGroup]="group"
+                                                          [controlName]="'qsType'"
+                                                          [settings]="qsType"
+                                                          (optionSelected)="onProjectSelected($event)">
+                                                        </app-cm-select2>
                                                         </div>
-                                                        <div class="col-md-5 text-center">
-                                                            <app-cm-input [formGroup]="group" [controlName]="'qsValue'"
-                                                                [_inputData]="inputFields.qsValue">
-                                                            </app-cm-input>
+
+                                                        <div class="col-md-3 text-center narrow-select-wrapper" style="min-width: 100px; margin-top: 20px;">
+                                                        <app-cm-input [formGroup]="group" [controlName]="'qsKey'"
+                                                        [_inputData]="inputFields.qsKey">
+                                                        </app-cm-input>
                                                         </div>
-                                                        <div class="col-md-1 text-center">
-                                                            <button mat-stroked-button
-                                                                (click)="RemoveQS(i)">Delete</button>
+
+                                                        <div class="col-md-2 text-center narrow-select-wrapper" style="min-width: 100px;">
+                                                        <app-cm-select2
+                                                        *ngIf="isInputTypeOptionsLoaded"
+                                                        [formGroup]="group"
+                                                        [controlName]="'qsInputType'"
+                                                        [settings]="qsInputType"
+                                                        (optionSelected)="onProjectSelected($event)">
+                                                        </app-cm-select2>
                                                         </div>
+
+
+                                                        
+                                    <div
+  class="col-md-2 text-center narrow-select-wrapper"
+  [ngStyle]="{
+    'min-width.px': 100,
+    'margin-top.px': group.get('isStaticFlag')?.value ? 20 : 0
+  }"
+>
+  <ng-container *ngIf="group.get('isUserDefined')?.value">
+   
+   <app-cm-select2
+      [formGroup]="group"
+      [controlName]="'qsValue'"
+      [settings]="qsValue"
+      (optionSelected)="onProjectSelected($event)">
+    </app-cm-select2>
+  </ng-container>
+
+    <ng-container *ngIf="group.get('isStaticFlag')?.value">
+   
+    <app-cm-input
+      [formGroup]="group"
+      [controlName]="'qsValue'"
+      [_inputData]="inputFields.qsValue">
+    </app-cm-input>
+  </ng-container>
+
+  <ng-container *ngIf="group.get('isSystemAuto')?.value">
+  
+    <app-cm-select2
+      [formGroup]="group"
+      [controlName]="'qsValue'"
+      [settings]="qsValue"
+      (optionSelected)="onProjectSelected($event)">
+    </app-cm-select2>
+  </ng-container>
+</div>
+
+                                                    
+
+                                                        <!-- <div class="col-md-2 text-center narrow-select-wrapper" style="min-width: 100px;">
+                                                        <app-cm-select2
+                                                        [formGroup]="group"
+                                                        [controlName]="'qsSelectedType'"
+                                                        [settings]="qsSelectedType"
+                                                        (optionSelected)="onProjectSelected($event)">
+                                                        </app-cm-select2>
+                                                        </div> -->
+
+
+                                                                                            <div
+  class="col-md-2 text-center narrow-select-wrapper"
+  [ngStyle]="{
+    'min-width.px': 100,
+    'margin-top.px': group.get('isinput')?.value ? 20 : 0
+  }"
+>
+  <ng-container *ngIf="group.get('isGuid')?.value">
+   
+   <app-cm-select2
+      [formGroup]="group"
+      [controlName]="'qsSelectedType'"
+      [settings]="qsSelectedType"
+      (optionSelected)="onProjectSelected($event)">
+    </app-cm-select2>
+  </ng-container>
+
+    <ng-container *ngIf="group.get('isinput')?.value">
+   
+    <app-cm-input
+      [formGroup]="group"
+      [controlName]="'qsSelectedType'"
+      [_inputData]="inputFields.qsSelectedType">
+    </app-cm-input>
+  </ng-container>
+
+  <ng-container *ngIf="group.get('isDate')?.value">
+  
+    <app-cm-select2
+      [formGroup]="group"
+      [controlName]="'qsSelectedType'"
+      [settings]="qsSelectedType"
+      (optionSelected)="onProjectSelected($event)">
+    </app-cm-select2>
+  </ng-container>
+</div>
+                      
                                                     </div>
                                                 </div>
 
@@ -223,6 +442,77 @@
                         </mat-tab-group>
                     </div>
                 </div>
+
+
+<div class="row">
+
+
+<div class="col-md-12 d-flex justify-content-end mb-2">
+  <button class="btn btn-dark" style="padding: 6px 18px; font-size: 15px; border-radius: 6px;" (click)="onSend()">
+    Send
+  </button>
+</div>
+
+  <!-- Response display area -->
+  <div class="col-md-12"  *ngIf="responsebox">
+    <label for="responseBox">Response</label>
+    <textarea id="responseBox"
+              class="form-control"
+              rows="4"
+              readonly
+              [value]="responseText">
+    </textarea>
+  </div>
+
+
+<div class="col-md-12">
+  <!-- <label>Response</label> -->
+
+<div *ngIf="parsedResponse && typeof parsedResponse === 'object'">
+  <pre class="json-tree">
+    <span>&#123;</span>
+    <ul class="json-dict">
+      <li *ngFor="let key of objectKeys(parsedResponse)">
+        <label>
+          <input
+            type="checkbox"
+            [checked]="isSelected(key)"
+            (change)="onCheckboxChange($event, key)"
+          />
+          <span class="json-key">{{ key }}</span>:
+        </label>
+        <span class="json-string">"{{ parsedResponse[key] }}"</span>
+      </li>
+    </ul>
+    <span>&#125;</span>
+  </pre>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+  <!-- Toggle section -->
+  <div class="col-md-6" style="margin-top: 10px;">
+    <label class="toggle-label">Enabled</label>
+    <app-cm-toggle [formGroup]="form" [settings]="projectEnabled" style="margin-top: -35px;"></app-cm-toggle>
+  </div>
+</div>
+
+
+                
+
+
+
+
+
 <hr>
                 <div class="row">
                     <div class="col-md-12 d-flex justify-content-end">

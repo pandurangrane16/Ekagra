@@ -271,6 +271,14 @@ export class SiteMngComponent implements OnInit {
 
   }
   ngOnInit(): void {
+    debugger;
+ 
+
+     const state1 = history.state;
+
+  if (state1?.mode === 'edit') {
+    this.form.get('name')?.disable();   // Disables the project name dropdown
+  }
 
     this.form.get('siteId')?.valueChanges
       .pipe(
@@ -796,4 +804,5 @@ export class SiteMngComponent implements OnInit {
     this.router.navigate(['/admin/siteconfig']);
   }
 
+  
 }

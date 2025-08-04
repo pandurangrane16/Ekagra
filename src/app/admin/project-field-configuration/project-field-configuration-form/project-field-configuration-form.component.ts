@@ -166,6 +166,11 @@ noSpecialCharValidator(): ValidatorFn {
     
     this.state = history.state;
          const state = this.state;
+
+              if (state?.mode === 'edit') {
+    this.form.get('selectedProject')?.disable();   // Disables the project name dropdown
+  }
+
    this.getProjList();
   this.form.get('selectedProject')?.valueChanges.subscribe(selected => {
     const selectedProject = selected?.value;
