@@ -17,6 +17,7 @@ interface MenuItem {
   children?: MenuItem[];
   isOpen?: boolean;
   link: string;
+  apiLable ?: string;
 }
 
 @Component({
@@ -103,6 +104,7 @@ export class SidenavComponent {
       activeIcon: './assets/img/icon_ATCS1.svg',
       label: 'ATCS',
       link: 'atcs',
+      apiLable : "atcs"
     },
     {
       icon: './assets/img/icon_airQuality.svg',
@@ -208,9 +210,13 @@ export class SidenavComponent {
   }
 
   toggleMenuItem(item: MenuItem) {
+    console.log(item);
     // Only toggle if sidebar is not collapsed and item has children
     if (!this.isSidebarCollapsed && item.children) {
       item.isOpen = !item.isOpen;
+    }
+    else {
+      
     }
   }
 }
