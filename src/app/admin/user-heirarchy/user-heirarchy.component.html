@@ -1,0 +1,45 @@
+<div class="row mt-1">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="row">
+                <mat-card-header>
+                    <div class="col-md-11" style="padding-left: 10px;">
+                        <mat-card-title>
+                            <h2 style="margin-top: 10px;">User Heirarchy</h2>
+                        </mat-card-title>
+                    </div>
+
+                </mat-card-header>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3 text-left form-padder">
+                    <app-cm-select2 *ngIf="isUserLoaded" [formGroup]="form" [controlName]="'userName'"
+                        [settings]="userTypeSettings" (optionSelected)="onUserTypeSelected($event)">
+                    </app-cm-select2>
+                </div>
+                <div class="col-md-3 text-left form-padder">
+                    <app-cm-select2 [formGroup]="form" [controlName]="'manager'" [settings]="managerSettings"
+                        (optionSelected)="onManagerSelected($event)">
+                    </app-cm-select2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-9 text-right form-padder">
+                    <button mat-flat-button class="btn-change" (click)="openDialog()">
+                        Submit
+                    </button>
+                </div>
+            </div>
+            <hr>
+            <div class="card-body" id="editForm">
+                <app-cm-table [headArr]="headArr" [gridArr]="items" [pagination]="true" [totalRecords]="totalRecords"
+                    [perPage]="perPage" [totalPages]="totalPages" [collectionSize]="collectionSize"
+                    (pager)="onPageChange($event)" (recordPerPage)="onPageRecordsChange($event)"
+                    (searchWithId)="onRowClicked($event)" (btnAction)="onButtonClicked($event)">
+                </app-cm-table>
+            </div>
+        </div>
+    </div>
+</div>

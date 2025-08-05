@@ -192,7 +192,7 @@
                                 <form>
                                     <div class="row">
                                         <div class="col-md-4">
-                                            <app-cm-select2 [formGroup]="secondFormGroup"
+                                            <app-cm-select2   *ngIf="isProjectOptionsLoaded" [formGroup]="secondFormGroup"
                                                 [controlName]="'selectedProject'"
                                                 [settings]="projectSettings"></app-cm-select2>
                                         </div>

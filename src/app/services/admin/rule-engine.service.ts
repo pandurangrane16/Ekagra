@@ -16,4 +16,9 @@ export class RuleEngineService {
   setRulesStorage(){
     return this._httpService._setRuleConditions();
   }
+
+  GetProjectList() {
+    return this._httpService._getMethod('api/services/app/Project/GetProjectList');
+  }
+
 }

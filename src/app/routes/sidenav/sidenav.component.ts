@@ -193,6 +193,12 @@ export class SidenavComponent {
         activeIcon: './assets/img/icon_settings1.svg',
         label: 'Rule Engine',
         link: 'admin/ruleengine',
+      },
+    {
+        icon: './assets/img/icon_settings.svg',
+        activeIcon: './assets/img/icon_settings1.svg',
+        label: 'User Configuration',
+        link: 'admin/userheirarchy',
       }]
     }
   ];
