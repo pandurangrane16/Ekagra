@@ -25,3 +25,7 @@ apiResponseSetting
   height: 200px;
   width: 100%;
 }; */
+.api-field-green {
+  color: green;
+  font-weight: bold;
+}

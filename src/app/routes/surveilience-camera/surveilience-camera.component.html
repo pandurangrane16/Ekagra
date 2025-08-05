@@ -57,7 +57,7 @@
 <div *ngIf="!loading">
   <div *ngIf="activeEmbedUrl; else noPreview">
      <!-- Close Button -->
-    <button class="btn btn-sm btn-danger close-button" (click)="onClosePreview()">
+    <!-- <button class="btn btn-sm btn-danger close-button" (click)="onClosePreview()">
       ✖
     </button>
     <iframe
@@ -66,7 +66,16 @@
       height="500px"
       frameborder="0"
       allowfullscreen
-    ></iframe>
+    ></iframe> -->
+
+    <app-video-stream-player
+  *ngIf="activeEmbedUrl && !loading"
+  [streamUrl]="activeEmbedUrl">
+</app-video-stream-player>
+
+<ng-template #noPreview>
+  <div class="no-preview"><p>No preview found.</p></div>
+</ng-template>
   </div>
 
   <ng-template #noPreview>
@@ -78,7 +87,7 @@
 
 
 
-
+<!-- 
            <div *ngFor="let cam of camera" class="col-md-6 mt-1 mb-1">
                 <div class="card" [ngClass]="{ fullscreen: cam.expanded }">
                 <div class="card-body">  
@@ -92,18 +101,43 @@
                         <a><img src="assets/img/Delete-Circle.png"></a>
                     </span>
                 </div>
-                <!-- <div>
-                    
-<img [src]="cam.img" alt="" class="img-fluid w-100" (click)="onSiteClick(cam.siteId)">
-
-                </div> -->
+               
                  <div class="preview-container" (click)="onSiteClick(cam.siteId)">
-        <img [src]="cam.img" alt="Preview" class="img-fluid preview-blur" />
+         <app-video-stream-player
+  *ngIf="cam.safeStreamUrl"
+  [streamUrl]="cam.safeStreamUrl"
+></app-video-stream-player>
         <div class="preview-overlay">Preview</div>
       </div>
             </div>
         </div>
-            </div>
+            </div> -->
+
+<div *ngFor="let cam of camera | slice:0:4" class="col-md-6 mt-1 mb-1">
+  <div class="card" [ngClass]="{ fullscreen: cam.expanded }">
+    <div class="card-body">
+      <div class="title d-flex align-items-start justify-content-between mb-1">
+        <span>{{ cam.name }}</span>
+        <span class="actions">
+          <a class="me-1"><img src="assets/img/Share-Link.png"/></a>
+          <a class="me-1" (click)="toggleExpand(cam)"> 
+            <img src="assets/img/Minimize-2.png">
+          </a>
+          <a><img src="assets/img/Delete-Circle.png"></a>
+        </span>
+      </div>
+
+      <app-video-stream-player
+        *ngIf="cam.safeStreamUrl"
+        [streamUrl]="cam.safeStreamUrl"
+      ></app-video-stream-player>
+
+    </div>
+  </div>
+</div>
+
+
+
         </div>
     </div>
   
