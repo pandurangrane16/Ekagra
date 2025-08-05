@@ -1,4 +1,4 @@
-import { Component, OnInit,Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit,Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 // import { CmTableComponent } from '../../common/cm-table/cm-table.component';
 import { CmSelectComponent } from '../../common/cm-select/cm-select.component';
@@ -17,7 +17,8 @@ import { AppCustomSelectComponent } from '../../common/custom-select/custom-sele
 import { JsonTreeComponent } from '../../common/json-tree/json-tree.component';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { FormsModule } from '@angular/forms';
-
+import { LoaderService } from '../../services/common/loader.service';
+import { withLoader } from '../../services/common/common';
 
 @Component({
   selector: 'app-project-field-map',
@@ -33,10 +34,11 @@ import { FormsModule } from '@angular/forms';
     AppCustomSelectComponent  ],
   templateUrl: './project-field-map.component.html',
   styleUrl: './project-field-map.component.css',
-
+ providers:[ToastrService]
 })
 
 export class ProjectFieldMapComponent implements OnInit{
+     loaderService = inject(LoaderService);
   _headerName = 'Project Field Map';
  form!: FormGroup;
   projectOptions: any[] = [];
@@ -50,7 +52,8 @@ showApiDetails: boolean = false;
 constructor(
     private fb: FormBuilder,
     private projectService: projconfigservice,
-    private fieldMapService: ProjectfieldmapService
+    private fieldMapService: ProjectfieldmapService,
+     private toast: ToastrService
   ) {}
 
  ngOnInit(): void {
@@ -84,7 +87,7 @@ constructor(
  loadProjectList() {
   try{
   debugger;
-    this.projectService.GetProjectList().subscribe(response => { console.log(response);
+    this.projectService.GetProjectList().pipe(withLoader(this.loaderService)).subscribe((response: any)=> { console.log(response);
       this.projectOptions = (response.result || []).map((item: any) => ({
         name: item.name || item.shortCode,
         value: item.id
@@ -108,8 +111,8 @@ try{  debugger;
 loadApiListByProject(projectId: number) {
   debugger;
   try {
-    this.fieldMapService.GetActiveProjectFieldMasterByProjectidForAllTypes(projectId).subscribe({
-      next: (response) => {
+    this.fieldMapService.GetActiveProjectFieldMasterByProjectidForAllTypes(projectId).pipe(withLoader(this.loaderService)).subscribe({
+      next: (response:any) => {
         this.apiOptions = (response.result || []).map((item: any) => ({
           name: item.apiName,
           value: item.id
@@ -262,8 +265,8 @@ onApiSelected(selectedApi: any) {
 loadApiDetails(apiId: number) {
 debugger;
 
-  try {  this.fieldMapService.GetActiveProjectFieldMasterByProjectidForAPI(apiId).subscribe({
-    next: (response) => {
+  try {  this.fieldMapService.GetActiveProjectFieldMasterByProjectidForAPI(apiId).pipe(withLoader(this.loaderService)).subscribe({
+    next: (response:any) => {
       if (response.result && response.result.length > 0) {
         const apiData = response.result[0];
 
@@ -349,8 +352,8 @@ loadProjectFieldMap(projectId: number, apiId: number) {
   // });
 
    debugger;
-  this.fieldMapService.projectFieldByProjectIdWithAllType(projectId, apiId).subscribe({
-    next: (response) => {
+  this.fieldMapService.projectFieldByProjectIdWithAllType(projectId, apiId).pipe(withLoader(this.loaderService)).subscribe({
+    next: (response:any) => {
       const data = response.result || [];
       this.projectFieldMapData = data;  // ✅ Directly bind the API response to your component array
     },
@@ -368,7 +371,8 @@ loadProjectFieldMap(projectId: number, apiId: number) {
 setApiField(index: number) {
   try{
     this.selectedRowIndex = index;
-    alert('Now click a field from API Response to set for this row');
+    // alert('Now click a field from API Response to set for this row');
+     this.toast.success('Now click a field from API Response to set for this row'); 
   } catch (ex) {
     console.error('Client-side JS error:', ex);
   }
@@ -381,6 +385,17 @@ clearApiField(index: number) {
 onSave() {
   try{
     debugger;
+
+    // ✅ Step 0: Check if all apiField values are empty
+    const allEmpty = this.projectFieldMapData.every(row => !row.apiField || row.apiField.trim() === '');
+    if (allEmpty) {
+      console.error('Please set API Fields to save the data');
+      this.toast.error('Please set API Fields to save the data');
+      // alert('Please enter API Fields to save the data');
+      return;
+    }
+
+    // ✅ Step 1: Duplicate Check for API Fields
   // Step 1: Duplicate Check for API Fields
   const apiFieldValues = new Set<string>();
   let duplicateFound = false;
@@ -396,7 +411,8 @@ onSave() {
   }
 
   if (duplicateFound) {
-    alert('API Field must be mapped only once!');
+     this.toast.error('API Field must be mapped only once!');
+    // alert('API Field must be mapped only once!');
     return; // Stop further processing
   }
 const selectedProjectId = this.form.value.selectedProject;
@@ -421,14 +437,16 @@ const projectName = selectedProject ? selectedProject.name : '';
 
   // Step 3: Call API to Save
   if (updateData.length > 0) {
-    this.fieldMapService.InsertUpdateBulkProjectFieldQuery(updateData).subscribe({
+    this.fieldMapService.InsertUpdateBulkProjectFieldQuery(updateData).pipe(withLoader(this.loaderService)).subscribe({
       next: () => {
-        alert('Saved Successfully');
+           console.error('Saved Successfully');
+      this.toast.success('Saved Successfully');
         // Reload page or reload project field map
         // Example: this.loadProjectFieldMap(this.form.value.selectedProject, this.form.value.selectedApi);
       },
       error: (error) => {
         console.error('Save failed:', error);
+      this.toast.error('Saved failed');
       }
     });
   }

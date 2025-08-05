@@ -104,9 +104,10 @@
           type="text"
           class="form-control"
           [(ngModel)]="item.apiField"
-          placeholder="Enter API Field"
           required
           name="apiField{{ i }}"
+          [ngClass]="{ 'api-field-green': item.apiField }"
+          disabled
         />
       </td>
 
