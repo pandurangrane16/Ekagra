@@ -20,6 +20,7 @@ import { RuleConfigComponent } from "./rule-engine/rule-config/rule-config.compo
 import { ContactConfigurationFormComponent } from "./contact-configuration/contact-configuration-form/contact-configuration-form.component";
 import { ContactConfigurationComponent } from "./contact-configuration/contact-configuration.component";
 import { ProjectFieldMapComponent } from "./project-field-map/project-field-map.component";
+import { UserHeirarchyComponent } from "./user-heirarchy/user-heirarchy.component";
 export const AdminRoutes: Routes = [
   {
     path: '',
@@ -227,6 +228,17 @@ export const AdminRoutes: Routes = [
       title: 'Contact Configuration',
       urls: [
         { title: 'Admin Dashboard', url: '/admin/ContactConf' },
+        { title: 'Contact Configuration' }
+      ]
+    }
+  },
+  {
+    path: 'userheirarchy',
+    component: UserHeirarchyComponent,
+    data: {
+      title: 'Contact Configuration',
+      urls: [
+        { title: 'User Heirarchy', url: '/admin/userheirarchy' },
         { title: 'Contact Configuration' }
       ]
     }
