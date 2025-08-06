@@ -190,7 +190,8 @@ async loadInitialStreamPreviews(siteIds: number[]) {
       const fullStreamUrl = streamRes?.data?.embedurl + rfu2;
 
       return {
-        name: `Camera ${index + 1}`,
+        // name: `Camera ${index + 1}`,
+         name: `Camera: ${rfu2}`,
         img: `assets/img/cam${index + 1}.jpg`,
         expanded: false,
         siteId,
@@ -235,11 +236,17 @@ embedUrl:string| null=null;
 rfu2:string| null=null;
 activeEmbedUrl: SafeResourceUrl | null = null;
 
-
+selectedCameraName: string = '';
 async onSiteClick(siteId: number, triggeredByUser: boolean = true): Promise<void> {
   this.loading = true;
 
   try {
+     const selectedCam = this.camera.find(cam => cam.siteId === siteId);
+  if (selectedCam) {
+
+    this.selectedCameraName = selectedCam.name;
+  }
+
     // Only stop if triggered manually and the siteId is changing
     if (triggeredByUser && this.currentSiteId && this.currentSiteId !== siteId) {
       await firstValueFrom(this.surveillanceService.stopLiveStream(this.currentSiteId));
@@ -311,6 +318,7 @@ onClosePreview(): void {
       this.cd.detectChanges(); // ensure UI updates after stream stops
     }
   });
+    this.selectedCameraName = '';
 }
 
 
