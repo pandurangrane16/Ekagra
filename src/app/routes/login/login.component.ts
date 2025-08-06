@@ -13,6 +13,7 @@ import { loginservice } from '../../services/admin/login.service';
 import { MatButtonModule } from '@angular/material/button';
 import { LoaderService } from '../../services/common/loader.service';
 import { withLoader } from '../../services/common/common';
+import { SessionService } from '../../services/common/session.service';
 
 
 
@@ -24,14 +25,15 @@ import { withLoader } from '../../services/common/common';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent {
-loaderService=inject(LoaderService)
+loaderService=inject(LoaderService);
+sessionService=inject(SessionService);
   loginForm!: FormGroup;
   version: string = "2.0.4";
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private router: Router,
-    private service: loginservice
+    private service: loginservice,
   ) { }
 
 
@@ -80,6 +82,15 @@ loaderService=inject(LoaderService)
       userNameOrEmailAddress: ['', Validators.required],
       password: ['', Validators.required]
     });
+
+    this.getConfigDetails();
+  }
+  getConfigDetails() {
+    this.service.getConfigDetails().subscribe(res => {
+      if(res != undefined) {
+        this.sessionService._setSessionValue("config",JSON.stringify(res));
+      }
+    })
   }
   showPassword: boolean = false;
 

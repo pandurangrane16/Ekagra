@@ -22,6 +22,7 @@ import { ContactConfigurationFormComponent } from './admin/contact-configuration
 import { SiteConfigurationComponent } from './admin/site-configuration/site-configuration.component';
 import { ProjectFieldConfigurationComponent } from './admin/project-field-configuration/project-field-configuration.component';
 import { Component } from '@angular/core';
+import { DashRoutesComponent } from './routes/dash-routes/dash-routes.component';
 export const routes: Routes = [
       { path: "", component: LoginComponent, },
       { path: "login", component: LoginComponent, },
@@ -42,6 +43,7 @@ export const routes: Routes = [
              {path:'contactconfig', component: ContactConfigurationFormComponent},
      {path:'siteconf', component: SiteConfigurationComponent},
     {path:'projfieldconfig',component: ProjectFieldConfigurationComponent},
+    {path:'dashroute',component: DashRoutesComponent},
       {
             path: 'admin',
             //  component: AdminDashboardComponent,

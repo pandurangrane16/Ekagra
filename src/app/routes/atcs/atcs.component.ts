@@ -1,5 +1,5 @@
 
-import { Component,inject, OnInit } from '@angular/core';
+import { Component, inject, Input, input, OnInit } from '@angular/core';
 import { MapviewComponent } from "../dashboard/widgets/mapview/mapview.component";
 import { NotificationComponent } from "../dashboard/widgets/notification/notification.component";
 import { ZonalComponent } from "./widgets/zonal/zonal.component";
@@ -20,6 +20,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { LoaderService } from '../../services/common/loader.service';
 import { withLoader } from '../../services/common/common';
+import { SessionService } from '../../services/common/session.service';
 
 interface Junction {
   value: string;
@@ -33,13 +34,14 @@ interface Junction {
   providers: [provideNativeDateAdapter()]
 })
 export class AtcsComponent {
- 
-  loaderService=inject(LoaderService)
+
+  loaderService = inject(LoaderService)
   constructor(private service: atcsDashboardservice) { }
   selectedJunction: string = '';
   isMap: boolean = false;
   islabel: boolean = false;
   basepath: any;
+  id: any;
 
 
 
@@ -50,10 +52,10 @@ export class AtcsComponent {
   ];
 
   isCardExpanded = false;
-siteList: any[] = [];
-labelList: any[] = [];
-popupData: { [siteId: string]: any } = {};
-
+  siteList: any[] = [];
+  labelList: any[] = [];
+  popupData: { [siteId: string]: any } = {};
+  session = inject(SessionService);
 
 
 
@@ -61,7 +63,7 @@ popupData: { [siteId: string]: any } = {};
 
   ngOnInit(): void {
 
-
+    this.id = this.session._getSessionValue("projectIdRoute");
 
 
 
@@ -78,40 +80,40 @@ popupData: { [siteId: string]: any } = {};
 
 
   }
-onMarkerClicked(siteId: string) {
-  this.service.login().pipe(withLoader(this.loaderService)).subscribe({
-    next: (res:any) => {
-      const token = res?.token;
-      if (!token) {
-        console.error("Token missing in login response");
-        return;
+  onMarkerClicked(siteId: string) {
+    this.service.login().pipe(withLoader(this.loaderService)).subscribe({
+      next: (res: any) => {
+        const token = res?.token;
+        if (!token) {
+          console.error("Token missing in login response");
+          return;
+        }
+
+        const headers = {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        };
+
+        this.service.sitedata(siteId, headers).pipe(withLoader(this.loaderService)).subscribe({
+          next: (siteRes) => {
+            console.log("Fetched site data:", siteRes);
+
+
+            this.popupData = {
+              [siteId]: siteRes
+            };
+          },
+          error: (err) => {
+            console.error("Error fetching site data:", err);
+          }
+        });
+      },
+      error: (err) => {
+        console.error("Login failed:", err);
       }
-
-      const headers = {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      };
-
-      this.service.sitedata(siteId, headers).pipe(withLoader(this.loaderService)).subscribe({
-        next: (siteRes) => {
-          console.log("Fetched site data:", siteRes);
-
-         
-        this.popupData = {
-  [siteId]: siteRes
-};
-        },
-        error: (err) => {
-          console.error("Error fetching site data:", err);
-        }
-      });
-    },
-    error: (err) => {
-      console.error("Login failed:", err);
-    }
-  });
-}
+    });
+  }
 
 
 
@@ -125,12 +127,12 @@ onMarkerClicked(siteId: string) {
 
 
 
-loadpoints(): void {
-  //const basePath = 'https://172.19.32.51:8089/UploadedFiles/Icons/';
-  const basePath=this.basepath
-  this.service.GetSiteMasterByProjectId(1).pipe(withLoader(this.loaderService)).subscribe({
-    next: (res:any) => {
-      const rawSites = res?.result || [];
+  loadpoints(): void {
+    //const basePath = 'https://172.19.32.51:8089/UploadedFiles/Icons/';
+    const basePath = this.basepath
+    this.service.GetSiteMasterByProjectId(this.id).pipe(withLoader(this.loaderService)).subscribe({
+      next: (res: any) => {
+        const rawSites = res?.result || [];
 
         if (rawSites.length === 0) {
           this.siteList = [];
@@ -167,7 +169,7 @@ loadpoints(): void {
   }
 
   loadJunctions(): void {
-    this.service.GetAll().pipe(withLoader(this.loaderService)).subscribe((res:any) => {
+    this.service.GetAll().pipe(withLoader(this.loaderService)).subscribe((res: any) => {
       if (res?.result?.items) {
         this.junctions = res.result.items.map((item: any) => ({
           value: item.siteId.toString(),
