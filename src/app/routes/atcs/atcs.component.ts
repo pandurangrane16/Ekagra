@@ -157,7 +157,7 @@ export class AtcsComponent {
     });
   }
   loadpopuplabels(): void {
-    this.service.getlabels(1).pipe(withLoader(this.loaderService)).subscribe((res: any) => {
+    this.service.getlabels(this.id).pipe(withLoader(this.loaderService)).subscribe((res: any) => {
       if (res && res.result && Array.isArray(res.result.items)) {
         this.labelList = res.result.items;
         this.islabel = true

@@ -83,11 +83,7 @@ export class SidenavComponent implements OnInit {
         activeIcon: './assets/img/icon_surveillance1.svg',
         label: 'Surveillance',
         link: 'surveilience',
-        // isOpen: false,
-        // children: [
-        //   { icon: 'fas fa-user', label: 'Profile' },
-        //   { icon: 'fas fa-lock', label: 'Security' },
-        // ]
+        apiLable: "surveilience"
       },
       {
         icon: './assets/img/icon_parking.svg',
@@ -225,7 +221,7 @@ export class SidenavComponent implements OnInit {
       item.isOpen = !item.isOpen;
     }
     else {
-      const code = JSON.parse(this.configData).projectCodes.filter((x: any) => x.name == "atcs")[0].value;
+      const code = JSON.parse(this.configData).projectCodes.filter((x: any) => x.name == item.apiLable)[0].value;
 
       const targetRoute = `${item.link}/${code?.value ?? ''}`;
       console.log('Navigating to:', targetRoute);

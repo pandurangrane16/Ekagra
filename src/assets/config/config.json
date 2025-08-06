@@ -52,7 +52,7 @@
         "projectCodes": [
             {"name" : "atcs","value" : "1"},
             {"name" : "vms","value" : "2"},
-            {"name" : "surveillance","value" : "3"},
+            {"name" : "surveilience","value" : "3"},
             {"name" : "pa","value" : "4"},
             {"name" : "itms","value" : "18"},
             {"name" : "ivms","value" : "19"},
