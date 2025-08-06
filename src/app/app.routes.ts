@@ -22,11 +22,12 @@ import { ContactConfigurationFormComponent } from './admin/contact-configuration
 import { SiteConfigurationComponent } from './admin/site-configuration/site-configuration.component';
 import { ProjectFieldConfigurationComponent } from './admin/project-field-configuration/project-field-configuration.component';
 import { Component } from '@angular/core';
+import { DashRoutesComponent } from './routes/dash-routes/dash-routes.component';
 export const routes: Routes = [
       { path: "", component: LoginComponent, },
       { path: "login", component: LoginComponent, },
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'surveilience', component: SurveiliencePageComponent },
+      { path: 'surveilience', component: SurveilienceCameraComponent },
       { path: 'atcs', component: AtcsComponent },
       { path: 'parking', component: ParkingComponent },
       { path: 'air', component: AirQualityComponent },
@@ -35,13 +36,14 @@ export const routes: Routes = [
       //{ path: 'chat', component: ChatPageComponent },
       { path: 'setting', component: SettingPageComponent },
       //{ path: "**", redirectTo: "dashboard" },
-       { path: 'projfieldmap', component: ProjectFieldMapComponent },
-      {path:'projconf', component: ProjectConfigurationComponent},
-            {path:'BulkUpload', component: BulkUploadComponent},
-            {path:'ContactConf', component: ContactConfigurationComponent},
-             {path:'contactconfig', component: ContactConfigurationFormComponent},
-     {path:'siteconf', component: SiteConfigurationComponent},
-    {path:'projfieldconfig',component: ProjectFieldConfigurationComponent},
+      { path: 'projfieldmap', component: ProjectFieldMapComponent },
+      { path: 'projconf', component: ProjectConfigurationComponent },
+      { path: 'BulkUpload', component: BulkUploadComponent },
+      { path: 'ContactConf', component: ContactConfigurationComponent },
+      { path: 'contactconfig', component: ContactConfigurationFormComponent },
+      { path: 'siteconf', component: SiteConfigurationComponent },
+      { path: 'projfieldconfig', component: ProjectFieldConfigurationComponent },
+      { path: 'dashroute', component: DashRoutesComponent },
       {
             path: 'admin',
             //  component: AdminDashboardComponent,

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,6 +14,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { firstValueFrom } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
 import { VideoStreamPlayerComponent } from '../../common/video-stream-player/video-stream-player.component';
+import { SessionService } from '../../services/common/session.service';
 
 interface Section {
   name: string;
@@ -89,7 +90,7 @@ camera: Section[] = [
 ];
 
 
-
+session = inject(SessionService);
 
 
 sites: Site[] = []; 
@@ -104,7 +105,7 @@ sites: Site[] = [];
   ngOnInit(): void {
     try{
     debugger;
-    const projectId = 1; // 🔁 Replace this with actual selected project id if needed
+    const projectId = this.session._getSessionValue("projectIdRoute"); // 🔁 Replace this with actual selected project id if needed
     this.surveillanceService
       .GetSiteLocationCameraListForSurveillance(projectId)
       .subscribe((res: any) => {
