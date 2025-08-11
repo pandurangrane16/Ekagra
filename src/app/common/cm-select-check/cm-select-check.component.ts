@@ -33,6 +33,8 @@ export class CmSelectCheckComponent {
       .subscribe(filtered => {
         this.filteredOptions = filtered;
       });
+
+      this.controlName = this.searchCtrl;
   }
 
   private _filter(value: string): any[] {
@@ -42,16 +44,17 @@ export class CmSelectCheckComponent {
 
     //return this.options.filter(x=>x.name.includes(filterValue));
   }
-  toggleSelection(option: { name: string; value: string }) {
-    const index = this.selectedValues.indexOf(option.value);
+  toggleSelection(option: any) {
+    const index = this.selectedValues.indexOf(option);
     if (index >= 0) {
       this.selectedValues.splice(index, 1);
     } else {
-      this.selectedValues.push(option.value);
+      this.selectedValues.push(option);
     }
 
     // Reset search field
     this.searchCtrl.setValue('');
+    this.returnObject.emit(this.selectedValues);
   }
 
   displayFn(): string {
@@ -81,8 +84,12 @@ export class CmSelectCheckComponent {
     this.emitSelected();
   }
   emitSelected() {
+    //this.controlName = this.searchCtrl;
+    this.formGroup.patchValue({
+      [this.controlName] : this.selectedValues
+    })
     this.returnObject.emit(
-      this.options.filter(o => this.selectedValues.includes(o))
+      this.selectedValues
     );
   }
 }

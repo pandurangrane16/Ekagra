@@ -15,21 +15,116 @@
 
         <div class="container">
           <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-6">
+              <app-cm-input [formGroup]="group" [controlName]="'height'" [_inputData]="heightSettings">
+              </app-cm-input>
+            </div>
+            <div class="col-md-6">
+              <app-cm-input [formGroup]="group" [controlName]="'width'" [_inputData]="widthSettings">
+              </app-cm-input>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
               <app-cm-select2 [formGroup]="group" [controlName]="'type'" [settings]="typeSettings"
-                (optionSelected)="onProjectSelected($event)">
+                (ChangeSelection)="onProjectSelected($event)">
               </app-cm-select2>
             </div>
-            <div class="col-md-4">
+            @if(group.value.type.value == "0") {
+            <div class="col-md-3">
               <app-cm-select2 [formGroup]="group" [controlName]="'chartType'" [settings]="chartTypeSettings"
                 (optionSelected)="onProjectSelected($event)">
               </app-cm-select2>
             </div>
-            <div class="col-md-4">
-              <app-cm-select2 [formGroup]="group" [controlName]="'type'" [settings]="typeSettings"
-                (optionSelected)="onProjectSelected($event)">
-              </app-cm-select2>
+            }
+            @else if(group.value.type.value == "1") {
+            <div class="col-md-3">
+              <label>Notification Header </label>
+              <app-cm-input [formGroup]="group" [controlName]="'notiHeader'" [_inputData]="inputFields.notiHeader">
+              </app-cm-input>
             </div>
+            }
+            @else if(group.value.type.value == "2") {
+              <div class="col-md-3">
+              <label>Header </label>
+              <app-cm-input [formGroup]="group" [controlName]="'staticHeader'" [_inputData]="inputFields.staticHeader">
+              </app-cm-input>
+            </div>
+            }
+            <div class="col-md-3">
+              <label>API URL </label>
+              <app-cm-input [formGroup]="group" [controlName]="'apiUrl'" [_inputData]="inputFields.apiUrl">
+              </app-cm-input>
+            </div>
+            <div class="col-md-3">
+              <button (click)="fetchData()">Load Chart</button>
+            </div>
+          </div>
+          <br>
+          <div [formGroup]="group" *ngIf="showChart">
+            <div class="col-md-12 chart-boundary" [style.height.px]="maxheight" [style.width.px]="maxwidth"
+              style="position: relative; border: 1px dashed #ccc;">
+              <ng-container *ngIf="groupsFormArray.length > 0">
+                <ng-container *ngFor="let chart of groupsFormArray.controls; let i = index" [formGroup]="chart">
+                  <div class="resizable-chart-container" cdkDrag [cdkDragBoundary]="'.chart-boundary'"
+                    [cdkDragFreeDragPosition]="chart.get('position')?.value" (cdkDragEnded)="onDragEnd(i, $event)"
+                    [style.width.px]="chart.get('width')?.value" [style.height.px]="chart.get('height')?.value"
+                    style="position: absolute;">
+                    @if(chart.value.type.value == "0") {
+                    <highcharts-chart [Highcharts]="Highcharts" [options]="chart.get('chartOptions')?.value"
+                      style="width: 100%; height: 100%; display: block;">
+                    </highcharts-chart>
+                    }
+                    @else if(chart.value.type.value == "1") {
+                    <div class="row" [style.width.px]="350" [style.height.px]="560">
+                      <div class="row">
+                        <div class="col-md-12 text-center">
+                          <label>{{group.value.notiHeader}}</label>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                          <mat-list role="list" class="notify">
+                            @for (alert of alertsData; track alert) {
+                            <mat-list-item (click)="showAlertDetails(alert)">
+                              <mat-icon matListItemIcon> <img src="{{alert.img}}" alt="" /></mat-icon>
+                              <div matListItemTitle>{{alert.AlertTitle}}</div>
+                              <div matListItemLine>{{alert.AlertSubTitle}}</div>
+                            </mat-list-item>
+                            }
+                          </mat-list>
+                        </div>
+                      </div>
+                    </div>
+                    }
+                    @else if(chart.value.type.value == "2") {
+                    <div class="row" [style.width.px]="250" [style.height.px]="100">
+                      <div class="row">
+                        <div class="col-md-12 text-center">
+                          <label>{{group.value.staticHeader}}</label>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="d-flex justify-content-between align-items-center mt-1">
+                            <span class="infoTxt">30.1%</span><span>+6.08% <img src="assets/img/ArrowRise.png"
+                                alt=""></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    }
+                  </div>
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+          <hr>
+
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+             <button mat-flat-button color="primary" (click)="submit()">Save</button>
           </div>
         </div>
       </mat-card-content>

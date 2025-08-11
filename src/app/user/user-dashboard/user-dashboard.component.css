@@ -40,3 +40,58 @@
     background-color: rgba(0,0,0,0.2);
   }
   
+
+.custom-resize-container {
+  position: relative;
+  border: 1px solid #888;
+  background: #fafbfc;
+  min-width: 150px;
+  min-height: 80px;
+  overflow: hidden;
+}
+
+.resizable-chart-container {
+  resize: both;
+  overflow: auto;
+  min-width: 50px;
+  min-height: 50px;
+  position: relative;
+  border: 1px solid #ddd;
+  padding: 10px;
+  background: #fff;
+}
+
+.resize-handle {
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: #aaa;
+  cursor: se-resize;
+}
+
+.resize-handle-top {
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #aaa;
+  cursor: se-resize;
+}
+
+
+.chart-boundary {
+  position: relative;
+  overflow: hidden;
+  background-color: #f9f9f9;
+}
+
+.draggable-chart {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: move;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

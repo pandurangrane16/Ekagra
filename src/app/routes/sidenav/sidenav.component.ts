@@ -193,6 +193,12 @@ export class SidenavComponent implements OnInit {
           activeIcon: './assets/img/icon_settings1.svg',
           label: 'User Configuration',
           link: 'admin/userheirarchy',
+        },
+        {
+          icon: './assets/img/icon_settings.svg',
+          activeIcon: './assets/img/icon_settings1.svg',
+          label: 'User Dashboard',
+          link: 'user/user-dash',
         }]
       }
     ];
