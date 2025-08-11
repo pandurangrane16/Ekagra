@@ -13,18 +13,25 @@ import { ViewChild, ElementRef } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { firstValueFrom } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
-
-
+import { VideoStreamPlayerComponent } from '../../common/video-stream-player/video-stream-player.component';
+import { LoaderService } from '../../services/common/loader.service';
+import { withLoader } from '../../services/common/common';
+import { inject } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
+import{ SiteSearchPipe} from './site-search.pipe';
+import { FormsModule } from '@angular/forms';
 interface Section {
   name: string;
   img: string;
   expanded: boolean;
   siteId: number;
+  safeStreamUrl?: SafeResourceUrl; // <-- Add this line
 }
 interface Location {
   locationId: number;
   locationName: string;
   sites: Site[];
+  expanded?: boolean;
 }
 interface Site {
   siteId: number;
@@ -40,16 +47,22 @@ interface Camera {
     imports: [MatFormFieldModule,
         MatInputModule,
         MatIconModule,
-        MatButtonModule, MatExpansionModule, CommonModule],
+        MatButtonModule, MatExpansionModule, 
+        CommonModule,VideoStreamPlayerComponent
+      ,SiteSearchPipe,
+    FormsModule],
          schemas: [CUSTOM_ELEMENTS_SCHEMA],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './surveilience-camera.component.html',
-    styleUrl: './surveilience-camera.component.css'
+    styleUrl: './surveilience-camera.component.css',
+     providers:[ToastrService]
 })
 
 
 
 export class SurveilienceCameraComponent {
+  siteSearchText: string = '';
+activeStreams: { siteId: number,siteName: string, streamUrl: SafeResourceUrl, cameraName: string }[] = [];
 
 private currentSiteId: number | null = null;
 
@@ -84,6 +97,14 @@ camera: Section[] = [
   }
 ];
 
+  // Collapse all dropdowns when search text changes
+  onSearchTextChange(value: string): void {
+    this.siteSearchText = value;
+    this.camera.forEach(cam => cam.expanded = false);
+    this.locations.forEach(loc => loc.expanded = true); // expand all locations
+  }
+
+
 
 
 
@@ -93,17 +114,19 @@ sites: Site[] = [];
   constructor(private surveillanceService: SurveillanceService,
     private PramglobalService: PramglobalService,
     private sanitizer: DomSanitizer,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private loaderService: LoaderService,
+    private toast: ToastrService
 
   ) {}
 
   ngOnInit(): void {
     try{
     debugger;
-    const projectId = 1; // 🔁 Replace this with actual selected project id if needed
+    const projectId = 1; 
     this.surveillanceService
       .GetSiteLocationCameraListForSurveillance(projectId)
-      .subscribe((res: any) => {
+      .pipe(withLoader(this.loaderService)).subscribe((res: any) => {
          const flatData = res?.result || [];
          console.log(flatData);
 const groupedLocations = Object.values(
@@ -136,15 +159,10 @@ const groupedLocations = Object.values(
 
 this.locations = groupedLocations as Location[];
 
-const allSites = groupedLocations.flatMap((loc: any) => loc.sites);
-const firstFourSites = allSites.slice(0, 4);
+// const allSites = groupedLocations.flatMap((loc: any) => loc.sites);
+// const firstFourSites = allSites.slice(0, 4);
 
-this.camera = firstFourSites.map((site: Site, index: number) => ({
-  name: site.siteName,
-  img: `assets/img/cam${index + 1}.jpg`,
-  expanded: false,
-  siteId: site.siteId
-}));
+// this.loadInitialStreamPreviews(firstFourSites.map(site => site.siteId));
 
 console.log(groupedLocations);
       });
@@ -157,7 +175,48 @@ catch (error) {
 
   } 
 
+// async loadInitialStreamPreviews(siteIds: number[]) {
+//   this.loading = true;
+//   try {
+//     const cameraPromises = siteIds.map(async (siteId, index) => {
+//       // Get global values for site
+//       const globalRes: any = await firstValueFrom(
+//         this.PramglobalService.GetAllGlobalValues('Project', siteId.toString())
+//       );
 
+//       const embedUrl = globalRes.result[0]?.rfu1 || null;
+//       const rfu2 = globalRes.result[0]?.rfu2 || '';
+
+//       if (!embedUrl) return null;
+
+//       const streamRes: any = await firstValueFrom(
+//         this.surveillanceService.getLiveStreamUrl(siteId, embedUrl)
+//       );
+
+//       const fullStreamUrl = streamRes?.data?.embedurl + rfu2;
+
+//       return {
+//         // name: `Camera ${index + 1}`,
+//          name: `Camera: ${rfu2}`,
+//         img: `assets/img/cam${index + 1}.jpg`,
+//         expanded: false,
+//         siteId,
+//         safeStreamUrl: this.sanitizer.bypassSecurityTrustResourceUrl(fullStreamUrl),
+//       } as Section;
+//     });
+
+//     const cameraResults = await Promise.all(cameraPromises);
+
+//     // Remove failed/null ones
+//     this.camera = cameraResults.filter(cam => cam !== null) as Section[];
+//     this.cd.detectChanges();
+//   } catch (error) {
+//     console.error('Error loading initial stream previews:', error);
+//   } finally {
+//     this.loading = false;
+//     this.cd.detectChanges();
+//   }
+// }
 
 onCameraSelect(siteId: number, locId: number, camId: number) {
   debugger;
@@ -182,86 +241,92 @@ onCameraSelect(siteId: number, locId: number, camId: number) {
 embedUrl:string| null=null;
 rfu2:string| null=null;
 activeEmbedUrl: SafeResourceUrl | null = null;
-async onSiteClick(siteId: number): Promise<void> {
+
+selectedCameraName: string = '';
+
+async onSiteClick(siteId: number, triggeredByUser: boolean = true): Promise<void> {
+  // this.loading = true;
   debugger;
-    this.loading = true; // 🔄 Show loader
-
+this.loaderService.showLoader();
   try {
+    const selectedCam = this.camera.find(cam => cam.siteId === siteId);
+    const cameraName = selectedCam ? selectedCam.name : `Camera name :  ${siteId}`;
 
-    // 🛑 Stop previous stream
-    if (this.currentSiteId && this.currentSiteId !== siteId) {
-      await firstValueFrom(
-        this.surveillanceService.stopLiveStream(this.currentSiteId) 
-      );
-      this.currentSiteId=0;
-      console.log(`Stopped stream for site ${this.currentSiteId}`);
+    // Prevent duplicate entries
+    const alreadyAdded = this.activeStreams.find(stream => stream.siteId === siteId);
+    if (alreadyAdded) {
+      // this.loading = false;
+      this.toast.error('Stream is already running for the selected camera.');
+      this.loaderService.hideLoader();
+      return;
     }
 
-// ✅ Start new stream
     const globalRes: any = await firstValueFrom(
       this.PramglobalService.GetAllGlobalValues('Project', siteId.toString())
     );
 
-    this.embedUrl = globalRes.result[0]?.rfu1 || null;
-    this.rfu2 = globalRes.result[0]?.rfu2 || null;
+    const embedUrl = globalRes.result[0]?.rfu1 || null;
+    const rfu2 = globalRes.result[0]?.rfu2 || null;
 
-    if (this.embedUrl) {
+    if (embedUrl) {
       const streamRes: any = await firstValueFrom(
-        this.surveillanceService.getLiveStreamUrl(siteId, this.embedUrl)
+        this.surveillanceService.getLiveStreamUrl(siteId, embedUrl)
       );
 
-      const embedUrl = streamRes.data?.embedurl + this.rfu2;
-      
-      setTimeout(() => {
-      this.activeEmbedUrl = this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
-      // Trigger change detection manually
-        this.cd.detectChanges();
-}, 100);
+      const finalUrl = streamRes?.data?.embedurl + rfu2;
+      const safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(finalUrl);
 
-      console.log('activeEmbedUrl:', this.activeEmbedUrl);
-    } else {
-      this.activeEmbedUrl = null;
+              let siteName = '';
+        for (const loc of this.locations) {
+          const site = loc.sites.find(s => s.siteId === siteId);
+          if (site) {
+            siteName = site.siteName;
+            break;
+          }
+        }
+      // Add to stream list
+      this.activeStreams.push({
+        siteId,
+        siteName,
+        streamUrl: safeUrl,
+        cameraName,
+      });
+
+      this.cd.detectChanges();
     }
- 
+    else
+    {
+      this.toast.error(`No stream URL found for the selected site.${siteId} `);
+      console.error('No stream URL found for site:', siteId);
+      return;
+    }
 
-    this.currentSiteId = siteId; // 🔁 Update currently active site
   } catch (err) {
+    this.toast.error('Error fetching stream URL:', String(err));
     console.error('Error fetching stream URL:', err);
-    this.activeEmbedUrl = null;
-  }finally {
-    this.loading = false; // ✅ Hide loader when done
+  } finally {
+    // this.loading = false;
+    this.loaderService.hideLoader();
     this.cd.detectChanges();
   }
 }
 
-onClosePreview(): void {
-  debugger;
-  this.loading = true;
+onClosePreview(siteId: number): void {
+  const index = this.activeStreams.findIndex(stream => stream.siteId === siteId);
+  if (index !== -1) {
+    this.surveillanceService.stopLiveStream(siteId).pipe(withLoader(this.loaderService)).subscribe({
+      next: () =>{console.log(`Stopped stream for site ${siteId}`);
+    this.toast.success(`Stopped stream for site ${siteId}`);
+    } ,
+      error: err => {
+          console.error('Error stopping stream:', err);
+          this.toast.error('Failed to stop stream for the selected site.', 'Stream Error');
+        }
+    });
 
-  if (!this.embedUrl || !this.rfu2 || !this.currentSiteId) {
-    this.activeEmbedUrl = null;
-    this.embedUrl = null;
-    this.rfu2 = null;
-    this.loading = false;
-    this.cd.detectChanges(); // ensure loader is hidden
-    return;
+    this.activeStreams.splice(index, 1);
+    this.cd.detectChanges();
   }
-
-  this.surveillanceService.stopLiveStream(this.currentSiteId).subscribe({
-    next: () => {
-      console.log('Streaming stopped.');
-    },
-    error: (err) => {
-      console.error('Error stopping stream:', err);
-    },
-    complete: () => {
-      this.activeEmbedUrl = null;
-      this.embedUrl = null;
-      this.rfu2 = null;
-      this.loading = false;
-      this.cd.detectChanges(); // ensure UI updates after stream stops
-    }
-  });
 }
 
 

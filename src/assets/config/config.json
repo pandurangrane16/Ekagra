@@ -1,22 +1,63 @@
     {
-        "version" : "2.0.3",
+        "version": "2.0.3",
         "api_url": "https://172.19.32.51:8089/",
-        "ruleConditions" : [
-            {"key" : "Equal","value" : "equal"},
-            {"key" : "Not Equal","value" : "not_equal"},
-            {"key" : "Begins With","value" : "begins_with"},
-            {"key" : "Doesn't Begins With","value" : "doesnt_begins_with"},
-            {"key" : "Contains","value" : "contains"},
-            {"key" : "Doesn't Contains","value" : "doesnt_contains"},
-            {"key" : "Ends With","value" : "ends_with"},
-            {"key" : "Doesn't Ends With","value" : "doesnt_ends_with"},
-            {"key" : "Is Empty","value" : "is_empty"},
-            {"key" : "Is Null","value" : "is_null"},
-            {"key" : "Is Not Null","value" : "is_not_null"}
+        "hls_url": "https://10.100.43.108:7000/",
+        "ruleConditions": [
+            {
+                "key": "Equal",
+                "value": "equal"
+            },
+            {
+                "key": "Not Equal",
+                "value": "not_equal"
+            },
+            {
+                "key": "Begins With",
+                "value": "begins_with"
+            },
+            {
+                "key": "Doesn't Begins With",
+                "value": "doesnt_begins_with"
+            },
+            {
+                "key": "Contains",
+                "value": "contains"
+            },
+            {
+                "key": "Doesn't Contains",
+                "value": "doesnt_contains"
+            },
+            {
+                "key": "Ends With",
+                "value": "ends_with"
+            },
+            {
+                "key": "Doesn't Ends With",
+                "value": "doesnt_ends_with"
+            },
+            {
+                "key": "Is Empty",
+                "value": "is_empty"
+            },
+            {
+                "key": "Is Null",
+                "value": "is_null"
+            },
+            {
+                "key": "Is Not Null",
+                "value": "is_not_null"
+            }
         ],
-       "basePath" : "https://172.19.32.51:8089/UploadedFiles/Icons/"
-        
-
-      
-    
+        "basePath": "https://172.19.32.51:8089/UploadedFiles/Icons/",
+        "projectCodes": [
+            {"name" : "atcs","value" : "1"},
+            {"name" : "vms","value" : "2"},
+            {"name" : "surveilience","value" : "3"},
+            {"name" : "pa","value" : "4"},
+            {"name" : "itms","value" : "18"},
+            {"name" : "ivms","value" : "19"},
+            {"name" : "ecb","value" : "35"},
+            {"name" : "envrn","value" : "36"},
+            {"name" : "water scada","value" : "37"}
+        ]
     }
