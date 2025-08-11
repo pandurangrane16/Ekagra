@@ -36,6 +36,8 @@
       <mat-icon>{{ isPanelOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
     </button>
 
+   
+
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith" (optionSelected)="ChangeSelection($event)">
       @if(settings.options != undefined){
       @for (state of filteredOptions | async; track state) {

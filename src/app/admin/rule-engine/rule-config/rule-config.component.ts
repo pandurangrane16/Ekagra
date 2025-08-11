@@ -10,6 +10,9 @@ import { SignalRService } from '../../../services/common/signal-r.service';
 import { CmButtonComponent } from "../../../common/cm-button/cm-button.component";
 import { withLoader } from '../../../services/common/common';
 import { LoaderService } from '../../../services/common/loader.service';
+import { ToastrService } from 'ngx-toastr';
+import { getErrorMsg } from '../../../utils/utils';
+import { Policy } from '../../../models/admin/ruleengine.model';
 import { CmCheckboxGroupComponent } from '../../../common/cm-checkbox-group/cm-checkbox-group.component';
 import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-select-check.component";
 
@@ -27,18 +30,40 @@ export class RuleConfigComponent implements OnInit {
   signalRService = inject(SignalRService);
   ruleService = inject(RuleEngineService);
   isProjectOptionsLoaded:any;
+  userOptionsLoaded:boolean=false;
+  selectedProjectName: any;
+  selectedProjectId: any;
   AndFlag:any;
+  expOption :boolean=false;
+  typeOperatorMap: Record<string, string[]> = {
+  string: [
+    'equal', 'not_equal', 'begins_with', 'not_begins_with',
+    'contains', 'not_contains', 'ends_with', 'not_ends_with', 'is_empty',
+    'is_not_empty', 'is_null', 'is_not_null'
+  ],
+  integer: [
+    'equal', 'not_equal', 'less', 'less_or_equal', 'greater',
+    'greater_or_equal', 'between', 'not_between'
+  ],
+  double: [
+    'equal', 'not_equal', 'less', 'less_or_equal', 'greater',
+    'greater_or_equal', 'between', 'not_between'
+  ],
+  boolean: ['equal'],
+  array: ['contains', 'not_contains'],
+  default: [
+    'equal', 'not_equal', 'begins_with', 'not_begins_with',
+    'contains', 'not_contains', 'ends_with', 'not_ends_with', 'is_empty',
+    'is_not_empty', 'is_null', 'is_not_null'
+  ]
+};
+
   userGroupSettings = {
     labelHeader: 'User Group*',
     lableClass: 'form-label',
     formFieldClass: '',
     appearance: 'outline',
-    options: [
-      { name: 'Admin', value: '0' },
-      { name: 'Supervisor', value: '1' },
-      { name: 'CMS User Admin', value: '2' },
-      { name: 'Operators', value: '3' }
-    ]
+    options: []
   };
 
   projectSettings = {
@@ -66,6 +91,20 @@ export class RuleConfigComponent implements OnInit {
       color: 'primary',
       formFieldClass: "w-100"
     },
+      tat: {
+      placeholder: 'TAT',
+      appearance: 'outline',
+      isDisabled: false,
+      color: 'primary',
+      formFieldClass: "w-100"
+    },
+     ticketabb: {
+      placeholder: 'Ticket Abbreviation',
+      appearance: 'outline',
+      isDisabled: false,
+      color: 'primary',
+      formFieldClass: "w-100"
+    },
     fieldValue: {
       placeholder: 'Value',
       appearance: 'outline',
@@ -78,6 +117,16 @@ export class RuleConfigComponent implements OnInit {
 
     name: 'isActive',
     formControlName: 'isActive',
+    //defaultValue: true,
+    data: [
+      { value: true, displayName: 'Yes' },
+      { value: false, displayName: 'No' }
+    ]
+  };
+    isinternal = {
+
+    name: 'isinternal',
+    formControlName: 'isinternal',
     //defaultValue: true,
     data: [
       { value: true, displayName: 'Yes' },
@@ -103,8 +152,8 @@ export class RuleConfigComponent implements OnInit {
     formFieldClass: '',
     appearance: 'outline',
     options: [
-      { name: 'AND', value: 'and' },
-      { name: 'OR', value: 'or' },
+      { name: 'AND', value: 'AND' },
+      { name: 'OR', value: 'OR' },
     ],
 
   };
@@ -115,33 +164,25 @@ export class RuleConfigComponent implements OnInit {
     formFieldClass: '',
     appearance: 'outline',
     options: [
-      { name: 'PT', value: 'pt' },
-      { name: 'Network Status', value: 'networkstatus' },
-      { name: 'Power Status', value: 'powerstatus' },
-      { name: 'Snapshot', value: 'snapshot' },
+
     ],
   };
 
+  // expressionSettings = {
+  //   labelHeader: 'Expression',
+  //   lableClass: 'form-label',
+  //   formFieldClass: '',
+  //   appearance: 'outline',
+  //   options: [
+  //   ]
+  // }
   expressionSettings = {
-    labelHeader: 'Expression',
-    lableClass: 'form-label',
-    formFieldClass: '',
-    appearance: 'outline',
-    options: [
-      { name: 'Equal', value: '==' },
-      { name: 'Not Equal', value: '!=' },
-      { name: 'Greater Than', value: '>' },
-      { name: 'Greater Than Equal To', value: '>=' },
-      { name: 'Less Than', value: '<' },
-      { name: 'Less Than Equal To', value: '<=' },
-      { name: 'Is Null', value: 'isnull' },
-      { name: 'Is Not Null', value: 'notnull' },
-      { name: 'Begins With', value: 'beginwith' },
-      { name: 'Doesn\'t Begins With', value: 'dbegin' },
-      { name: 'Contains', value: 'contain' },
-      { name: 'Doesn\'t Contains', value: 'dcontain' },
-    ]
-  }
+  labelHeader: 'Expression',
+  lableClass: 'form-label',
+  formFieldClass: '',
+  appearance: 'outline',
+  options: [] as { name: string; value: string }[]
+};
 
   minuteSettings = {
     labelHeader: 'Minute (Numeric)',
@@ -228,25 +269,22 @@ export class RuleConfigComponent implements OnInit {
   }
 
   checkBoxSettings: any;
+  firstFormGroup:any;
+  thirdFormGroup:any;
 
-  firstFormGroup = this._formBuilder.group({
-    policyName: ['', Validators.required],
-    selectedCategory: ['', Validators.required],
-    selectedUserGroup: ['', Validators.required],
-    intervalTime: ['', Validators.required],
-    isActive: [false, Validators.required]
-  });
-  secondFormGroup = this._formBuilder.group({
-    selectedProject: ['', Validators.required],
-    groups: this._formBuilder.array([]),
-  });
-  thirdFormGroup = this._formBuilder.group({
-    minute: ['', Validators.required],
-    hour: ['', Validators.required],
-    dayOfMonth: ['', Validators.required],
-    month: ['', Validators.required],
-    dayOfWeek: ['', Validators.required],
-  });
+  // firstFormGroup = this._formBuilder.group({
+  //   policyName: ['', Validators.required],
+  //   ticketabb:  ['', Validators.required],
+  //   tat:['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+  //   selectedCategory: ['', Validators.required],
+  //   selectedUserGroup: ['', Validators.required],
+  //   intervalTime: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+  //   isActive: [false, Validators.required],
+  //   isinternal: [false, Validators.required]
+  // });
+  secondFormGroup : any;
+  
+
   isLinear = false;
 
   //currentStep = 0;
@@ -258,7 +296,7 @@ export class RuleConfigComponent implements OnInit {
   //   { icon: '✅', title: 'Confirm' }
   // ];
   ruleConditions: any;
-  constructor() {
+  constructor(private toast :ToastrService) {
     this.ruleConditions = this.ruleService.getRuleConditions();
     if (this.ruleConditions == null) {
       this.ruleService.setRulesStorage();
@@ -266,7 +304,30 @@ export class RuleConfigComponent implements OnInit {
     }
   }
   ngOnInit(): void {
+    this.thirdFormGroup = this._formBuilder.group({
+    minute: ['', Validators.required],
+    hour: ['', Validators.required],
+    dayOfMonth: ['', Validators.required],
+    month: ['', Validators.required],
+    dayOfWeek: ['', Validators.required],
+  });
+    this.secondFormGroup = this._formBuilder.group({
+    selectedProject: [null, Validators.required],
+    groups: this._formBuilder.array([]),
+  });
+    this.firstFormGroup = this._formBuilder.group({
+    policyName: ['', Validators.required],
+    ticketabb:  ['', Validators.required],
+    tat:['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+    selectedCategory: ['', Validators.required],
+    selectedUserGroup: ['', Validators.required],
+    intervalTime: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+    isActive: [false, Validators.required],
+    isinternal: [false, Validators.required]
+  });
     this.getProjList();
+    this.getRoles();
+    //this.getfields();
     this.checkBoxSettings = {
       labelHeader: '',
       placeholder: 'Choose',
@@ -279,20 +340,45 @@ export class RuleConfigComponent implements OnInit {
       ]
     }
 
+
 //     this.secondFormGroup.get('selectedProject')?.valueChanges.subscribe((value:any) => {
 //     this.AndFlag = false; 
 
 
 //       if (value?.value) { 
 //         this.AndFlag = true; 
-//   }
-
-    
-  
+//         //this.selectedProjectName = value.name
+//         console.log(value.value);   
+//   }  
 // });
 
 
   }
+        get f() {
+  return this.firstFormGroup.controls;
+  }
+ getErrorMessage(_controlName: any, _controlLable: any, _isPattern: boolean = false, _msg: string) {
+      return getErrorMsg(this.firstFormGroup, _controlName, _controlLable, _isPattern, _msg);
+    }
+
+onFieldChange(selectedField: any) {
+  this.expOption=false;
+  const fieldType = selectedField?.type;
+
+  if (fieldType) {
+    const operators = this.typeOperatorMap[fieldType] || [];
+
+    this.expressionSettings.options = operators.map(op => ({
+      name: op,
+      value: op
+    }));
+        setTimeout(() => {
+      this.expOption = true;
+    });
+  }
+}
+
+
 
     getProjList() {
     this.ruleService.GetProjectList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
@@ -314,7 +400,7 @@ export class RuleConfigComponent implements OnInit {
   //   name: 'All',
   //   value: null
   // });
-  
+  console.log( "h3",this.projectSettings.options);
   
       this.isProjectOptionsLoaded = true;
     }, error => {
@@ -322,10 +408,194 @@ export class RuleConfigComponent implements OnInit {
     });
   }
 
+  Submit() {
+
+  
+  // if (this.form.invalid) {
+
+  //   this.toast.error('Please select all the values before Sending.');
+  //   this.form.markAllAsTouched();
+  //   return;
+  // }
+
+  
+
+// const isAuthRequired = this.form.get('isrequireauth')?.value;
+// const selectedProjType = this.form.get('selectedProjType')?.value.value;
+// const authType =this.form.get('authType')?.value;
+
+const creationTime = new Date();
+const firstFormValues = this.firstFormGroup.value;
+const secondFormValues = this.secondFormGroup.value;
+const thirdFormValues = this.thirdFormGroup.value;
+
+// const payload = {
+//     ProjectId: this.form.controls['selectedProject'].value?.value,
+//     Type: this.form.controls['selectedProjType'].value?.value,  
+//     APIName: formValues.apiName,
+//     BaseURL: formValues.apiUrl,
+//     RequestURL: formValues.apiUrl,
+//     HttpMethod: this.form.controls['method'].value?.value,
+//     RequestParam: "",
+//     Header: "",
+//     AuthReq: formValues.isrequireauth,
+//     AuthAPIId: this.form.controls['selectedapi'].value?.value, 
+//     AuthenticatioType: formValues.authType,
+//     APISeq: formValues.apiseq,
+//     AuthenticationHeader: "",
+//     CommType:0,
+//     BodyType: formValues.bodyType,
+//     Body: bodyJsonString,
+//     ResponseStatusCode: "",
+//     Response: "",
+//     IsActive: formValues.IsActive,
+//     ProjectName: "",
+//     IsDeleted: false,
+//     DeleterUserId: "",
+//     DeletionTime: creationTime,
+//     LastModificationTime: creationTime,
+//     LastModifierUserId: "",
+//     CreationTime: creationTime,
+//     CreatorUserId: ""
+//   };
+
+
+const policyData: Policy = {
+  policyName: firstFormValues.policyName,
+  ticketAbbrevation: firstFormValues.ticketabb,
+  tat: firstFormValues.tat,
+  policyRoles:this.firstFormGroup.controls['selectedUserGroup'].value?.value,
+  priority: this.firstFormGroup.controls['selectedCategory'].value?.value,
+  isActive: firstFormValues.isActive,
+  intervalTime: firstFormValues.intervalTime,
+  isInternal: firstFormValues.isinternal,
+  apiName: null,
+  apiId: null,
+  ruleExpression: null,
+  cron: null,
+  isDeleted: false,
+  deleterUserId: 0,
+  deletionTime: creationTime,
+  lastModificationTime: creationTime,
+  lastModifierUserId: 0,
+  creationTime: creationTime,
+  creatorUserId: 0,
+  id: 0,
+  description:firstFormValues.policyName,
+};
+
+  this.ruleService.CreateRuleEngine(policyData).pipe(withLoader(this.loaderService)).subscribe({
+    next: (res: any) => {
+     console.log(res);
+    }
+  });
+
+  
+
+
+
+
+
+
+
+
+
+
+}
+
+  
+  
+
+  
+
+
+
+fieldOption:any;
+     getfields(selectedProject:any) {
+       this.fieldOption = false;
+    this.ruleService.Getfields(selectedProject).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+      const items = response?.result || [];
+  
+      const projectOptions = items.map((item: any) => ({
+        name: item.apiField,
+        value: item.id,
+        type:item.fieldType,
+      }));
+  
+    
+      // projectOptions.unshift({
+      //   name: 'All',
+      //   value: null
+      // });
+  
+     this.fieldSettings.options = projectOptions;
+  // this.form.controls['selectedProject'].setValue({
+  //   name: 'All',
+  //   value: null
+  // });
+  console.log( "h3",this.projectSettings.options);
+  
+      this.fieldOption = true;
+    }, error => {
+      console.error('Error fetching project list', error);
+    });
+  }
+  getRoles() {
+     console.log(this.userOptionsLoaded)
+    this.ruleService.GetRolesOnId().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+      console.log(response.result)
+      const items = response?.result || [];
+      console.log(items);
+  
+const itemArray = items.items;
+
+let projectOptions:any;
+if (Array.isArray(itemArray)) {
+   projectOptions = itemArray.map(item => ({
+    name: item.displayName,
+    value: item.id
+  }));
+}
+
+  
+     this.userGroupSettings.options = projectOptions;
+     console.log("h4",this.userGroupSettings.options)
+
+  
+  
+      this.userOptionsLoaded = true;
+    }, error => {
+      console.error('Error fetching project list', error);
+    });
+  }
   goNext() {
+
+      console.log('Third form group value/status:', this.secondFormGroup);
+
+      if (this.currentStep === 0 && this.firstFormGroup.invalid) {
+         this.toast.error('Please select all the values.');
+         this.firstFormGroup.markAllAsTouched(); 
+        
+         return;
+  }
+  else{
+         if (this.currentStep === 1 && this.secondFormGroup.invalid) {
+         this.toast.error('Please select all the values.');
+         this.firstFormGroup.markAllAsTouched(); 
+        
+         return;
+  }
+else{
     if (this.currentStep < this.steps.length - 1) {
       this.currentStep++;
     }
+}
+
+
+
+
+  }
+  
   }
 
   goBack() {
@@ -361,15 +631,44 @@ export class RuleConfigComponent implements OnInit {
   get groupsFormArray(): FormArray<FormGroup> {
     return this.secondFormGroup.get('groups') as FormArray<FormGroup>;
   }
-  createGroup() {
+  onAddGroup() {
+   const selectedProject = this.secondFormGroup.controls['selectedProject'].value;
+   //let name  = selectedProject?.name;
+
+
+
+  
+      console.log("hi",selectedProject)
+if (
+  !selectedProject ||
+  typeof selectedProject !== 'object' ||
+  !('name' in selectedProject) ||
+  !('value' in selectedProject)
+) {
+  this.toast.error('Please select a project before adding');
+  return;
+}
+  this.selectedProjectName = selectedProject.name;
+  this.selectedProjectId = selectedProject.value;
+
+  this.createGroup(selectedProject);
+
+
+  //this.secondFormGroup.get('selectedProject')?.reset();
+  this.getfields( this.selectedProjectId);
+}
+
+  createGroup(selectedProject: any) {
     let len = this.secondFormGroup.controls['groups'].length;
     const group = this._formBuilder.group({
       seqNo: [{ value: (len == undefined ? 1 : len + 1), disabled: true }],
-      projId: [Validators.required],
-      selectedMainExpression: ['', Validators.required],
-      condition: [{ value: '', disabled: true }],
+       projId: [selectedProject.value, Validators.required], 
+       projName: [selectedProject.name], 
+      selectedMainExpression: [''],
+      condition: [{ value: ''}],
       arrayGroup: this._formBuilder.array([]),
     });
+   
     this.groupsFormArray.push(group);
     const formArr = this.createFormArrayGroup();
     console.log(formArr);
@@ -413,6 +712,13 @@ removeArray(i: number, j: number) {
       fieldValue: ['', Validators.required],
     });
   }
+
+
+  
+ 
+  
+
+
 
   addFormArrayGroup(len: number) {
     console.log(len);

@@ -12,6 +12,8 @@ import { InputRequest } from '../../models/request/inputreq.model';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
+import { LoaderService } from '../../services/common/loader.service';
+import { withLoader } from '../../services/common/common';
 import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 import { ZoneConfigurationFormComponent } from './zone-configuration-form/zone-configuration-form.component';
 
@@ -33,7 +35,7 @@ import { ZoneConfigurationFormComponent } from './zone-configuration-form/zone-c
 
 
 export class ZoneConfigurationComponent  {
-
+loaderService =inject(LoaderService)
 router = inject(Router);
 _headerName = 'Project Configuration Table';
 headArr: any[] = [];
@@ -169,7 +171,7 @@ ngOnInit(): void {
  }
 
  GetZoneList() {
-  this.service.GetAll().subscribe(response => {
+  this.service.GetAll().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
 
 
     const items = response.result?.items || [];
@@ -206,7 +208,7 @@ this.form.controls['selectedStatus'].setValue({
     const selectedProjectId = this.form.controls['selectedProject'].value.value;
      const selectedStatus = this.form.controls['selectedStatus'].value.value;
      const search = this.form.controls['searchText'].value
-     this.service.GetFilteredList(0,search,selectedStatus,this.MaxResultCount,this.SkipCount,selectedProjectId).subscribe(response => {
+     this.service.GetFilteredList(0,search,selectedStatus,this.MaxResultCount,this.SkipCount,selectedProjectId).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
     //  const items = response?.result || [];
          
     //      this.items=items;
@@ -263,7 +265,7 @@ onProjectChange(value: any) {
   // Apply filtering or logic here
 }
 getProjList() {
-  this.service.GetProjectList().subscribe(response => {
+  this.service.GetProjectList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
     const items = response?.result || [];
 
     const projectOptions = items.map((item: any) => ({
@@ -408,8 +410,8 @@ deleteRow(rowData: any): void {
   dialogRef.afterClosed().subscribe(result => {
     if (result) {
      
-      this.service.Delete(rowData.id).subscribe({
-        next: (res) => {
+      this.service.Delete(rowData.id).pipe(withLoader(this.loaderService)).subscribe({
+        next: (res:any) => {
           if (res.success) {
             this.getZoneConfigList();
             console.log('Deleted successfully');
@@ -432,7 +434,7 @@ getZoneConfigList() {
       this._request.pageSize = Number(this.recordPerPage);
       this._request.startId = this.startId;
       this._request.searchItem = this.searchText;
-      this.service.GetAll().subscribe(response => {
+      this.service.GetAll().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
 
          const items = response.result?.items;
          

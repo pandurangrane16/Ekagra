@@ -52,6 +52,7 @@ export class CmSelectCheckComponent {
 
     // Reset search field
     this.searchCtrl.setValue('');
+      this.emitSelected();
   }
 
   displayFn(): string {
@@ -81,6 +82,7 @@ export class CmSelectCheckComponent {
     this.emitSelected();
   }
   emitSelected() {
+    console.log("hi",this.options.filter(o => this.selectedValues.includes(o)))
     this.returnObject.emit(
       this.options.filter(o => this.selectedValues.includes(o))
     );
