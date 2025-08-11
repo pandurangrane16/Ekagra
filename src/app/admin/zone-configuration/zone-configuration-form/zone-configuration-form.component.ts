@@ -17,6 +17,8 @@ import { InputRequest } from '../../../models/request/inputreq.model';
 import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
 import { AbstractControl, ValidatorFn } from '@angular/forms';
+import { LoaderService } from '../../../services/common/loader.service';
+import { withLoader } from '../../../services/common/common';
 
 //import { ToastrService } from 'ngx-toastr';
 import { zoneconfigmodel } from '../../../models/admin/zoneconfig.model';
@@ -37,6 +39,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 
 
 export class ZoneConfigurationFormComponent implements OnInit {
+  loaderService =inject(LoaderService)
   form!: FormGroup;
 router = inject(Router);
   MatButtonToggleChange:any;
@@ -244,7 +247,7 @@ submit() {
     this.service.CheckZoneExists( this.form.controls['zonename'].value,
           0,
           _zoneconfigmodel.zoneCordinate,
-          this.state?.record?.id).subscribe(response => {
+          this.state?.record?.id).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
             debugger;
         if (response.result === 1) {
           this.toast.error("Zone Name already exists in the System.");
@@ -257,7 +260,7 @@ else
 
  if (state?.mode === 'edit' && state?.record) {
     //  Update Zone
-    this.service.ZoneEdit(_zoneconfigmodel).subscribe({
+    this.service.ZoneEdit(_zoneconfigmodel).pipe(withLoader(this.loaderService)).subscribe({
       next: () => {
         this.toast.success('Zone updated successfully');
         this.router.navigate(['/admin/zoneconfig']);
@@ -278,7 +281,7 @@ else
       //  Create Zone
  
 
-  this.service.ZoneCreate(_zoneconfigmodel).subscribe({
+  this.service.ZoneCreate(_zoneconfigmodel).pipe(withLoader(this.loaderService)).subscribe({
     next: () => {
       this.toast.success('Zone saved successfully');
         this.router.navigate(['/admin/zoneconfig']);
@@ -303,7 +306,7 @@ getZoneConfigList() {
       this._request.pageSize = Number(this.recordPerPage);
       this._request.startId = this.startId;
       //this._request.searchItem = this.searchText;
-      this.service.GetAll().subscribe(response => {
+      this.service.GetAll().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
 
          const items = response.result?.items;
          

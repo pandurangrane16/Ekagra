@@ -23,11 +23,12 @@ import { SiteConfigurationComponent } from './admin/site-configuration/site-conf
 import { ProjectFieldConfigurationComponent } from './admin/project-field-configuration/project-field-configuration.component';
 import { Component } from '@angular/core';
 import { DashRoutesComponent } from './routes/dash-routes/dash-routes.component';
+
 export const routes: Routes = [
       { path: "", component: LoginComponent, },
       { path: "login", component: LoginComponent, },
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'surveilience', component: SurveilienceCameraComponent },
+      { path: 'surveilience', component: SurveiliencePageComponent },
       { path: 'atcs', component: AtcsComponent },
       { path: 'parking', component: ParkingComponent },
       { path: 'air', component: AirQualityComponent },

@@ -55,6 +55,7 @@ export class CmSelectCheckComponent {
     // Reset search field
     this.searchCtrl.setValue('');
     this.returnObject.emit(this.selectedValues);
+      this.emitSelected();
   }
 
   displayFn(): string {

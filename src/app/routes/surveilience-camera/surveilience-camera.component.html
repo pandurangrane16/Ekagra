@@ -4,20 +4,18 @@
             <div class="card-body">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-icon matPrefix>search</mat-icon>
-                    <input matInput placeholder="Placeholder"> 
+                    <input matInput placeholder="Placeholder"  [(ngModel)]="siteSearchText" (ngModelChange)="onSearchTextChange($event)"> 
                     <mat-icon matSuffix>filter_list</mat-icon>
                 </mat-form-field> 
 
-          <mat-accordion>
-  <mat-accordion>
-  <mat-expansion-panel *ngFor="let location of locations">
+   <mat-accordion [multi]="true">
+  <mat-expansion-panel *ngFor="let location of locations" [expanded]="location.expanded">
     <mat-expansion-panel-header>
       <mat-panel-title>{{ location.locationName }}</mat-panel-title>
     </mat-expansion-panel-header>
-
     <ul class="list-unstyled ps-3">
       <li
-        *ngFor="let site of location.sites"
+        *ngFor="let site of location.sites | siteSearch:siteSearchText"
         class="py-1 site-name"
         (click)="onSiteClick(site.siteId)"
         style="cursor: pointer;"
@@ -28,59 +26,47 @@
   </mat-expansion-panel>
 </mat-accordion>
 
-
-</mat-accordion>
             </div>
         </div>
     </div>
     <div class="col-md-9">
         <div class="row">
 
-            <!-- <div class="=col-md-12  videoPlayer" *ngIf="activeEmbedUrl">
-<iframe
-  *ngIf="activeEmbedUrl"
-  [src]="activeEmbedUrl"
-  width="100%"
-  height="360"
-  frameborder="0"
-  allowfullscreen
-  style="background-color: black;"
-></iframe>
-
-
-    </div> -->
+             
 
 <div *ngIf="loading" class="loader-container">
   <mat-spinner></mat-spinner> <!-- Or your custom loader -->
 </div>
 
+<!-- Right side streams -->
 <div *ngIf="!loading">
-  <div *ngIf="activeEmbedUrl; else noPreview">
-     <!-- Close Button -->
-    <!-- <button class="btn btn-sm btn-danger close-button" (click)="onClosePreview()">
-      ✖
-    </button>
-    <iframe
-      [src]="activeEmbedUrl"
-      width="100%"
-      height="500px"
-      frameborder="0"
-      allowfullscreen
-    ></iframe> -->
+  <ng-container *ngIf="activeStreams.length > 0; else noStreams">
+    <div class="row">
+      <div *ngFor="let stream of activeStreams" class="col-md-6 mb-3">
+        <div class="card h-100 shadow-sm stream-tile">
+          <div class="card-header d-flex justify-content-between align-items-center p-2">
+              <span class="fw-bold">
+                {{ stream.cameraName }} / {{ stream.siteName }}
+              </span>
+            <button
+              class="btn btn-sm btn-outline-danger"
+              (click)="onClosePreview(stream.siteId)"
+              title="Close Stream"
+            >
+              ✖
+            </button>
+          </div>
+          <div class="card-body p-2">
+            <app-video-stream-player [streamUrl]="stream.streamUrl"></app-video-stream-player>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
 
-    <app-video-stream-player
-  *ngIf="activeEmbedUrl && !loading"
-  [streamUrl]="activeEmbedUrl">
-</app-video-stream-player>
-
-<ng-template #noPreview>
-  <div class="no-preview"><p>No preview found.</p></div>
-</ng-template>
-  </div>
-
-  <ng-template #noPreview>
-    <div class="no-preview">
-      <p>No preview found.</p>
+  <ng-template #noStreams>
+    <div class="alert alert-info text-center mt-3">
+      No streams selected.
     </div>
   </ng-template>
 </div>
@@ -113,7 +99,7 @@
         </div>
             </div> -->
 
-<div *ngFor="let cam of camera | slice:0:4" class="col-md-6 mt-1 mb-1">
+<!-- <div *ngFor="let cam of camera | slice:0:4" class="col-md-6 mt-1 mb-1">
   <div class="card" [ngClass]="{ fullscreen: cam.expanded }">
     <div class="card-body">
       <div class="title d-flex align-items-start justify-content-between mb-1">
@@ -134,15 +120,12 @@
 
     </div>
   </div>
-</div>
+</div> -->
 
 
 
         </div>
     </div>
-  
-
-
 </div>
 <div *ngIf="loading" class="loader-overlay">
   <div class="spinner"></div>
