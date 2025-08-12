@@ -155,47 +155,46 @@
                                             </app-cm-select2>
                                         </div>
                                     </div>
-                                     <br>
-                                      <div class="row">
-                                       
+                                    <br>
+                                    <div class="row">
+
                                         <div class="col-md-6">
-                                            <label style="position: relative; top: 6px; display: block;">Ticket Abbreviation</label>
+                                            <label style="position: relative; top: 6px; display: block;">Ticket
+                                                Abbreviation</label>
                                             <div>
-                                                <app-cm-input [formGroup]="firstFormGroup"
-                                                    [controlName]="'ticketabb'"
+                                                <app-cm-input [formGroup]="firstFormGroup" [controlName]="'ticketabb'"
                                                     [_inputData]="inputFields.ticketabb">
                                                 </app-cm-input>
                                             </div>
                                         </div>
                                         <div class="col-md-6" style="margin-top: 12px">
-                                            <app-cm-select2 
-                                             *ngIf="userOptionsLoaded" 
-                                               [formGroup]="firstFormGroup"
-                                                [controlName]="'selectedUserGroup'" 
-                                                [settings]="userGroupSettings">
+                                            <app-cm-select2 *ngIf="userOptionsLoaded" [formGroup]="firstFormGroup"
+                                                [controlName]="'selectedUserGroup'" [settings]="userGroupSettings">
                                             </app-cm-select2>
                                         </div>
                                     </div>
-                                     <br>
-                                      <div class="row">
+                                    <br>
+                                    <div class="row">
                                         <div class="col-md-6">
-                                            <label style="position: relative; top: 6px; display: block;">TAT (Hours)</label>
+                                            <label style="position: relative; top: 6px; display: block;">TAT
+                                                (Hours)</label>
                                             <div>
-                                                <app-cm-input [formGroup]="firstFormGroup"
-                                                    [controlName]="'tat'"
+                                                <app-cm-input [formGroup]="firstFormGroup" [controlName]="'tat'"
                                                     [_inputData]="inputFields.tat">
                                                 </app-cm-input>
-                            <div *ngIf="f['tat'].touched && f['tat'].errors" class="text-danger mt-1">
-    {{ getErrorMessage('tat', 'Api Url', true, 'Enter a valid Duration.') }}
-  </div>
+                                                <div *ngIf="f['tat'].touched && f['tat'].errors"
+                                                    class="text-danger mt-1">
+                                                    {{ getErrorMessage('tat', 'Api Url', true, 'Enter a valid
+                                                    Duration.') }}
+                                                </div>
                                             </div>
                                         </div>
-                                        
-                                      
+
+
                                     </div>
                                     <br>
                                     <div class="row">
-                                         <div class="col-md-6">
+                                        <div class="col-md-6">
                                             <label style="position: relative; top: 6px; display: block;">Interval
                                                 (Minutes)</label>
                                             <div>
@@ -204,15 +203,17 @@
                                                     [_inputData]="inputFields.intervalTime">
                                                 </app-cm-input>
 
-                                                                   <div *ngIf="f['intervalTime'].touched && f['intervalTime'].errors" class="text-danger mt-1">
-    {{ getErrorMessage('intervalTime', 'intervalTime', true, 'Enter a valid Duration.') }}
-  </div>
-                                                
+                                                <div *ngIf="f['intervalTime'].touched && f['intervalTime'].errors"
+                                                    class="text-danger mt-1">
+                                                    {{ getErrorMessage('intervalTime', 'intervalTime', true, 'Enter a
+                                                    valid Duration.') }}
+                                                </div>
+
                                             </div>
                                         </div>
-                                      
+
                                     </div>
-                                  
+
                                     <br>
                                     <div class="row">
                                         <div class="col-md-3">
@@ -220,7 +221,7 @@
                                             <app-cm-toggle [formGroup]="firstFormGroup" [settings]="isActiveToggle"
                                                 style="margin-top: -35px;"></app-cm-toggle>
                                         </div>
-                                         <div class="col-md-3">
+                                        <div class="col-md-3">
                                             <label class="toggle-label">IsInternal</label>
                                             <app-cm-toggle [formGroup]="firstFormGroup" [settings]="isinternal"
                                                 style="margin-top: -35px;"></app-cm-toggle>
@@ -237,7 +238,7 @@
                                 <form>
                                     <div class="row">
                                         <div class="col-md-4">
-                                            <app-cm-select2   *ngIf="isProjectOptionsLoaded" [formGroup]="secondFormGroup"
+                                            <app-cm-select2 *ngIf="isProjectOptionsLoaded" [formGroup]="secondFormGroup"
                                                 [controlName]="'selectedProject'"
                                                 [settings]="projectSettings"></app-cm-select2>
                                         </div>
@@ -285,16 +286,21 @@
                                                         *ngFor="let group of getExpressionGroup(i).controls; let j = index"
                                                         [formGroup]="group">
                                                         <div class="col">
-                                                            
-                                                            <app-cm-select2 [formGroup]="group"
+                                                            <!-- <app-cm-select2 [formGroup]="group"
                                                                 
                                                                 *ngIf="fieldOption" 
                                                                 [controlName]="'fieldName'"
-                                                                [settings]="fieldSettings"
-                                                                (returnObject)="onFieldChange($event)"></app-cm-select2>
+                                                                [settings]="getfields(arr.get('projId')?.value)"
+                                                                (returnObject)="onFieldChange($event)"></app-cm-select2> -->
+
+                                                            <app-cm-select2 [formGroup]="group" *ngIf="fieldOption"
+                                                                [controlName]="'fieldName'"
+                                                                [settings]="group.get('fieldSettings')?.value"
+                                                                (returnObject)="onFieldChange($event)">
+                                                            </app-cm-select2>
                                                         </div>
                                                         <div class="col">
-                                                            <app-cm-select2   *ngIf="expOption" [formGroup]="group"
+                                                            <app-cm-select2 *ngIf="expOption" [formGroup]="group"
                                                                 [controlName]="'expression'"
                                                                 [settings]="expressionSettings"></app-cm-select2>
                                                         </div>
@@ -345,7 +351,8 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <label style="position: relative; top: 6px; display: block;">Day Of Month*</label>
+                                        <label style="position: relative; top: 6px; display: block;">Day Of
+                                            Month*</label>
                                         <app-cm-select-check [formGroup]="thirdFormGroup" [controlName]="'dayOfMonth'"
                                             [settings]="dayMonthSettings"></app-cm-select-check>
                                     </div>
@@ -357,7 +364,8 @@
                                     </div>
 
                                     <div class="col-md-4">
-                                        <label style="position: relative; top: 6px; display: block;">Day Of Week*</label>
+                                        <label style="position: relative; top: 6px; display: block;">Day Of
+                                            Week*</label>
                                         <app-cm-select-check [formGroup]="thirdFormGroup" [controlName]="'dayOfWeek'"
                                             [settings]="dayWeekSettings"></app-cm-select-check>
                                     </div>

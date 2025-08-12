@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { map, Observable, startWith } from 'rxjs';
 import { MaterialModule } from '../../Material.module';
@@ -17,7 +17,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   templateUrl: './cm-select2.component.html',
   styleUrl: './cm-select2.component.css'
 })
-export class CmSelect2Component {
+export class CmSelect2Component implements OnChanges {
 
   myControl = new FormControl<string | any>('');
   selectedItem: any;
@@ -38,35 +38,56 @@ this.filteredOptions = this.stateCtrl.valueChanges.pipe(
     );
     }
   }
-  private _filterStates(value: string): any[] {
-    const filterValue = value.toLowerCase();
-
-    return this.settings.options.filter((state: any) => state.name.toLowerCase().includes(filterValue));
+ private _filterStates(value: string): any[] {
+  if (!this.settings || !Array.isArray(this.settings.options)) {
+    return [];
   }
-  ngOnInit(): void {
-    console.log(this.settings);
-    if (!this.settings || !this.settings.options) {
-      console.error('Settings or options not provided');
-      return;
-    }
-    // this.filteredOptions = this.stateCtrl.valueChanges.pipe(
-    //   startWith(''),
-    //   map(state => (typeof state === 'string' ? this._filterStates(state) : this.settings.options.slice())),
-    // );
-    this.filteredOptions = this.stateCtrl.valueChanges.pipe(
-  startWith(''),
-  map(state => (typeof state === 'string' ? this._filterStates(state) : this.settings.options.slice()))
-);
 
-//  const control = this.formGroup.get(this.controlName);
-//   if (control) {
-//     if (this.settings?.isDisabled) {
-//       control.disable();
-//     } else {
-//       control.enable();
+  const filterValue = (value || '').toString().toLowerCase();
+
+  return this.settings.options.filter((state: any) => {
+    const name = (state?.name || '').toString().toLowerCase();
+    return name.includes(filterValue);
+  });
+}
+
+//   ngOnInit(): void {
+//     console.log(this.settings);
+//     if (!this.settings || !this.settings.options) {
+//       console.error('Settings or options not provided');
+//       return;
 //     }
+//     // this.filteredOptions = this.stateCtrl.valueChanges.pipe(
+//     //   startWith(''),
+//     //   map(state => (typeof state === 'string' ? this._filterStates(state) : this.settings.options.slice())),
+//     // );
+//     this.filteredOptions = this.stateCtrl.valueChanges.pipe(
+//   startWith(''),
+//   map(state => (typeof state === 'string' ? this._filterStates(state) : this.settings.options.slice()))
+// );
+
+// //  const control = this.formGroup.get(this.controlName);
+// //   if (control) {
+// //     if (this.settings?.isDisabled) {
+// //       control.disable();
+// //     } else {
+// //       control.enable();
+// //     }
+// //   }
 //   }
+
+ngOnChanges(): void {
+  if (this.settings && Array.isArray(this.settings.options)) {
+    this.filteredOptions = this.stateCtrl.valueChanges.pipe(
+      startWith(''),
+      map(state => 
+        typeof state === 'string'
+          ? this._filterStates(state)
+          : this.settings.options.slice()
+      )
+    );
   }
+}
   displayFn(option: any): string {
     return option && option.name ? option.name : '';
   }

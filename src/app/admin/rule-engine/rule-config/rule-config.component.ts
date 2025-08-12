@@ -24,39 +24,39 @@ import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-selec
   styleUrl: './rule-config.component.css'
 })
 export class RuleConfigComponent implements OnInit {
-  
-  loaderService=inject(LoaderService)
+
+  loaderService = inject(LoaderService)
   private _formBuilder = inject(FormBuilder);
   signalRService = inject(SignalRService);
   ruleService = inject(RuleEngineService);
-  isProjectOptionsLoaded:any;
-  userOptionsLoaded:boolean=false;
+  isProjectOptionsLoaded: any;
+  userOptionsLoaded: boolean = false;
   selectedProjectName: any;
   selectedProjectId: any;
-  AndFlag:any;
-  expOption :boolean=false;
+  AndFlag: any;
+  expOption: boolean = false;
   typeOperatorMap: Record<string, string[]> = {
-  string: [
-    'equal', 'not_equal', 'begins_with', 'not_begins_with',
-    'contains', 'not_contains', 'ends_with', 'not_ends_with', 'is_empty',
-    'is_not_empty', 'is_null', 'is_not_null'
-  ],
-  integer: [
-    'equal', 'not_equal', 'less', 'less_or_equal', 'greater',
-    'greater_or_equal', 'between', 'not_between'
-  ],
-  double: [
-    'equal', 'not_equal', 'less', 'less_or_equal', 'greater',
-    'greater_or_equal', 'between', 'not_between'
-  ],
-  boolean: ['equal'],
-  array: ['contains', 'not_contains'],
-  default: [
-    'equal', 'not_equal', 'begins_with', 'not_begins_with',
-    'contains', 'not_contains', 'ends_with', 'not_ends_with', 'is_empty',
-    'is_not_empty', 'is_null', 'is_not_null'
-  ]
-};
+    string: [
+      'equal', 'not_equal', 'begins_with', 'not_begins_with',
+      'contains', 'not_contains', 'ends_with', 'not_ends_with', 'is_empty',
+      'is_not_empty', 'is_null', 'is_not_null'
+    ],
+    integer: [
+      'equal', 'not_equal', 'less', 'less_or_equal', 'greater',
+      'greater_or_equal', 'between', 'not_between'
+    ],
+    double: [
+      'equal', 'not_equal', 'less', 'less_or_equal', 'greater',
+      'greater_or_equal', 'between', 'not_between'
+    ],
+    boolean: ['equal'],
+    array: ['contains', 'not_contains'],
+    default: [
+      'equal', 'not_equal', 'begins_with', 'not_begins_with',
+      'contains', 'not_contains', 'ends_with', 'not_ends_with', 'is_empty',
+      'is_not_empty', 'is_null', 'is_not_null'
+    ]
+  };
 
   userGroupSettings = {
     labelHeader: 'User Group*',
@@ -72,7 +72,7 @@ export class RuleConfigComponent implements OnInit {
     formFieldClass: '',
     appearance: 'outline',
     options: [
-   
+
     ]
   };
   inputFields = {
@@ -91,14 +91,14 @@ export class RuleConfigComponent implements OnInit {
       color: 'primary',
       formFieldClass: "w-100"
     },
-      tat: {
+    tat: {
       placeholder: 'TAT',
       appearance: 'outline',
       isDisabled: false,
       color: 'primary',
       formFieldClass: "w-100"
     },
-     ticketabb: {
+    ticketabb: {
       placeholder: 'Ticket Abbreviation',
       appearance: 'outline',
       isDisabled: false,
@@ -123,7 +123,7 @@ export class RuleConfigComponent implements OnInit {
       { value: false, displayName: 'No' }
     ]
   };
-    isinternal = {
+  isinternal = {
 
     name: 'isinternal',
     formControlName: 'isinternal',
@@ -157,7 +157,7 @@ export class RuleConfigComponent implements OnInit {
     ],
 
   };
-
+  fieldSettingsArr: any[] = [];
   fieldSettings = {
     labelHeader: 'Field Name',
     lableClass: 'form-label',
@@ -177,12 +177,12 @@ export class RuleConfigComponent implements OnInit {
   //   ]
   // }
   expressionSettings = {
-  labelHeader: 'Expression',
-  lableClass: 'form-label',
-  formFieldClass: '',
-  appearance: 'outline',
-  options: [] as { name: string; value: string }[]
-};
+    labelHeader: 'Expression',
+    lableClass: 'form-label',
+    formFieldClass: '',
+    appearance: 'outline',
+    options: [] as { name: string; value: string }[]
+  };
 
   minuteSettings = {
     labelHeader: 'Minute (Numeric)',
@@ -269,8 +269,8 @@ export class RuleConfigComponent implements OnInit {
   }
 
   checkBoxSettings: any;
-  firstFormGroup:any;
-  thirdFormGroup:any;
+  firstFormGroup: any;
+  thirdFormGroup: any;
 
   // firstFormGroup = this._formBuilder.group({
   //   policyName: ['', Validators.required],
@@ -282,8 +282,8 @@ export class RuleConfigComponent implements OnInit {
   //   isActive: [false, Validators.required],
   //   isinternal: [false, Validators.required]
   // });
-  secondFormGroup : any;
-  
+  secondFormGroup: any;
+
 
   isLinear = false;
 
@@ -296,7 +296,7 @@ export class RuleConfigComponent implements OnInit {
   //   { icon: '✅', title: 'Confirm' }
   // ];
   ruleConditions: any;
-  constructor(private toast :ToastrService) {
+  constructor(private toast: ToastrService) {
     this.ruleConditions = this.ruleService.getRuleConditions();
     if (this.ruleConditions == null) {
       this.ruleService.setRulesStorage();
@@ -305,26 +305,26 @@ export class RuleConfigComponent implements OnInit {
   }
   ngOnInit(): void {
     this.thirdFormGroup = this._formBuilder.group({
-    minute: ['', Validators.required],
-    hour: ['', Validators.required],
-    dayOfMonth: ['', Validators.required],
-    month: ['', Validators.required],
-    dayOfWeek: ['', Validators.required],
-  });
+      minute: ['', Validators.required],
+      hour: ['', Validators.required],
+      dayOfMonth: ['', Validators.required],
+      month: ['', Validators.required],
+      dayOfWeek: ['', Validators.required],
+    });
     this.secondFormGroup = this._formBuilder.group({
-    selectedProject: [null, Validators.required],
-    groups: this._formBuilder.array([]),
-  });
+      selectedProject: [null, Validators.required],
+      groups: this._formBuilder.array([]),
+    });
     this.firstFormGroup = this._formBuilder.group({
-    policyName: ['', Validators.required],
-    ticketabb:  ['', Validators.required],
-    tat:['', [Validators.required, Validators.pattern('^[0-9]*$')]],
-    selectedCategory: ['', Validators.required],
-    selectedUserGroup: ['', Validators.required],
-    intervalTime: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
-    isActive: [false, Validators.required],
-    isinternal: [false, Validators.required]
-  });
+      policyName: ['', Validators.required],
+      ticketabb: ['', Validators.required],
+      tat: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+      selectedCategory: ['', Validators.required],
+      selectedUserGroup: ['', Validators.required],
+      intervalTime: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+      isActive: [false, Validators.required],
+      isinternal: [false, Validators.required]
+    });
     this.getProjList();
     this.getRoles();
     //this.getfields();
@@ -341,67 +341,67 @@ export class RuleConfigComponent implements OnInit {
     }
 
 
-//     this.secondFormGroup.get('selectedProject')?.valueChanges.subscribe((value:any) => {
-//     this.AndFlag = false; 
+    //     this.secondFormGroup.get('selectedProject')?.valueChanges.subscribe((value:any) => {
+    //     this.AndFlag = false; 
 
 
-//       if (value?.value) { 
-//         this.AndFlag = true; 
-//         //this.selectedProjectName = value.name
-//         console.log(value.value);   
-//   }  
-// });
+    //       if (value?.value) { 
+    //         this.AndFlag = true; 
+    //         //this.selectedProjectName = value.name
+    //         console.log(value.value);   
+    //   }  
+    // });
 
 
   }
-        get f() {
-  return this.firstFormGroup.controls;
+  get f() {
+    return this.firstFormGroup.controls;
   }
- getErrorMessage(_controlName: any, _controlLable: any, _isPattern: boolean = false, _msg: string) {
-      return getErrorMsg(this.firstFormGroup, _controlName, _controlLable, _isPattern, _msg);
+  getErrorMessage(_controlName: any, _controlLable: any, _isPattern: boolean = false, _msg: string) {
+    return getErrorMsg(this.firstFormGroup, _controlName, _controlLable, _isPattern, _msg);
+  }
+
+  onFieldChange(selectedField: any) {
+    this.expOption = false;
+    const fieldType = selectedField?.type;
+
+    if (fieldType) {
+      const operators = this.typeOperatorMap[fieldType] || [];
+
+      this.expressionSettings.options = operators.map(op => ({
+        name: op,
+        value: op
+      }));
+      setTimeout(() => {
+        this.expOption = true;
+      });
     }
-
-onFieldChange(selectedField: any) {
-  this.expOption=false;
-  const fieldType = selectedField?.type;
-
-  if (fieldType) {
-    const operators = this.typeOperatorMap[fieldType] || [];
-
-    this.expressionSettings.options = operators.map(op => ({
-      name: op,
-      value: op
-    }));
-        setTimeout(() => {
-      this.expOption = true;
-    });
   }
-}
 
 
 
-    getProjList() {
-    this.ruleService.GetProjectList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+  getProjList() {
+    this.ruleService.GetProjectList().pipe(withLoader(this.loaderService)).subscribe((response: any) => {
       const items = response?.result || [];
-  
+
       const projectOptions = items.map((item: any) => ({
         name: item.name || item.shortCode,
         value: item.id
       }));
-  
-    
+
+
       // projectOptions.unshift({
       //   name: 'All',
       //   value: null
       // });
-  
-     this.projectSettings.options = projectOptions;
-  // this.form.controls['selectedProject'].setValue({
-  //   name: 'All',
-  //   value: null
-  // });
-  console.log( "h3",this.projectSettings.options);
-  
+
+      this.projectSettings.options = projectOptions;
+      // this.form.controls['selectedProject'].setValue({
+      //   name: 'All',
+      //   value: null
+      // });
+      console.log("h3", this.projectSettings.options);
+
       this.isProjectOptionsLoaded = true;
     }, error => {
       console.error('Error fetching project list', error);
@@ -410,159 +410,186 @@ onFieldChange(selectedField: any) {
 
   Submit() {
 
-  
-  // if (this.form.invalid) {
 
-  //   this.toast.error('Please select all the values before Sending.');
-  //   this.form.markAllAsTouched();
-  //   return;
+    // if (this.form.invalid) {
+
+    //   this.toast.error('Please select all the values before Sending.');
+    //   this.form.markAllAsTouched();
+    //   return;
+    // }
+
+
+
+    // const isAuthRequired = this.form.get('isrequireauth')?.value;
+    // const selectedProjType = this.form.get('selectedProjType')?.value.value;
+    // const authType =this.form.get('authType')?.value;
+
+    const creationTime = new Date();
+    const firstFormValues = this.firstFormGroup.value;
+    const secondFormValues = this.secondFormGroup.value;
+    const thirdFormValues = this.thirdFormGroup.value;
+
+    // const payload = {
+    //     ProjectId: this.form.controls['selectedProject'].value?.value,
+    //     Type: this.form.controls['selectedProjType'].value?.value,  
+    //     APIName: formValues.apiName,
+    //     BaseURL: formValues.apiUrl,
+    //     RequestURL: formValues.apiUrl,
+    //     HttpMethod: this.form.controls['method'].value?.value,
+    //     RequestParam: "",
+    //     Header: "",
+    //     AuthReq: formValues.isrequireauth,
+    //     AuthAPIId: this.form.controls['selectedapi'].value?.value, 
+    //     AuthenticatioType: formValues.authType,
+    //     APISeq: formValues.apiseq,
+    //     AuthenticationHeader: "",
+    //     CommType:0,
+    //     BodyType: formValues.bodyType,
+    //     Body: bodyJsonString,
+    //     ResponseStatusCode: "",
+    //     Response: "",
+    //     IsActive: formValues.IsActive,
+    //     ProjectName: "",
+    //     IsDeleted: false,
+    //     DeleterUserId: "",
+    //     DeletionTime: creationTime,
+    //     LastModificationTime: creationTime,
+    //     LastModifierUserId: "",
+    //     CreationTime: creationTime,
+    //     CreatorUserId: ""
+    //   };
+
+
+    const policyData: Policy = {
+      policyName: firstFormValues.policyName,
+      ticketAbbrevation: firstFormValues.ticketabb,
+      tat: firstFormValues.tat,
+      policyRoles: this.firstFormGroup.controls['selectedUserGroup'].value?.value,
+      priority: this.firstFormGroup.controls['selectedCategory'].value?.value,
+      isActive: firstFormValues.isActive,
+      intervalTime: firstFormValues.intervalTime,
+      isInternal: firstFormValues.isinternal,
+      apiName: null,
+      apiId: null,
+      ruleExpression: null,
+      cron: null,
+      isDeleted: false,
+      deleterUserId: 0,
+      deletionTime: creationTime,
+      lastModificationTime: creationTime,
+      lastModifierUserId: 0,
+      creationTime: creationTime,
+      creatorUserId: 0,
+      id: 0,
+      description: firstFormValues.policyName,
+    };
+
+    this.ruleService.CreateRuleEngine(policyData).pipe(withLoader(this.loaderService)).subscribe({
+      next: (res: any) => {
+        console.log(res);
+      }
+    });
+
+  }
+
+  fieldOption: any;
+
+  onProjectChange(selectedProject: any, groupIndex: number) {
+    this.getfields(selectedProject, groupIndex);
+  }
+
+  //    getfields(selectedProject:any) {
+  //     console.log(selectedProject);
+  //      this.fieldOption = false;
+  //   this.ruleService.Getfields(selectedProject).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+  //     const items = response?.result || [];
+
+  //     const projectOptions = items.map((item: any) => ({
+  //       name: item.apiField,
+  //       value: item.id,
+  //       type:item.fieldType,
+  //       project : selectedProject
+  //     }));
+
+
+  //     // projectOptions.unshift({
+  //     //   name: 'All',
+  //     //   value: null
+  //     // });
+
+  //    //this.fieldSettings.options = projectOptions;
+  //    this.fieldSettingsArr.push(projectOptions);
+  //    console.log(this.fieldSettingsArr);
+  // // this.form.controls['selectedProject'].setValue({
+  // //   name: 'All',
+  // //   value: null
+  // // });
+  // console.log( "h3",this.projectSettings.options);
+
+  //     this.fieldOption = true;
+  //   }, error => {
+  //     console.error('Error fetching project list', error);
+  //   });
   // }
 
-  
+  getfields(selectedProject: any, groupIndex: number) {
+    this.fieldOption = false;
+    this.ruleService.Getfields(selectedProject)
+      .pipe(withLoader(this.loaderService))
+      .subscribe((response: any) => {
+        const items = response?.result || [];
 
-// const isAuthRequired = this.form.get('isrequireauth')?.value;
-// const selectedProjType = this.form.get('selectedProjType')?.value.value;
-// const authType =this.form.get('authType')?.value;
+        const projectOptions = items.map((item: any) => ({
+          id: item.id,
+          name: item.apiField,
+          value: item.apiField,
+          type: item.fieldType,
+          project: selectedProject
+        }));
+        const settings = {
+          singleSelection: true,
+          idField: 'id',
+          textField: 'text',
+          allowSearchFilter: true,
+          labelHeader: 'User Group*',
+          lableClass: 'form-label',
+          formFieldClass: '',
+          appearance: 'outline',
+          options: projectOptions
+        };
 
-const creationTime = new Date();
-const firstFormValues = this.firstFormGroup.value;
-const secondFormValues = this.secondFormGroup.value;
-const thirdFormValues = this.thirdFormGroup.value;
+        // set fieldSettings for ALL expressions in that group
+        const exprArray = this.getExpressionGroup(groupIndex);
+        exprArray.controls[0].patchValue({ fieldSettings: settings })
 
-// const payload = {
-//     ProjectId: this.form.controls['selectedProject'].value?.value,
-//     Type: this.form.controls['selectedProjType'].value?.value,  
-//     APIName: formValues.apiName,
-//     BaseURL: formValues.apiUrl,
-//     RequestURL: formValues.apiUrl,
-//     HttpMethod: this.form.controls['method'].value?.value,
-//     RequestParam: "",
-//     Header: "",
-//     AuthReq: formValues.isrequireauth,
-//     AuthAPIId: this.form.controls['selectedapi'].value?.value, 
-//     AuthenticatioType: formValues.authType,
-//     APISeq: formValues.apiseq,
-//     AuthenticationHeader: "",
-//     CommType:0,
-//     BodyType: formValues.bodyType,
-//     Body: bodyJsonString,
-//     ResponseStatusCode: "",
-//     Response: "",
-//     IsActive: formValues.IsActive,
-//     ProjectName: "",
-//     IsDeleted: false,
-//     DeleterUserId: "",
-//     DeletionTime: creationTime,
-//     LastModificationTime: creationTime,
-//     LastModifierUserId: "",
-//     CreationTime: creationTime,
-//     CreatorUserId: ""
-//   };
-
-
-const policyData: Policy = {
-  policyName: firstFormValues.policyName,
-  ticketAbbrevation: firstFormValues.ticketabb,
-  tat: firstFormValues.tat,
-  policyRoles:this.firstFormGroup.controls['selectedUserGroup'].value?.value,
-  priority: this.firstFormGroup.controls['selectedCategory'].value?.value,
-  isActive: firstFormValues.isActive,
-  intervalTime: firstFormValues.intervalTime,
-  isInternal: firstFormValues.isinternal,
-  apiName: null,
-  apiId: null,
-  ruleExpression: null,
-  cron: null,
-  isDeleted: false,
-  deleterUserId: 0,
-  deletionTime: creationTime,
-  lastModificationTime: creationTime,
-  lastModifierUserId: 0,
-  creationTime: creationTime,
-  creatorUserId: 0,
-  id: 0,
-  description:firstFormValues.policyName,
-};
-
-  this.ruleService.CreateRuleEngine(policyData).pipe(withLoader(this.loaderService)).subscribe({
-    next: (res: any) => {
-     console.log(res);
-    }
-  });
-
-  
-
-
-
-
-
-
-
-
-
-
-}
-
-  
-  
-
-  
-
-
-
-fieldOption:any;
-     getfields(selectedProject:any) {
-       this.fieldOption = false;
-    this.ruleService.Getfields(selectedProject).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
-      const items = response?.result || [];
-  
-      const projectOptions = items.map((item: any) => ({
-        name: item.apiField,
-        value: item.id,
-        type:item.fieldType,
-      }));
-  
-    
-      // projectOptions.unshift({
-      //   name: 'All',
-      //   value: null
-      // });
-  
-     this.fieldSettings.options = projectOptions;
-  // this.form.controls['selectedProject'].setValue({
-  //   name: 'All',
-  //   value: null
-  // });
-  console.log( "h3",this.projectSettings.options);
-  
-      this.fieldOption = true;
-    }, error => {
-      console.error('Error fetching project list', error);
-    });
+        this.fieldOption = true;
+      });
   }
+
+
   getRoles() {
-     console.log(this.userOptionsLoaded)
-    this.ruleService.GetRolesOnId().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+    console.log(this.userOptionsLoaded)
+    this.ruleService.GetRolesOnId().pipe(withLoader(this.loaderService)).subscribe((response: any) => {
       console.log(response.result)
       const items = response?.result || [];
       console.log(items);
-  
-const itemArray = items.items;
 
-let projectOptions:any;
-if (Array.isArray(itemArray)) {
-   projectOptions = itemArray.map(item => ({
-    name: item.displayName,
-    value: item.id
-  }));
-}
+      const itemArray = items.items;
 
-  
-     this.userGroupSettings.options = projectOptions;
-     console.log("h4",this.userGroupSettings.options)
+      let projectOptions: any;
+      if (Array.isArray(itemArray)) {
+        projectOptions = itemArray.map(item => ({
+          name: item.displayName,
+          value: item.id
+        }));
+      }
 
-  
-  
+
+      this.userGroupSettings.options = projectOptions;
+      console.log("h4", this.userGroupSettings.options)
+
+
+
       this.userOptionsLoaded = true;
     }, error => {
       console.error('Error fetching project list', error);
@@ -570,32 +597,32 @@ if (Array.isArray(itemArray)) {
   }
   goNext() {
 
-      console.log('Third form group value/status:', this.secondFormGroup);
+    console.log('Third form group value/status:', this.secondFormGroup);
 
-      if (this.currentStep === 0 && this.firstFormGroup.invalid) {
-         this.toast.error('Please select all the values.');
-         this.firstFormGroup.markAllAsTouched(); 
-        
-         return;
-  }
-  else{
-         if (this.currentStep === 1 && this.secondFormGroup.invalid) {
-         this.toast.error('Please select all the values.');
-         this.firstFormGroup.markAllAsTouched(); 
-        
-         return;
-  }
-else{
-    if (this.currentStep < this.steps.length - 1) {
-      this.currentStep++;
+    if (this.currentStep === 0 && this.firstFormGroup.invalid) {
+      this.toast.error('Please select all the values.');
+      this.firstFormGroup.markAllAsTouched();
+
+      return;
     }
-}
+    else {
+      if (this.currentStep === 1 && this.secondFormGroup.invalid) {
+        this.toast.error('Please select all the values.');
+        this.firstFormGroup.markAllAsTouched();
+
+        return;
+      }
+      else {
+        if (this.currentStep < this.steps.length - 1) {
+          this.currentStep++;
+        }
+      }
 
 
 
 
-  }
-  
+    }
+
   }
 
   goBack() {
@@ -632,43 +659,44 @@ else{
     return this.secondFormGroup.get('groups') as FormArray<FormGroup>;
   }
   onAddGroup() {
-   const selectedProject = this.secondFormGroup.controls['selectedProject'].value;
-   //let name  = selectedProject?.name;
+    const selectedProject = this.secondFormGroup.controls['selectedProject'].value;
+    //let name  = selectedProject?.name;
 
 
 
-  
-      console.log("hi",selectedProject)
-if (
-  !selectedProject ||
-  typeof selectedProject !== 'object' ||
-  !('name' in selectedProject) ||
-  !('value' in selectedProject)
-) {
-  this.toast.error('Please select a project before adding');
-  return;
-}
-  this.selectedProjectName = selectedProject.name;
-  this.selectedProjectId = selectedProject.value;
 
-  this.createGroup(selectedProject);
+    console.log("hi", selectedProject)
+    if (
+      !selectedProject ||
+      typeof selectedProject !== 'object' ||
+      !('name' in selectedProject) ||
+      !('value' in selectedProject)
+    ) {
+      this.toast.error('Please select a project before adding');
+      return;
+    }
+    this.selectedProjectName = selectedProject.name;
+    this.selectedProjectId = selectedProject.value;
+
+    this.createGroup(selectedProject);
 
 
-  //this.secondFormGroup.get('selectedProject')?.reset();
-  this.getfields( this.selectedProjectId);
-}
+    //this.secondFormGroup.get('selectedProject')?.reset();
+    let idx = this.groupsFormArray.length - 1;
+    this.getfields(this.selectedProjectId, idx);
+  }
 
   createGroup(selectedProject: any) {
     let len = this.secondFormGroup.controls['groups'].length;
     const group = this._formBuilder.group({
       seqNo: [{ value: (len == undefined ? 1 : len + 1), disabled: true }],
-       projId: [selectedProject.value, Validators.required], 
-       projName: [selectedProject.name], 
+      projId: [selectedProject.value, Validators.required],
+      projName: [selectedProject.name],
       selectedMainExpression: [''],
-      condition: [{ value: ''}],
+      condition: [{ value: '' }],
       arrayGroup: this._formBuilder.array([]),
     });
-   
+
     this.groupsFormArray.push(group);
     const formArr = this.createFormArrayGroup();
     console.log(formArr);
@@ -701,24 +729,18 @@ if (
     this.groupsFormArray.removeAt(i);
   }
 
-removeArray(i: number, j: number) {
-  const arrayGroup = this.groupsFormArray.at(i).get('arrayGroup') as FormArray;
-  arrayGroup.removeAt(j);
-}
+  removeArray(i: number, j: number) {
+    const arrayGroup = this.groupsFormArray.at(i).get('arrayGroup') as FormArray;
+    arrayGroup.removeAt(j);
+  }
   createFormArrayGroup() {
     return this._formBuilder.group({
       fieldName: ['', Validators.required],
       expression: [{ value: '' }, Validators.required],
       fieldValue: ['', Validators.required],
+      fieldSettings: [null]
     });
   }
-
-
-  
- 
-  
-
-
 
   addFormArrayGroup(len: number) {
     console.log(len);
