@@ -747,7 +747,8 @@ export class RuleConfigComponent implements OnInit {
     const formArr = this.createFormArrayGroup();
     var expressionGroup = this.getExpression(len);
     expressionGroup.push(formArr);
-    this.getfields(this.selectedProjectId, len);
+    let proj = this.secondFormGroup.controls.groups.controls[len].controls.projId.value;
+    this.getfields(proj, len);
   }
 
   checkboxOptions = [
