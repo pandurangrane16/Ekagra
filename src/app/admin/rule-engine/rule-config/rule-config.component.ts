@@ -560,7 +560,7 @@ export class RuleConfigComponent implements OnInit {
 
         // set fieldSettings for ALL expressions in that group
         const exprArray = this.getExpressionGroup(groupIndex);
-        exprArray.controls[0].patchValue({ fieldSettings: settings })
+        exprArray.controls[exprArray.controls.length-1].patchValue({ fieldSettings: settings })
 
         this.fieldOption = true;
       });
@@ -747,6 +747,7 @@ export class RuleConfigComponent implements OnInit {
     const formArr = this.createFormArrayGroup();
     var expressionGroup = this.getExpression(len);
     expressionGroup.push(formArr);
+    this.getfields(this.selectedProjectId, len);
   }
 
   checkboxOptions = [
