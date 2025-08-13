@@ -361,20 +361,48 @@ export class RuleConfigComponent implements OnInit {
     return getErrorMsg(this.firstFormGroup, _controlName, _controlLable, _isPattern, _msg);
   }
 
-  onFieldChange(selectedField: any) {
+  onFieldChange(idx : number,jdx:number,selectedField: any) {
     this.expOption = false;
     const fieldType = selectedField?.type;
 
     if (fieldType) {
-      const operators = this.typeOperatorMap[fieldType] || [];
+      //const operators = this.typeOperatorMap[fieldType] || [];
 
-      this.expressionSettings.options = operators.map(op => ({
-        name: op,
-        value: op
-      }));
-      setTimeout(() => {
-        this.expOption = true;
-      });
+      // this.expressionSettings.options = operators.map(op => ({
+      //   name: op,
+      //   value: op
+      // }));
+      // setTimeout(() => {
+      //   this.expOption = true;
+      // });
+
+
+      const fieldType = selectedField?.type;
+
+      if (fieldType) {
+        let expSettings = {
+          labelHeader: 'Expression',
+          lableClass: 'form-label',
+          formFieldClass: '',
+          appearance: 'outline',
+          options: [] as { name: string; value: string }[]
+        };
+        const operators = this.typeOperatorMap[fieldType] || [];
+
+        expSettings.options = operators.map(op => ({
+          name: op,
+          value: op
+        }));
+        setTimeout(() => {
+          this.expOption = true;
+        });
+
+        const exprArray = this.getExpressionGroup(idx);
+        exprArray.controls[jdx].patchValue({ 
+          expressionSettings: expSettings,
+          expOption : true
+        })
+      }
     }
   }
 
@@ -560,9 +588,12 @@ export class RuleConfigComponent implements OnInit {
 
         // set fieldSettings for ALL expressions in that group
         const exprArray = this.getExpressionGroup(groupIndex);
-        exprArray.controls[exprArray.controls.length-1].patchValue({ fieldSettings: settings })
+        exprArray.controls[exprArray.controls.length - 1].patchValue({ 
+          fieldSettings: settings,
+          fieldOption : true
+         })
 
-        this.fieldOption = true;
+        //this.fieldOption = true;
       });
   }
 
@@ -738,7 +769,10 @@ export class RuleConfigComponent implements OnInit {
       fieldName: ['', Validators.required],
       expression: [{ value: '' }, Validators.required],
       fieldValue: ['', Validators.required],
-      fieldSettings: [null]
+      fieldSettings: [null],
+      expressionSettings: [null],
+      fieldOption: [false],
+      expOption: [false]
     });
   }
 

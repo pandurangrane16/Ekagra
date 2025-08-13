@@ -291,18 +291,18 @@
                                                                 *ngIf="fieldOption" 
                                                                 [controlName]="'fieldName'"
                                                                 [settings]="getfields(arr.get('projId')?.value)"
-                                                                (returnObject)="onFieldChange($event)"></app-cm-select2> -->
+                                                                (returnObject)="onFieldChange(i,$event)"></app-cm-select2> -->
 
-                                                            <app-cm-select2 [formGroup]="group" *ngIf="fieldOption"
+                                                            <app-cm-select2 [formGroup]="group" *ngIf="(group.get('fieldOption')?.value)"
                                                                 [controlName]="'fieldName'"
                                                                 [settings]="group.get('fieldSettings')?.value"
-                                                                (returnObject)="onFieldChange($event)">
+                                                                (returnObject)="onFieldChange(i,j,$event)">
                                                             </app-cm-select2>
                                                         </div>
                                                         <div class="col">
-                                                            <app-cm-select2 *ngIf="expOption" [formGroup]="group"
+                                                            <app-cm-select2 *ngIf="(group.get('expOption')?.value)" [formGroup]="group"
                                                                 [controlName]="'expression'"
-                                                                [settings]="expressionSettings"></app-cm-select2>
+                                                                [settings]="group.get('expressionSettings')?.value"></app-cm-select2>
                                                         </div>
                                                         <div class="col">
                                                             <label
