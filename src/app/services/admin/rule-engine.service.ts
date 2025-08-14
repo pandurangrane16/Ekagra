@@ -20,5 +20,19 @@ export class RuleEngineService {
   GetProjectList() {
     return this._httpService._getMethod('api/services/app/Project/GetProjectList');
   }
+  CreateRuleEngine(data:any) {
+    return this._httpService._postMethod(data,'api/services/app/RuleEngine/Create');
+  }
+    GetRolesOnId() {
+    return this._httpService._getMethod('api/services/app/RuleEngine/GetRolesOnId');
+  }
+
+     Getfields(id:any) {
+    return this._httpService._getMethod('api/services/app/ProjectField/GetProjectFieldMasterforruleengine?Id='+id);
+  }
+
+
+
+
 
 }

@@ -2,7 +2,7 @@
     <br>
     <mat-form-field [appearance]="settings.appearance || 'fill'" class="full-width">
         <mat-label>{{settings.labelHeader}}</mat-label>
-        <input type="text" placeholder="Search and select..." matInput [formControl]="searchCtrl"
+        <input type="text" placeholder="Search and select..." matInput [formControl]="controlName"
             [matAutocomplete]="auto" [value]="selectedValues.join(', ')" (click)="openAutocomplete = true">
 
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>

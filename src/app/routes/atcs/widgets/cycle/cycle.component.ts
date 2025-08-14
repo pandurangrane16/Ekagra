@@ -1,7 +1,9 @@
-import { OnInit, Component, Input,ElementRef, SimpleChanges,Renderer2, ViewChild } from '@angular/core';
+import { OnInit, Component,inject, Input,ElementRef, SimpleChanges,Renderer2, ViewChild } from '@angular/core';
 import { HighchartsChartModule } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
-import { CommonModule } from '@angular/common';
+import { CommonModule} from '@angular/common';
+import { LoaderService } from '../../../../services/common/loader.service';
+import { withLoader } from '../../../../services/common/common';
 import { atcsDashboardservice } from '../../../../services/atcs/atcsdashboard.service';
 
 @Component({
@@ -11,6 +13,7 @@ import { atcsDashboardservice } from '../../../../services/atcs/atcsdashboard.se
     styleUrl: './cycle.component.css'
 })
 export class CycleComponent implements OnInit {
+  loaderService=inject(LoaderService)
   @Input() junctionName!: string;
   @ViewChild('customLegend')
   customLegend!: ElementRef;
@@ -266,7 +269,7 @@ tooltip: {
   fetchCycleData(junctionId: string): void {
         const fromDate = '2025-06-10 00:00:00';
     const toDate = '2025-07-18 00:00:00';
-  this.service.getJunctioneData(2010,fromDate,toDate).subscribe(
+  this.service.getJunctioneData(2010,fromDate,toDate).pipe(withLoader(this.loaderService)).subscribe(
     (res: any) => {
       
       const data = res?.result || []; 

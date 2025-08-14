@@ -19,6 +19,12 @@
   position: relative;
 }
 
+  .toggle-label {
+    font-weight: 500;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
 .step-icon {
   width: 40px;
   height: 40px;
