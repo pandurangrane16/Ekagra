@@ -20,6 +20,7 @@ import { inject } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import{ SiteSearchPipe} from './site-search.pipe';
 import { FormsModule } from '@angular/forms';
+import { SessionService } from '../../services/common/session.service';
 interface Section {
   name: string;
   img: string;
@@ -62,6 +63,7 @@ interface Camera {
 
 export class SurveilienceCameraComponent {
   siteSearchText: string = '';
+   session = inject(SessionService);
 activeStreams: { siteId: number,siteName: string, streamUrl: SafeResourceUrl, cameraName: string }[] = [];
 
 private currentSiteId: number | null = null;
@@ -123,7 +125,7 @@ sites: Site[] = [];
   ngOnInit(): void {
     try{
     debugger;
-    const projectId = 1; 
+    const projectId = this.session._getSessionValue("projectIdRoute");; 
     this.surveillanceService
       .GetSiteLocationCameraListForSurveillance(projectId)
       .pipe(withLoader(this.loaderService)).subscribe((res: any) => {

@@ -310,12 +310,12 @@ deleteRow(rowData: any): void {
   });
 }
 editRow(rowData: any) {
-  // this.router.navigate(['/admin/projform'], {
-  //   state: {
-  //     mode: 'edit',
-  //     record: rowData
-  //   }
-  // });
+  this.router.navigate(['/admin/apiplayground'], {
+    state: {
+      mode: 'edit',
+      record: rowData
+    }
+  });
 }
         
         getApiList() {
@@ -363,11 +363,14 @@ const matched = (this.projectTypeSettings.options as { name: string; value: any 
 element.type2 = matched ? matched.name : element.type;
 
 
-                       element.button = [
-    { label: 'Edit', icon: 'edit', type: 'edit' },
-    { label: 'Delete', icon: 'delete', type: 'delete' }
-  ];
-            
+  //                      element.button = [
+  //   { label: 'Edit', icon: 'edit', type: 'edit' },
+  //   { label: 'Delete', icon: 'delete', type: 'delete' }
+  // ];
+    element.button = [
+    { label: 'Edit', icon: 'edit', type: 'edit' }
+  ];     
+  
 console.log(element.type,element.type2)
 console.log(this.projectTypeSettings.options)
 
@@ -423,10 +426,14 @@ element.type2 = matched ? matched.name : element.type;
 
          
             
-              element.button = [
-    { label: 'Edit', icon: 'edit', type: 'edit' },
-    { label: 'Delete', icon: 'delete', type: 'delete' }
+  //             element.button = [
+  //   { label: 'Edit', icon: 'edit', type: 'edit' },
+  //   { label: 'Delete', icon: 'delete', type: 'delete' }
+  // ];
+   element.button = [
+    { label: 'Edit', icon: 'edit', type: 'edit' }
   ];
+
 
 
 

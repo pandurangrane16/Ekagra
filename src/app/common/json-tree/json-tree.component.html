@@ -1,17 +1,22 @@
-<!-- <ngx-json-viewer [json]="apiJsonData"></ngx-json-viewer> -->
 <ul>
   <ng-container *ngFor="let key of getKeys(data)">
     <li>
-      <span>{{ parentPath ? parentPath + '.' : '' }}{{ key }}</span>
+      <span>
+        {{ parentPath ? parentPath + '.' : '' }}{{ key }}
+        <ng-container *ngIf="showValues && !isObject(data[key])">
+          : <strong>{{ data[key] }}</strong>
+        </ng-container>
+      </span>
 
-      <!-- Set Icon / Button -->
+      <!-- Copy path -->
       <button (click)="onNodeSelect(key, parentPath)" class="copy-button">📋</button>
 
-      <!-- If the value is an object, recursively call component -->
+      <!-- If it's an object, recursively render -->
       <ng-container *ngIf="isObject(data[key])">
         <app-json-tree
           [data]="data[key]"
           [parentPath]="getFullPath(key, parentPath)"
+          [showValues]="showValues"
           (nodeSelected)="nodeSelected.emit($event)">
         </app-json-tree>
       </ng-container>

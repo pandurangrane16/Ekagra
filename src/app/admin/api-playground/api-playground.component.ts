@@ -18,6 +18,7 @@ import { Router } from '@angular/router';
 import { withLoader } from '../../services/common/common';
 import { projapirequestmodel } from '../../models/admin/projectapirequest.model';
 import { AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 
 @Component({
@@ -28,6 +29,8 @@ import { AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
   standalone: true
 })
 export class ApiPlaygroundComponent implements OnInit {
+    state:any;
+    isEditMode = false;
     router = inject(Router);
    loaderService = inject(LoaderService);
    tabs = [
@@ -182,8 +185,8 @@ apiTypeSettings = {
   }
   ngOnInit(): void {
     
-
-    console.log(this.authRequiredFlag)
+debugger;
+console.log(this.authRequiredFlag)
     this.getProjList();
     this.GetProjectType();
     this.getType();
@@ -192,6 +195,118 @@ apiTypeSettings = {
     this.GetSystemAutoValue();
     this.GetDateTypes();
     this.GetGuidType();
+    // ================ Edit mode logic============
+    debugger;
+    this.state = history.state;
+    const state = this.state;
+    if (state?.mode === 'edit' && state?.record) {
+      const Id = state.record.id;
+      this.isEditMode = true; 
+      console.log('Edit mode detected, record:', state.record);
+      // Patch all fields except queryStrings
+      this.form.patchValue({
+        selectedProject: state.record.projectId,
+        selectedProjType: state.record.type,
+        method: state.record.httpMethod,
+        apiName: state.record.apiName,
+        apiUrl: state.record.baseURL,
+        apiseq: state.record.apiSeq,
+        isActive: state.record.isActive,
+        isrequireauth: state.record.authReq,
+        selectedapi: state.record.authAPIId,
+        bodyType: state.record.bodyType,
+        authType: state.record.authenticatioType,
+      });
+      // Wait for all dropdown options to be loaded before populating queryStrings
+      const waitForOptions = () => {
+        if (this.isTypeOptionsLoaded && this.isInputTypeOptionsLoaded && this.qsType.options.length && this.qsInputType.options.length) {
+          // Clear existing queryStrings
+          this.queryStringsFormArray.clear();
+          // Fetch and bind queryStrings from API
+          this.service.GetAllProjectAPIRequestbyAPIID(Id).pipe(withLoader(this.loaderService)).subscribe({
+            next: (res: any) => {
+              if (res?.result?.items && Array.isArray(res.result.items)) {
+                res.result.items.forEach((item: any, idx: number) => {
+                  debugger;
+                  // Find matching option objects for dropdowns
+                  const qsTypeOption = this.qsType.options.find((opt: any) => String(opt.value) === String(item.type)) || { name: 'URL', value: item.type };
+                  const qsInputTypeOption = this.qsInputType.options.find((opt: any) => String(opt.value) === String(item.inputType)) || { name: '', value: item.inputType };
+                  // For qsValue, if options exist, try to match, else use raw value
+                  let qsValueOption = item.inputValue;
+                  if (this.qsValue.options && Array.isArray(this.qsValue.options) && item.inputValue != null) {
+                    qsValueOption = this.qsValue.options.find((opt: any) => String(opt.value) === String(item.inputValue)) || item.inputValue;
+                  }
+                  const qsSelectedTypeOption = this.qsSelectedType.options.find((opt: any) => String(opt.value) === String(item.inputSource)) || { name: '', value: item.inputSource };
+                  //  const qsSelectedTypeOption = '';
+                  this.createQueryStrings({
+                    qsId: item.id,
+                    qsNo: idx + 1,
+                    qsKey: item.key,
+                    qsValue: qsValueOption,
+                    qsType: qsTypeOption,
+                    qsInputType: qsInputTypeOption,
+                    // qsInputType: [{ value: 3, disabled: this.isEditMode }],
+                    qsSelectedType: qsSelectedTypeOption
+                  });
+                  
+                });
+              }
+            },
+            error: (err) => {
+              console.error('Error fetching API request params:', err);
+            }
+          });
+          console.log('Edit form data patched and queryStrings loaded:', state.record);
+        } else {
+          setTimeout(waitForOptions, 100);
+        }
+      };
+      waitForOptions();
+
+      
+
+    }
+  // ================= Edit mode logic======
+else{
+
+
+  //validation to check api name exists 
+
+  this.form.get('apiName')?.valueChanges
+    .pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    )
+    .subscribe((apiName: string) => {
+      debugger;
+      if (apiName && apiName.trim().length > 0) {
+       const APIId = this.state?.record?.id ?? 0;
+        this.service.CheckProjectAPINameExist(apiName, APIId).pipe(withLoader(this.loaderService)).subscribe({
+          next: (res: any) => {
+            if (res.result===true) { // Adjust according to your API response
+              this.toast.error('API name already exists. Please choose another name.');
+              this.form.get('apiName')?.setValue('');
+            }
+          },
+          error: (err) => {
+            console.error('Error checking API name:', err);
+          }
+        });
+      }
+    });
+//validation to check api name exists 
+
+
+    debugger;
+    // console.log(this.authRequiredFlag)
+    // this.getProjList();
+    // this.GetProjectType();
+    // this.getType();
+    // this.getInputType();
+    // this.getUserDefinedType();
+    // this.GetSystemAutoValue();
+    // this.GetDateTypes();
+    // this.GetGuidType();
 
   this.form.get('isrequireauth')?.valueChanges.subscribe((value: boolean) => {
       const selectedApiControl = this.form.get('selectedapi');
@@ -264,10 +379,11 @@ this.form.get('selectedapi')?.valueChanges.subscribe((value: any) => {
  });
 
 
+  }}
+// ngoninit end
 
 
 
-  }
 
   selectedKeys: Set<string> = new Set(); 
 
@@ -424,6 +540,7 @@ dropdown:any;
   const len = this.queryStringsFormArray.length;
 
   const group = this.fb.group({
+    qsId: [{ value: prefillData?.qsId || 0, disabled: true }],
     qsNo: [{ value: prefillData?.qsNo || len + 1, disabled: true }],
     qsKey: [{ value: prefillData?.qsKey || '', disabled: true }],
     qsValue: [prefillData?.qsValue || ''],
@@ -437,6 +554,21 @@ dropdown:any;
     isGuid:[false],
     isinput:[true],
   });
+debugger;
+   // Auto-disable in edit mode
+  if (this.isEditMode) {
+    const inputTypeValue = prefillData.qsInputType?.value ?? prefillData.qsInputType; // works for both object and number
+    if (inputTypeValue == 3) {
+      group.get('qsInputType')?.disable();
+      group.get('qsSelectedType')?.disable();
+    }
+    else
+    {
+       group.get('qsInputType')?.disable();
+      group.get('qsSelectedType')?.disable();
+      group.get('qsValue')?.disable();
+    }
+  }
 
   this.queryStringsFormArray.push(group);
 
@@ -1031,6 +1163,96 @@ RemoveHeader(index:any){
   }
 submit(): void {
   console.log(this.form.controls['isActive'].value )
+
+
+
+  //logic to update only proejct API request data on edit mode
+debugger;
+this.state = history.state;
+const state = this.state;
+if (state?.mode === 'edit' && state?.record) {
+const Id = state.record.id;
+const creationTimeAPIReq = new Date();
+
+
+  // Only keep records where qsInputType.value === 3
+  const requestModels: projapirequestmodel[] = this.queryStringsFormArray.controls
+    .filter((group: FormGroup) => 
+      Number(group.get('qsInputType')?.value?.value ?? 0) === 3
+    )
+    .map((group: FormGroup, index: number) => ({
+    apiId: Id,
+    type: group.get('qsType')?.value?.value ?? "0",
+    key: group.get('qsKey')?.value ?? '',
+    inputType: group.get('qsInputType')?.value?.value ?? "0",
+   inputSource:
+  (group.get('qsInputType')?.value?.value ?? "0") === "2"
+  ? group.get('qsSelectedType')?.value?.value ?? ""
+: group.get('qsSelectedType')?.value?.value ?? "",
+    inputValue:
+      (group.get('qsInputType')?.value?.value ?? "0") === "3"
+        ? group.get('qsValue')?.value
+        : group.get('qsValue')?.value?.value,
+    seq: (group.get('qsNo')?.value ?? 1) - 1,
+    isDeleted: false,
+    deleterUserId: 0,
+    deletionTime: creationTimeAPIReq,
+    lastModificationTime: creationTimeAPIReq,
+    lastModifierUserId: 0,
+    creationTime: creationTimeAPIReq,
+    creatorUserId: 0,
+    id:group.get('qsId')?.value ?? 0
+    }));
+const maxSeq = requestModels.reduce((max, item) => item.seq > max ? item.seq : max, 0);
+
+
+const methodKeyModel: projapirequestmodel = 
+    {
+    apiId: Id,
+    type: 7,
+    key: this.form.controls['method'].value.value,
+    inputType: null,
+    inputSource: null,
+    inputValue: null,
+    seq: maxSeq+1,
+    isDeleted: false,
+    deleterUserId: 0,
+    deletionTime: creationTimeAPIReq,
+    lastModificationTime: creationTimeAPIReq,
+    lastModifierUserId: 0,
+    creationTime: creationTimeAPIReq,
+    creatorUserId: 0,
+    id: 0
+    };
+
+requestModels.push(methodKeyModel);  
+
+console.log(requestModels);
+requestModels.forEach(model => {
+  this.service.UpdateProjectApiRequest(model).pipe(withLoader(this.loaderService)).subscribe({
+   next: (res) => {
+   this.toast.success('ProjectAPIRequest updated successfully.');
+    this.router.navigate(['/admin/apilist']);  
+      
+   },
+    error: (err) => {
+      console.error('Error updating API:', err);
+    }
+  });
+})
+
+    }
+     //logic to update only proejct API request data on edit mode
+    else
+    {
+
+    
+ 
+
+
+
+
+
   if (this.form.invalid) {
     this.toast.error('Please select all the values before Submit.');
     this.form.markAllAsTouched(); 
@@ -1102,7 +1324,7 @@ console.log(creationTime);
 const requestModels: projapirequestmodel[] = this.queryStringsFormArray.controls.map((group: FormGroup, index: number) => {
   return {
     apiId: this.createdId,
-    type: this.form.controls['selectedProjType'].value.value,
+    type: group.get('qsType')?.value?.value ?? "0",
     key: group.get('qsKey')?.value,
     inputType: group.get('qsInputType')?.value.value,
     inputSource: group.get('qsSelectedType')?.value.value,
@@ -1123,9 +1345,9 @@ const maxSeq = requestModels.reduce((max, item) => item.seq > max ? item.seq : m
 
 const methodKeyModel: projapirequestmodel = {
   apiId: this.createdId,
-  type: this.form.controls['selectedProjType'].value.value,
+  type: 7,
   key: this.form.controls['method'].value.value,
-  inputType: 7,
+  inputType: null,
   inputSource: null,
   inputValue: null,
   seq: maxSeq+1,
@@ -1165,6 +1387,7 @@ requestModels.forEach(model => {
     }
   });
  }
+}
 }
   close() {
       this.router.navigate(['/admin/apilist']);   
