@@ -276,6 +276,7 @@ debugger;
 // this.form.get('apiURL')?.disable();
         try {
           this.apiJsonData = JSON.parse(apiData.response || '{}');
+          console.log(apiData.response+'- apiData.response');
         } catch (e) {
           console.error('Invalid JSON:', e);
           this.apiJsonData = {};
@@ -303,11 +304,57 @@ debugger;
 // }
 onJsonPathSelected(jsonPath: string) {
   debugger;
+
   if (this.selectedRowIndex !== null) {
-    console.log(jsonPath);
-      this.projectFieldMapData[this.selectedRowIndex].apiField = jsonPath;
-      this.selectedRowIndex = null;  // Reset after setting
+    console.log('Selected JSON Path:', jsonPath);
+
+    // Assign JSON path to the row's apiField
+    this.projectFieldMapData[this.selectedRowIndex].apiField = jsonPath;
+
+    // Get the value from API response at this path
+    const value = this.getValueByPath(this.apiJsonData, jsonPath);
+
+    // Detect type
+    let detectedType = 'Unknown';
+    if (Array.isArray(value)) {
+      if (value.length > 0) {
+        const firstType = typeof value[0];
+        detectedType = `List of ${this.mapType(firstType)}`;
+      } else {
+        detectedType = 'List (Empty)';
+      }
+    } else {
+      detectedType = this.mapType(typeof value);
     }
+
+    // Assign type
+    this.projectFieldMapData[this.selectedRowIndex].fieldType = detectedType;
+    // this.filepath = detectedType;
+
+    console.log('Value:', value);
+    console.log('Detected Type:', this.projectFieldMapData[this.selectedRowIndex].fieldType);
+
+    this.selectedRowIndex = null; // Reset after setting
+  }
+}
+
+private mapType(type: string): string {
+  const typeMap: Record<string, string> = {
+    string: 'string',
+    number: 'integer',
+    boolean: 'boolean',
+    object: 'object',
+    undefined: 'undefined',
+    integer: 'integer'
+  };
+  return typeMap[type] || 'Unknown';
+}
+
+/**
+ * Utility: Extract value from object using dot-separated path
+ */
+private getValueByPath(obj: any, path: string): any {
+  return path.split('.').reduce((acc, part) => acc && acc[part], obj);
 }
 
 loadProjectFieldMap(projectId: number, apiId: number) {
