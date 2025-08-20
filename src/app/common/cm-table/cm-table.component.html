@@ -3,6 +3,7 @@
     <!-- <mat-card-title>{{ _headerName }}</mat-card-title>
     <hr /> -->
     <div class="table-responsive" *ngIf="headArr">
+      {{activePage}}
       <table class="w-100 table table-bordered" id="datatableexample">
         <thead>
           <tr>
@@ -12,7 +13,14 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of gridArr; let sr = index" (click)="ShowForm(item)" class="text-center">
-            <td class="td-css">{{ sr + 1 }}</td>
+            <td class="td-css">
+              @if(activePage == 0 ) {
+                {{ sr + 1 }}
+              }
+              @else {
+                {{ ((activePage * perPage)) + sr }}
+              }
+              </td>
 
             <td *ngFor="let head of headArr" [ngClass]="{
   'wrap-text': head.fieldValue === 'sourceURL' || head.fieldValue === 'wmsLayer'

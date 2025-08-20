@@ -21,7 +21,7 @@ import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-selec
   imports: [MaterialModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,
     CmToggleComponent, CmButtonComponent, CmSelectCheckComponent],
   templateUrl: './rule-config.component.html',
-  styleUrl: './rule-config.component.css'
+  styleUrl: './rule-config.component.css',
 })
 export class RuleConfigComponent implements OnInit {
 
