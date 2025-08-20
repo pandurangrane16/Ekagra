@@ -43,7 +43,9 @@ GetApiList(id:any) {
   CreateProjectApiRequest(data:any) {
     return this._httpService._postMethod(data,'api/services/app/ProjectAPIRequest/Create');
   }
-
+  UpdateProjectApiRequest(data:any) {
+    return this._httpService._putMethod(data,'api/services/app/ProjectAPIRequest/Update');
+  }
    async login(username: string, password: string): Promise<string> {
     try {
       const response: any = await firstValueFrom(
@@ -319,6 +321,46 @@ GetFilteredList(
 
 //   return this._httpService._getMethod(url);
 // }
+
+CheckProjectAPINameExist(
+  projectName?: any,
+  Id?: any,
+ 
+) {
+  let params: string[] = [];
+
+  if (projectName !== null && projectName !== undefined) {
+    params.push(`projectName=${projectName}`);
+  }
+
+
+  if (Id !== null && Id !== undefined) {
+    params.push(`Id=${Id}`);
+  }
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/ProjectAPI/CheckProjectAPINameExist${queryString}`;
+
+  return this._httpService._postMethod(null,url);
+}
+
+
+GetAllProjectAPIRequestbyAPIID(
+  APIID?: any
+ 
+) {
+  let params: string[] = [];
+
+  if (APIID !== null && APIID !== undefined) {
+    params.push(`APIID=${APIID}`);
+  }
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/ProjectAPIRequest/GetAllProjectAPIRequestbyAPIID${queryString}`;
+
+  return this._httpService._getMethod(url); 
+}
+
+
 
 
   

@@ -785,7 +785,7 @@ export class SiteMngComponent implements OnInit {
         next: () => {
           console.log('Site saved successfully');
           this.toast.success('Site saved successfully');
-          //this.router.navigate(['/admin/siteconfig']);
+          this.router.navigate(['/admin/siteconfig']);
         },
         error: (err) => {
           console.error('Site save failed:', err);

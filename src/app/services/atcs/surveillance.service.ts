@@ -12,7 +12,7 @@ export class SurveillanceService {
   GetSiteLocationCameraListForSurveillance(ProjectId: any) {
     // code to fetch hls_url URL from config.json file 
     debugger;
-    this.getConfigDetails();
+    //this.getConfigDetails();
 
     return this._httpService._getMethod('api/services/app/Surveillance/GetSiteLocationCameraListForSurveillance?ProjectId=' + ProjectId);
 

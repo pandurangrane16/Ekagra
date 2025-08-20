@@ -21,7 +21,7 @@ import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-selec
   imports: [MaterialModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,
     CmToggleComponent, CmButtonComponent, CmSelectCheckComponent],
   templateUrl: './rule-config.component.html',
-  styleUrl: './rule-config.component.css'
+  styleUrl: './rule-config.component.css',
 })
 export class RuleConfigComponent implements OnInit {
 
@@ -682,9 +682,12 @@ this.ruleService.CreateRuleEngine(policyData)
 
         // set fieldSettings for ALL expressions in that group
         const exprArray = this.getExpressionGroup(groupIndex);
-        exprArray.controls[exprArray.controls.length-1].patchValue({ fieldSettings: settings })
+        exprArray.controls[exprArray.controls.length - 1].patchValue({ 
+          fieldSettings: settings,
+          fieldOption : true
+         })
 
-        this.fieldOption = true;
+        //this.fieldOption = true;
       });
   }
 

@@ -37,19 +37,37 @@ export class CmSelectCheckComponent {
       this.controlName = this.searchCtrl;
   }
 
-  private _filter(value: string): any[] {
-    const filterValue = value.toLowerCase();
-    console.log(this.settings);
-    return this.settings.options.filter((x: { name: string; value: string }) => x.name.includes(filterValue));
+  // private _filter(value: string): any[] {
+  //   const filterValue = value.toLowerCase();
+  //   console.log(this.settings);
+  //   return this.settings.options.filter((x: { name: string; value: string }) => x.name.includes(filterValue));
 
-    //return this.options.filter(x=>x.name.includes(filterValue));
+  //   //return this.options.filter(x=>x.name.includes(filterValue));
+  // }
+
+  private _filter(value: any): any[] {
+  const filterValue = (typeof value === 'string') 
+    ? value.toLowerCase() 
+    : String(value || '').toLowerCase();
+
+  if (!this.settings?.options) {
+    return [];
   }
+
+  return this.settings.options.filter(
+    (x: { name: string; value: string }) =>
+      x.name?.toLowerCase().includes(filterValue)
+  );
+}
+
   toggleSelection(option: any) {
     const index = this.selectedValues.indexOf(option);
     if (index >= 0) {
       this.selectedValues.splice(index, 1);
+      this.selectedValues = Array.from(new Set([...this.selectedValues, ...this.selectedValues]));
     } else {
       this.selectedValues.push(option);
+      this.selectedValues = Array.from(new Set([...this.selectedValues, ...this.selectedValues]));
     }
 
     // Reset search field
@@ -85,7 +103,7 @@ export class CmSelectCheckComponent {
     this.emitSelected();
   }
   emitSelected() {
-    //this.controlName = this.searchCtrl;
+    this.controlName = this.searchCtrl;
     this.formGroup.patchValue({
       [this.controlName] : this.selectedValues
     })

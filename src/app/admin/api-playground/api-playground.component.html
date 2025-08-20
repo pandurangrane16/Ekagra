@@ -43,7 +43,7 @@
                         </app-cm-select2>
                     </div>
                 </div> -->
-<div class="filter-row" style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 15px;">
+<div class="filter-row" style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 15px;" *ngIf="!isEditMode">
 
   <!-- Left Filters -->
   <app-cm-select2
@@ -155,7 +155,8 @@
                
 
                 <hr>
-                <div class="row">
+                <!-- visible below div on both add and edit mode -->
+                <div class="row" > 
                     <div class="col-md-12">
 
                         <mat-tab-group>
@@ -449,10 +450,10 @@
                 </div>
 
 
-<div class="row">
+<div class="row" *ngIf="!isEditMode">
 
 
-<div class="col-md-12 d-flex justify-content-end mb-2">
+<div class="col-md-12 d-flex justify-content-end mb-2" *ngIf="!isEditMode">
   <button class="btn btn-dark" style="padding: 6px 18px; font-size: 15px; border-radius: 6px;" (click)="onSend()">
     Send
   </button>
