@@ -22,6 +22,7 @@ export class CmSelectCheckComponent {
   filteredOptions: any[] = [];
   selectedValues: string[] = [];
   openAutocomplete: boolean = false;
+  
   ngOnInit() {
     this.filteredOptions = this.options;
 

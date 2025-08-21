@@ -28,7 +28,10 @@ export class RuleEngineService {
   }
 
      Getfields(id:any) {
-    return this._httpService._getMethod('api/services/app/ProjectField/GetProjectFieldMasterforruleengine?Id='+id);
+    return this._httpService._getMethod('api/services/app/RuleEngine/GetProjectFieldsOnApiId?Id='+id);
+  }
+       GetApis(id:any) {
+    return this._httpService._getMethod('api/services/app/RuleEngine/GetActiveAPIListByProjectid?id='+id);
   }
 
 

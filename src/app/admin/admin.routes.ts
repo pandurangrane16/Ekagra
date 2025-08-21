@@ -21,6 +21,7 @@ import { ContactConfigurationFormComponent } from "./contact-configuration/conta
 import { ContactConfigurationComponent } from "./contact-configuration/contact-configuration.component";
 import { ProjectFieldMapComponent } from "./project-field-map/project-field-map.component";
 import { UserHeirarchyComponent } from "./user-heirarchy/user-heirarchy.component";
+import { CmQueryBuilderComponent } from "../common/cm-query-builder/cm-query-builder.component";
 export const AdminRoutes: Routes = [
   {
     path: '',
@@ -235,6 +236,17 @@ export const AdminRoutes: Routes = [
   {
     path: 'userheirarchy',
     component: UserHeirarchyComponent,
+    data: {
+      title: 'Contact Configuration',
+      urls: [
+        { title: 'User Heirarchy', url: '/admin/userheirarchy' },
+        { title: 'Contact Configuration' }
+      ]
+    }
+  },
+  {
+    path: 'querybuilder',
+    component: CmQueryBuilderComponent,
     data: {
       title: 'Contact Configuration',
       urls: [

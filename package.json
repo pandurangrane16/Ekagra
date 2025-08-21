@@ -25,6 +25,7 @@
     "@angular/router": "^19.2.14",
     "@angular/ssr": "^19.2.14",
     "@canvasjs/angular-charts": "^1.2.0",
+    "@syncfusion/ej2-angular-querybuilder": "^30.2.4",
     "@vidstack/player": "^1.6.5",
     "angular-resizable-element": "^7.0.2",
     "animate-css-grid": "^1.5.1",

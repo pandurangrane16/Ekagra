@@ -72,6 +72,7 @@ export class CmTableComponent implements OnInit {
     }
   
     onPageChange(pageNo: number) {
+      this.activePage= pageNo;
       this.pageChange(pageNo);
       
     }

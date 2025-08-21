@@ -1,0 +1,24 @@
+<form [formGroup]="queryForm" class="query-builder">
+  <h2>Mongo Query Builder</h2>
+
+  <div formArrayName="conditions">
+    <div *ngFor="let condition of conditions.controls; let i = index" [formGroupName]="i">
+      
+      <select formControlName="field">
+        <option *ngFor="let f of fields" [value]="f">{{ f }}</option>
+      </select>
+
+      <select formControlName="operator">
+        <option *ngFor="let op of operators" [value]="op">{{ op }}</option>
+      </select>
+
+      <input type="text" formControlName="value" placeholder="Value">
+
+      <button type="button" (click)="removeCondition(i)">Remove</button>
+    </div>
+  </div>
+
+  <button type="button" (click)="addCondition()">+ Add Condition</button>
+
+  <pre>{{ buildQuery() | json }}</pre>
+</form>

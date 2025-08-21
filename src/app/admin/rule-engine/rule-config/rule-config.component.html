@@ -261,6 +261,7 @@
                                                     <span class="material-icons" (click)="removeGroup(i)">
                                                         close
                                                     </span>
+                                                  
                                                 </div>
                                             </div>
                                             <div *ngIf="getExpressionGroup(i).value.length > 0">
@@ -286,23 +287,26 @@
                                                         *ngFor="let group of getExpressionGroup(i).controls; let j = index"
                                                         [formGroup]="group">
                                                         <div class="col">
-                                                            <!-- <app-cm-select2 [formGroup]="group"
-                                                                
-                                                                *ngIf="fieldOption" 
-                                                                [controlName]="'fieldName'"
-                                                                [settings]="getfields(arr.get('projId')?.value)"
-                                                                (returnObject)="onFieldChange(i,$event)"></app-cm-select2> -->
-
-                                                            <app-cm-select2 [formGroup]="group" *ngIf="(group.get('fieldOption')?.value)"
+                                                            <app-cm-select2 [formGroup]="group" *ngIf="apiOption"
+                                                                [controlName]="'apiName'"
+                                                                [settings]="group.get('apiSettings')?.value"
+                                                                (returnObject)="onApiChange($event, i, j)">
+                                                            </app-cm-select2>
+                                                        </div>
+                                                    
+                                                        <div class="col">
+                                                            
+                                                            <app-cm-select2 [formGroup]="group" 
+                                                            *ngIf="group.get('fieldOption')?.value"
                                                                 [controlName]="'fieldName'"
                                                                 [settings]="group.get('fieldSettings')?.value"
-                                                                (returnObject)="onFieldChange(i,j,$event)">
+                                                                (returnObject)="onFieldChange($event, i, j)">
                                                             </app-cm-select2>
                                                         </div>
                                                         <div class="col">
-                                                            <app-cm-select2 *ngIf="(group.get('expOption')?.value)" [formGroup]="group"
+                                                            <app-cm-select2  [formGroup]="group"  *ngIf="group.get('expOption')?.value"
                                                                 [controlName]="'expression'"
-                                                                [settings]="group.get('expressionSettings')?.value"></app-cm-select2>
+                                                                 [settings]="group.get('expressionSettings')?.value"></app-cm-select2>
                                                         </div>
                                                         <div class="col">
                                                             <label
@@ -317,9 +321,12 @@
                                                         </div>
                                                         <div class="col text-right">
 
-                                                            <span class="material-icons" (click)="removeArray(i,j)">
+                                                            <span class="material-icons"    *ngIf="j !== 0"(click)="removeArray(i,j)">
                                                                 close
                                                             </span>
+                                                          
+
+                                                            
                                                         </div>
                                                     </div>
                                                 </div>
@@ -341,12 +348,12 @@
                                     <div class="col-md-6">
                                         <label style="position: relative; top: 6px; display: block;">Minute*</label>
                                         <app-cm-select-check [formGroup]="thirdFormGroup" [controlName]="'minute'"
-                                            [settings]="minuteSettings"></app-cm-select-check>
+                                            [settings]="minuteSettings" (returnObject)="setThirdFormValues($event,'min')"></app-cm-select-check>
                                     </div>
                                     <div class="col-md-6">
                                         <label style="position: relative; top: 6px; display: block;">Hour*</label>
                                         <app-cm-select-check [formGroup]="thirdFormGroup" [controlName]="'hour'"
-                                            [settings]="hourSettings"></app-cm-select-check>
+                                            [settings]="hourSettings" (returnObject)="setThirdFormValues($event,'hour')" ></app-cm-select-check>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -354,20 +361,20 @@
                                         <label style="position: relative; top: 6px; display: block;">Day Of
                                             Month*</label>
                                         <app-cm-select-check [formGroup]="thirdFormGroup" [controlName]="'dayOfMonth'"
-                                            [settings]="dayMonthSettings"></app-cm-select-check>
+                                            [settings]="dayMonthSettings" (returnObject)="setThirdFormValues($event,'daymon')"></app-cm-select-check>
                                     </div>
 
                                     <div class="col-md-4">
                                         <label style="position: relative; top: 6px; display: block;">Month*</label>
                                         <app-cm-select-check [formGroup]="thirdFormGroup" [controlName]="'month'"
-                                            [settings]="monthSettings"></app-cm-select-check>
+                                            [settings]="monthSettings" (returnObject)="setThirdFormValues($event,'mon')"></app-cm-select-check>
                                     </div>
 
                                     <div class="col-md-4">
                                         <label style="position: relative; top: 6px; display: block;">Day Of
                                             Week*</label>
                                         <app-cm-select-check [formGroup]="thirdFormGroup" [controlName]="'dayOfWeek'"
-                                            [settings]="dayWeekSettings"></app-cm-select-check>
+                                            [settings]="dayWeekSettings" (returnObject)="setThirdFormValues($event,'day')"></app-cm-select-check>
                                     </div>
                                 </div>
                             </div>
