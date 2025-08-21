@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MaterialModule } from '../../../Material.module';
 import { CommonModule } from '@angular/common';
-import {  AbstractControl, ValidatorFn, FormArray ,FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, ValidatorFn, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CmInputComponent } from '../../../common/cm-input/cm-input.component';
 import { CmSelect2Component } from '../../../common/cm-select2/cm-select2.component';
 import { CmToggleComponent } from '../../../common/cm-toggle/cm-toggle.component';
@@ -168,7 +168,7 @@ export class RuleConfigComponent implements OnInit {
 
     ],
   };
-    apiSettings = {
+  apiSettings = {
     labelHeader: 'Field Name',
     lableClass: 'form-label',
     formFieldClass: '',
@@ -368,22 +368,22 @@ export class RuleConfigComponent implements OnInit {
   get f() {
     return this.firstFormGroup.controls;
   }
-minFormArrayLength(min: number): ValidatorFn {
-  return (control: AbstractControl) => {
-    if (control instanceof FormArray) {
-      return control.length >= min
-        ? null
-        : { minLengthArray: { requiredLength: min, actualLength: control.length } };
-    }
-    return null;
-  };
-}
+  minFormArrayLength(min: number): ValidatorFn {
+    return (control: AbstractControl) => {
+      if (control instanceof FormArray) {
+        return control.length >= min
+          ? null
+          : { minLengthArray: { requiredLength: min, actualLength: control.length } };
+      }
+      return null;
+    };
+  }
   getErrorMessage(_controlName: any, _controlLable: any, _isPattern: boolean = false, _msg: string) {
     return getErrorMsg(this.firstFormGroup, _controlName, _controlLable, _isPattern, _msg);
   }
 
 
-    onApiChange(selectedapi: any, parentIndex: number, rowIndex: number) {
+  onApiChange(selectedapi: any, parentIndex: number, rowIndex: number) {
 
 
 
@@ -391,42 +391,42 @@ minFormArrayLength(min: number): ValidatorFn {
     const value = selectedapi?.value;
     this.ruleService.Getfields(value).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
       const items = response?.result || [];
-         if (items.length === 0) {
-         
-          this.toast.error('No mapped API fields found, please select some other API.');
-  const rowGroup = (this.getExpressionGroup(parentIndex).at(rowIndex) as FormGroup);
-           rowGroup.get('fieldOption')?.setValue(false);
+      if (items.length === 0) {
 
-          // // Reset the specific row's field settings
-          // const rowGroup = (this.getExpressionGroup(parentIndex).at(rowIndex) as FormGroup);
-          // rowGroup.get('fieldName')?.setValue(null);
-          // rowGroup.get('fieldSettings')?.setValue(null);
+        this.toast.error('No mapped API fields found, please select some other API.');
+        const rowGroup = (this.getExpressionGroup(parentIndex).at(rowIndex) as FormGroup);
+        rowGroup.get('fieldOption')?.setValue(false);
 
-          return; 
-        }
+        // // Reset the specific row's field settings
+        // const rowGroup = (this.getExpressionGroup(parentIndex).at(rowIndex) as FormGroup);
+        // rowGroup.get('fieldName')?.setValue(null);
+        // rowGroup.get('fieldSettings')?.setValue(null);
 
-else{
+        return;
+      }
+
+      else {
         const projectOptions = items.map((item: any) => ({
-       id: item.id,
+          id: item.id,
           name: item.apiField,
           value: item.apiField,
           type: item.fieldType,
-         
-      }));
 
-    
+        }));
+
+
         // Get the specific row's FormGroup
-    const rowGroup = (this.getExpressionGroup(parentIndex).at(rowIndex) as FormGroup);
+        const rowGroup = (this.getExpressionGroup(parentIndex).at(rowIndex) as FormGroup);
 
-  
-    // Reset the expression value
-    rowGroup.get('fieldName')?.setValue(null);
 
- 
-  // Set options only for this row
-    rowGroup.get('fieldSettings')?.setValue({
-      options:projectOptions,
-      singleSelection: true,
+        // Reset the expression value
+        rowGroup.get('fieldName')?.setValue(null);
+
+
+        // Set options only for this row
+        rowGroup.get('fieldSettings')?.setValue({
+          options: projectOptions,
+          singleSelection: true,
           idField: 'id',
           textField: 'text',
           allowSearchFilter: true,
@@ -435,53 +435,53 @@ else{
           formFieldClass: '',
           appearance: 'outline',
 
-    });
-     
-  setTimeout(() => {
+        });
 
-       rowGroup.get('fieldOption')?.setValue(true);
-       
-      });
-}
+        setTimeout(() => {
+
+          rowGroup.get('fieldOption')?.setValue(true);
+
+        });
+      }
 
     }, error => {
       console.error('Error fetching fields', error);
     });
-    
 
-  
+
+
   }
   onFieldChange(selectedField: any, parentIndex: number, rowIndex: number) {
     this.expOption = false;
     const fieldType = selectedField?.type;
 
     if (fieldType) {
-       const operators = this.typeOperatorMap[fieldType] || [];
+      const operators = this.typeOperatorMap[fieldType] || [];
 
-    // Get the specific row's FormGroup
-    const rowGroup = (this.getExpressionGroup(parentIndex).at(rowIndex) as FormGroup);
+      // Get the specific row's FormGroup
+      const rowGroup = (this.getExpressionGroup(parentIndex).at(rowIndex) as FormGroup);
 
-  
-    // Reset the expression value
-    rowGroup.get('expression')?.setValue(null);
 
- 
-  // Set options only for this row
-    rowGroup.get('expressionSettings')?.setValue({
-      options: operators.map(op => ({
-        name: op,
-        value: op
-      })),
-      singleSelection: true,
-          idField: 'id',
-          textField: 'text',
-          allowSearchFilter: true,
-          labelHeader: 'Expression*',
-          lableClass: 'form-label',
-          formFieldClass: '',
-          appearance: 'outline',
+      // Reset the expression value
+      rowGroup.get('expression')?.setValue(null);
 
-    });
+
+      // Set options only for this row
+      rowGroup.get('expressionSettings')?.setValue({
+        options: operators.map(op => ({
+          name: op,
+          value: op
+        })),
+        singleSelection: true,
+        idField: 'id',
+        textField: 'text',
+        allowSearchFilter: true,
+        labelHeader: 'Expression*',
+        lableClass: 'form-label',
+        formFieldClass: '',
+        appearance: 'outline',
+
+      });
       setTimeout(() => {
         rowGroup.get('expOption')?.setValue(true);
       });
@@ -489,34 +489,34 @@ else{
   }
 
 
- buildProjectExpressions(formValue: any) {
-  return formValue.groups.map((group:any)=> {
-    const conditionOp = "$" + (group.condition?.value?.toLowerCase() || "and");
+  buildProjectExpressions(formValue: any) {
+    return formValue.groups.map((group: any) => {
+      const conditionOp = "$" + (group.condition?.value?.toLowerCase() || "and");
 
-    const expressions = group.arrayGroup.map((item:any) => {
-      const field = item.fieldName?.value;
-      const operator =
-        typeof item.expression === "object"
-          ? item.expression.value
-          : item.expression;
-      const value = item.fieldValue;
+      const expressions = group.arrayGroup.map((item: any) => {
+        const field = item.fieldName?.value;
+        const operator =
+          typeof item.expression === "object"
+            ? item.expression.value
+            : item.expression;
+        const value = item.fieldValue;
+
+        return {
+          [field]: {
+            [operator]: isNaN(value) ? value : Number(value)
+          }
+        };
+      });
+
+      const ruleObj = { [conditionOp]: expressions };
 
       return {
-        [field]: {
-          [operator]: isNaN(value) ? value : Number(value)
-        }
+        ProjectId: group.projId,
+        ProjectName: group.projName,
+        Rule: JSON.stringify(ruleObj)
       };
     });
-
-    const ruleObj = { [conditionOp]: expressions };
-
-    return {
-      ProjectId: group.projId,
-      ProjectName: group.projName,
-      Rule: JSON.stringify(ruleObj)
-    };
-  });
-}
+  }
 
 
   getProjList() {
@@ -546,76 +546,76 @@ else{
       console.error('Error fetching project list', error);
     });
   }
-createCronExpression(): string {
-  const { minute, hour, dayOfMonth, month, dayOfWeek } = this.thirdFormGroup.value;
-  
-  // Join them with spaces to form the cron
-  return `${minute} ${hour} ${dayOfMonth} ${month} ${dayOfWeek}`;
-}
+  createCronExpression(): string {
+    const { minute, hour, dayOfMonth, month, dayOfWeek } = this.thirdFormGroup.value;
+
+    // Join them with spaces to form the cron
+    return `${minute} ${hour} ${dayOfMonth} ${month} ${dayOfWeek}`;
+  }
 
   Submit() {
 
 
-      const firstFormValues = this.firstFormGroup.value;
+    const firstFormValues = this.firstFormGroup.value;
     const secondFormValues = this.secondFormGroup.value;
     const thirdFormValues = this.thirdFormGroup.value;
-  if (this.thirdFormGroup.invalid) {
+    if (this.thirdFormGroup.invalid) {
 
       this.toast.error('Please select all the values before Submitting.');
       this.thirdFormGroup.markAllAsTouched();
       return;
     }
-else{ 
-  
-const formValue = this.secondFormGroup.value;
-const creationTime = new Date();
-const result = this.buildProjectExpressions(formValue);
-const cron = this.createCronExpression();
-console.log("result",JSON.stringify(result));
-console.log('Generated Cron:', cron);
- 
-    const policyData: Policy = {
-      policyName: firstFormValues.policyName,
-      ticketAbbrevation: firstFormValues.ticketabb,
-      tat: firstFormValues.tat,
-      policyRoles: this.firstFormGroup.controls['selectedUserGroup'].value?.value,
-      priority: this.firstFormGroup.controls['selectedCategory'].value?.value,
-      isActive: firstFormValues.isActive,
-      intervalTime: firstFormValues.intervalTime,
-      isInternal: firstFormValues.isinternal,
-      apiName: null,
-      apiId: null,
-      ruleExpression: JSON.stringify(result),
-      cron: null,
-      isDeleted: false,
-      deleterUserId: 0,
-      deletionTime: creationTime,
-      lastModificationTime: creationTime,
-      lastModifierUserId: 0,
-      creationTime: creationTime,
-      creatorUserId: 0,
-      id: 0,
-      description: firstFormValues.policyName,
-    };
+    else {
 
-this.ruleService.CreateRuleEngine(policyData)
-  .pipe(withLoader(this.loaderService))
-  .subscribe({
-    next: (res: any) => {
-      console.log(res);
-      this.toast.success('Rule Engine saved successfully.');
-    },
-    error: (err) => {
-      console.error('Error creating rule engine:', err);
-      this.toast.error('Failed to save Rule Engine. Please try again.');
+      const formValue = this.secondFormGroup.value;
+      const creationTime = new Date();
+      const result = this.buildProjectExpressions(formValue);
+      const cron = this.createCronExpression();
+      console.log("result", JSON.stringify(result));
+      console.log('Generated Cron:', cron);
+
+      const policyData: Policy = {
+        policyName: firstFormValues.policyName,
+        ticketAbbrevation: firstFormValues.ticketabb,
+        tat: firstFormValues.tat,
+        policyRoles: this.firstFormGroup.controls['selectedUserGroup'].value?.value,
+        priority: this.firstFormGroup.controls['selectedCategory'].value?.value,
+        isActive: firstFormValues.isActive,
+        intervalTime: firstFormValues.intervalTime,
+        isInternal: firstFormValues.isinternal,
+        apiName: null,
+        apiId: null,
+        ruleExpression: JSON.stringify(result),
+        cron: null,
+        isDeleted: false,
+        deleterUserId: 0,
+        deletionTime: creationTime,
+        lastModificationTime: creationTime,
+        lastModifierUserId: 0,
+        creationTime: creationTime,
+        creatorUserId: 0,
+        id: 0,
+        description: firstFormValues.policyName,
+      };
+
+      this.ruleService.CreateRuleEngine(policyData)
+        .pipe(withLoader(this.loaderService))
+        .subscribe({
+          next: (res: any) => {
+            console.log(res);
+            this.toast.success('Rule Engine saved successfully.');
+          },
+          error: (err) => {
+            console.error('Error creating rule engine:', err);
+            this.toast.error('Failed to save Rule Engine. Please try again.');
+          }
+        });
     }
-  });
-}
-   
+
   }
 
   fieldOption: any;
-  apiOption:any;
+  apiOption: any;
 
   onProjectChange(selectedProject: any, groupIndex: number) {
     //this.getfields(selectedProject, groupIndex);
@@ -648,12 +648,12 @@ this.ruleService.CreateRuleEngine(policyData)
 
         // set fieldSettings for ALL expressions in that group
         const exprArray = this.getExpressionGroup(groupIndex);
-        exprArray.controls[exprArray.controls.length-1].patchValue({ apiSettings: settings })
+        exprArray.controls[exprArray.controls.length - 1].patchValue({ apiSettings: settings })
 
         this.apiOption = true;
       });
   }
-  
+
   getfields(selectedProject: any, groupIndex: number) {
     this.fieldOption = false;
     this.ruleService.Getfields(selectedProject)
@@ -682,10 +682,10 @@ this.ruleService.CreateRuleEngine(policyData)
 
         // set fieldSettings for ALL expressions in that group
         const exprArray = this.getExpressionGroup(groupIndex);
-        exprArray.controls[exprArray.controls.length - 1].patchValue({ 
+        exprArray.controls[exprArray.controls.length - 1].patchValue({
           fieldSettings: settings,
-          fieldOption : true
-         })
+          fieldOption: true
+        })
 
         //this.fieldOption = true;
       });
@@ -721,8 +721,8 @@ this.ruleService.CreateRuleEngine(policyData)
     });
   }
   goNext() {
-    
-    console.log("2",this.secondFormGroup.value)
+
+    console.log("2", this.secondFormGroup.value)
     console.log('Third form group value/status:', this.secondFormGroup);
 
     if (this.currentStep === 0 && this.firstFormGroup.invalid) {
@@ -854,7 +854,7 @@ this.ruleService.CreateRuleEngine(policyData)
   }
   removeGroup(i: number) {
     this.groupsFormArray.removeAt(i);
-    console.log("remove",this.groupsFormArray)
+    console.log("remove", this.groupsFormArray)
 
   }
 
@@ -871,9 +871,9 @@ this.ruleService.CreateRuleEngine(policyData)
       apiSettings: [null],
       fieldSettings: [null],
       expressionSettings: this.expressionSettings,
-      fieldOption:[false],
-      expOption :[false],
-      
+      fieldOption: [false],
+      expOption: [false],
+
 
     });
   }
@@ -897,4 +897,32 @@ this.ruleService.CreateRuleEngine(policyData)
     console.log('Selected:', selected);
   }
 
+  setThirdFormValues(evt: any, type: string) {
+    console.log(evt);
+    if (type == "min") {
+      this.thirdFormGroup.patchValue({
+        minute : evt.map((item:any) => item.value).join(",")
+      })
+    }
+    else if (type == "hour") {
+      this.thirdFormGroup.patchValue({
+        hour : evt.map((item:any) => item.value).join(",")
+      })
+    }
+    else if (type == "daymon") {
+      this.thirdFormGroup.patchValue({
+        dayOfMonth : evt.map((item:any) => item.value).join(",")
+      })
+    }
+    else if (type == "mon") {
+      this.thirdFormGroup.patchValue({
+        month : evt.map((item:any) => item.value).join(",")
+      })
+    }
+    else if (type == "day") {
+      this.thirdFormGroup.patchValue({
+        dayOfWeek : evt.map((item:any) => item.value).join(",")
+      })
+    }
+  }
 }
