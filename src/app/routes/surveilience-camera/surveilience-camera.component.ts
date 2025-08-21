@@ -21,6 +21,9 @@ import { ToastrService } from 'ngx-toastr';
 import{ SiteSearchPipe} from './site-search.pipe';
 import { FormsModule } from '@angular/forms';
 import { SessionService } from '../../services/common/session.service';
+import { CmConfirmationDialogComponent, ConfirmationDialogData } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { MatCheckbox, MatCheckboxModule } from '@angular/material/checkbox';
 interface Section {
   name: string;
   img: string;
@@ -38,6 +41,7 @@ interface Site {
   siteId: number;
   siteName: string;
   cameras: Camera[];
+  isSelected?: boolean;
 }
 interface Camera {
   cameraId: number;
@@ -51,7 +55,8 @@ interface Camera {
         MatButtonModule, MatExpansionModule, 
         CommonModule,VideoStreamPlayerComponent
       ,SiteSearchPipe,
-    FormsModule],
+    FormsModule,
+  MatCheckboxModule],
          schemas: [CUSTOM_ELEMENTS_SCHEMA],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './surveilience-camera.component.html',
@@ -119,12 +124,32 @@ sites: Site[] = [];
     private cd: ChangeDetectorRef,
     private loaderService: LoaderService,
     private toast: ToastrService
-
+ , private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     try{
-    debugger;
+  debugger;
+      //User Confimration to keep on SSL on their machine - Start
+       const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
+            width: '400px',
+            position: { top: '20px' },
+            panelClass: 'custom-confirm-dialog',
+            data: {
+              title: 'Confirm SSL',
+              message: `Enable SSL on local machine (so that secure HTTPS connections can work properly). This is required for the camera streams to function correctly.`,
+              type: 'info',
+              confirmButtonText: 'Confirm'
+              // ,
+              // cancelButtonText: 'Cancel'
+            }
+          });
+      
+//User Confimration to keep on SSL on their machine  - END
+// Wait for user action
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result) {
+        // Only run API if user confirmed
     const projectId = this.session._getSessionValue("projectIdRoute");; 
     this.surveillanceService
       .GetSiteLocationCameraListForSurveillance(projectId)
@@ -167,9 +192,33 @@ this.locations = groupedLocations as Location[];
 // this.loadInitialStreamPreviews(firstFourSites.map(site => site.siteId));
 
 console.log(groupedLocations);
-      });
+            });
+      } else {
+        this.toast.warning('SSL is required for camera streams. Action canceled.');
+      }
+    });
+
+
+    //Load favorite sites
+    debugger;
+  const favoriteSites: { siteId: number; siteName: string }[] = 
+    JSON.parse(localStorage.getItem('favoriteSites') || '[]');
+
+  if (favoriteSites.length > 0) {
+    for (const fav of favoriteSites) {
+      // Display site name quickly in UI (optional pre-display)
+      console.log(`Loading favorite site: ${fav.siteName} (${fav.siteId})`);
+      
+      // Call your stream loader
+      this.onSiteClick(fav.siteId, false);
+    }
+  }
+  //Load favorite sites
+
+
 
 }
+
 catch (error) {
     console.error('Caught error:', error);
   }
@@ -279,13 +328,27 @@ this.loaderService.showLoader();
       const safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(finalUrl);
 
               let siteName = '';
-        for (const loc of this.locations) {
-          const site = loc.sites.find(s => s.siteId === siteId);
-          if (site) {
-            siteName = site.siteName;
-            break;
+          // 1. Try from locations
+        if (this.locations && this.locations.length > 0) {
+          for (const loc of this.locations) {
+            const site = loc.sites?.find(s => s.siteId === siteId);
+            if (site) {
+              siteName = site.siteName;
+              break;
+            }
           }
         }
+
+
+                // 2. If not found, try from favorites
+        if (!siteName) {
+          const favorites = JSON.parse(localStorage.getItem('favoriteSites') || '[]');
+          const favSite = favorites.find((s: any) => s.siteId === siteId);
+          if (favSite) {
+            siteName = favSite.siteName;
+          }
+        }
+
       // Add to stream list
       this.activeStreams.push({
         siteId,
@@ -300,6 +363,14 @@ this.loaderService.showLoader();
     {
       this.toast.error(`No stream URL found for the selected site.${siteId} `);
       console.error('No stream URL found for site:', siteId);
+      // Find the site object and uncheck it
+      for (const loc of this.locations) {
+        const site = loc.sites.find(s => s.siteId === siteId);
+        if (site) {
+          site.isSelected = false;
+          break;
+        }
+      }
       return;
     }
 
@@ -310,6 +381,16 @@ this.loaderService.showLoader();
     // this.loading = false;
     this.loaderService.hideLoader();
     this.cd.detectChanges();
+  }
+}
+
+onSiteToggle(site: Site): void {
+  if (site.isSelected) {
+    // If checked, start stream
+    this.onSiteClick(site.siteId);
+  } else {
+    // If unchecked, stop stream
+    this.onClosePreview(site.siteId);
   }
 }
 
@@ -327,10 +408,39 @@ onClosePreview(siteId: number): void {
     });
 
     this.activeStreams.splice(index, 1);
+
+    // Uncheck checkbox
+    this.locations.forEach(loc => {
+      const site = loc.sites.find(s => s.siteId === siteId);
+      if (site) {
+        site.isSelected = false;
+      }
+    });
+
     this.cd.detectChanges();
   }
 }
 
+// saveFavorites(): void {
+//   const favoriteSiteIds = this.activeStreams.map(stream => stream.siteId);
+//   localStorage.setItem('favoriteSites', JSON.stringify(favoriteSiteIds));
+//   this.toast.success('Favorites saved successfully!');
+// }
+
+saveFavorites(): void {
+  const favoriteSites = this.activeStreams.map(stream => ({
+    siteId: stream.siteId,
+    siteName: stream.siteName
+  }));
+
+  localStorage.setItem('favoriteSites', JSON.stringify(favoriteSites));
+  this.toast.success('Favorites saved successfully!');
+}
+
+clearFavorites(): void {
+  localStorage.removeItem('favoriteSites');
+  this.toast.info('Favorites cleared!');
+} 
 
 
 

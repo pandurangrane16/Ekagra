@@ -7,12 +7,13 @@ import { BehaviorSubject, Observable, take } from 'rxjs';
   providedIn: 'root'
 })
 export class SurveillanceService {
+  
   constructor(
-    private _httpService: HttpService, private http: HttpClient) { }
+    private _httpService: HttpService, private http: HttpClient) {    this.getConfigDetails();}
   GetSiteLocationCameraListForSurveillance(ProjectId: any) {
     // code to fetch hls_url URL from config.json file 
     debugger;
-    this.getConfigDetails();
+ 
 
     return this._httpService._getMethod('api/services/app/Surveillance/GetSiteLocationCameraListForSurveillance?ProjectId=' + ProjectId);
 

@@ -2,7 +2,7 @@
     <div class="col-md-3">
         <div class="card mt-1">
             <div class="card-body">
-                <mat-form-field appearance="outline" class="w-100">
+                <!-- <mat-form-field appearance="outline" class="w-100">
                     <mat-icon matPrefix>search</mat-icon>
                     <input matInput placeholder="Placeholder"  [(ngModel)]="siteSearchText" (ngModelChange)="onSearchTextChange($event)"> 
                     <mat-icon matSuffix>filter_list</mat-icon>
@@ -24,7 +24,43 @@
       </li>
     </ul>
   </mat-expansion-panel>
+</mat-accordion> -->
+
+
+<mat-form-field appearance="outline" class="w-100">
+  <mat-icon matPrefix>search</mat-icon>
+  <input 
+    matInput 
+    placeholder="Search sites..." 
+    [(ngModel)]="siteSearchText" 
+    (ngModelChange)="onSearchTextChange($event)">
+  <mat-icon matSuffix>filter_list</mat-icon>
+</mat-form-field>
+
+<mat-accordion [multi]="true">
+  <mat-expansion-panel *ngFor="let location of locations" [expanded]="location.expanded">
+    <mat-expansion-panel-header>
+      <mat-panel-title>{{ location.locationName }}</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <ul class="list-unstyled ps-3">
+      <li *ngFor="let site of location.sites | siteSearch:siteSearchText" class="py-1 site-name d-flex align-items-center">
+        <!-- Checkbox in front -->
+        <mat-checkbox 
+      [(ngModel)]="site.isSelected"
+      (change)="onSiteToggle(site)"
+      class="me-2">
+    </mat-checkbox>
+
+        <!-- Site name label -->
+        <span>{{ site.siteName }}</span>
+      </li>
+    </ul>
+  </mat-expansion-panel>
 </mat-accordion>
+
+
+
 
             </div>
         </div>
@@ -37,6 +73,23 @@
 <div *ngIf="loading" class="loader-container">
   <mat-spinner></mat-spinner> <!-- Or your custom loader -->
 </div>
+<div class="row">
+  <div class="col-md-12">
+<button mat-raised-button color="primary" (click)="saveFavorites()">
+  Add Favorites
+</button>
+  <!-- </div>
+    <div class="col-md-6"> -->
+    <button mat-stroked-button color="warn" (click)="clearFavorites()">
+  Clear Favorites
+</button>
+  </div>
+<div class="col-md-12">
+    <hr>
+</div>
+  
+</div>
+
 
 <!-- Right side streams -->
 <div *ngIf="!loading">

@@ -110,3 +110,11 @@
   border-bottom: 1px solid #dee2e6;
   font-size: 14px;
 }
+
+.site-name {
+  display: flex;
+  align-items: center;
+}
+.site-name mat-checkbox {
+  margin-right: 8px;
+}
