@@ -35,28 +35,64 @@ export class RuleConfigComponent implements OnInit {
   selectedProjectId: any;
   AndFlag: any;
   expOption: boolean = false;
-  typeOperatorMap: Record<string, string[]> = {
-    string: [
-      'equal', 'not_equal', 'begins_with', 'not_begins_with',
-      'contains', 'not_contains', 'ends_with', 'not_ends_with', 'is_empty',
-      'is_not_empty', 'is_null', 'is_not_null'
-    ],
-    integer: [
-      'equal', 'not_equal', 'less', 'less_or_equal', 'greater',
-      'greater_or_equal', 'between', 'not_between'
-    ],
-    double: [
-      'equal', 'not_equal', 'less', 'less_or_equal', 'greater',
-      'greater_or_equal', 'between', 'not_between'
-    ],
-    boolean: ['equal'],
-    array: ['contains', 'not_contains'],
-    default: [
-      'equal', 'not_equal', 'begins_with', 'not_begins_with',
-      'contains', 'not_contains', 'ends_with', 'not_ends_with', 'is_empty',
-      'is_not_empty', 'is_null', 'is_not_null'
-    ]
-  };
+ typeOperatorMap: Record<string, { name: string; value: string }[]> = {
+  string: [
+    { name: 'equal', value: '$eq' },
+    { name: 'not_equal', value: '$ne' },
+    { name: 'begins_with', value: '$regex' },
+    { name: 'not_begins_with', value: '$not' },
+    { name: 'contains', value: '$regex' },
+    { name: 'not_contains', value: '$not' },
+    { name: 'ends_with', value: '$regex' },
+    { name: 'not_ends_with', value: '$not' },
+    { name: 'is_empty', value: '$eq' },
+    { name: 'is_not_empty', value: '$ne' },
+    { name: 'is_null', value: '$eq' },
+    { name: 'is_not_null', value: '$ne' }
+  ],
+  integer: [
+    { name: 'equal', value: '$eq' },
+    { name: 'not_equal', value: '$ne' },
+    { name: 'less', value: '$lt' },
+    { name: 'less_or_equal', value: '$lte' },
+    { name: 'greater', value: '$gt' },
+    { name: 'greater_or_equal', value: '$gte' },
+    { name: 'between', value: '$between' },
+    { name: 'not_between', value: '$notBetween' }
+  ],
+  double: [
+    { name: 'equal', value: '$eq' },
+    { name: 'not_equal', value: '$ne' },
+    { name: 'less', value: '$lt' },
+    { name: 'less_or_equal', value: '$lte' },
+    { name: 'greater', value: '$gt' },
+    { name: 'greater_or_equal', value: '$gte' },
+    { name: 'between', value: '$between' },
+    { name: 'not_between', value: '$notBetween' }
+  ],
+  boolean: [
+    { name: 'equal', value: '$eq' }
+  ],
+  array: [
+    { name: 'contains', value: '$in' },
+    { name: 'not_contains', value: '$nin' }
+  ],
+  default: [
+    { name: 'equal', value: '$eq' },
+    { name: 'not_equal', value: '$ne' },
+    { name: 'begins_with', value: '$regex' },
+    { name: 'not_begins_with', value: '$not' },
+    { name: 'contains', value: '$regex' },
+    { name: 'not_contains', value: '$not' },
+    { name: 'ends_with', value: '$regex' },
+    { name: 'not_ends_with', value: '$not' },
+    { name: 'is_empty', value: '$eq' },
+    { name: 'is_not_empty', value: '$ne' },
+    { name: 'is_null', value: '$eq' },
+    { name: 'is_not_null', value: '$ne' }
+  ]
+};
+
 
   userGroupSettings = {
     labelHeader: 'User Group*',
@@ -468,10 +504,7 @@ else{
  
   // Set options only for this row
     rowGroup.get('expressionSettings')?.setValue({
-      options: operators.map(op => ({
-        name: op,
-        value: op
-      })),
+      options: operators,
       singleSelection: true,
           idField: 'id',
           textField: 'text',
@@ -569,11 +602,12 @@ else{
   
 const formValue = this.secondFormGroup.value;
 const creationTime = new Date();
-const result = this.buildProjectExpressions(formValue);
+const result = this.buildProjectExpressions(formValue)
+
 const cron = this.createCronExpression();
 console.log("result",JSON.stringify(result));
 console.log('Generated Cron:', cron);
- 
+ console.log(JSON.stringify(result))
     const policyData: Policy = {
       policyName: firstFormValues.policyName,
       ticketAbbrevation: firstFormValues.ticketabb,
