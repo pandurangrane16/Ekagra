@@ -348,12 +348,12 @@
                                     <div class="col-md-6">
                                         <label style="position: relative; top: 6px; display: block;">Minute*</label>
                                         <app-cm-select-check [formGroup]="thirdFormGroup" [controlName]="'minute'"
-                                            [settings]="minuteSettings"></app-cm-select-check>
+                                            [settings]="minuteSettings" (returnObject)="setThirdFormValues($event,'min')"></app-cm-select-check>
                                     </div>
                                     <div class="col-md-6">
                                         <label style="position: relative; top: 6px; display: block;">Hour*</label>
                                         <app-cm-select-check [formGroup]="thirdFormGroup" [controlName]="'hour'"
-                                            [settings]="hourSettings"></app-cm-select-check>
+                                            [settings]="hourSettings" (returnObject)="setThirdFormValues($event,'hour')" ></app-cm-select-check>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -361,20 +361,20 @@
                                         <label style="position: relative; top: 6px; display: block;">Day Of
                                             Month*</label>
                                         <app-cm-select-check [formGroup]="thirdFormGroup" [controlName]="'dayOfMonth'"
-                                            [settings]="dayMonthSettings"></app-cm-select-check>
+                                            [settings]="dayMonthSettings" (returnObject)="setThirdFormValues($event,'daymon')"></app-cm-select-check>
                                     </div>
 
                                     <div class="col-md-4">
                                         <label style="position: relative; top: 6px; display: block;">Month*</label>
                                         <app-cm-select-check [formGroup]="thirdFormGroup" [controlName]="'month'"
-                                            [settings]="monthSettings"></app-cm-select-check>
+                                            [settings]="monthSettings" (returnObject)="setThirdFormValues($event,'mon')"></app-cm-select-check>
                                     </div>
 
                                     <div class="col-md-4">
                                         <label style="position: relative; top: 6px; display: block;">Day Of
                                             Week*</label>
                                         <app-cm-select-check [formGroup]="thirdFormGroup" [controlName]="'dayOfWeek'"
-                                            [settings]="dayWeekSettings"></app-cm-select-check>
+                                            [settings]="dayWeekSettings" (returnObject)="setThirdFormValues($event,'day')"></app-cm-select-check>
                                     </div>
                                 </div>
                             </div>
