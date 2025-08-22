@@ -63,26 +63,9 @@ export class SidenavComponent implements OnInit {
 
   }
   ngOnInit(): void {
-    debugger;
     let _data = this.sessionService._getSessionValue("config");
-    // console.log(JSON.parse(_data ?? ''));
-    // this.configData = _data;
-
-      try {
-        debugger
-      if (_data) {
-      // this.configData = JSON.parse(_data);
-      this.configData = _data;
-      console.log("Config Data:", this.configData);
-      } else {
-      this.configData = {}; // or null, depending on your use case
-      console.warn("No config found in session.");
-      }
-      } catch (error) {
-      console.error("Failed to parse config JSON:", error, _data);
-      this.configData = {};
-      }
-
+    console.log(JSON.parse(_data ?? ''));
+    this.configData = _data;
     this.menuItems = [
       {
         icon: './assets/img/icon_dashboard1.svg',
