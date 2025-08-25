@@ -324,7 +324,7 @@
                                     </div>
                                 </ng-container>
                             </mat-tab>
-                            <mat-tab label="Body">
+                            <mat-tab label="Body" *ngIf="!isEditMode">
                                 <hr>
                                 <div class="row">
                                     <div class="col-md-12">
@@ -355,7 +355,7 @@
 
                             </mat-tab>
 
-                            <mat-tab label="Auth">
+                            <mat-tab label="Auth" *ngIf="!isEditMode">
                                 <hr>
                                 <div class="row">
                                     <div class="col-md-12">
@@ -397,7 +397,7 @@
                                 </div>
                             </mat-tab>
 
-                            <mat-tab label="Headers">
+                            <mat-tab label="Headers" *ngIf="!isEditMode">
                                 <hr>
                                 <ng-container>
                                     <div class="query-container">

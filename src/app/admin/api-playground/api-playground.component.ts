@@ -561,12 +561,14 @@ debugger;
     if (inputTypeValue == 3) {
       group.get('qsInputType')?.disable();
       group.get('qsSelectedType')?.disable();
+      group.get('qsType')?.disable();
     }
     else
     {
-       group.get('qsInputType')?.disable();
+      group.get('qsInputType')?.disable();
       group.get('qsSelectedType')?.disable();
       group.get('qsValue')?.disable();
+      group.get('qsType')?.disable();
     }
   }
 
