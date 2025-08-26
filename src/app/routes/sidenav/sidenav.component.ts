@@ -60,11 +60,12 @@ export class SidenavComponent implements OnInit {
   }
 
   constructor(public headerService: HeaderService, public routes: Router, private route: ActivatedRoute) {
-
+debugger;
   }
   ngOnInit(): void {
+    debugger;
     let _data = this.sessionService._getSessionValue("config");
-    console.log(JSON.parse(_data ?? ''));
+    console.log(_data ?? '');
     this.configData = _data;
     this.menuItems = [
       {
@@ -227,7 +228,12 @@ export class SidenavComponent implements OnInit {
       item.isOpen = !item.isOpen;
     }
     else {
-      const code = JSON.parse(this.configData).projectCodes.filter((x: any) => x.name == item.apiLable)[0].value;
+      // const code = JSON.parse(this.configData).projectCodes.filter((x: any) => x.name == item.apiLable)[0].value;
+      debugger;
+      const config = this.sessionService._getSessionValue("config");
+      const code = config
+      ? JSON.parse(config.toString())?.projectCodes?.find((x: any) => x.name === item.apiLable)?.value
+      : null;
 
       const targetRoute = `${item.link}/${code?.value ?? ''}`;
       console.log('Navigating to:', targetRoute);
