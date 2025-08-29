@@ -208,14 +208,8 @@ export class ContactConfigurationComponent implements OnInit {
     this.ContactConfigService.GetAll().subscribe(response => {
 
       const items = response.result?.items;
-
+      const totalCount = response.result?.totalCount;
       this.items = items;
-
-
-
-
-
-
 
       if (Array.isArray(items)) {
 
@@ -240,6 +234,21 @@ export class ContactConfigurationComponent implements OnInit {
         });
 
       }
+
+         if (Array.isArray(items)) {
+
+
+        var _length = totalCount / Number(this.recordPerPage);
+        if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+          this.totalRecords = Number(this.recordPerPage) * (_length);
+        else if (Math.floor(_length) == 0)
+          this.totalRecords = 10;
+        else
+          this.totalRecords = totalCount;
+        this.totalPages = this.totalRecords / this.pager;
+
+      }
+
     })
   }
   getContactList() {

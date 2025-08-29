@@ -1,4 +1,4 @@
-import { Component, OnInit,inject } from '@angular/core';
+import { Component, ComponentFactoryResolver, OnInit,inject } from '@angular/core';
 import { MaterialModule } from '../../Material.module';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -187,8 +187,8 @@ apiTypeSettings = {
     
 debugger;
 console.log(this.authRequiredFlag)
-    this.getProjList();
-    this.GetProjectType();
+    // this.getProjList();
+    // this.GetProjectType();
     this.getType();
     this.getInputType();
     this.getUserDefinedType();
@@ -269,7 +269,8 @@ console.log(this.authRequiredFlag)
   // ================= Edit mode logic======
 else{
 
-
+    this.getProjList();
+    this.GetProjectType();
   //validation to check api name exists 
 
   this.form.get('apiName')?.valueChanges
@@ -561,12 +562,14 @@ debugger;
     if (inputTypeValue == 3) {
       group.get('qsInputType')?.disable();
       group.get('qsSelectedType')?.disable();
+      group.get('qsType')?.disable();
     }
     else
     {
-       group.get('qsInputType')?.disable();
+      group.get('qsInputType')?.disable();
       group.get('qsSelectedType')?.disable();
       group.get('qsValue')?.disable();
+      group.get('qsType')?.disable();
     }
   }
 
@@ -1328,7 +1331,11 @@ const requestModels: projapirequestmodel[] = this.queryStringsFormArray.controls
     key: group.get('qsKey')?.value,
     inputType: group.get('qsInputType')?.value.value,
     inputSource: group.get('qsSelectedType')?.value.value,
-    inputValue: group.get('qsValue')?.value.value,
+    // inputValue: group.get('qsValue')?.value.value,
+    inputValue:
+      (group.get('qsInputType')?.value?.value ?? "0") === "3"
+        ? group.get('qsValue')?.value
+        : group.get('qsValue')?.value?.value,
     seq: group.get('qsNo')?.value -1,
     isDeleted: false,
     deleterUserId: 0,
@@ -1341,7 +1348,7 @@ const requestModels: projapirequestmodel[] = this.queryStringsFormArray.controls
   };
 });
 const maxSeq = requestModels.reduce((max, item) => item.seq > max ? item.seq : max, 0);
-
+console.log("requestModels - ",requestModels);
 
 const methodKeyModel: projapirequestmodel = {
   apiId: this.createdId,

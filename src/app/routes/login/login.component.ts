@@ -28,7 +28,7 @@ export class LoginComponent {
 loaderService=inject(LoaderService);
 sessionService=inject(SessionService);
   loginForm!: FormGroup;
-  version: string = "2.0.4";
+  version: string = "2.0.6";
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
@@ -78,6 +78,7 @@ sessionService=inject(SessionService);
   ];
 
   ngOnInit(): void {
+    debugger;
     this.loginForm = this.fb.group({
       userNameOrEmailAddress: ['', Validators.required],
       password: ['', Validators.required]
