@@ -20,14 +20,14 @@
                     </app-cm-select2>
                 </div>
                 <div class="col-md-3 text-left form-padder">
-                    <app-cm-select2 [formGroup]="form" [controlName]="'manager'" [settings]="managerSettings"
+                    <app-cm-select2   *ngIf="isUserLoaded"[formGroup]="form" [controlName]="'manager'" [settings]="managerSettings"
                         (optionSelected)="onManagerSelected($event)">
                     </app-cm-select2>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-9 text-right form-padder">
-                    <button mat-flat-button class="btn-change" (click)="openDialog()">
+                    <button mat-flat-button class="btn-change" (click)="onSubmit()">
                         Submit
                     </button>
                 </div>

@@ -4,6 +4,11 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MaterialModule } from '../../Material.module';
 import { CmTableComponent } from '../../common/cm-table/cm-table.component';
 import { CommonModule } from '@angular/common';
+import { UserHierarchyService } from '../../services/admin/userhierarchy.service';
+import { ToastrService } from 'ngx-toastr';
+import { withLoader } from '../../services/common/common';
+import { LoaderService } from '../../services/common/loader.service';
+import { userhierarchymodel } from '../../models/admin/userhierarchy.model';
 
 @Component({
   selector: 'app-user-heirarchy',
@@ -12,10 +17,20 @@ import { CommonModule } from '@angular/common';
   styleUrl: './user-heirarchy.component.css'
 })
 export class UserHeirarchyComponent implements OnInit {
+   loaderService = inject(LoaderService);
   headerArr: any;
-  totalPages: any = 0;
+     totalPages: number = 1;
+      pager: number = 1;
+        MaxResultCount=10;
+  SkipCount=0;
+  perPage=10;
+  pageNo=0;
+recordPerPage: number = 10;
+
+
+
   totalRecords: any = 0;
-  perPage: any = 0;
+ 
   userTypeSettings: any;
   isUserLoaded: boolean = false;
   isManagerLoaded: boolean = false;
@@ -34,31 +49,148 @@ export class UserHeirarchyComponent implements OnInit {
   collectionSize: any;
 
 
+    constructor(
+  
+      private service: UserHierarchyService,
+      private toast: ToastrService,
+
+    ){}
+
   ngOnInit(): void {
-    this.isUserLoaded = true;
+
+    this.getUserList();
+  
+      this.buildHeader();
+    this.isUserLoaded = false;
     this.userTypeSettings = {
       labelHeader: 'Select User',
       lableClass: 'form-label',
       formFieldClass: '',
       appearance: 'fill',
-      options: [{ name: "Pandurang", value: "0" }, { name: "Shridhar", value: "1" }, { name: "Ashutosh", value: "2" },
-      { name: "Sujit", value: "3" }, { name: "Anup", value: "4" }, { name: "Pralesh", value: "5" }
-      ]
+      options: [],
     };
       this.managerSettings = {
       labelHeader: 'Select Manager',
       lableClass: 'form-label',
       formFieldClass: '',
       appearance: 'fill',
-      options: [{ name: "Pandurang", value: "0" }, { name: "Shridhar", value: "1" }, { name: "Ashutosh", value: "2" },
-      { name: "Sujit", value: "3" }, { name: "Anup", value: "4" }, { name: "Pralesh", value: "5" }
-      ]
+      options: []
     };
 
     this.form = this.fb.group({
       userName: ['', Validators.required],
-      manager: [''],
+      manager: ['',Validators.required],
     })
+
+
+      this.getFilteredList();
   }
+        buildHeader() {  
+          this.headArr = [
+            { header: 'Employee Name', fieldValue: 'employee', position: 1 },
+            { header: 'Manager Name', fieldValue: 'manager', position: 2 },
+       
+          ];
+          ;}
+
+          processedItems: any[] = [];
+ getFilteredList() {
+    // const selectedProjectId = this.form.controls['selectedProject'].value.value;
+    
+    //  const search = this.form.controls['searchText'].value
+    //     this.MaxResultCount=this.perPage;
+    //   this.SkipCount=this.MaxResultCount*this.pager;
+    //   this.recordPerPage=this.perPage;
+ 
+    this.service.GetList().pipe(withLoader(this.loaderService)).subscribe((response: any) => {
+  const items = response?.result || []; 
+  this.items = items;
+  this.processedItems=items;
+  console.log( "Processed Items:", this.processedItems)
+   console.log( "Response:", response)
+
+  if (Array.isArray(items)) {
+    items.forEach((element: any) => {
+      element.employee = element.employeeName;
+      element.manager = element.managerName || null; 
+
+      element.button = [
+        { label: 'Edit', icon: 'edit', type: 'edit' },
+        { label: 'Delete', icon: 'delete', type: 'delete' }
+      ];
+    });
+
+ 
+    const totalCount = items.length;
+
+    var _length = totalCount / Number(this.recordPerPage);
+    if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+      this.totalRecords = Number(this.recordPerPage) * (_length);
+    else if (Math.floor(_length) == 0)
+      this.totalRecords = 10;
+    else
+      this.totalRecords = totalCount;
+
+    this.totalPages = this.totalRecords / this.pager;
+  }
+});
+
+    }  
+
+    onSubmit() {
+  if (this.form.invalid) {
+     this.toast.error('Please select all values.');
+    return; 
+  }
+
+  const employeeId = this.form.value.userName.value;
+  const managerId = this.form.value.manager.value;
+
+  if (employeeId === managerId) {
+   
+    this.toast.error('Employee and Manager cannot be the same!');
+    return;
+  }
+
+  const model: userhierarchymodel = {
+    employeeId: employeeId,
+    managerId: managerId
+  };
+
+      this.service.Create(model)
+        .pipe(withLoader(this.loaderService))
+        .subscribe({
+          next: (res: any) => {
+            console.log(res);
+            this.toast.success('Manager  assigned successfully.');
+            this.getFilteredList();
+          },
+          error: (err) => {
+            console.error('Error creating rule engine:', err);
+            this.toast.error('Failed to save Manager. Please try again.');
+          }
+        });
+}
+
+    getUserList() {
+      this.service.GetUserList().pipe(withLoader(this.loaderService)).subscribe((response: any) => {
+        const items = response?.result || [];
+  
+        const projectOptions = items.map((item: any) => ({
+          name: item.name,
+          value: item.id
+        }));
+  
+  
+  
+        this.userTypeSettings.options = projectOptions;
+        this.managerSettings.options = projectOptions;
+    
+  
+        this.isUserLoaded = true;
+      }, error => {
+        console.error('Error fetching user list', error);
+      });
+    }
 
 }

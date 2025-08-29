@@ -14,21 +14,27 @@ import { ToastrService } from 'ngx-toastr';
 import { getErrorMsg } from '../../../utils/utils';
 import { Policy } from '../../../models/admin/ruleengine.model';
 import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {MatButtonModule} from '@angular/material/button';
+
 import { CmCheckboxGroupComponent } from '../../../common/cm-checkbox-group/cm-checkbox-group.component';
 import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-select-check.component";
 
 @Component({
-  selector: 'app-rule-config',
+ 
   imports: [MaterialModule,MatIconModule,MatButtonModule,MatTooltipModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,
     CmToggleComponent, CmButtonComponent, CmSelectCheckComponent],
-  templateUrl: './rule-config.component.html',
-  styleUrl: './rule-config.component.css',
+
+    selector: 'app-rule-engine-edit',
+
+  templateUrl: './rule-engine-edit.component.html',
+  styleUrl: './rule-engine-edit.component.css'
 })
-export class RuleConfigComponent implements OnInit {
+export class RuleEngineEditComponent implements OnInit {
   router = inject(Router);
+
   loaderService = inject(LoaderService)
   private _formBuilder = inject(FormBuilder);
   signalRService = inject(SignalRService);
@@ -38,6 +44,7 @@ export class RuleConfigComponent implements OnInit {
   selectedProjectName: any;
   selectedProjectId: any;
   AndFlag: any;
+  id:any;
   expOption: boolean = false;
  typeOperatorMap: Record<string, { name: string; value: string }[]> = {
   string: [
@@ -321,6 +328,8 @@ export class RuleConfigComponent implements OnInit {
   checkBoxSettings: any;
   firstFormGroup: any;
   thirdFormGroup: any;
+  ruleData:any;
+  
 
   // firstFormGroup = this._formBuilder.group({
   //   policyName: ['', Validators.required],
@@ -346,7 +355,7 @@ export class RuleConfigComponent implements OnInit {
   //   { icon: '✅', title: 'Confirm' }
   // ];
   ruleConditions: any;
-  constructor(private toast: ToastrService) {
+  constructor(private toast: ToastrService,    private route: ActivatedRoute, ) {
     this.ruleConditions = this.ruleService.getRuleConditions();
     if (this.ruleConditions == null) {
       this.ruleService.setRulesStorage();
@@ -356,29 +365,39 @@ export class RuleConfigComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.thirdFormGroup = this._formBuilder.group({
-      minute: ['', Validators.required],
-      hour: ['', Validators.required],
-      dayOfMonth: ['', Validators.required],
-      month: ['', Validators.required],
-      dayOfWeek: ['', Validators.required],
+
+    this.id = this.route.snapshot.paramMap.get('id');
+    console.log('Extracted ID:', this.id);
+
+
+     this.ruleService.GetDataById(this.id).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
+     
+            this.ruleData = response?.result;
+            console.log('Stored Rule Data:', this.ruleData);
+            this.buildForms();
+    
+
+    }, error => {
+      console.error('Error fetching fields', error);
+      this.buildForms();
     });
-    this.secondFormGroup = this._formBuilder.group({
-      selectedProject: [null, Validators.required],
-      groups: this._formBuilder.array([], [this.minFormArrayLength(1)]),
-    });
-    this.firstFormGroup = this._formBuilder.group({
-      policyName: ['', Validators.required],
-      ticketabb: ['', Validators.required],
-      tat: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
-      selectedCategory: ['', Validators.required],
-      selectedUserGroup: ['', Validators.required],
-      intervalTime: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
-      isActive: [false, Validators.required],
-      isinternal: [false, Validators.required]
-    });
+
+
+
+
+
+
+
+
+
+ 
+
     this.getProjList();
-    this.getRoles();
+   setTimeout(() => {
+  this.getRoles();
+  this.patchCronForEdit(this.ruleData.cron);
+  //this.patchCron(this.thirdFormGroup, this.ruleData.cron);
+}, 1000); 
     //this.getfields();
     this.checkBoxSettings = {
       labelHeader: '',
@@ -409,6 +428,119 @@ export class RuleConfigComponent implements OnInit {
   get f() {
     return this.firstFormGroup.controls;
   }
+
+//   patchCron(form: FormGroup, cron: string) {
+//   if (!cron) return;
+
+//   // cron string: "minute hour dayOfMonth month dayOfWeek"
+//   const [minute, hour, dayOfMonth, month, dayOfWeek] = cron.split(" ");
+
+//   // mapping form controls -> option lists
+//   const mapping: { [key: string]: any[] } = {
+//     minute: this.minuteSettings.options,
+//     hour: this.hourSettings.options,
+//     dayOfMonth: this.dayMonthSettings.options,
+//     month: this.monthSettings.options,
+//     dayOfWeek: this.dayWeekSettings.options
+//   };
+
+//   // prepare object to patch
+//   const patchObj: any = {};
+
+//   Object.entries({ minute, hour, dayOfMonth, month, dayOfWeek }).forEach(
+//     ([key, value]) => {
+//       if (!value) return;
+
+//       // handle multiple selections like "3,2"
+//       if (value.includes(",")) {
+//         const values = value.split(",");
+//         patchObj[key] = mapping[key].filter(opt =>
+//           values.includes(String(opt.value))
+//         );
+//       } else {
+//         // single selection
+//         const selected = mapping[key].find(
+//           opt => String(opt.value) === String(value)
+//         );
+//         if (selected) {
+//           patchObj[key] = selected;
+//         }
+//       }
+//     }
+//   );
+
+//   // ✅ patch all at once
+//   form.patchValue(patchObj);
+// }
+// patchCronForEdit(cronString: string) {
+//   if (!cronString) return;
+
+//   const [minute, hour, dayOfMonth, month, dayOfWeek] = cronString.split(" ");
+
+//   const patchObj: any = {};
+
+//   // patch single selections
+//   const singleMapping: { [key: string]: any[] } = {
+//     minute: this.minuteSettings.options,
+//     hour: this.hourSettings.options,
+//     dayOfMonth: this.dayMonthSettings.options,
+//     month: this.monthSettings.options
+//   };
+
+//   Object.entries({ minute, hour, dayOfMonth, month }).forEach(([key, value]) => {
+//     const selected = singleMapping[key].find(opt => String(opt.value) === String(value));
+//     if (selected) patchObj[key] = selected.value;  // patch only value
+//   });
+
+//   // patch multiple selection for dayOfWeek
+//   const dayValues = dayOfWeek.split(",");
+//   patchObj['dayOfWeek'] = this.dayWeekSettings.options
+//     .filter(opt => dayValues.includes(String(opt.value)))
+//     .map(opt => opt.value);
+
+//   this.thirdFormGroup.patchValue(patchObj);
+// }
+
+patchCronForEdit(cronString: string) {
+  if (!cronString) return;
+
+  const [minute, hour, dayOfMonth, month, dayOfWeek] = cronString.split(" ");
+
+  // Call setThirdFormValues for each field
+  this.setThirdFormValues(minute, 'min');
+  this.setThirdFormValues(hour, 'hour');
+  this.setThirdFormValues(dayOfMonth, 'daymon');
+  this.setThirdFormValues(month, 'mon');
+  this.setThirdFormValues(dayOfWeek.split(','), 'day'); // pass array for dayOfWeek
+}
+
+
+
+  buildForms(): void {
+    
+   this.thirdFormGroup = this._formBuilder.group({
+      minute: ['', Validators.required],
+      hour: ['', Validators.required],
+      dayOfMonth: ['', Validators.required],
+      month: ['', Validators.required],
+      dayOfWeek: ['', Validators.required],
+    });
+    this.secondFormGroup = this._formBuilder.group({
+      selectedProject: [null],
+      groups: this._formBuilder.array([], [this.minFormArrayLength(1)]),
+    });
+    this.firstFormGroup = this._formBuilder.group({
+      policyName: ['', Validators.required],
+      ticketabb: ['', Validators.required],
+      tat: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+      selectedCategory: ['', Validators.required],
+      selectedUserGroup: ['', Validators.required],
+      intervalTime: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+      isActive: [false, Validators.required],
+      isinternal: [false, Validators.required]
+    });
+  }
+
   minFormArrayLength(min: number): ValidatorFn {
     return (control: AbstractControl) => {
       if (control instanceof FormArray) {
@@ -440,12 +572,6 @@ export class RuleConfigComponent implements OnInit {
         this.toast.error('No mapped API fields found, please select some other API.');
         const rowGroup = (this.getExpressionGroup(parentIndex).at(rowIndex) as FormGroup);
         rowGroup.get('fieldOption')?.setValue(false);
-
-        // // Reset the specific row's field settings
-        // const rowGroup = (this.getExpressionGroup(parentIndex).at(rowIndex) as FormGroup);
-        // rowGroup.get('fieldName')?.setValue(null);
-        // rowGroup.get('fieldSettings')?.setValue(null);
-
         return;
       }
 
@@ -595,7 +721,66 @@ export class RuleConfigComponent implements OnInit {
     };
   });
 }
+patch_expression(ruleExpression: string){
+    try {
+    
+    const parsed = JSON.parse(ruleExpression);
 
+        parsed.forEach((project:any) => {
+      const selectedProject = {
+        value: project.ProjectId,
+        name: project.ProjectName
+      };
+      this.createGroup(selectedProject);
+      const idx = this.groupsFormArray.length - 1;
+      this.getApi(project, idx);
+
+    });
+
+    
+
+    console.log("Parsed Rule Expression:", parsed);
+
+    return parsed; 
+  } catch (error) {
+    console.error("Error parsing rule expression:", error);
+    return null;
+  }
+
+}
+createGroup(selectedProject: any) {
+    let len = this.secondFormGroup.controls['groups'].length;
+    const group = this._formBuilder.group({
+      seqNo: [{ value: (len == undefined ? 1 : len + 1), disabled: true }],
+      projId: [selectedProject.value, Validators.required],
+      projName: [selectedProject.name],
+      selectedMainExpression: [''],
+      condition: [{ value: '' }],
+      arrayGroup: this._formBuilder.array([]),
+    });
+
+    this.groupsFormArray.push(group);
+    const formArr = this.createFormArrayGroup();
+    console.log(formArr);
+    var expressionGroup = this.getExpression(len);
+    expressionGroup.push(formArr);
+    console.log(this.groupsFormArray);
+  }
+createFormArrayGroup() {
+    return this._formBuilder.group({
+      fieldName: ['', Validators.required],
+      apiName: ['', Validators.required],
+      expression: [{ value: '' }, Validators.required],
+      fieldValue: ['', Validators.required],
+      apiSettings: [null],
+      fieldSettings: [null],
+      expressionSettings: this.expressionSettings,
+      fieldOption: [false],
+      expOption: [false],
+
+
+    });
+  }
 
 
   getProjList() {
@@ -675,20 +860,20 @@ console.log('Generated Cron:', cron);
       lastModifierUserId: 0,
       creationTime: creationTime,
       creatorUserId: 0,
-      id: 0,
+      id: this.ruleData.id,
       description: firstFormValues.policyName,
     };
 
-      this.ruleService.CreateRuleEngine(policyData)
+      this.ruleService.EditRuleEngine(policyData)
         .pipe(withLoader(this.loaderService))
         .subscribe({
           next: (res: any) => {
             console.log(res);
-            this.toast.success('Rule Engine saved successfully.');
+            this.toast.success('Rule Engine Updated successfully.');
           },
           error: (err) => {
             console.error('Error creating rule engine:', err);
-            this.toast.error('Failed to save Rule Engine. Please try again.');
+            this.toast.error('Failed to Update Rule Engine. Please try again.');
           }
         });
     }
@@ -704,6 +889,128 @@ console.log('Generated Cron:', cron);
 
   }
   getApi(selectedProject: any, groupIndex: number) {
+    this.apiOption = false;
+    this.ruleService.GetApis(selectedProject.ProjectId)
+      .pipe(withLoader(this.loaderService))
+      .subscribe((response: any) => {
+        const items = response?.result || [];
+
+        const projectOptions = items.map((item: any) => ({
+          name: item.apiName,
+          value: item.id,
+          projectid: item.projectId
+        }));
+        const settings = {
+          singleSelection: true,
+          idField: 'id',
+          textField: 'text',
+          allowSearchFilter: true,
+          labelHeader: 'API Name*',
+          lableClass: 'form-label',
+          formFieldClass: '',
+          appearance: 'outline',
+          options: projectOptions
+        };
+
+             const exprArray = this.getExpressionGroup(groupIndex);
+
+      selectedProject.Rule.forEach((rule: any, i: number) => {
+        let exprControl: FormGroup;
+
+        if (exprArray.length > i) {
+          exprControl = exprArray.at(i) as FormGroup;
+        } else {
+          exprControl = this.createFormArrayGroup();
+          exprArray.push(exprControl);
+        }
+
+        exprControl.patchValue({
+        
+          apiSettings: settings,
+         
+        });
+
+          const apiOptions = settings?.options || [];
+  const selectedApi = apiOptions.find((opt: any) => opt.value === rule.APIID);
+
+  if (selectedApi) {
+    // Patch apiName with the whole matched object
+    exprControl.patchValue({
+      apiName: selectedApi
+    });
+  }
+
+  this.onApiChange(selectedApi, groupIndex, i);
+
+setTimeout(() => { 
+  const fieldOptions = exprControl.get('fieldSettings')?.value?.options || [];
+  const expressionKeys = Object.keys(rule.Expression); 
+  const firstKey = expressionKeys[0]; 
+  const conditionsArray = rule.Expression[firstKey]; 
+  const firstCondition = conditionsArray[0]; 
+
+  const fieldNameFromRule = Object.keys(firstCondition)[0]; 
+  const fieldValueFromRule = firstCondition[fieldNameFromRule]; 
+  const operator = Object.keys(fieldValueFromRule)[0]; 
+  const value = fieldValueFromRule[operator]; 
+  
+  const group = this.groupsFormArray.at(groupIndex) as FormGroup;
+  const conditionOption = this.conditionSelectSettings.options.find(
+  (opt: any) => opt.name.toUpperCase() === firstKey.replace('$', '').toUpperCase()
+);
+
+// Get the value to patch
+//const conditionValue = conditionOption ? conditionOption.value : '';
+
+// Now patch the value in your group
+group.patchValue({
+  condition: conditionOption
+});
+
+
+
+
+
+
+  
+  const selectedField = fieldOptions.find((f: any) => f.value === fieldNameFromRule);
+
+  if (selectedField) {
+   
+    exprControl.patchValue({
+      fieldName: selectedField,
+     
+    });
+
+
+     this.onFieldChange(selectedField, groupIndex, i);
+
+       setTimeout(() => {
+    const exprOptions = exprControl.get('expressionSettings')?.value?.options || [];
+   // const expressionValueFromRule = fieldValueFromRule; 
+
+    // Find the operator that matches the rule
+    const selectedExpression = exprOptions.find((op: any) => op.value === operator);
+
+
+    if (selectedExpression) {
+      exprControl.patchValue({
+        expression: selectedExpression,
+        fieldValue :value
+      });
+    }
+  }, 2000); 
+  }
+}, 2000);
+
+      });
+        this.apiOption = true;
+        
+        
+      });
+  }
+
+   getApi_create(selectedProject: any, groupIndex: number) {
     this.apiOption = false;
     this.ruleService.GetApis(selectedProject)
       .pipe(withLoader(this.loaderService))
@@ -772,7 +1079,32 @@ console.log('Generated Cron:', cron);
       });
   }
 
+ patchFirstFormData(): void {
+  if (!this.ruleData) return;
 
+  const selectedUserGroup = (this.userGroupSettings.options as any[]).find(
+    opt => opt.value === Number(this.ruleData.policyRoles) 
+  );
+
+ 
+  const selectedCategory = (this.categorySelectSettings.options as any[]).find(
+    opt => opt.value === String(this.ruleData.priority)
+  );
+  this.firstFormGroup.patchValue({
+    policyName: this.ruleData.policyName,
+    ticketabb: this.ruleData.ticketAbbrevation,
+    tat: this.ruleData.tat,
+    selectedCategory:selectedCategory,   
+    selectedUserGroup: selectedUserGroup,
+    intervalTime: this.ruleData.intervalTime,
+    isActive: this.ruleData.isActive,
+    isinternal: this.ruleData.isInternal
+  });
+
+  console.log('First Form patched:', this.firstFormGroup.value);
+
+  this.patch_expression(this.ruleData.ruleExpression);
+}
   getRoles() {
     console.log(this.userOptionsLoaded)
     this.ruleService.GetRolesOnId().pipe(withLoader(this.loaderService)).subscribe((response: any) => {
@@ -797,6 +1129,7 @@ console.log('Generated Cron:', cron);
 
 
       this.userOptionsLoaded = true;
+      this.patchFirstFormData();
     }, error => {
       console.error('Error fetching project list', error);
     });
@@ -891,27 +1224,10 @@ console.log('Generated Cron:', cron);
     //this.secondFormGroup.get('selectedProject')?.reset();
     let idx = this.groupsFormArray.length - 1;
     //this.getfields(this.selectedProjectId, idx);
-    this.getApi(this.selectedProjectId, idx);
+    this.getApi_create(this.selectedProjectId, idx);
   }
 
-  createGroup(selectedProject: any) {
-    let len = this.secondFormGroup.controls['groups'].length;
-    const group = this._formBuilder.group({
-      seqNo: [{ value: (len == undefined ? 1 : len + 1), disabled: true }],
-      projId: [selectedProject.value, Validators.required],
-      projName: [selectedProject.name],
-      selectedMainExpression: [''],
-      condition: [{ value: '' }],
-      arrayGroup: this._formBuilder.array([]),
-    });
-
-    this.groupsFormArray.push(group);
-    const formArr = this.createFormArrayGroup();
-    console.log(formArr);
-    var expressionGroup = this.getExpression(len);
-    expressionGroup.push(formArr);
-    console.log(this.groupsFormArray);
-  }
+ 
   getExpressionGroup(index: any): FormArray<FormGroup> {
     // Index is the position in the FormArray
     let i = index;
@@ -943,21 +1259,7 @@ console.log('Generated Cron:', cron);
     const arrayGroup = this.groupsFormArray.at(i).get('arrayGroup') as FormArray;
     arrayGroup.removeAt(j);
   }
-  createFormArrayGroup() {
-    return this._formBuilder.group({
-      fieldName: ['', Validators.required],
-      apiName: ['', Validators.required],
-      expression: [{ value: '' }, Validators.required],
-      fieldValue: ['', Validators.required],
-      apiSettings: [null],
-      fieldSettings: [null],
-      expressionSettings: this.expressionSettings,
-      fieldOption: [false],
-      expOption: [false],
 
-
-    });
-  }
 
   addFormArrayGroup(len: number) {
     console.log(len);
@@ -966,7 +1268,7 @@ console.log('Generated Cron:', cron);
     expressionGroup.push(formArr);
     let proj = this.secondFormGroup.controls.groups.controls[len].controls.projId.value;
     //this.getfields(proj, len);
-    this.getApi(proj, len);
+    this.getApi_create(proj, len);
   }
 
   checkboxOptions = [

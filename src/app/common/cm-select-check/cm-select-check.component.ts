@@ -66,6 +66,12 @@ export class CmSelectCheckComponent {
       return this.selectedValues.join(', ');
   }
 
+//   displayFn = (value: any): string => {
+//   return this.selectedValues && this.selectedValues.length > 0 
+//     ? this.selectedValues.join(', ') 
+//     : '';
+// }
+
   isAllSelected(): boolean {
     return this.filteredOptions.every(opt => this.selectedValues.includes(opt.value));
   }

@@ -4,47 +4,33 @@ import { HttpService } from '../common/http.service';
 @Injectable({
   providedIn: 'root'
 })
-export class RuleEngineService {
+export class UserHierarchyService {
 
   constructor(private _httpService : HttpService) { }
 
   jsonurl: string = '/assets/config/config.json';
 
-  getRuleConditions(){
-    return this._httpService._getRuleConditions();
-  }
-  setRulesStorage(){
-    return this._httpService._setRuleConditions();
+  GetUserList() {
+    return this._httpService._getMethod('api/services/app/UserHierarchy/GetEmployeeName');
   }
 
-  GetProjectList() {
-    return this._httpService._getMethod('api/services/app/Project/GetProjectList');
+   Create(data:any) {
+    return this._httpService._postMethod(data,'api/services/app/UserHierarchy/Create');
   }
 
-    GetPolicyList() {
-    return this._httpService._getMethod('api/services/app/RuleEngine/GetPolicytList');
-  }
-  CreateRuleEngine(data:any) {
-    return this._httpService._postMethod(data,'api/services/app/RuleEngine/Create');
+   GetManagerList() {
+    return this._httpService._getMethod('api/services/app/UserHierarchy/GetManagerName');
   }
 
-    EditRuleEngine(data:any) {
-    return this._httpService._putMethod(data,'api/services/app/RuleEngine/Update');
-  }
-    GetRolesOnId() {
-    return this._httpService._getMethod('api/services/app/RuleEngine/GetRolesOnId');
-  }
 
-     Getfields(id:any) {
-    return this._httpService._getMethod('api/services/app/RuleEngine/GetProjectFieldsOnApiId?Id='+id);
-  }
        GetApis(id:any) {
     return this._httpService._getMethod('api/services/app/RuleEngine/GetActiveAPIListByProjectid?id='+id);
   }
-
-         GetDataById(id:any) {
-    return this._httpService._getMethod('api/services/app/RuleEngine/Get?Id='+id);
+   GetList() {
+    return this._httpService._getMethod('api/services/app/UserHierarchy/GetEmployeeManagerList');
   }
+ 
+
 
   GetFilteredList(
   ProjectId?: number,
@@ -62,7 +48,9 @@ export class RuleEngineService {
     params.push(`Filter=${encodeURIComponent(filter)}`);
   }
 
-
+  if (status !== null && status !== undefined) {
+    params.push(`IsActive=${status}`);
+  }
 
   if (maxResultCount !== null && maxResultCount !== undefined) {
     params.push(`MaxResultCount=${maxResultCount}`);
@@ -77,7 +65,6 @@ export class RuleEngineService {
 
   return this._httpService._getMethod(url);
 }
-
 
 
 
