@@ -19,8 +19,7 @@ import { withLoader } from '../../services/common/common';
 import { projapirequestmodel } from '../../models/admin/projectapirequest.model';
 import { AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-
-
+import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 @Component({
   selector: 'app-api-playground',
   imports: [MaterialModule,CmToggleComponent, CommonModule, ReactiveFormsModule, CmInputComponent, CmRadioComponent, CmTextareaComponent,CmTextareaComponent,CmSelect2Component],
@@ -186,6 +185,9 @@ apiTypeSettings = {
   ngOnInit(): void {
     
 debugger;
+
+
+
 console.log(this.authRequiredFlag)
     // this.getProjList();
     // this.GetProjectType();
@@ -200,6 +202,10 @@ console.log(this.authRequiredFlag)
     this.state = history.state;
     const state = this.state;
     if (state?.mode === 'edit' && state?.record) {
+
+       //Notification to user about user can modify only static values from params
+      this.toast.info('You can update only the static values of the Params.');    
+
       const Id = state.record.id;
       this.isEditMode = true; 
       console.log('Edit mode detected, record:', state.record);
@@ -1234,9 +1240,9 @@ console.log(requestModels);
 requestModels.forEach(model => {
   this.service.UpdateProjectApiRequest(model).pipe(withLoader(this.loaderService)).subscribe({
    next: (res) => {
-   this.toast.success('ProjectAPIRequest updated successfully.');
-    this.router.navigate(['/admin/apilist']);  
-      
+   this.toast.success('ProjectAPIRequest updated successfully for record -' + model.id);
+    this.router.navigate(['/admin/apilist']);
+
    },
     error: (err) => {
       console.error('Error updating API:', err);
