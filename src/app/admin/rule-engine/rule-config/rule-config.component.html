@@ -260,6 +260,15 @@
                                                     <h4>{{ arr.get('projName')?.value || 'Project2' }}</h4>
 
                                                 </div>
+
+                                                  <div class="row rmBtn" *ngIf="i !== 0"> 
+                                                        <div class="col">
+                                                            <app-cm-select2 [formGroup]="arr"
+                                                                [controlName]="'condition2'"
+                                                                [settings]="conditionSelectSettings">
+                                                            </app-cm-select2>
+                                                        </div>
+                                                    </div>
                                                 <div class="col text-right">
 
                                                     <span class="material-icons" (click)="removeGroup(i)">

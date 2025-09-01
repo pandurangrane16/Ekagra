@@ -26,6 +26,7 @@ export class UserHeirarchyComponent implements OnInit {
   perPage=10;
   pageNo=0;
 recordPerPage: number = 10;
+processedItems: any[] = [];
 
 
 
@@ -93,7 +94,7 @@ recordPerPage: number = 10;
           ];
           ;}
 
-          processedItems: any[] = [];
+        
  getFilteredList() {
     // const selectedProjectId = this.form.controls['selectedProject'].value.value;
     
@@ -137,40 +138,178 @@ recordPerPage: number = 10;
 
     }  
 
-    onSubmit() {
+//     onSubmit() {
+//   if (this.form.invalid) {
+//      this.toast.error('Please select all values.');
+//     return; 
+//   }
+
+//   const employeeId = this.form.value.userName.value;
+//   const managerId = this.form.value.manager.value;
+
+//   if (employeeId === managerId) {
+   
+//     this.toast.error('Employee and Manager cannot be the same!');
+//     return;
+//   }
+
+//   else{
+
+//  const existingManager = this.processedItems.find((x: any) => x.employeeId === employeeId && x.managerId !== null);
+// if (existingManager && existingManager.managerId !== managerId) {
+//   this.toast.error(`Employee ${employeeId} already has Manager ${existingManager.managerId}!`);
+//   return;
+// }
+// else{
+
+//   const isCircular = this.processedItems.find((x: any) => x.employeeId === managerId && x.managerId === employeeId);
+// if (isCircular) {
+//   this.toast.error(`Employee ${employeeId} and Employee ${managerId} cannot manage each other!`);
+//   return;
+// }
+// else{
+//   const model: userhierarchymodel = {
+//     employeeId: employeeId,
+//     managerId: managerId
+//   };
+
+//       this.service.Create(model)
+//         .pipe(withLoader(this.loaderService))
+//         .subscribe({
+//           next: (res: any) => {
+//             console.log(res);
+//             this.toast.success('Manager  assigned successfully.');
+//             this.getFilteredList();
+//           },
+//           error: (err) => {
+//             console.error('Error creating rule engine:', err);
+//             this.toast.error('Failed to save Manager. Please try again.');
+//           }
+//         });
+//   }
+// }
+
+// }
+
+
+
+
+
+
+
+// }
+
+onSubmit() {
   if (this.form.invalid) {
-     this.toast.error('Please select all values.');
-    return; 
+    this.toast.error('Please select all values.');
+    return;
   }
 
   const employeeId = this.form.value.userName.value;
   const managerId = this.form.value.manager.value;
 
   if (employeeId === managerId) {
-   
     this.toast.error('Employee and Manager cannot be the same!');
     return;
   }
+  else {
+  
+    const createsCycle = (empId: any, mgrId: any, items: any[]): boolean => {
+      let current = mgrId;
+      while (current !== null) {
+        if (current === empId) {
+          return true; // cycle detected
+        }
+        const next = items.find(x => x.employeeId === current);
+        current = next ? next.managerId : null;
+      }
+      return false;
+    };
 
-  const model: userhierarchymodel = {
-    employeeId: employeeId,
-    managerId: managerId
-  };
+    if (createsCycle(employeeId, managerId, this.processedItems)) {
+    this.toast.error(`They can't manage each other!`);
+      return;
+    }
+    else {
 
-      this.service.Create(model)
-        .pipe(withLoader(this.loaderService))
-        .subscribe({
-          next: (res: any) => {
-            console.log(res);
-            this.toast.success('Manager  assigned successfully.');
-            this.getFilteredList();
-          },
-          error: (err) => {
-            console.error('Error creating rule engine:', err);
-            this.toast.error('Failed to save Manager. Please try again.');
-          }
-        });
+      let managerRecord = this.processedItems.find((x: any) => x.employeeId === managerId);
+
+      const createOrUpdate = (empId: any, mgrId: any) => {
+        const record = this.processedItems.find((x: any) => x.employeeId === empId);
+        const model: userhierarchymodel = { employeeId: empId, managerId: mgrId };
+
+        if (!record) {
+          // Create new record
+          this.service.Create(model)
+            .pipe(withLoader(this.loaderService))
+            .subscribe({
+              next: (res: any) => {
+                console.log(`Created ${empId} -> ${mgrId}`);
+                this.toast.success(`Record ${empId} -> ${mgrId} created successfully.`);
+                this.getFilteredList();
+                  this.form.reset();
+
+
+  this.form.markAsPristine();
+  this.form.markAsUntouched();
+              },
+              error: (err) => {
+                console.error('Error creating record:', err);
+                this.toast.error('Failed to save record. Please try again.');
+                    this.getFilteredList();
+                  this.form.reset();
+
+  // If your dropdowns need to be reset to default values:
+  this.form.markAsPristine();
+  this.form.markAsUntouched();
+              }
+            });
+        } else if (record.managerId !== mgrId) {
+          // Update existing record
+          this.service.Update(empId, model) 
+            .pipe(withLoader(this.loaderService))
+            .subscribe({
+              next: (res: any) => {
+                console.log(`Updated ${empId} -> ${mgrId}`);
+                this.toast.success(`Record ${empId} -> ${mgrId} updated successfully.`);
+                this.getFilteredList();
+                  this.form.reset();
+
+  // If your dropdowns need to be reset to default values:
+  this.form.markAsPristine();
+  this.form.markAsUntouched();
+              },
+              error: (err) => {
+                console.error('Error updating record:', err);
+                this.toast.error('Failed to update record. Please try again.');
+                this.getFilteredList();
+                  this.form.reset();
+
+  // If your dropdowns need to be reset to default values:
+  this.form.markAsPristine();
+  this.form.markAsUntouched();
+              }
+            });
+        }
+      };
+
+      if (!managerRecord) {
+      
+        createOrUpdate(managerId, null);
+
+        setTimeout(() => {
+          createOrUpdate(employeeId, managerId);
+        }, 500);
+      }
+      else {
+        // Manager exists
+        createOrUpdate(employeeId, managerId);
+      }
+    }
+  }
 }
+
+
 
     getUserList() {
       this.service.GetUserList().pipe(withLoader(this.loaderService)).subscribe((response: any) => {

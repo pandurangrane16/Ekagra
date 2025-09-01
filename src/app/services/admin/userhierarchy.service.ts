@@ -18,6 +18,10 @@ export class UserHierarchyService {
     return this._httpService._postMethod(data,'api/services/app/UserHierarchy/Create');
   }
 
+     Update(id:any,data:any) {
+    return this._httpService._putMethod(data,'api/services/app/UserHierarchy/Update?id='+id);
+  }
+
    GetManagerList() {
     return this._httpService._getMethod('api/services/app/UserHierarchy/GetManagerName');
   }

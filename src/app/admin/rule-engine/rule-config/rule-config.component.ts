@@ -559,9 +559,51 @@ export class RuleConfigComponent implements OnInit {
   //   });
   // }
 
-  buildProjectExpressions(formValue: any) {
-  return formValue.groups.map((group: any) => {
-    const conditionOp = "$" + (group.condition?.value?.toLowerCase());
+//   buildProjectExpressions(formValue: any) {
+//   return formValue.groups.map((group: any) => {
+//     const conditionOp = "$" + (group.condition?.value?.toLowerCase());
+
+//     // Build expressions per field (with APIID)
+//     const expressionsWithApi = group.arrayGroup.map((item: any) => {
+//       const field = item.fieldName?.value;
+//       const operator =
+//         typeof item.expression === "object"
+//           ? item.expression.value
+//           : item.expression;
+//       const value = item.fieldValue;
+
+//       const expressionObj = {
+//         [conditionOp]: [
+//           {
+//             [field]: {
+//               [operator]: isNaN(value) ? value : Number(value)
+//             }
+//           }
+//         ]
+//       };
+
+//       return {
+//         APIID: item.apiName.value,  
+//         Expression: expressionObj
+//       };
+//     });
+
+//     return {
+//       ProjectId: group.projId,
+//       ProjectName: group.projName,
+//       Rule: expressionsWithApi
+//     };
+//   });
+// }
+
+buildProjectExpressions(formValue: any) {
+  return formValue.groups.map((group: any, index: number) => {
+    const conditionOp = "$" + (group.condition?.value?.toLowerCase());   // Rule-level
+    // const conditionOp2 = "$" + (group.condition2?.value?.toLowerCase());
+    
+        const conditionOp2 = index === 0 
+      ? "$and" 
+      : "$" + (group.condition2?.value?.toLowerCase());
 
     // Build expressions per field (with APIID)
     const expressionsWithApi = group.arrayGroup.map((item: any) => {
@@ -572,29 +614,36 @@ export class RuleConfigComponent implements OnInit {
           : item.expression;
       const value = item.fieldValue;
 
-      const expressionObj = {
-        [conditionOp]: [
-          {
-            [field]: {
-              [operator]: isNaN(value) ? value : Number(value)
-            }
-          }
-        ]
-      };
-
       return {
-        APIID: item.apiName.value,  
-        Expression: expressionObj
+        APIID: item.apiName.value,
+        Expression: {
+          [field]: {
+            [operator]: isNaN(value) ? value : Number(value),
+          },
+        },
       };
     });
 
-    return {
+    // Wrap Rule with condition (condition = and/or)
+    const ruleBlock = {
+      [conditionOp]: expressionsWithApi,
+    };
+
+    // Project block with Rule
+    const projectBlock = {
       ProjectId: group.projId,
       ProjectName: group.projName,
-      Rule: expressionsWithApi
+      Rule: [ruleBlock],
+    };
+
+    // Wrap project with condition2 (condition2 = and/or)
+    return {
+      [conditionOp2]: [projectBlock],
     };
   });
 }
+
+
 
 
 
@@ -902,6 +951,8 @@ console.log('Generated Cron:', cron);
       projName: [selectedProject.name],
       selectedMainExpression: [''],
       condition: [{ value: '' }],
+      condition2: [{ value: '' }],
+
       arrayGroup: this._formBuilder.array([]),
     });
 
