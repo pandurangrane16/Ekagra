@@ -792,25 +792,73 @@ buildProjectExpressions(formValue: any) {
 
 // }
 
+// patch_expression(ruleExpression: string) {
+//   try {
+//     const parsed = JSON.parse(ruleExpression);
+
+//     parsed.forEach((projectWrapper: any) => {
+    
+//       const condition2Key = Object.keys(projectWrapper)[0];
+//       const project = projectWrapper[condition2Key][0]; 
+
+//       const selectedProject = {
+//         value: project.ProjectId,
+//         name: project.ProjectName
+//       };
+
+    
+//       this.createGroup(selectedProject);
+//       const idx = this.groupsFormArray.length - 1;
+
+//           // Patch project-level dropdown (condition2)
+//       const group = this.groupsFormArray.at(idx) as FormGroup;
+//       const condition2Option = this.conditionSelectSettings.options.find(
+//         (opt: any) => opt.name.toUpperCase() === condition2Key.replace('$', '').toUpperCase()
+//       );
+
+//       if (condition2Option) {
+//         group.patchValue({ condition2: condition2Option });
+//       }
+
+     
+//       this.getApi(project, idx);
+//     });
+
+//     console.log("Parsed Rule Expression:", parsed);
+//     return parsed;
+
+//   } catch (error) {
+//     console.error("Error parsing rule expression:", error);
+//     return null;
+//   }
+// }
+
+
+
 patch_expression(ruleExpression: string) {
   try {
     const parsed = JSON.parse(ruleExpression);
+    let index = 0;
 
-    parsed.forEach((projectWrapper: any) => {
-    
+    const processNext = () => {
+      if (index >= parsed.length) {
+        console.log("Parsed Rule Expression:", parsed);
+        return;
+      }
+
+      const projectWrapper = parsed[index];
       const condition2Key = Object.keys(projectWrapper)[0];
-      const project = projectWrapper[condition2Key][0]; 
+      const project = projectWrapper[condition2Key][0];
 
       const selectedProject = {
         value: project.ProjectId,
         name: project.ProjectName
       };
 
-    
       this.createGroup(selectedProject);
       const idx = this.groupsFormArray.length - 1;
 
-          // Patch project-level dropdown (condition2)
+      // Patch project-level dropdown (condition2)
       const group = this.groupsFormArray.at(idx) as FormGroup;
       const condition2Option = this.conditionSelectSettings.options.find(
         (opt: any) => opt.name.toUpperCase() === condition2Key.replace('$', '').toUpperCase()
@@ -820,11 +868,15 @@ patch_expression(ruleExpression: string) {
         group.patchValue({ condition2: condition2Option });
       }
 
-     
-      this.getApi(project, idx);
-    });
+      // Call getApi and pass processNext as the callback
+      this.getApi(project, idx, () => {
+        index++;
+        processNext(); // move to next project only after API call finishes
+      });
+    };
 
-    console.log("Parsed Rule Expression:", parsed);
+    processNext(); // start processing
+
     return parsed;
 
   } catch (error) {
@@ -832,6 +884,7 @@ patch_expression(ruleExpression: string) {
     return null;
   }
 }
+
 
 createGroup(selectedProject: any) {
     let len = this.secondFormGroup.controls['groups'].length;
@@ -1097,7 +1150,254 @@ console.log('Generated Cron:', cron);
 //   }
 
 
-  getApi(selectedProject: any, groupIndex: number) {
+//   getApi(selectedProject: any, groupIndex: number) {
+//   this.apiOption = false;
+
+//   this.ruleService.GetApis(selectedProject.ProjectId)
+//     .pipe(withLoader(this.loaderService))
+//     .subscribe((response: any) => {
+//       const items = response?.result || [];
+
+//       const projectOptions = items.map((item: any) => ({
+//         name: item.apiName,
+//         value: item.id,
+//         projectid: item.projectId
+//       }));
+
+//       const settings = {
+//         singleSelection: true,
+//         idField: 'id',
+//         textField: 'text',
+//         allowSearchFilter: true,
+//         labelHeader: 'API Name*',
+//         lableClass: 'form-label',
+//         formFieldClass: '',
+//         appearance: 'outline',
+//         options: projectOptions
+//       };
+
+//       const exprArray = this.getExpressionGroup(groupIndex);
+
+//       // Loop over each Rule block ($and/$or)
+//       selectedProject.Rule.forEach((ruleBlock: any) => {
+//         const conditionKey = Object.keys(ruleBlock)[0]; // "$and" / "$or"
+//         const expressions = ruleBlock[conditionKey];
+
+//         // Patch rule-level condition dropdown
+//         const group = this.groupsFormArray.at(groupIndex) as FormGroup;
+//         const conditionOption = this.conditionSelectSettings.options.find(
+//           (opt: any) => opt.name.toUpperCase() === conditionKey.replace('$', '').toUpperCase()
+//         );
+//         if (conditionOption) {
+//           group.patchValue({ condition: conditionOption });
+//         }
+
+//         // Loop over each expression inside the rule
+//         expressions.forEach((expr: any, i: number) => {
+//           let exprControl: FormGroup;
+
+//           if (exprArray.length > i) {
+//             exprControl = exprArray.at(i) as FormGroup;
+//           } else {
+//             exprControl = this.createFormArrayGroup();
+//             exprArray.push(exprControl);
+//           }
+
+//           // Patch API dropdown settings
+//           exprControl.patchValue({ apiSettings: settings });
+
+//           const apiOptions = settings?.options || [];
+//           const selectedApi = apiOptions.find((opt: any) => opt.value === expr.APIID);
+//           if (selectedApi) {
+//             exprControl.patchValue({ apiName: selectedApi });
+//           }
+
+
+
+
+
+
+
+
+          
+
+//               this.fieldOption = false;
+//     const value = selectedApi?.value;
+//     this.ruleService.Getfields(value).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
+//       const items = response?.result || [];
+//       if (items.length === 0) {
+
+//         this.toast.error('No mapped API fields found, please select some other API.');
+//         const rowGroup = (this.getExpressionGroup(groupIndex).at(i) as FormGroup);
+//         rowGroup.get('fieldOption')?.setValue(false);
+//         return;
+//       }
+
+//       else {
+//         const projectOptions = items.map((item: any) => ({
+//           id: item.id,
+//           name: item.apiField,
+//           value: item.apiField,
+//           type: item.fieldType,
+
+//         }));
+
+
+//         // Get the specific row's FormGroup
+//         const rowGroup = (this.getExpressionGroup(groupIndex).at(i) as FormGroup);
+
+
+//         // Reset the expression value
+//         rowGroup.get('fieldName')?.setValue(null);
+
+
+//         // Set options only for this row
+//         rowGroup.get('fieldSettings')?.setValue({
+//           options: projectOptions,
+//           singleSelection: true,
+//           idField: 'id',
+//           textField: 'text',
+//           allowSearchFilter: true,
+//           labelHeader: 'Field Name*',
+//           lableClass: 'form-label',
+//           formFieldClass: '',
+//           appearance: 'outline',
+
+//         });
+
+//         setTimeout(() => {
+
+//           rowGroup.get('fieldOption')?.setValue(true);
+
+//         });
+//       }
+
+//     }, error => {
+//       console.error('Error fetching fields', error);
+//     });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//          // this.onApiChange(selectedApi, groupIndex, i);
+
+//           // Patch field, operator, value
+//           setTimeout(() => {
+//             const fieldOptions = exprControl.get('fieldSettings')?.value?.options || [];
+//             const fieldNameFromRule = Object.keys(expr.Expression)[0];
+//             const operator = Object.keys(expr.Expression[fieldNameFromRule])[0];
+//             const value = expr.Expression[fieldNameFromRule][operator];
+
+//             const selectedField = fieldOptions.find((f: any) => f.value === fieldNameFromRule);
+//             if (selectedField) {
+//               exprControl.patchValue({ fieldName: selectedField });
+
+
+
+
+
+
+
+
+
+
+//                   this.expOption = false;
+//     const fieldType = selectedField?.type;
+
+//     if (fieldType) {
+//       const operators = this.typeOperatorMap[fieldType] || [];
+
+//       // Get the specific row's FormGroup
+//       const rowGroup = (this.getExpressionGroup(groupIndex).at(i) as FormGroup);
+
+
+//       // Reset the expression value
+//       rowGroup.get('expression')?.setValue(null);
+
+ 
+//   // Set options only for this row
+//     rowGroup.get('expressionSettings')?.setValue({
+//       options: operators,
+//       singleSelection: true,
+//           idField: 'id',
+//           textField: 'text',
+//           allowSearchFilter: true,
+//           labelHeader: 'Expression*',
+//           lableClass: 'form-label',
+//           formFieldClass: '',
+//           appearance: 'outline',
+
+//       });
+//       setTimeout(() => {
+//         rowGroup.get('expOption')?.setValue(true);
+//       });
+//     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//              // this.onFieldChange(selectedField, groupIndex, i);
+
+
+//               setTimeout(() => {
+//                 const exprOptions = exprControl.get('expressionSettings')?.value?.options || [];
+//                 const selectedExpression = exprOptions.find((op: any) => op.value === operator);
+
+//                 if (selectedExpression) {
+//                   exprControl.patchValue({
+//                     expression: selectedExpression,
+//                     fieldValue: value
+//                   });
+//                 }
+//               }, 10);
+//             }
+//           }, 10);
+//         });
+//       });
+
+//       this.apiOption = true;
+//     });
+// }
+
+getApi(selectedProject: any, groupIndex: number, callback?: () => void) {
   this.apiOption = false;
 
   this.ruleService.GetApis(selectedProject.ProjectId)
@@ -1126,7 +1426,7 @@ console.log('Generated Cron:', cron);
       const exprArray = this.getExpressionGroup(groupIndex);
 
       // Loop over each Rule block ($and/$or)
-      selectedProject.Rule.forEach((ruleBlock: any) => {
+      selectedProject.Rule.forEach((ruleBlock: any, ruleIndex: number) => {
         const conditionKey = Object.keys(ruleBlock)[0]; // "$and" / "$or"
         const expressions = ruleBlock[conditionKey];
 
@@ -1159,39 +1459,107 @@ console.log('Generated Cron:', cron);
             exprControl.patchValue({ apiName: selectedApi });
           }
 
-          this.onApiChange(selectedApi, groupIndex, i);
+          // Fetch fields for selected API
+          this.fieldOption = false;
+          const value = selectedApi?.value;
+          this.ruleService.Getfields(value)
+            .pipe(withLoader(this.loaderService))
+            .subscribe((fieldResp: any) => {
+              const items = fieldResp?.result || [];
 
-          // Patch field, operator, value
-          setTimeout(() => {
-            const fieldOptions = exprControl.get('fieldSettings')?.value?.options || [];
-            const fieldNameFromRule = Object.keys(expr.Expression)[0];
-            const operator = Object.keys(expr.Expression[fieldNameFromRule])[0];
-            const value = expr.Expression[fieldNameFromRule][operator];
+              const rowGroup = this.getExpressionGroup(groupIndex).at(i) as FormGroup;
 
-            const selectedField = fieldOptions.find((f: any) => f.value === fieldNameFromRule);
-            if (selectedField) {
-              exprControl.patchValue({ fieldName: selectedField });
-              this.onFieldChange(selectedField, groupIndex, i);
+              if (items.length === 0) {
+                this.toast.error('No mapped API fields found, please select some other API.');
+                rowGroup.get('fieldOption')?.setValue(false);
+                return;
+              }
+
+              const projectOptions = items.map((item: any) => ({
+                id: item.id,
+                name: item.apiField,
+                value: item.apiField,
+                type: item.fieldType
+              }));
+
+              // Reset field and patch options
+              rowGroup.get('fieldName')?.setValue(null);
+              rowGroup.get('fieldSettings')?.setValue({
+                options: projectOptions,
+                singleSelection: true,
+                idField: 'id',
+                textField: 'text',
+                allowSearchFilter: true,
+                labelHeader: 'Field Name*',
+                lableClass: 'form-label',
+                formFieldClass: '',
+                appearance: 'outline'
+              });
 
               setTimeout(() => {
-                const exprOptions = exprControl.get('expressionSettings')?.value?.options || [];
-                const selectedExpression = exprOptions.find((op: any) => op.value === operator);
+                rowGroup.get('fieldOption')?.setValue(true);
+              });
 
-                if (selectedExpression) {
-                  exprControl.patchValue({
-                    expression: selectedExpression,
-                    fieldValue: value
-                  });
+              // Patch expression operator and value
+              setTimeout(() => {
+                const fieldOptions = exprControl.get('fieldSettings')?.value?.options || [];
+                const fieldNameFromRule = Object.keys(expr.Expression)[0];
+                const operator = Object.keys(expr.Expression[fieldNameFromRule])[0];
+                const value = expr.Expression[fieldNameFromRule][operator];
+
+                const selectedField = fieldOptions.find((f: any) => f.value === fieldNameFromRule);
+                if (selectedField) {
+                  exprControl.patchValue({ fieldName: selectedField });
+
+                  const fieldType = selectedField?.type;
+                  if (fieldType) {
+                    const operators = this.typeOperatorMap[fieldType] || [];
+
+                    rowGroup.get('expression')?.setValue(null);
+                    rowGroup.get('expressionSettings')?.setValue({
+                      options: operators,
+                      singleSelection: true,
+                      idField: 'id',
+                      textField: 'text',
+                      allowSearchFilter: true,
+                      labelHeader: 'Expression*',
+                      lableClass: 'form-label',
+                      formFieldClass: '',
+                      appearance: 'outline'
+                    });
+
+                    setTimeout(() => {
+                      rowGroup.get('expOption')?.setValue(true);
+                    });
+                  }
+
+                  setTimeout(() => {
+                    const exprOptions = exprControl.get('expressionSettings')?.value?.options || [];
+                    const selectedExpression = exprOptions.find((op: any) => op.value === operator);
+
+                    if (selectedExpression) {
+                      exprControl.patchValue({
+                        expression: selectedExpression,
+                        fieldValue: value
+                      });
+                    }
+                  }, 10);
                 }
-              }, 3000);
-            }
-          }, 3000);
+              }, 10);
+            });
         });
       });
 
       this.apiOption = true;
+
+      // ✅ Call callback after finishing getApi for this project
+      if (callback) callback();
+    }, (err) => {
+      console.error('Error fetching APIs', err);
+      if (callback) callback(); // continue even on error
     });
 }
+
 
 
    getApi_create(selectedProject: any, groupIndex: number) {
@@ -1318,36 +1686,68 @@ console.log('Generated Cron:', cron);
       console.error('Error fetching project list', error);
     });
   }
-  goNext() {
+  // goNext() {
 
-    console.log("2", this.secondFormGroup.value)
-    console.log('Third form group value/status:', this.secondFormGroup);
+  //   console.log("2", this.secondFormGroup.value)
+  //   console.log('Third form group value/status:', this.secondFormGroup);
+
+  //   if (this.currentStep === 0 && this.firstFormGroup.invalid) {
+  //     this.toast.error('Please select all the values.');
+  //     this.firstFormGroup.markAllAsTouched();
+
+  //     return;
+  //   }
+  //   else {
+  //     if (this.currentStep === 1 && this.secondFormGroup.invalid) {
+  //       this.toast.error('Please select all the values.');
+  //       this.firstFormGroup.markAllAsTouched();
+
+  //       return;
+  //     }
+  //     else {
+  //       if (this.currentStep < this.steps.length - 1) {
+  //         this.currentStep++;
+  //       }
+  //     }
+
+
+
+
+  //   }
+
+  // }
+
+  goNext() {
+  // Show loader
+  this.loaderService.showLoader();
+
+  setTimeout(() => {
+    console.log("Second form group value:", this.secondFormGroup.value);
+    console.log('Second form group status:', this.secondFormGroup.status);
 
     if (this.currentStep === 0 && this.firstFormGroup.invalid) {
       this.toast.error('Please select all the values.');
       this.firstFormGroup.markAllAsTouched();
-
+      this.loaderService.hideLoader(); // hide loader
+      return;
+    }
+    else if (this.currentStep === 1 && this.secondFormGroup.invalid) {
+      this.toast.error('Please select all the values.');
+      this.secondFormGroup.markAllAsTouched();
+      this.loaderService.hideLoader(); // hide loader
       return;
     }
     else {
-      if (this.currentStep === 1 && this.secondFormGroup.invalid) {
-        this.toast.error('Please select all the values.');
-        this.firstFormGroup.markAllAsTouched();
-
-        return;
+      if (this.currentStep < this.steps.length - 1) {
+        this.currentStep++;
       }
-      else {
-        if (this.currentStep < this.steps.length - 1) {
-          this.currentStep++;
-        }
-      }
-
-
-
-
     }
 
-  }
+    // Hide loader after processing
+    this.loaderService.hideLoader();
+  }, 500); // Loader visible for 500ms
+}
+
 
   goBack() {
     if (this.currentStep > 0) {
