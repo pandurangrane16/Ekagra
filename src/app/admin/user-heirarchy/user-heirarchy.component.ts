@@ -43,7 +43,7 @@ processedItems: any[] = [];
   onManagerSelected(evt: any) { }
   onPageChange(evt: any) { }
   onRowClicked(evt: any) { }
-  onButtonClicked(evt: any) { }
+
   onPageRecordsChange(evt: any) { }
   items: any;
   headArr: any;
@@ -90,11 +90,48 @@ processedItems: any[] = [];
           this.headArr = [
             { header: 'Employee Name', fieldValue: 'employee', position: 1 },
             { header: 'Manager Name', fieldValue: 'manager', position: 2 },
+            { header: 'Action', fieldValue: 'button', position: 3 }
        
           ];
           ;}
 
-        
+        onButtonClicked({ event, data }: { event: any; data: any }) {
+  if (event.type === 'edit') {
+   // this.editRow(data);
+   // console.log(data);
+  } else if (event.type === 'delete') {
+    this.deleteRow(data);
+  }
+}    
+deleteRow(data: any) {
+  const empId = data.employeeId;
+  const model = {
+    employeeId: empId,  
+    managerId: null     
+  };
+
+  this.service.Update(empId, model)
+    .pipe(withLoader(this.loaderService))
+    .subscribe({
+      next: (res: any) => {
+        console.log(`Deleted ${empId} successfully`);
+        this.toast.success(`Record ${empId} deleted successfully.`);
+        this.getFilteredList();
+        this.form.reset();
+        this.form.markAsPristine();
+        this.form.markAsUntouched();
+      },
+      error: (err) => {
+        console.error('Error deleting record:', err);
+        this.toast.error('Failed to delete the data. Please try again.');
+        this.getFilteredList();
+        this.form.reset();
+        this.form.markAsPristine();
+        this.form.markAsUntouched();
+      }
+    });
+}
+
  getFilteredList() {
     // const selectedProjectId = this.form.controls['selectedProject'].value.value;
     
@@ -104,9 +141,13 @@ processedItems: any[] = [];
     //   this.recordPerPage=this.perPage;
  
     this.service.GetList().pipe(withLoader(this.loaderService)).subscribe((response: any) => {
-  const items = response?.result || []; 
+  let items2 = response?.result || []; 
+  
+  let items = items2.filter((element: any) => element.managerId !== null);
+
+
   this.items = items;
-  this.processedItems=items;
+  this.processedItems=items2;
   console.log( "Processed Items:", this.processedItems)
    console.log( "Response:", response)
 
@@ -116,7 +157,7 @@ processedItems: any[] = [];
       element.manager = element.managerName || null; 
 
       element.button = [
-        { label: 'Edit', icon: 'edit', type: 'edit' },
+       
         { label: 'Delete', icon: 'delete', type: 'delete' }
       ];
     });
