@@ -234,64 +234,64 @@ onSubmit() {
 
       let managerRecord = this.processedItems.find((x: any) => x.employeeId === managerId);
 
-      const createOrUpdate = (empId: any, mgrId: any) => {
-        const record = this.processedItems.find((x: any) => x.employeeId === empId);
-        const model: userhierarchymodel = { employeeId: empId, managerId: mgrId };
+   const createOrUpdate = (empId: any, mgrId: any) => {
+  const record = this.processedItems.find((x: any) => x.employeeId === empId);
+  const model: userhierarchymodel = { employeeId: empId, managerId: mgrId };
 
-        if (!record) {
-          // Create new record
-          this.service.Create(model)
-            .pipe(withLoader(this.loaderService))
-            .subscribe({
-              next: (res: any) => {
-                console.log(`Created ${empId} -> ${mgrId}`);
-                this.toast.success(`Record ${empId} -> ${mgrId} created successfully.`);
-                this.getFilteredList();
-                  this.form.reset();
-
-
-  this.form.markAsPristine();
-  this.form.markAsUntouched();
-              },
-              error: (err) => {
-                console.error('Error creating record:', err);
-                this.toast.error('Failed to save record. Please try again.');
-                    this.getFilteredList();
-                  this.form.reset();
-
-  // If your dropdowns need to be reset to default values:
-  this.form.markAsPristine();
-  this.form.markAsUntouched();
-              }
-            });
-        } else if (record.managerId !== mgrId) {
-          // Update existing record
-          this.service.Update(empId, model) 
-            .pipe(withLoader(this.loaderService))
-            .subscribe({
-              next: (res: any) => {
-                console.log(`Updated ${empId} -> ${mgrId}`);
-                this.toast.success(`Record ${empId} -> ${mgrId} updated successfully.`);
-                this.getFilteredList();
-                  this.form.reset();
-
-  // If your dropdowns need to be reset to default values:
-  this.form.markAsPristine();
-  this.form.markAsUntouched();
-              },
-              error: (err) => {
-                console.error('Error updating record:', err);
-                this.toast.error('Failed to update record. Please try again.');
-                this.getFilteredList();
-                  this.form.reset();
-
-  // If your dropdowns need to be reset to default values:
-  this.form.markAsPristine();
-  this.form.markAsUntouched();
-              }
-            });
+  if (!record) {
+    // Create new record
+    this.service.Create(model)
+      .pipe(withLoader(this.loaderService))
+      .subscribe({
+        next: (res: any) => {
+          console.log(`Created ${empId} -> ${mgrId}`);
+          this.toast.success(`Record ${empId} -> ${mgrId} created successfully.`);
+          this.getFilteredList();
+          this.form.reset();
+          this.form.markAsPristine();
+          this.form.markAsUntouched();
+        },
+        error: (err) => {
+          console.error('Error creating record:', err);
+          this.toast.error('Failed to save record. Please try again.');
+          this.getFilteredList();
+          this.form.reset();
+          this.form.markAsPristine();
+          this.form.markAsUntouched();
         }
-      };
+      });
+  } else if (record.managerId !== mgrId) {
+    // Update existing record
+    this.service.Update(empId, model) 
+      .pipe(withLoader(this.loaderService))
+      .subscribe({
+        next: (res: any) => {
+          console.log(`Updated ${empId} -> ${mgrId}`);
+          this.toast.success(`Record ${empId} -> ${mgrId} updated successfully.`);
+          this.getFilteredList();
+          this.form.reset();
+          this.form.markAsPristine();
+          this.form.markAsUntouched();
+        },
+        error: (err) => {
+          console.error('Error updating record:', err);
+          this.toast.error('Failed to update record. Please try again.');
+          this.getFilteredList();
+          this.form.reset();
+          this.form.markAsPristine();
+          this.form.markAsUntouched();
+        }
+      });
+  } else {
+    // Record already exists with the same manager
+    console.log(`Record ${empId} -> ${mgrId} already exists. No action taken.`);
+    this.toast.error(`Record ${empId} -> ${mgrId} already exists. No changes made.`);
+    this.form.reset();
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
+  }
+};
+
 
       if (!managerRecord) {
       

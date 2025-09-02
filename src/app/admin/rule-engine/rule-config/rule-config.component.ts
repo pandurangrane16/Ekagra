@@ -374,7 +374,7 @@ export class RuleConfigComponent implements OnInit {
       selectedCategory: ['', Validators.required],
       selectedUserGroup: ['', Validators.required],
       intervalTime: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
-      isActive: [false, Validators.required],
+      isActive: [true, Validators.required],
       isinternal: [false, Validators.required]
     });
     this.getProjList();
