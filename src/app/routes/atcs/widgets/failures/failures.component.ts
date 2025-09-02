@@ -1,4 +1,4 @@
-import { OnInit, Component,inject, ElementRef, Renderer2, ViewChild } from '@angular/core';
+import { OnInit, Input,Component,OnChanges,inject, SimpleChanges,ElementRef, Renderer2, ViewChild } from '@angular/core';
 import { HighchartsChartModule } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
 import { CommonModule } from '@angular/common';
@@ -12,9 +12,13 @@ import { withLoader } from '../../../../services/common/common';
     templateUrl: './failures.component.html',
     styleUrl: './failures.component.css'
 })
-export class FailuresComponent implements OnInit {
+export class FailuresComponent implements OnInit,OnChanges {
 
   loaderService=inject(LoaderService)
+
+  
+    @Input() fromDate!: Date | null;
+  @Input() toDate!: Date | null;
   @ViewChild('customLegend')
   customLegend!: ElementRef;
   constructor(private renderer: Renderer2, private el: ElementRef, private service:atcsDashboardservice) {}
@@ -127,24 +131,44 @@ Highcharts: typeof Highcharts = Highcharts;
 
   this.fetchFailureData();
 }
+      ngOnChanges(changes: SimpleChanges): void {
+    // This will fire whenever parent updates fromDate or toDate
+    if ((changes['fromDate'] || changes['toDate']) && this.fromDate && this.toDate) {
+        this.fetchFailureData();
+    }
+  }
 
 
 fetchFailureData(): void {
-    const fromDate = '2025-07-10 00:00:00';
-    const toDate = '2025-07-18 00:00:00';
+    // const fromDate = '2025-07-10 00:00:00';
+    // const toDate = '2025-07-18 00:00:00';
+
+
+    
+      const fromDate = this.fromDate ? this.fromDate.toISOString() : '';
+    const toDate   = this.toDate ? this.toDate.toISOString() : '';
+
+    
 
     this.service.getFailureData(fromDate, toDate).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
       const rawData = response.result || [];
 
       const colors = ['#344BFD', '#66CC66', '#53CEE7', '#FFD200', '#FC4F64', '#FF5733', '#C70039', '#900C3F', '#581845', '#1ABC9C', '#2ECC71'];
+      
+      
+      
+      
       const formattedData = rawData.map((item: any, index: number) => ({
         name: item.AlertTitle,
         y: item.Issues,
         color: colors[index % colors.length]
       }));
-  this.jsonData = {
-    data: formattedData  
-   };
+
+
+
+
+
+      this.jsonData = { data: [...formattedData] };
 
 //      this.chartOptions = {
 //     chart: {
@@ -234,12 +258,22 @@ fetchFailureData(): void {
 //   }
 //   };
 
-  this.chartOptions.series = [{
-    type: 'column',
-    data: this.jsonData.data
-  }];
 
-  this.updateFlag = true; 
+
+      // Replace the series reference completely to force Highcharts update
+      this.chartOptions = {
+        ...this.chartOptions,  // keep all existing options
+        series: [{
+          type: 'column',
+          data: [...formattedData]  // new array reference
+        }]
+      };
+  // this.chartOptions.series = [{
+  //   type: 'column',
+  //   data: this.jsonData.data
+  // }];
+
+  // this.updateFlag = true; 
 
    this.updateFlag = true;
    

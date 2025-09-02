@@ -42,6 +42,8 @@ export class AtcsComponent {
   islabel: boolean = false;
   basepath: any;
   id: any;
+  startDate: Date | null = null;
+endDate: Date | null = null;
 
 
 
@@ -191,10 +193,17 @@ export class AtcsComponent {
     document.body.classList.toggle('fullscreenDiv');
   }
 
+
+
   DateWiseFilter(evtData: any, category: string) {
     if (category == "start")
+{
+       this.startDate = evtData.value;
       console.log("Start Date : " + evtData.value);
-    else
+}  
+    else{
+       this.endDate = evtData.value;
       console.log("End Date : " + evtData.value);
+    }
   }
 }

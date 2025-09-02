@@ -1,4 +1,4 @@
-import { OnInit, Component, ElementRef, Renderer2, ViewChild, inject } from '@angular/core';
+import { OnInit, Input,Component,OnChanges, SimpleChanges,ElementRef, Renderer2, ViewChild, inject } from '@angular/core';
 import { HighchartsChartModule } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
 import { CommonModule } from '@angular/common';
@@ -12,8 +12,14 @@ import { atcsDashboardservice } from '../../../../services/atcs/atcsdashboard.se
     templateUrl: './zonal.component.html',
     styleUrl: './zonal.component.css'
 })
-export class ZonalComponent implements OnInit {
+export class ZonalComponent implements OnInit, OnChanges {
 
+
+    @Input() fromDate!: Date | null;
+  @Input() toDate!: Date | null;
+
+
+  
   loaderService=inject(LoaderService)
 
   @ViewChild('customLegend')
@@ -119,12 +125,26 @@ Highcharts: typeof Highcharts = Highcharts;
           }
       }]
   }
+
+
+  
   };
+
+    ngOnChanges(changes: SimpleChanges): void {
+    if ((changes['fromDate'] || changes['toDate']) && this.fromDate && this.toDate) {
+      this.getUnprocessedConnectedCtrlData();
+    }}
 
   getUnprocessedConnectedCtrlData(): void {
     const zoneNames = ['T1', 'T2', 'T3'];
-  const from = '2025-07-01 04:28:01.785';
-  const to = '2025-07-23 04:28:01.786';
+  // const from = '2025-07-01 04:28:01.785';
+  // const to = '2025-07-23 04:28:01.786';
+
+    const from = this.fromDate ? this.fromDate.toISOString() : '';
+  const to   = this.toDate ? this.toDate.toISOString() : '';
+
+  console.log("from",from);
+   console.log("to",to);
 
     this.service.getUnprocessedConnectedCtrlData(zoneNames,from, to).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
    const rawData = Object.values(response.result || {});
@@ -146,16 +166,26 @@ Highcharts: typeof Highcharts = Highcharts;
       y: +(count / total * 100).toFixed(2), // percentage with 2 decimal places
       color: colors[index % colors.length]
     }));
-  this.jsonData = {
-    data: formattedData  
-   };
+  this.jsonData = { data: [...formattedData] };
 
-     this.chartOptions.series = [{
-       type: 'pie',
-    innerSize: '50%',
+//      this.chartOptions.series = [{
+//        type: 'pie',
+//     innerSize: '50%',
+//     borderRadius: 0,
+//     data:this.jsonData.data,
+// }];
+
+
+
+    this.chartOptions = {
+        ...this.chartOptions,  // keep all existing options
+        series: [{
+          type: 'pie',
+            innerSize: '50%',
     borderRadius: 0,
-    data:this.jsonData.data,
-}];
+          data: [...formattedData]  // new array reference
+        }]
+      };
 
 
 

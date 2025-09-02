@@ -13,8 +13,12 @@ import { atcsDashboardservice } from '../../../../services/atcs/atcsdashboard.se
     styleUrl: './cycle.component.css'
 })
 export class CycleComponent implements OnInit {
+
+  
   loaderService=inject(LoaderService)
   @Input() junctionName!: string;
+      @Input() fromDate!: Date | null;
+  @Input() toDate!: Date | null;
   @ViewChild('customLegend')
   customLegend!: ElementRef;
   constructor(private renderer: Renderer2, private el: ElementRef,private service:atcsDashboardservice) {}
@@ -267,27 +271,35 @@ tooltip: {
   } 
       
   fetchCycleData(junctionId: string): void {
-        const fromDate = '2025-06-10 00:00:00';
-    const toDate = '2025-07-18 00:00:00';
-  this.service.getJunctioneData(2010,fromDate,toDate).pipe(withLoader(this.loaderService)).subscribe(
+    //     const fromDate = '2025-06-10 00:00:00';
+    // const toDate = '2025-07-18 00:00:00';
+
+        const fromDate = this.fromDate ? this.fromDate.toISOString() : '';
+    const toDate   = this.toDate ? this.toDate.toISOString() : '';
+
+  this.service.getJunctioneData(junctionId,fromDate,toDate).pipe(withLoader(this.loaderService)).subscribe(
     (res: any) => {
       
       const data = res?.result || []; 
-  this.jsonData.data = data
-  
-      this.chartOptions = {
-        ...this.chartOptions,
-        series: [{
-          type: 'area',
-          name: 'Cycle Time',
-          data: this.jsonData.data.map((item:any) => ({
-            name: item.sequenceNo,
-            y: Number(item.cycleTime),
-            sequenceNo: item.sequenceNo,
-            RTC: item.RTC
-          }))
-        }]
-      };
+        // Always create a new jsonData reference
+        this.jsonData = { data: [...data] };
+
+        // Update chartOptions with a new series array reference
+        this.chartOptions = {
+          ...this.chartOptions,
+          series: [{
+            type: 'area',
+            name: 'Cycle Time',
+            data: this.jsonData.data.map((item: any) => ({
+              name: item.sequenceNo,
+              y: Number(item.cycleTime),
+              sequenceNo: item.sequenceNo,
+              RTC: item.RTC
+            }))
+          }]
+        };
+
+        
       
 
    
@@ -305,6 +317,13 @@ tooltip: {
       console.log('Received junctionName:', this.junctionName);
       this.fetchCycleData(this.junctionName);
     }
+
+
+      // Detect fromDate or toDate change
+  if ((changes['fromDate'] || changes['toDate']) && this.fromDate && this.toDate) {
+    console.log('Date range changed:', this.fromDate, this.toDate);
+    this.fetchCycleData(this.junctionName,);
+  }
   }
 
 }

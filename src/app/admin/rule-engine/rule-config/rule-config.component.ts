@@ -734,6 +734,7 @@ console.log('Generated Cron:', cron);
           next: (res: any) => {
             console.log(res);
             this.toast.success('Rule Engine saved successfully.');
+            this.router.navigate(['/admin/ruleenginelist']);
           },
           error: (err) => {
             console.error('Error creating rule engine:', err);
