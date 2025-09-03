@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { LoaderService } from '../../../../services/common/loader.service';
 import { withLoader } from '../../../../services/common/common';
 import { atcsDashboardservice } from '../../../../services/atcs/atcsdashboard.service';
+import { SessionService } from '../../../../services/common/session.service';
 
 @Component({
     selector: 'app-zonal',
@@ -18,7 +19,7 @@ export class ZonalComponent implements OnInit, OnChanges {
     @Input() fromDate!: Date | null;
   @Input() toDate!: Date | null;
 
-
+ session = inject(SessionService);
   
   loaderService=inject(LoaderService)
 
@@ -32,6 +33,8 @@ public jsonData: { data: { name: string; y: number; color: string }[] } = {
   ]
 };
 updateFlag = false; 
+id:any;
+zoneNames :any;
 Highcharts: typeof Highcharts = Highcharts;
   chartOptions: Highcharts.Options = {
     chart: {
@@ -135,8 +138,25 @@ Highcharts: typeof Highcharts = Highcharts;
       this.getUnprocessedConnectedCtrlData();
     }}
 
+
+    fetchZoneNames(projectId: number): void {
+  this.service.GetZones(projectId).subscribe({
+    next: (res: any) => {
+      console.log('API Response:', res);
+
+    
+      this.zoneNames = res.result.map((zone: any) => zone.zoneName);
+      console.log(  "zoneNames",this.zoneNames)
+      this.getUnprocessedConnectedCtrlData();
+    },
+    error: (err: any) => {
+      console.error('Failed to fetch zones:', err);
+    }
+  });
+}
+
   getUnprocessedConnectedCtrlData(): void {
-    const zoneNames = ['T1', 'T2', 'T3'];
+  //  const zoneNames = ['T1', 'T2', 'T3'];
   // const from = '2025-07-01 04:28:01.785';
   // const to = '2025-07-23 04:28:01.786';
 
@@ -146,7 +166,7 @@ Highcharts: typeof Highcharts = Highcharts;
   console.log("from",from);
    console.log("to",to);
 
-    this.service.getUnprocessedConnectedCtrlData(zoneNames,from, to).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+    this.service.getUnprocessedConnectedCtrlData(this.zoneNames,from, to).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
    const rawData = Object.values(response.result || {});
 
     // Step 1: Count occurrences of each Status
@@ -198,7 +218,10 @@ Highcharts: typeof Highcharts = Highcharts;
   }
 
   ngOnInit(): void {
-   this.getUnprocessedConnectedCtrlData();
+
+     this.id = this.session._getSessionValue("projectIdRoute");
+   this.fetchZoneNames(this.id);
+   //this.getUnprocessedConnectedCtrlData();
   } 
 
 }

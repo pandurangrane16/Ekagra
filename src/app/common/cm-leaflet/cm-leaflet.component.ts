@@ -16,6 +16,7 @@ export class CmLeafletComponent implements OnInit {
   isBrowser = false;
 
   @Input() showMap: any;
+  @Input() enableDraw: boolean = true;
   @Input() existingPolygon: string | null = null;
   @Input() labelList: any[] = [];
   @Input() siteData: any[] = [];
@@ -59,7 +60,9 @@ markerMap: Map<string, any> = new Map();
       }).addTo(map);
 
       this.map = map;
-      this.addDrawControl();
+     if (this.enableDraw) {
+  this.addDrawControl();
+}
     }
 
     if (this.existingPolygon) {
