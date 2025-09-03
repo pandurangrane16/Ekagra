@@ -66,6 +66,7 @@ endDate: Date | null = null;
   ngOnInit(): void {
 
     this.id = this.session._getSessionValue("projectIdRoute");
+    console.log("projectIdRoute",this.id)
 
 
 
