@@ -24,6 +24,7 @@ import { ProjectFieldMapComponent } from "./project-field-map/project-field-map.
 import { UserHeirarchyComponent } from "./user-heirarchy/user-heirarchy.component";
 import { RuleEngineEditComponent } from "./rule-engine/rule-engine-edit/rule-engine-edit.component";
 import { CmQueryBuilderComponent } from "../common/cm-query-builder/cm-query-builder.component";
+import { SopflowComponent } from "./sopflow/sopflow.component";
 export const AdminRoutes: Routes = [
   {
     path: '',
@@ -276,6 +277,17 @@ export const AdminRoutes: Routes = [
       urls: [
         { title: 'User Heirarchy', url: '/admin/userheirarchy' },
         { title: 'Contact Configuration' }
+      ]
+    }
+  },
+  {
+    path: 'sopflow',
+    component: SopflowComponent,
+    data: {
+      title: 'SOP Process',
+      urls: [
+        { title: 'SOP Process', url: '/admin/sopflow' },
+        { title: 'SOP Process' }
       ]
     }
   }

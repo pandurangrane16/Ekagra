@@ -1,0 +1,43 @@
+.sop-card {
+    border-radius: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: linear-gradient(145deg, #f0f4ff, #ffffff);
+  
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0px 8px 20px rgba(0,0,0,0.15);
+    }
+  }
+  
+  .sop-avatar {
+    background-color: #3b82f6;
+    color: white;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+  
+  .sop-panel {
+    margin-top: 8px;
+    border-radius: 0.75rem !important;
+    overflow: hidden;
+  }
+  
+  .badge-auto {
+    background-color: #16a34a;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+  }
+  
+  .badge-manual {
+    background-color: #eab308;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+  }
+  
