@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component,Input,OnChanges, inject, SimpleChanges,OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
 import { AlertsService } from '../../../../services/alerts.service';
@@ -20,9 +20,13 @@ import { atcsDashboardservice } from '../../../../services/atcs/atcsdashboard.se
 
 
 
-export class NotificationComponent  implements OnInit {
+export class NotificationComponent  implements OnInit,OnChanges {
 
   alertsData: any[] = [];
+
+
+    @Input() fromDate!: Date | null;
+  @Input() toDate!: Date | null;
   
   constructor(private alertsService: AlertsService,private service:atcsDashboardservice) {}
   ngOnInit(): void {
@@ -33,9 +37,20 @@ export class NotificationComponent  implements OnInit {
 
     }
 
+      ngOnChanges(changes: SimpleChanges): void {
+    // This will fire whenever parent updates fromDate or toDate
+    if ((changes['fromDate'] || changes['toDate']) && this.fromDate && this.toDate) {
+      this.fetchAlerts();
+    }
+  }
+
   fetchAlerts(): void {
-      const from = '2025-07-01 04:28:01.785';
-  const to = '2025-07-23 04:28:01.786';
+
+  // const from = '2025-07-01 04:28:01.785';
+  // const to = '2025-07-23 04:28:01.786';
+
+      const from = this.fromDate ? this.fromDate.toISOString() : '';
+    const to   = this.toDate ? this.toDate.toISOString() : '';
     const defaultImg = 'assets/img/icon_user.png';
     this.service.getAlerts(from,to).subscribe({
       next: (data) => {

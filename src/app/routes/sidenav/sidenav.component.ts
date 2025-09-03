@@ -187,7 +187,7 @@ debugger;
           icon: './assets/img/icon_settings.svg',
           activeIcon: './assets/img/icon_settings1.svg',
           label: 'Rule Engine',
-          link: 'admin/ruleengine',
+          link: 'admin/ruleenginelist',
         },
         {
           icon: './assets/img/icon_settings.svg',

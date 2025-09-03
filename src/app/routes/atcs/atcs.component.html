@@ -22,7 +22,7 @@
     <div class="row">
         <div class="col-md-3">
             <h6 class="mb-0">Zonal Overview</h6>
-<app-zonal></app-zonal>
+<app-zonal [fromDate]="startDate" [toDate]="endDate"></app-zonal>
         </div>
         <div class="col-md-9"> 
              <app-cm-leaflet
@@ -32,6 +32,7 @@
                [labelList]="labelList"
                [popupData]="popupData"
                (markerClicked)="onMarkerClicked($event)"
+                [enableDraw]="false"
                
               >
              </app-cm-leaflet></div>
@@ -46,7 +47,9 @@
         <div class="card">
             <div class="card-body">
                 <h6>Alerts & Notification</h6>
-                <app-notification></app-notification>
+                <app-notification 
+                 [fromDate]="startDate"
+                 [toDate]="endDate"></app-notification>
             </div>
         </div>
     </div>
@@ -70,7 +73,7 @@
         <div class="card">
             <div class="card-body">
                 <h6><img src="assets/img/sign-Y.png" alt="" class="me-1">Failures in Functional Junctions</h6>
-                <app-failures></app-failures>
+                <app-failures   [fromDate]="startDate" [toDate]="endDate"></app-failures>
             </div>
         </div>
     </div>
@@ -90,7 +93,8 @@
                   </mat-form-field>
                   <!-- <div class="d-flex align-items-center justify-content-between" style="font-size: 13px;">  <mat-icon>arrow_back_ios</mat-icon>  {{ getSelectedJunctionName() }} <mat-icon>arrow_forward_ios</mat-icon>
        </div> -->
-                   <app-cycle [junctionName]="selectedJunction"></app-cycle>
+                   <app-cycle [junctionName]="selectedJunction"     [fromDate]="startDate"
+                 [toDate]="endDate"></app-cycle>
         </div>
         </div>
     </div>
