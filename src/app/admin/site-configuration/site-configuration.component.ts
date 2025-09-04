@@ -1,6 +1,6 @@
 
-import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Inject, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { CmTableComponent } from '../../common/cm-table/cm-table.component';
 import { CmSelectComponent } from '../../common/cm-select/cm-select.component';
 import { CmSelect2Component } from '../../common/cm-select2/cm-select2.component';
@@ -34,6 +34,8 @@ import { withLoader } from '../../services/common/common';
   styleUrl: './site-configuration.component.css'
 })
 export class SiteConfigurationComponent {
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
+  private destroyed = false;
   loaderService = inject(LoaderService);
   router = inject(Router);
   isProjectOptionsLoaded = false;
@@ -121,35 +123,39 @@ export class SiteConfigurationComponent {
 
 
   constructor(private fb: FormBuilder, private service: siteconfigservice
-    , private dialog: MatDialog
+    , private dialog: MatDialog,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) { }
   ngOnInit(): void {
-    this.form = this.fb.group({
-      selectedProject: [''],
-      selectedStatus: [''],
-      searchText: ['']
-    });
-    this.buildHeader();
-    this.getProjList();
-    this.getSiteConfigList();
+    if(this.isBrowser) {
+      this.form = this.fb.group({
+        selectedProject: [''],
+        selectedStatus: [''],
+        searchText: ['']
+      });
+      this.buildHeader();
+      this.getProjList();
+      this.getSiteConfigList();
+  
+       this.form.get('searchText')?.valueChanges
+         .pipe(
+           debounceTime(300), 
+           distinctUntilChanged() 
+         )
+         .subscribe(value => {
+              if (value && value.length >= 3) {
+                  this.pager=0;
+           this.perPage=10;
+           this.getFilteredList();
+         } else if (!value || value.length === 0) {
+            this.pager=0;
+           this.perPage=10;
+            this.getFilteredList();
+         }
+         });
+  
 
-     this.form.get('searchText')?.valueChanges
-       .pipe(
-         debounceTime(300), 
-         distinctUntilChanged() 
-       )
-       .subscribe(value => {
-            if (value && value.length >= 3) {
-                this.pager=0;
-         this.perPage=10;
-         this.getFilteredList();
-       } else if (!value || value.length === 0) {
-          this.pager=0;
-         this.perPage=10;
-          this.getFilteredList();
-       }
-       });
-
+    }
 
   }
   onPageChange(event: any) {
