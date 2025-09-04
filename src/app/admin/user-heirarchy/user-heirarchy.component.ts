@@ -20,7 +20,7 @@ export class UserHeirarchyComponent implements OnInit {
    loaderService = inject(LoaderService);
   headerArr: any;
      totalPages: number = 1;
-      pager: number = 1;
+      pager: number =0;
         MaxResultCount=10;
   SkipCount=0;
   perPage=10;
@@ -41,10 +41,10 @@ processedItems: any[] = [];
   openDialog() { }
   onUserTypeSelected(evt: any) { }
   onManagerSelected(evt: any) { }
-  onPageChange(evt: any) { }
+ 
   onRowClicked(evt: any) { }
 
-  onPageRecordsChange(evt: any) { }
+  
   items: any;
   headArr: any;
   collectionSize: any;
@@ -103,6 +103,21 @@ processedItems: any[] = [];
     this.deleteRow(data);
   }
 }    
+          onPageChange(event:any) {
+    console.log(event);
+  if (event.type === 'pageChange') {
+    this.pager = event.pageNo;
+  this.getFilteredList();
+  }
+}
+onPageRecordsChange(event:any ) {
+  console.log(event);
+  if (event.type === 'perPageChange') {
+    this.perPage = event.perPage;
+    this.pager = 0;
+    this.getFilteredList();
+  }
+}
 deleteRow(data: any) {
   const empId = data.employeeId;
   const model = {
@@ -133,15 +148,15 @@ deleteRow(data: any) {
 }
 
  getFilteredList() {
-    // const selectedProjectId = this.form.controls['selectedProject'].value.value;
+    //const selectedProjectId = this.form.controls['selectedProject'].value.value;
     
-    //  const search = this.form.controls['searchText'].value
-    //     this.MaxResultCount=this.perPage;
-    //   this.SkipCount=this.MaxResultCount*this.pager;
-    //   this.recordPerPage=this.perPage;
+    // const search = this.form.controls['searchText'].value
+        this.MaxResultCount=this.perPage;
+      this.SkipCount=this.MaxResultCount*this.pager;
+      this.recordPerPage=this.perPage;
  
-    this.service.GetList().pipe(withLoader(this.loaderService)).subscribe((response: any) => {
-  let items2 = response?.result || []; 
+    this.service.GetFilteredList(this.MaxResultCount,this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
+  let items2 = response.result?.items;
   
   let items = items2.filter((element: any) => element.managerId !== null);
 
@@ -149,8 +164,8 @@ deleteRow(data: any) {
   this.items = items;
   this.processedItems=items2;
   console.log( "Processed Items:", this.processedItems)
-   console.log( "Response:", response)
-
+  console.log( "Response:", response)    
+  const totalCount=response.result?.totalCount;
   if (Array.isArray(items)) {
     items.forEach((element: any) => {
       element.employee = element.employeeName;
@@ -163,7 +178,7 @@ deleteRow(data: any) {
     });
 
  
-    const totalCount = items.length;
+   // const totalCount = items.length;
 
     var _length = totalCount / Number(this.recordPerPage);
     if (_length > Math.floor(_length) && Math.floor(_length) != 0)
