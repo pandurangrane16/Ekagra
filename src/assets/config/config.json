@@ -59,5 +59,6 @@
             {"name" : "ecb","value" : "35"},
             {"name" : "envrn","value" : "36"},
             {"name" : "water scada","value" : "37"}
-        ]
+        ],
+        "FooterLine" : "Copyright © 2025 CMS Computers India Private Limited. , All rights reserved. v2.0.6"
     }
