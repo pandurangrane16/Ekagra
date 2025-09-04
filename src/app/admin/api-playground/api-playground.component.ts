@@ -182,6 +182,12 @@ apiTypeSettings = {
     this.createAuth();
     //this.();
   }
+
+//   trimControl(control: AbstractControl | null) {
+//   if (control && typeof control.value === 'string') {
+//     control.setValue(control.value.trim());
+//   }
+// }
   ngOnInit(): void {
     
 debugger;
@@ -608,9 +614,17 @@ group.get('qsInputType')?.valueChanges.subscribe((selectedOption: any) => {
 });
 
 group.get('qsValue')?.valueChanges.subscribe((selectedOption: any) => {
-  const selectedName = selectedOption?.name;
+  debugger;
+  console.log("value changed",selectedOption);
+    if (typeof selectedOption === 'string') {
+    // trim if user typed a raw string
+    const trimmed = selectedOption.trim();
+    if (trimmed !== selectedOption) {
+      group.get('qsValue')?.setValue(trimmed, { emitEvent: false });
+    }
+  }
 
- 
+  const selectedName = selectedOption?.name;
 
   if (selectedName === 'Guid') {
     this.qsSelectedType.options=this.GuidType;
