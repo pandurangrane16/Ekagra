@@ -31,30 +31,20 @@ export class UserHierarchyService {
     return this._httpService._getMethod('api/services/app/RuleEngine/GetActiveAPIListByProjectid?id='+id);
   }
    GetList() {
-    return this._httpService._getMethod('api/services/app/UserHierarchy/GetEmployeeManagerList');
+    return this._httpService._getMethod('api/services/app/UserHierarchy/GetAllUserHierachyMasterPage');
   }
  
 
 
   GetFilteredList(
-  ProjectId?: number,
-  filter?: string,
+
   maxResultCount?: number,
   skipCount?: number
 ) {
   let params: string[] = [];
 
-  if (ProjectId !== null && ProjectId !== undefined) {
-    params.push(`ProjectId=${ProjectId}`);
-  }
 
-  if (filter !== null && filter !== undefined && filter.trim() !== '') {
-    params.push(`Filter=${encodeURIComponent(filter)}`);
-  }
 
-  if (status !== null && status !== undefined) {
-    params.push(`IsActive=${status}`);
-  }
 
   if (maxResultCount !== null && maxResultCount !== undefined) {
     params.push(`MaxResultCount=${maxResultCount}`);
@@ -65,7 +55,7 @@ export class UserHierarchyService {
   }
 
   const queryString = params.length ? '?' + params.join('&') : '';
-  const url = `api/services/app/RuleEngine/GetAllRuleEnginePage${queryString}`;
+  const url = `api/services/app/UserHierarchy/GetAllUserHierachyMasterPage${queryString}`;
 
   return this._httpService._getMethod(url);
 }
