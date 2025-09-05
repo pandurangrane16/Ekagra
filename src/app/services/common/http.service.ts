@@ -23,7 +23,7 @@ export class HttpService {
  
   _configDataBS$ = new BehaviorSubject<any[]>([]);
   _configData$ = this._configDataBS$.asObservable();
-  public _api_url = '';
+  public _api_url : any;
   public _swagger_url = "";
 
 
@@ -69,20 +69,24 @@ export class HttpService {
   
 
   _postMethod(_object: any, _appendUrl: string, options?: any): Observable<any> {
+    this._api_url = this._sessionService._getSessionValue("api_url");
     return this.http.post(this._api_url + _appendUrl, _object, options);
   }
   
 
   _putMethod(_object: any, _appendUrl: string, options?: any): Observable<any> {
+    this._api_url = this._sessionService._getSessionValue("api_url");
     return this.http.put(this._api_url + _appendUrl, _object, options);
   }
 
   _getMethod(_appendUrl: string,header?:any): Observable<any> {
+    this._api_url = this._sessionService._getSessionValue("api_url");
     return this.http.get(this._api_url + _appendUrl,{headers:header});
   }
 
   
   _deleteMethod(_appendUrl: string, options?: any): Observable<any> {
+    this._api_url = this._sessionService._getSessionValue("api_url");
   return this.http.delete(this._api_url + _appendUrl, options);
 }
 
