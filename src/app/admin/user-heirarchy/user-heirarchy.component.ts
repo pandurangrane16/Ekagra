@@ -59,6 +59,8 @@ processedItems: any[] = [];
 
   ngOnInit(): void {
 
+    this.getList();
+
     this.getUserList();
   
       this.buildHeader();
@@ -132,6 +134,7 @@ deleteRow(data: any) {
         console.log(`Deleted ${empId} successfully`);
         this.toast.success(`Record ${empId} deleted successfully.`);
         this.getFilteredList();
+        this.getList();
         this.form.reset();
         this.form.markAsPristine();
         this.form.markAsUntouched();
@@ -140,13 +143,34 @@ deleteRow(data: any) {
         console.error('Error deleting record:', err);
         this.toast.error('Failed to delete the data. Please try again.');
         this.getFilteredList();
+        this.getList();
         this.form.reset();
         this.form.markAsPristine();
         this.form.markAsUntouched();
       }
     });
 }
+ getList() {
+    //const selectedProjectId = this.form.controls['selectedProject'].value.value;
+    
+    // const search = this.form.controls['searchText'].value
+        this.MaxResultCount=this.perPage;
+      this.SkipCount=this.MaxResultCount*this.pager;
+      this.recordPerPage=this.perPage;
+ 
+    this.service.GetAll().pipe(withLoader(this.loaderService)).subscribe((response: any) => {
+  let items2 = response.result?.items;
+  
+  //let items = items2.filter((element: any) => element.managerId !== null);
 
+
+//  this.items = items2;
+  this.processedItems=items2;
+  console.log("hi", this.processedItems)
+
+});
+
+    }  
  getFilteredList() {
     //const selectedProjectId = this.form.controls['selectedProject'].value.value;
     
@@ -162,8 +186,8 @@ deleteRow(data: any) {
 
 
   this.items = items;
-  this.processedItems=items2;
-  console.log( "Processed Items:", this.processedItems)
+ // this.processedItems=items2;
+  //console.log( "Processed Items:", this.processedItems)
   console.log( "Response:", response)    
   const totalCount=response.result?.totalCount;
   if (Array.isArray(items)) {
@@ -256,6 +280,8 @@ deleteRow(data: any) {
 // }
 
 onSubmit() {
+
+  console.log("hi2",this.processedItems)
   if (this.form.invalid) {
     this.toast.error('Please select all values.');
     return;
@@ -303,6 +329,7 @@ onSubmit() {
           console.log(`Created ${empId} -> ${mgrId}`);
           this.toast.success(`Record ${empId} -> ${mgrId} created successfully.`);
           this.getFilteredList();
+          this.getList();
           this.form.reset();
           this.form.markAsPristine();
           this.form.markAsUntouched();
@@ -311,6 +338,7 @@ onSubmit() {
           console.error('Error creating record:', err);
           this.toast.error('Failed to save record. Please try again.');
           this.getFilteredList();
+          this.getList();
           this.form.reset();
           this.form.markAsPristine();
           this.form.markAsUntouched();
@@ -324,6 +352,7 @@ onSubmit() {
         next: (res: any) => {
           console.log(`Updated ${empId} -> ${mgrId}`);
           this.toast.success(`Record ${empId} -> ${mgrId} updated successfully.`);
+          this.getList();
           this.getFilteredList();
           this.form.reset();
           this.form.markAsPristine();
@@ -332,6 +361,7 @@ onSubmit() {
         error: (err) => {
           console.error('Error updating record:', err);
           this.toast.error('Failed to update record. Please try again.');
+          this.getList();
           this.getFilteredList();
           this.form.reset();
           this.form.markAsPristine();
