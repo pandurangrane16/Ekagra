@@ -33,7 +33,29 @@ export class UserHierarchyService {
    GetList() {
     return this._httpService._getMethod('api/services/app/UserHierarchy/GetAllUserHierachyMasterPage');
   }
- 
+   GetAll(
+
+  maxResultCount?: number,
+  skipCount?: number
+) {
+  let params: string[] = [];
+
+
+
+
+  if (maxResultCount !== null && maxResultCount !== undefined) {
+    params.push(`MaxResultCount=${maxResultCount}`);
+  }
+
+  if (skipCount !== null && skipCount !== undefined) {
+    params.push(`SkipCount=${skipCount}`);
+  }
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/UserHierarchy/GetAllUserHierachyMasterPage${queryString}`;
+
+  return this._httpService._getMethod(url);
+}
 
 
   GetFilteredList(
@@ -55,7 +77,7 @@ export class UserHierarchyService {
   }
 
   const queryString = params.length ? '?' + params.join('&') : '';
-  const url = `api/services/app/UserHierarchy/GetAllUserHierachyMasterPage${queryString}`;
+  const url = `api/services/app/UserHierarchy/GetUserHierarchyExcludingNullManagers${queryString}`;
 
   return this._httpService._getMethod(url);
 }

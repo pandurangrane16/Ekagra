@@ -247,7 +247,7 @@ export class RuleEngineEditComponent implements OnInit {
     formFieldClass: '',
     appearance: 'outline',
     options: [
-      { name: 'Every Minute', value: '-' },
+      { name: 'Every Minute', value: '*' },
       ...Array.from({ length: 60 }, (_, i) => ({
         name: i.toString().padStart(2, '0'),
         value: i.toString()
@@ -261,7 +261,7 @@ export class RuleEngineEditComponent implements OnInit {
     formFieldClass: '',
     appearance: 'outline',
     options: [
-      { name: 'Every Hour', value: '-' },
+      { name: 'Every Hour', value: '*' },
       ...Array.from({ length: 24 }, (_, i) => ({
         name: i.toString().padStart(2, '0'),
         value: i.toString()
@@ -276,7 +276,7 @@ export class RuleEngineEditComponent implements OnInit {
     formFieldClass: '',
     appearance: 'outline',
     options: [
-      { name: 'Every Day', value: '-' },
+      { name: 'Every Day', value: '*' },
       ...Array.from({ length: 31 }, (_, i) => ({
         name: Number(i + 1).toString().padStart(2, '0'),
         value: Number(i + 1).toString()
@@ -291,7 +291,7 @@ export class RuleEngineEditComponent implements OnInit {
     formFieldClass: '',
     appearance: 'outline',
     options: [
-      { name: 'Every Month', value: '0' },
+      { name: 'Every Month', value: '*' },
       { name: 'January', value: '1' },
       { name: 'February', value: '2' },
       { name: 'March', value: '3' },
@@ -314,14 +314,14 @@ export class RuleEngineEditComponent implements OnInit {
     formFieldClass: '',
     appearance: 'outline',
     options: [
-      { name: 'Every Day Of Week', value: '0' },
-      { name: 'Monday', value: '1' },
-      { name: 'Tuesdat', value: '2' },
-      { name: 'Wednesday', value: '3' },
-      { name: 'Thursday', value: '4' },
-      { name: 'Friday', value: '5' },
-      { name: 'Saturday', value: '6' },
-      { name: 'Sunday', value: '7' },
+      { name: 'Every Day Of Week', value: '*' },
+      { name: 'Monday', value: '0' },
+      { name: 'Tuesdat', value: '1' },
+      { name: 'Wednesday', value: '2' },
+      { name: 'Thursday', value: '3' },
+      { name: 'Friday', value: '4' },
+      { name: 'Saturday', value: '5' },
+      { name: 'Sunday', value: '6' },
     ]
   }
 
