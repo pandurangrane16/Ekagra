@@ -1,0 +1,148 @@
+<div class="pageWrapper">
+<mat-card class="cardWithShadow theme-card">
+    <div class="row">
+  <mat-card-header>
+      <div class="col-md-11" style="padding-left: 40px;">
+        <mat-card-title><h2 style="margin-top: 10px;">SOP Configuration</h2></mat-card-title>
+      </div>
+      <div class="col text-right">
+       <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()">
+  <mat-icon>reply</mat-icon>
+</button>
+        
+      </div>
+  </mat-card-header>
+    </div>
+  <hr>
+  <mat-card-content class="b-t-1 scroll">
+
+    <form [formGroup]="form" class="form-container">
+        <div class="row">
+            <div class="col-md-6">
+                <label>Policy Name</label>
+                    <app-cm-select2  *ngIf="isPolicyOptionLoaded"
+                    [formGroup]="form"
+                    [controlName]="'name'"
+                    [settings]="PolicySettings"
+                    (optionSelected)="onProjectSelected($event)">
+                    </app-cm-select2>
+              
+                <!-- <mat-error *ngIf="form.get('name')?.hasError('whitespace')">
+  Name cannot be empty or just spaces.
+</mat-error> -->
+  <div *ngIf="f['name'].touched && f['name'].errors" class="text-danger mt-1">
+    {{ getErrorMessage('name', 'Name', true, 'Special characters are not allowed') }}
+  </div>
+            </div>
+             <div class="col-md-6">
+                <label>SOP Name</label>
+                <app-cm-input
+                  [formGroup]="form"
+                  [controlName]="'description'"
+                  [_inputData]="inputFields.description">
+                </app-cm-input>
+                
+                   <div *ngIf="f['description'].touched && f['description'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('description', 'Description', false, '') }}
+      </div>
+            </div>
+        </div>
+
+
+
+<!-- Dynamic Table -->
+<div class="mt-4">
+  <label>Actions</label>
+  <table class="table table-borderless align-middle">
+    <thead>
+      <tr class="text-muted small">
+<th style="width:10%;">SR NO.</th>
+<th style="width:30%;">ACTIONNAME</th>
+<th style="width:30%;">SEQUENCE</th>
+<th style="width:30%;">ACTION</th>
+      </tr>
+    </thead>
+    <tbody formArrayName="actions">
+      <tr *ngFor="let action of actions.controls; let i = index" [formGroupName]="i">
+        <!-- Serial Number -->
+        <td>{{ i + 1 }}</td>
+
+        <!-- ActionName Dropdown -->
+      <td>
+
+
+    <app-cm-select2
+      [formGroup]="action"
+      [controlName]="'actionName'"
+      [settings]="ActionSettings"
+      (optionSelected)="onProjectSelected($event)">
+    </app-cm-select2>
+  
+</td>
+
+        <!-- Sequence Input -->
+        <td>
+          <app-cm-input
+            [formGroup]="action"
+            [controlName]="'sequence'"
+            [_inputData]="inputFields.sequence">
+          </app-cm-input>
+        </td>
+
+        <!-- Action Buttons -->
+        <td>
+          <button mat-icon-button color="primary" (click)="addActionRow()">
+            <mat-icon>add_circle</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="removeActionRow(i)" *ngIf="actions.length > 1">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+         <!-- Toggles -->
+             <div class="row">
+            <div class="col-md-6">
+                <label class="toggle-label">Enabled</label>
+                <app-cm-toggle [formGroup]="form" [settings]="toggleSettingsWithoutHeader" style="margin-top: -35px;"></app-cm-toggle>
+            </div>
+        </div>
+  
+     
+        <!-- Action Buttons -->
+        <div class="dialog-actions">
+         
+          <button mat-stroked-button (click)="close()">Cancel</button>
+          <button mat-flat-button color="primary" (click)="submit()">Save</button>
+        </div>
+    </form>
+
+
+     </mat-card-content>
+</mat-card>
+</div>
+
+   
+  

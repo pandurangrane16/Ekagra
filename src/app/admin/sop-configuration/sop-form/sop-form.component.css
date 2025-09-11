@@ -1,0 +1,27 @@
+.policy-form {
+  max-width: 900px;
+  margin: 0 auto;
+
+  .card {
+    border-radius: 12px;
+    background: #fff;
+  }
+
+  table thead tr th {
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    color: #9aa0b4;
+    font-size: 12px;
+  }
+
+  .form-control-sm {
+    height: calc(1.5em + 0.5rem + 2px);
+  }
+
+  button[title="Add"] {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    line-height: 1;
+  }
+}
