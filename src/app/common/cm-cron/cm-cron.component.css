@@ -1,0 +1,18 @@
+.lblCls{
+ color: blue;
+}
+
+.blur {
+  filter: blur(4px);         /* adjust radius */
+  transition: filter .2s;    /* optional */
+}
+.blur:hover,
+.blur:focus-within {
+  filter: none;              /* reveal on hover/focus */
+}
+
+.content {
+  width: 90%;
+  
+}
+

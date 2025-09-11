@@ -539,6 +539,7 @@ patchCronForEdit(cronString: string) {
       isActive: [false, Validators.required],
       isinternal: [false, Validators.required]
     });
+    this.thirdFormLoadValues();
   }
 
   minFormArrayLength(min: number): ValidatorFn {
@@ -1864,7 +1865,15 @@ getApi(selectedProject: any, groupIndex: number, callback?: () => void) {
   onCheckboxChange(selected: any) {
     console.log('Selected:', selected);
   }
-
+  thirdFormLoadValues(){
+    this.thirdFormGroup.patchValue({
+        minute : this.ruleData.cron.split(' ')[0],
+        hour : this.ruleData.cron.split(' ')[1],
+        dayOfMonth : this.ruleData.cron.split(' ')[2],
+        month : this.ruleData.cron.split(' ')[3],
+        dayOfWeek : this.ruleData.cron.split(' ')[4],
+      })
+  }
   setThirdFormValues(evt: any, type: string) {
     console.log(evt);
     if (type == "min") {

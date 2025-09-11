@@ -14,6 +14,7 @@ export class CmSelectCheckComponent {
   @Input() settings: any;
   stateCtrl = new FormControl('');
   @Input() formGroup: FormGroup;
+  @Input() selectedEditValue : any;
   selectedValue: string = "";
   @Input() controlName: any;
   @Output() returnObject = new EventEmitter<any>();
@@ -36,6 +37,13 @@ export class CmSelectCheckComponent {
       });
 
       this.controlName = this.searchCtrl;
+
+      if(this.selectedEditValue != undefined) {
+        this.formGroup.patchValue({
+          [this.controlName] : this.selectedEditValue[0]
+        })
+        this.selectedValues = this.selectedEditValue;
+      }
   }
 
   private _filter(value: string): any[] {
