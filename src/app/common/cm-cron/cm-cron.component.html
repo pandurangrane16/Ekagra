@@ -5,7 +5,7 @@
                 <mat-card-header>
                     <mat-card-title>Cron Expression Builder</mat-card-title>
                 </mat-card-header>
-
+<hr>
                 <mat-card-content>
                     <form [formGroup]="cronForm" class="cron-form">
 
@@ -16,6 +16,8 @@
                                     <input matInput formControlName="minute"
                                         placeholder="* or 0-59 or e.g. 0,15,30,45 or */5" />
                                 </mat-form-field>
+                                <br>
+                                <span>* or 0-59 or e.g. 0,15,30,45 or */5</span>
                             </div>
                             <div class="col">
                                 <mat-form-field appearance="outline" class="content">
@@ -23,18 +25,24 @@
                                     <input matInput formControlName="hour"
                                         placeholder="* or 0-23 or e.g. 9,18 or */2" />
                                 </mat-form-field>
+                                <br>
+                                <span>* or 0-23 or e.g. 9,18 or */2</span>
                             </div>
                             <div class="col">
                                 <mat-form-field appearance="outline" class="content">
                                     <mat-label>Day of Month</mat-label>
                                     <input matInput formControlName="dayOfMonth" placeholder="* or 1-31 or e.g. 1,15" />
                                 </mat-form-field>
+                                <br>
+                                <span>* or 1-31 or e.g. 1,15</span>
                             </div>
                             <div class="col">
                                 <mat-form-field appearance="outline" class="content">
                                     <mat-label>Month</mat-label>
                                     <input matInput formControlName="month" placeholder="* or 1-12 or JAN-DEC or */1" />
                                 </mat-form-field>
+                                <br>
+                                <span>* or 1-12 or JAN-DEC or */1</span>
                             </div>
                             <div class="col">
                                 <mat-form-field appearance="outline" class="content">
@@ -42,16 +50,18 @@
                                     <input matInput formControlName="dayOfWeek"
                                         placeholder="* or 0-6 or SUN-SAT or e.g. MON-FRI" />
                                 </mat-form-field>
+                                <br>
+                                <span>* or 0-6 or SUN-SAT or e.g. MON-FRI</span>
                             </div>
                         </div>
                     </form>
-
+<hr>
                     <div class="output">
                         <p><strong>Cron Expression:</strong> {{ cronExpression }}</p>
                         <p><strong>Meaning:</strong> {{ humanReadable }}</p>
                     </div>
                 </mat-card-content>
-
+<hr>
                 <mat-card-actions>
                     <button mat-raised-button color="primary" (click)="applyPreset('* * * * *','Every minute')">Every
                         Minute</button>
