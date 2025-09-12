@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, OnInit,inject } from '@angular/core';
+import { Component, OnInit,inject } from '@angular/core';
 import { MaterialModule } from '../../Material.module';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -19,7 +19,8 @@ import { withLoader } from '../../services/common/common';
 import { projapirequestmodel } from '../../models/admin/projectapirequest.model';
 import { AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
+
+
 @Component({
   selector: 'app-api-playground',
   imports: [MaterialModule,CmToggleComponent, CommonModule, ReactiveFormsModule, CmInputComponent, CmRadioComponent, CmTextareaComponent,CmTextareaComponent,CmSelect2Component],
@@ -182,21 +183,12 @@ apiTypeSettings = {
     this.createAuth();
     //this.();
   }
-
-//   trimControl(control: AbstractControl | null) {
-//   if (control && typeof control.value === 'string') {
-//     control.setValue(control.value.trim());
-//   }
-// }
   ngOnInit(): void {
     
 debugger;
-
-
-
 console.log(this.authRequiredFlag)
-    // this.getProjList();
-    // this.GetProjectType();
+    this.getProjList();
+    this.GetProjectType();
     this.getType();
     this.getInputType();
     this.getUserDefinedType();
@@ -208,10 +200,6 @@ console.log(this.authRequiredFlag)
     this.state = history.state;
     const state = this.state;
     if (state?.mode === 'edit' && state?.record) {
-
-       //Notification to user about user can modify only static values from params
-      this.toast.info('You can update only the static values of the Params.');    
-
       const Id = state.record.id;
       this.isEditMode = true; 
       console.log('Edit mode detected, record:', state.record);
@@ -281,8 +269,7 @@ console.log(this.authRequiredFlag)
   // ================= Edit mode logic======
 else{
 
-    this.getProjList();
-    this.GetProjectType();
+
   //validation to check api name exists 
 
   this.form.get('apiName')?.valueChanges
@@ -574,14 +561,12 @@ debugger;
     if (inputTypeValue == 3) {
       group.get('qsInputType')?.disable();
       group.get('qsSelectedType')?.disable();
-      group.get('qsType')?.disable();
     }
     else
     {
-      group.get('qsInputType')?.disable();
+       group.get('qsInputType')?.disable();
       group.get('qsSelectedType')?.disable();
       group.get('qsValue')?.disable();
-      group.get('qsType')?.disable();
     }
   }
 
@@ -614,17 +599,9 @@ group.get('qsInputType')?.valueChanges.subscribe((selectedOption: any) => {
 });
 
 group.get('qsValue')?.valueChanges.subscribe((selectedOption: any) => {
-  debugger;
-  console.log("value changed",selectedOption);
-    if (typeof selectedOption === 'string') {
-    // trim if user typed a raw string
-    const trimmed = selectedOption.trim();
-    if (trimmed !== selectedOption) {
-      group.get('qsValue')?.setValue(trimmed, { emitEvent: false });
-    }
-  }
-
   const selectedName = selectedOption?.name;
+
+ 
 
   if (selectedName === 'Guid') {
     this.qsSelectedType.options=this.GuidType;
@@ -1254,9 +1231,9 @@ console.log(requestModels);
 requestModels.forEach(model => {
   this.service.UpdateProjectApiRequest(model).pipe(withLoader(this.loaderService)).subscribe({
    next: (res) => {
-   this.toast.success('ProjectAPIRequest updated successfully for record -' + model.id);
-    this.router.navigate(['/admin/apilist']);
-
+   this.toast.success('ProjectAPIRequest updated successfully.');
+    this.router.navigate(['/admin/apilist']);  
+      
    },
     error: (err) => {
       console.error('Error updating API:', err);
@@ -1312,7 +1289,7 @@ console.log(creationTime);
     requestParam: null,
     header: formValues.header,
     authReq: formValues.isrequireauth,
-    authAPIId: formValues.authAPIId,
+    authAPIId: this.form.controls['selectedapi'].value?.value, 
     authenticatioType: formValues.authType,
     apiSeq:  apiseq,
     authenticationHeader:null,
@@ -1351,11 +1328,7 @@ const requestModels: projapirequestmodel[] = this.queryStringsFormArray.controls
     key: group.get('qsKey')?.value,
     inputType: group.get('qsInputType')?.value.value,
     inputSource: group.get('qsSelectedType')?.value.value,
-    // inputValue: group.get('qsValue')?.value.value,
-    inputValue:
-      (group.get('qsInputType')?.value?.value ?? "0") === "3"
-        ? group.get('qsValue')?.value
-        : group.get('qsValue')?.value?.value,
+    inputValue: group.get('qsValue')?.value.value,
     seq: group.get('qsNo')?.value -1,
     isDeleted: false,
     deleterUserId: 0,
@@ -1367,8 +1340,10 @@ const requestModels: projapirequestmodel[] = this.queryStringsFormArray.controls
     id: 0
   };
 });
+
+
 const maxSeq = requestModels.reduce((max, item) => item.seq > max ? item.seq : max, 0);
-console.log("requestModels - ",requestModels);
+
 
 const methodKeyModel: projapirequestmodel = {
   apiId: this.createdId,

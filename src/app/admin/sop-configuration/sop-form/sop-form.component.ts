@@ -18,9 +18,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { LoaderService } from '../../../services/common/loader.service';
 import { withLoader } from '../../../services/common/common';
 import { SOPService } from '../../../services/admin/sop.service';
+import { SopAction } from '../../../models/admin/sopaction.model';
+import { SopConfig } from '../../../models/admin/sopconfig.model';
 import { CmSelect2Component } from '../../../common/cm-select2/cm-select2.component';
 
 import { ToastrService } from 'ngx-toastr';
+import { min } from 'lodash';
 
 
 @Component({
@@ -45,7 +48,8 @@ export class SopFormComponent {
     mapIcon: '',
     projectIcon: ''
   };
-  isPolicyOptionLoaded:any;
+  isPolicyOptionLoaded=false;
+  isActionOptionLoaded=false;
     inputFields = {
     name: {
       // labelHeader: 'Name',
@@ -59,15 +63,17 @@ export class SopFormComponent {
        sequence: {
       // labelHeader: 'Name',
       placeholder: 'Enter Sequence',
-      restrictToAlphanumeric:true,
+      
       appearance: 'outline',
       isDisabled: false,
+      type: 'number',   
+      min :1,
       color: 'primary',
       formFieldClass: "w-100"
     },
-    description: {
+    sopname: {
       // labelHeader: 'Description',
-      placeholder: 'Enter description',
+      placeholder: 'Enter SOP Name',
       appearance: 'outline',
       isDisabled: false,
       color: 'primary',
@@ -75,14 +81,14 @@ export class SopFormComponent {
     }
   };
        ActionSettings = {
-          labelHeader: 'Select Action',
+         
           lableClass: 'form-label',
           formFieldClass: '', 
           appearance: 'fill',
           options: []
         };
            PolicySettings = {
-          labelHeader: 'Select Action',
+        
           lableClass: 'form-label',
           formFieldClass: '', 
           appearance: 'fill',
@@ -154,13 +160,53 @@ export class SopFormComponent {
   return this.form.controls;
   }
 
-    noWhitespaceValidator(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const isWhitespace = (control.value || '').trim().length === 0;
-      return isWhitespace ? { whitespace: true } : null;
-    };
-  }
+  //   noWhitespaceValidator(): ValidatorFn {
+  //   return (control: AbstractControl): { [key: string]: any } | null => {
+  //     const isWhitespace = (control.value || '').trim().length === 0;
+  //     return isWhitespace ? { whitespace: true } : null;
+  //   };
+  // }
 
+  noWhitespaceValidator(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const value = control.value;
+
+    if (typeof value !== 'string') {
+      return null; 
+    }
+
+    const isWhitespace = value.trim().length === 0;
+    return isWhitespace ? { whitespace: true } : null;
+  };
+}
+    GetActionList() {
+    this.service.GetActionList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+      const items = response?.result || [];
+
+      const projectOptions = items.map((item: any) => ({
+        name: item.prmvalue,
+        value: item.id
+      }));
+
+
+      // projectOptions.unshift({
+      //   name: 'All',
+      //   value: null
+      // });
+
+      this.ActionSettings.options = projectOptions;
+      // this.form.controls['name'].setValue({
+      //   name: 'All',
+      //   value: null
+      // });
+
+    
+      this.isActionOptionLoaded = true;
+      console.log("hello",this.PolicySettings.options)
+    }, error => {
+      console.error('Error fetching Action list', error);
+    });
+  }
 
     GetPolicyList() {
     this.service.GetPolicyList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
@@ -170,21 +216,9 @@ export class SopFormComponent {
         name: item.policyName,
         value: item.id
       }));
-
-
-      projectOptions.unshift({
-        name: 'All',
-        value: null
-      });
-
       this.PolicySettings.options = projectOptions;
-      this.form.controls['name'].setValue({
-        name: 'All',
-        value: null
-      });
-
-    
       this.isPolicyOptionLoaded = true;
+      console.log("hello",this.PolicySettings.options)
     }, error => {
       console.error('Error fetching policy list', error);
     });
@@ -209,11 +243,12 @@ removeActionRow(index: number) {
 
 ngOnInit(): void {
  this.GetPolicyList();
+ this.GetActionList();
 
   this.form = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9 ]+$/), this.noWhitespaceValidator()]],
-    description: ['', [Validators.required, this.noWhitespaceValidator()]],
-    isActive: [Validators.required],
+    name: ['', [Validators.required,]],
+    sopname: ['', [Validators.pattern(/^[a-zA-Z0-9 ]*$/) ,Validators.required, this.noWhitespaceValidator()]],
+    isActive: [true,Validators.required],
     actions: this.fb.array([])  
   });
 
@@ -226,7 +261,7 @@ ngOnInit(): void {
   addActionRow() {
   const row = this.fb.group({
     actionName: [null, Validators.required],
-    sequence: ['', Validators.required]     
+    sequence: [this.actions.length + 1, Validators.required]     
   });
   this.actions.push(row);
 }
@@ -234,120 +269,110 @@ ngOnInit(): void {
 
 
 
-//   submit() {
-//   try {
-//   if (!this.form.invalid) {
-//     this.form.markAllAsTouched(); 
+
+  submit() {
+    console.log(this.form.controls)
+  try {
+  if (!this.form.invalid) {
+
+
+const actions = this.form.get('actions')?.value || [];
+    const totalActions = actions.length;
+    const sequences = actions.map((a: any) => Number(a.sequence));
+    const invalidRange = sequences.some((seq:any) => seq < 1 || seq > totalActions);
+    const uniqueSequences = new Set(sequences);
+    const hasDuplicates = uniqueSequences.size !== sequences.length;
+    const missingOrExtra = uniqueSequences.size !== totalActions;
+
+    if (invalidRange || hasDuplicates || missingOrExtra) {
+      this.toast.error(`Invalid sequence numbers! 
+        Sequences must be unique and between 1 and ${totalActions}.`);
+      return;
+    }
+
+
+
+
+    else{
+      this.form.markAllAsTouched(); 
      
-//       let _projconfigmodel = new projconfigmodel();
+let _SopConfig = new SopConfig();
 
-// _projconfigmodel.name = this.form.controls['name'].value;
-// _projconfigmodel.description = this.form.controls['description'].value;
-// //_projconfigmodel.map=this.form.controls['mapEnabled'].value;
-// //_projconfigmodel.ruleEngine=this.form.controls['ruleEngineEnabled'].value;
-// _projconfigmodel.mapIcon=this.form.controls['mapIcon'].value;
-// _projconfigmodel.projectIcon=this.form.controls['projectIcon'].value;
-// _projconfigmodel.isActive=this.form.controls['isActive'].value;
-// _projconfigmodel.creationTime="2025-06-20T05:32:25.067Z"
-// _projconfigmodel.creatorUserId=0
-// _projconfigmodel.deleterUserId=0
-// _projconfigmodel.deletionTime="2025-06-20T05:32:25.067Z"
-// _projconfigmodel.id=0
-// _projconfigmodel.lastModificationTime="2025-06-20T05:32:25.067Z"
-// _projconfigmodel.lastModifierUserId="2"
-// _projconfigmodel.sequence=0
-// _projconfigmodel.shortCode="2"
-// _projconfigmodel.roles="2"
-// _projconfigmodel.isDeleted=false;
+_SopConfig.policyId = this.form.controls['name'].value.value;
+_SopConfig.sopName = this.form.controls['sopname'].value;
+_SopConfig.isActive=this.form.controls['isActive'].value;
+_SopConfig.creationTime="2025-06-20T05:32:25.067Z"
+_SopConfig.creatorUserId=0
 
 
-//      this.service.CheckProjectName(this.form.controls['name'].value,this.state?.record?.id).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
-//         if (response.result === true) {
-//           this.toast.error(" Name already exists in the System.");
-//           this.form.setErrors({ duplicateName: true });
-//           return;
-//         }
-       
-//      else{
-  
 
-//     if (this.state?.mode === 'edit' && this.state?.record?.id){
 
-//     _projconfigmodel.id = this.state.record.id;
+     this.service.SOPConfigCreate(_SopConfig)
+  .pipe(withLoader(this.loaderService))
+  .subscribe({
+    next: (response: any) => {
+      if (response?.result?.id) {
+        const sopId = response.result.id;
 
-//       this.service.ProjectEdit(_projconfigmodel).pipe(withLoader(this.loaderService)).subscribe({
-//     next: () => {
-//       console.log('Updated successfully');
-
-//       this.toast.success('Project Updated successfully'); 
-//       this.router.navigate(['/admin/projconfig']);
-//       //this.dialogRef.close(this.form.value);
     
-//       //this.toast.success('ProjectField saved successfully');
-      
-//     },
-//     error: (err) => {
-//       console.error('Update failed:', err);
-//       this.toast.error('Update failed:', err);
-//     }
-//   });
+        const actions = this.form.get('actions')?.value || [];
 
-//   return;
-   
-//   }
+        actions.forEach((action: any) => {
+          let _SopAction = new SopAction();
+          _SopAction.sopId = sopId;
+          _SopAction.actionId = action.actionName?.value 
+          _SopAction.actionTag = action.actionName?.name 
+          _SopAction.sequence = Number(action.sequence);
+          _SopAction.creationTime = new Date().toISOString();
+          _SopAction.creatorUserId = 0;
+          _SopAction.lastModificationTime = null;
+          _SopAction.lastModifierUserId = 0;
 
-//   else{
-//   this.service.ProjectCreate(_projconfigmodel).pipe(withLoader(this.loaderService)).subscribe({
-//     next: () => {
-//       console.log('Saved successfully');
+        
+          this.service.SOPActionCreate(_SopAction)
+            .pipe(withLoader(this.loaderService))
+            .subscribe({
+              next: (res: any) => {
+                console.log("Saved action:", res);
+              },
+              error: (err) => {
+                console.error("Error saving action:", err);
+                this.toast.error("Failed to save an action");
+              }
+            });
+        });
 
-//       this.toast.success('Project saved successfully'); 
-//       //this.dialogRef.close(this.form.value);
-//      this.router.navigate(['/admin/projconfig']);
-//       //this.toast.success('Project saved successfully');
-      
-//     },
-//     error: (err) => {
-//       console.error('Save failed:', err);
-//       this.toast.error('Failed to save project');
-//     }
-//   });
-//   return;
-//   }
-
-
-  
-
-//      }
+        this.toast.success("SOP and all actions submitted!");
         
 
-//       });
+this.form.reset();
+ this.router.navigate(['/admin/sopconfig']);
 
 
+      }
+    },
+    error: (err) => {
+      console.error("Error in SOP create:", err);
+      this.toast.error("Failed to create SOP");
+    }
+  });
+    }
 
- 
- 
-
-
-
-
-//   }
-//   else {
-//       this.form.markAllAsTouched(); 
-//   this.toast.error('Form is not valid');
-//   return;
+  }
+  else {
+      this.form.markAllAsTouched(); 
+  this.toast.error('Form is not valid');
+  return;
     
-//   }
+  }
 
-// } catch (error) {
-//     console.error('Unexpected error in submit:', error);
-//     this.toast.error('An unexpected error occurred');
-//   }
-//   }
+} catch (error) {
+    console.error('Unexpected error in submit:', error);
+    this.toast.error('An unexpected error occurred');
+  }
+  }
 
-submit(){
-  
-}
+
 
 
 
@@ -362,7 +387,7 @@ submit(){
 
 
     close() {
-    this.router.navigate(['/admin/projconfig']);
+    this.router.navigate(['/admin/sopconfig']);
   }
 
 

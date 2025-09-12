@@ -20,10 +20,10 @@
 
   <!-- Left Filters -->
   <app-cm-select2
-   *ngIf="isProjectOptionsLoaded"
+   *ngIf="isPolicyOptionLoaded"
     [formGroup]="form"
-    [controlName]="'selectedProject'"
-    [settings]="projectSelectSettings"
+    [controlName]="'selectedPolicy'"
+    [settings]="PolicySettings"
     (optionSelected)="onProjectSelected($event)">
   </app-cm-select2>
 
@@ -68,7 +68,7 @@
     text-transform: none;
     white-space: nowrap;     
   " (click)="openDialog()">
-      + Create Project Configuration
+      + Create SOP Configuration
     </button>
 
     <!-- Search Input -->
