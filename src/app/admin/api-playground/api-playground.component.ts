@@ -1162,6 +1162,7 @@ RemoveHeader(index:any){
     itemsArray.removeAt(index);
   }
 submit(): void {
+  
   console.log(this.form.controls['isActive'].value )
 
 
@@ -1343,6 +1344,8 @@ const requestModels: projapirequestmodel[] = this.queryStringsFormArray.controls
 
 
 const maxSeq = requestModels.reduce((max, item) => item.seq > max ? item.seq : max, 0);
+const authType = this.form.controls['authType'].value;
+
 
 
 const methodKeyModel: projapirequestmodel = {
@@ -1350,6 +1353,27 @@ const methodKeyModel: projapirequestmodel = {
   type: 7,
   key: this.form.controls['method'].value.value,
   inputType: null,
+  inputSource: null,
+  inputValue: null,
+  seq: (authType !== null && authType !== '' && authType.trim() !== '')
+  ? maxSeq + 2
+  : maxSeq + 1,
+  isDeleted: false,
+  deleterUserId: 0,
+  deletionTime: creationTime,
+  lastModificationTime: creationTime,
+  lastModifierUserId: 0,
+  creationTime: creationTime,
+  creatorUserId: 0,
+  id: 0
+};
+if (authType !== null && authType !== '')
+{
+  const AuthKeyModel: projapirequestmodel = {
+  apiId: this.createdId,
+  type: 4,
+  key: this.form.controls['authType'].value,
+  inputType: 3,
   inputSource: null,
   inputValue: null,
   seq: maxSeq+1,
@@ -1362,16 +1386,24 @@ const methodKeyModel: projapirequestmodel = {
   creatorUserId: 0,
   id: 0
 };
-if (this.form.controls['authType'].value !== null && this.form.controls['authType'].value !== '')
-{
-  const AuthKeyModel: projapirequestmodel = {
-  apiId: this.createdId,
-  type: 4,
-  key: this.form.controls['authType'].value,
+requestModels.push(AuthKeyModel);  
+}
+
+
+if (bodyValue && bodyValue.trim() !== '' && bodyValue.trim() !== '{}') {
+const bodyValue = this.form.get('body')?.value?.[0]?.bodyValue;
+const bodyObj = JSON.parse(bodyValue);
+
+const bodyRequestModels: projapirequestmodel[] = Object.entries(bodyObj).map(
+  ([k, v], index) => {
+    return {
+     apiId: this.createdId,
+  type: 2,
+  key:k,
   inputType: 3,
   inputSource: null,
-  inputValue: null,
-  seq: maxSeq+2,
+  inputValue: v,
+  seq: index,
   isDeleted: false,
   deleterUserId: 0,
   deletionTime: creationTime,
@@ -1380,9 +1412,20 @@ if (this.form.controls['authType'].value !== null && this.form.controls['authTyp
   creationTime: creationTime,
   creatorUserId: 0,
   id: 0
-};
-requestModels.push(AuthKeyModel);  
+    };
+  }
+);
+
+requestModels.push(...bodyRequestModels);
 }
+
+
+
+
+
+
+
+
 
 
 requestModels.push(methodKeyModel); 
