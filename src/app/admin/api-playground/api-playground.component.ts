@@ -1362,12 +1362,13 @@ const methodKeyModel: projapirequestmodel = {
   creatorUserId: 0,
   id: 0
 };
-
-const AuthKeyModel: projapirequestmodel = {
+if (this.form.controls['authType'].value !== null && this.form.controls['authType'].value !== '')
+{
+  const AuthKeyModel: projapirequestmodel = {
   apiId: this.createdId,
   type: 4,
   key: this.form.controls['authType'].value,
-  inputType: null,
+  inputType: 3,
   inputSource: null,
   inputValue: null,
   seq: maxSeq+2,
@@ -1380,9 +1381,12 @@ const AuthKeyModel: projapirequestmodel = {
   creatorUserId: 0,
   id: 0
 };
+requestModels.push(AuthKeyModel);  
+}
+
 
 requestModels.push(methodKeyModel); 
-requestModels.push(AuthKeyModel);   
+ 
 
 console.log(requestModels);
 requestModels.forEach(model => {
