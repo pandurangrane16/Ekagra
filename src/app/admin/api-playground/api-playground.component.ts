@@ -1367,6 +1367,11 @@ const methodKeyModel: projapirequestmodel = {
   creatorUserId: 0,
   id: 0
 };
+
+const requestModels2: projapirequestmodel[] = [];
+requestModels2.push(methodKeyModel);
+requestModels2.push(...requestModels);
+
 if (authType !== null && authType !== '')
 {
   const AuthKeyModel: projapirequestmodel = {
@@ -1386,7 +1391,7 @@ if (authType !== null && authType !== '')
   creatorUserId: 0,
   id: 0
 };
-requestModels.push(AuthKeyModel);  
+requestModels2.push(AuthKeyModel);  
 }
 
 
@@ -1416,23 +1421,16 @@ const bodyRequestModels: projapirequestmodel[] = Object.entries(bodyObj).map(
   }
 );
 
-requestModels.push(...bodyRequestModels);
+requestModels2.push(...bodyRequestModels);
 }
 
 
 
 
-
-
-
-
-
-
-requestModels.push(methodKeyModel); 
  
 
-console.log(requestModels);
-requestModels.forEach(model => {
+console.log(requestModels2);
+requestModels2.forEach(model => {
   this.service.CreateProjectApiRequest(model).pipe(withLoader(this.loaderService)).subscribe({
    next: (res) => {
    this.toast.success('ProjectAPIRequest saved successfully.');
