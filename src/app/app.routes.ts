@@ -24,6 +24,7 @@ import { ProjectFieldConfigurationComponent } from './admin/project-field-config
 import { Component } from '@angular/core';
 import { DashRoutesComponent } from './routes/dash-routes/dash-routes.component';
 import { CmCronComponent } from './common/cm-cron/cm-cron.component';
+import { AlertComponent } from './user/alert/alert/alert.component';
 
 export const routes: Routes = [
       { path: "", component: LoginComponent, },
@@ -33,7 +34,7 @@ export const routes: Routes = [
       { path: 'atcs', component: AtcsComponent },
       { path: 'parking', component: ParkingComponent },
       { path: 'air', component: AirQualityComponent },
-      { path: 'alerts', component: AlertsPageComponent },
+      { path: 'alerts', component: AlertComponent },
       { path: 'camera', component: SurveilienceCameraComponent },
       //{ path: 'chat', component: ChatPageComponent },
       { path: 'setting', component: SettingPageComponent },
