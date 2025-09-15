@@ -3,6 +3,8 @@ import { UserDashboardComponent } from "./user-dashboard/user-dashboard.componen
 import { CustomCompCreateComponent } from "./custom-comp-create/custom-comp-create.component";
 import { Chart3dComponent } from "./chart3d/chart3d.component";
 import { UserDashComponent } from "./user-dash/user-dash.component";
+import { AlertComponent } from "./alert/alert/alert.component";
+import { SopflowComponent } from "../admin/sopflow/sopflow.component";
 
 export const UserRoutes: Routes = [
     {
@@ -52,6 +54,28 @@ export const UserRoutes: Routes = [
     {
         path: '3d',
         component: Chart3dComponent,
+        data: {
+            title: 'Custom Widget',
+            urls: [
+                { title: 'Custom Widget', url: '/3d' },
+                { title: 'UserDashboard' },
+            ],
+        },
+    },
+    {
+        path: 'alert',
+        component: AlertComponent,
+        data: {
+            title: 'Custom Widget',
+            urls: [
+                { title: 'Custom Widget', url: '/3d' },
+                { title: 'UserDashboard' },
+            ],
+        },
+    },
+    {
+        path: 'sopflow',
+        component: SopflowComponent,
         data: {
             title: 'Custom Widget',
             urls: [

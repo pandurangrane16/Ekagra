@@ -65,11 +65,11 @@
                 <mat-card-actions>
                     <button mat-raised-button color="primary" (click)="applyPreset('* * * * *','Every minute')">Every
                         Minute</button>
-                    <button mat-raised-button color="primary" (click)="applyPreset('0 * * * *','Every hour')">Every
+                    <button mat-raised-button color="secondary" (click)="applyPreset('0 * * * *','Every hour')">Every
                         Hour</button>
                     <button mat-raised-button color="accent" (click)="applyPreset('0 0 * * *','Every day')">Every
                         Day</button>
-                    <button mat-raised-button color="accent" (click)="applyPreset('0 0 * * 0','Every Sunday')">Every
+                    <button mat-raised-button color="warn" (click)="applyPreset('0 0 * * 0','Every Sunday')">Every
                         Sunday</button>
                     <button mat-stroked-button color="warn" (click)="reset()">Reset</button>
                     <button mat-stroked-button (click)="copy()">Copy</button>

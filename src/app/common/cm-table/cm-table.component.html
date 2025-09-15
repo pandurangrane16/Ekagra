@@ -15,12 +15,12 @@
           <tr *ngFor="let item of gridArr; let sr = index" (click)="ShowForm(item)" class="text-center">
             <td class="td-css">
               @if(activePage == 0 ) {
-                {{ sr + 1 }}
+              {{ sr + 1 }}
               }
               @else {
-                {{ ((activePage * perPage)) + sr }}
+              {{ ((activePage * perPage)) + sr }}
               }
-              </td>
+            </td>
 
             <td *ngFor="let head of headArr" [ngClass]="{
   'wrap-text': head.fieldValue === 'sourceURL' || head.fieldValue === 'wmsLayer'
@@ -44,6 +44,17 @@
                 [ngClass]="item[head.fieldValue] ? 'bg-success text-white' : 'bg-secondary text-white'" disabled>
                 {{ item[head.fieldValue] ? 'Enable' : 'Disable' }}
               </button>
+              }
+              @else if(head.fieldValue==='buttonlist') {
+              <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item *ngFor="let btn of item.buttonlist" (click)="GoToBtnAction(btn, item)" [disabled]="btn.disabled">
+                  <mat-icon>{{btn.icon}}</mat-icon>
+                  <span>{{btn.label}}</span>
+                </button>
+              </mat-menu>
               }
               @else {
               {{ item[head.fieldValue] }}
