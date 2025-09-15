@@ -1363,7 +1363,26 @@ const methodKeyModel: projapirequestmodel = {
   id: 0
 };
 
-requestModels.push(methodKeyModel);  
+const AuthKeyModel: projapirequestmodel = {
+  apiId: this.createdId,
+  type: 4,
+  key: this.form.controls['authType'].value,
+  inputType: null,
+  inputSource: null,
+  inputValue: null,
+  seq: maxSeq+2,
+  isDeleted: false,
+  deleterUserId: 0,
+  deletionTime: creationTime,
+  lastModificationTime: creationTime,
+  lastModifierUserId: 0,
+  creationTime: creationTime,
+  creatorUserId: 0,
+  id: 0
+};
+
+requestModels.push(methodKeyModel); 
+requestModels.push(AuthKeyModel);   
 
 console.log(requestModels);
 requestModels.forEach(model => {
