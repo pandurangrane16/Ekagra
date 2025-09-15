@@ -1,0 +1,324 @@
+.policy-form {
+  max-width: 900px;
+  margin: 0 auto;
+
+  .card {
+    border-radius: 12px;
+    background: #fff;
+  }
+
+  table thead tr th {
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    color: #9aa0b4;
+    font-size: 12px;
+  }
+
+  .form-control-sm {
+    height: calc(1.5em + 0.5rem + 2px);
+  }
+
+  button[title="Add"] {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    line-height: 1;
+  }
+
+  .scroll{
+  
+    overflow-x: auto;   
+    overflow-y: hidden; 
+}
+.dialog-container {
+  padding-bottom: 50px;
+    width: 100%;
+    max-height: 90vh;               
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
+        
+  }
+  
+  .form-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-right: 10px;          /* So scroll doesn’t cover content */
+  }
+  
+  app-cm-input {
+    width: 100%;
+    display: block;
+  }
+  .toggle-row {
+    display: flex;
+    gap: 10px; /* Space between the two toggles */
+    margin-bottom: 16px;
+  }
+  
+  .toggle-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1; /* Make them equal width */
+  }
+  
+  .toggle-label {
+    font-weight: 500;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  :host {
+    display: block;
+    width: 100%;
+  }
+  
+  select, ng-select, mat-select, .your-inner-wrapper-class {
+    width: 100% !important;
+  }
+
+  .full-width-select {
+    display: block;
+    width: 100%;
+  }
+  
+  .full-width-select ::ng-deep mat-form-field {
+    width: 100% !important;
+  }
+  
+  .full-width-select ::ng-deep input {
+    width: 100% !important;
+  }
+
+  .dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  /* .dialog-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 500;
+  } */
+  
+
+  
+  
+  .toggle-column {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+  }
+
+  
+ 
+  
+  .file-upload {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .file-upload label {
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  /* Fixed footer buttons */
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+    background-color: #fff;
+    position: sticky;
+    bottom: 0;
+  }
+  .pageWrapper {
+    padding: 30px!important;
+}
+.mat-mdc-card {
+  --mat-sys-corner-medium:24px;
+--mdc-elevated-card-container-shape: var(--mat-sys-corner-medium);
+border-radius: var(--mdc-elevated-card-container-shape);
+
+}
+
+.mat-mdc-card-content {
+    display: block;
+    padding: 24px;
+}
+
+.mat-mdc-outlined-button{
+--mat-sys-primary:#1c2d7b;
+border-color: var(--mat-sys-primary);
+color: var(--mat-sys-primary);
+}
+.mat-button-toggle-appearance-standard.mat-button-toggle-checked {
+  --mat-sys-primary:#1c2d7b;
+    color: white;
+    background-color: var(--mat-sys-primary);
+}
+
+ .text-right{text-align: right;}
+
+ .scroll{
+  
+    overflow-x: auto;   
+    overflow-y: hidden; 
+}
+.dialog-container {
+  padding-bottom: 50px;
+    width: 100%;
+    max-height: 90vh;               
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
+        
+  }
+  
+  .form-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-right: 10px;          /* So scroll doesn’t cover content */
+  }
+  
+  app-cm-input {
+    width: 100%;
+    display: block;
+  }
+  .toggle-row {
+    display: flex;
+    gap: 10px; /* Space between the two toggles */
+    margin-bottom: 16px;
+  }
+  
+  .toggle-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1; /* Make them equal width */
+  }
+  
+  .toggle-label {
+    font-weight: 500;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  :host {
+    display: block;
+    width: 100%;
+  }
+  
+  select, ng-select, mat-select, .your-inner-wrapper-class {
+    width: 100% !important;
+  }
+
+  .full-width-select {
+    display: block;
+    width: 100%;
+  }
+  
+  .full-width-select ::ng-deep mat-form-field {
+    width: 100% !important;
+  }
+  
+  .full-width-select ::ng-deep input {
+    width: 100% !important;
+  }
+
+  .dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  /* .dialog-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 500;
+  } */
+  
+
+  
+  
+  .toggle-column {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+  }
+
+  
+ 
+  
+  .file-upload {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .file-upload label {
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  /* Fixed footer buttons */
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+    background-color: #fff;
+    position: sticky;
+    bottom: 0;
+  }
+  .pageWrapper {
+    padding: 30px!important;
+}
+.mat-mdc-card {
+  --mat-sys-corner-medium:24px;
+--mdc-elevated-card-container-shape: var(--mat-sys-corner-medium);
+border-radius: var(--mdc-elevated-card-container-shape);
+
+}
+.mat-mdc-card-content {
+    display: block;
+    padding: 24px;
+}
+
+.mat-mdc-outlined-button{
+--mat-sys-primary:#1c2d7b;
+border-color: var(--mat-sys-primary);
+color: var(--mat-sys-primary);
+}
+.mat-button-toggle-appearance-standard.mat-button-toggle-checked {
+  --mat-sys-primary:#1c2d7b;
+    color: white;
+    background-color: var(--mat-sys-primary);
+}
+
+ .text-right{text-align: right;}
+}

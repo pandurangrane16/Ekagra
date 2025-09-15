@@ -24,7 +24,28 @@
             <h6 class="mb-0">Zonal Overview</h6>
 <app-zonal [fromDate]="startDate" [toDate]="endDate"></app-zonal>
         </div>
-        <div class="col-md-9"> 
+
+<div class="col-md-9" *ngIf="labelList && labelList.length > 0; else noFields">
+  <app-cm-leaflet
+    *ngIf="isMap"
+    [showMap]="isMap"
+    [siteData]="siteList"
+    [labelList]="labelList"
+    [popupData]="popupData"
+    (markerClicked)="onMarkerClicked($event)"
+    [enableDraw]="false"
+  >
+  </app-cm-leaflet>
+</div>
+
+<ng-template #noFields>
+  <div class="col-md-9 fw-bold mt-3 text-end fs-4">
+    No fields found
+  </div>
+</ng-template>
+
+        <!-- @if("labelList !=undefined") {
+<div class="col-md-9">  
              <app-cm-leaflet
               *ngIf="isMap && labelList && labelList.length > 0"
                [showMap]="isMap" 
@@ -36,7 +57,12 @@
                
               >
              </app-cm-leaflet></div>
-    </div>
+
+        }
+        @else {
+            <div class="col-md-9"> No fields found </div>
+        } -->
+        </div>
    
 
 

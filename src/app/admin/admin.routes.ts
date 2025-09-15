@@ -25,6 +25,8 @@ import { UserHeirarchyComponent } from "./user-heirarchy/user-heirarchy.componen
 import { RuleEngineEditComponent } from "./rule-engine/rule-engine-edit/rule-engine-edit.component";
 import { CmQueryBuilderComponent } from "../common/cm-query-builder/cm-query-builder.component";
 import { SopflowComponent } from "./sopflow/sopflow.component";
+import { SopFormComponent } from "./sop-configuration/sop-form/sop-form.component";
+import { SopConfigurationComponent } from "./sop-configuration/sop-configuration.component";
 export const AdminRoutes: Routes = [
   {
     path: '',
@@ -68,6 +70,28 @@ export const AdminRoutes: Routes = [
       urls: [
         { title: 'Admin Dashboard', url: '/admin/siteconfig' },
         { title: 'Site Configuration' },
+      ],
+    },
+  },
+    {
+    path: 'sopform',
+    component: SopFormComponent,
+    data: {
+      title: 'Site Configuration',
+      urls: [
+        { title: 'Admin Dashboard', url: '/admin/sopform' },
+        { title: 'Site Configuration' },
+      ],
+    },
+  },
+    {
+    path: 'sopconfig',
+    component: SopConfigurationComponent,
+    data: {
+      title: 'SOP Configuration',
+      urls: [
+        { title: 'Admin Dashboard', url: '/admin/sopconfig' },
+        { title: 'SOP Configuration' },
       ],
     },
   },
