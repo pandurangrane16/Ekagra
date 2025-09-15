@@ -68,7 +68,7 @@ apiTypeSettings = {
   }
   radioAuthInputData = {
     label : "",
-    data : ['None', 'Bearer', 'Basic','Custom']
+    data : ['None', 'Bearer Token', 'Basic','Custom']
   }
        projectSelectSettings = {
           labelHeader: 'Select Project',
