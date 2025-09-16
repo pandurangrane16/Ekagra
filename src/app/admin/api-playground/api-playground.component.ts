@@ -169,7 +169,7 @@ apiTypeSettings = {
       apiName: ['', Validators.required],
       apiUrl: ['', [Validators.required,Validators.pattern(/^(https?:\/\/)[^\s]+$/)]],
       apiseq: ['', Validators.required],
-      isActive: [''],
+      isActive:  [true, Validators.required],
       isrequireauth: [null, Validators.required],
       selectedapi:[''],
       queryStrings: this.fb.array([]),
@@ -398,16 +398,55 @@ isSelected(key: string): boolean {
       get f() {
   return this.form.controls;
   }
+  addSelectedKeysToForm() {
+  let index = this.queryStringsFormArray.length + 1; 
+  
+  this.selectedKeys.forEach((key) => {
+    // Check if it's already added (avoid duplicates)
+    const alreadyExists = this.queryStringsFormArray.controls.some(
+      (control: any) => control.get('qsKey')?.value === key
+    );
+
+    if (!alreadyExists) {
+      this.createQueryStrings({
+        qsNo: index++,
+        qsKey: key,
+        qsValue: '',
+        qsType: { name: 'URL', value: '6' },       // or change type if needed
+        qsInputType: { name: 'Static', value: '3' },
+        qsSelectedType: ''
+      });
+    }
+  });
+}
+removeKeyFromForm(key: string) {
+  const index = this.queryStringsFormArray.controls.findIndex(
+    (control: any) => control.get('qsKey')?.value === key
+  );
+
+  if (index !== -1) {
+    this.queryStringsFormArray.removeAt(index);
+
+  
+  this.queryStringsFormArray.controls.forEach((control: any, idx: number) => {
+  control.get('qsNo')?.setValue(idx + 1);
+});
+  }
+}
+
+
 onCheckboxChange(event: Event, key: string): void {
   const checked = (event.target as HTMLInputElement).checked;
 
   if (checked) {
     this.selectedKeys.add(key);
     console.log(this.selectedKeys)
+    this.addSelectedKeysToForm();
     this.updateRequestParam(); 
   } else {
     this.selectedKeys.delete(key);
     console.log(this.selectedKeys)
+    this.removeKeyFromForm(key);
     this.updateRequestParam(); 
   }
 }
@@ -1338,11 +1377,78 @@ console.log(creationTime);
       console.log('API created successfully:', res);
       console.log(this.createdId);
 
-      
+
+const requestModels5: projapirequestmodel[] = [];
+const requestModels: projapirequestmodel[] = [];
+const finalselect: projapirequestmodel[] = [];
 
 
 
-const requestModels: projapirequestmodel[] = this.queryStringsFormArray.controls.map((group: FormGroup, index: number) => {
+
+
+if(formValues.isrequireauth)
+  {const selectedKeysArray = Array.from(this.selectedKeys);
+
+let seqCounter = 0;
+const selectedKeyModels: projapirequestmodel[] = this.queryStringsFormArray.controls
+  .filter((group: FormGroup) => 
+    group.get('qsType')?.value?.value === '3' && 
+    selectedKeysArray.includes(group.get('qsKey')?.value)
+  )
+  .map((group: FormGroup, index: number) => ({
+    apiId: this.createdId,
+    type: group.get('qsType')?.value?.value ?? "0",
+    key: group.get('qsKey')?.value ?? "",
+    inputType: group.get('qsInputType')?.value?.value ?? "0",
+    inputSource: group.get('qsSelectedType')?.value?.value ?? "",
+    inputValue: group.get('qsValue')?.value?.value ?? "",
+    seq: seqCounter++, 
+    isDeleted: false,
+    deleterUserId: 0,
+    deletionTime: creationTime,
+    lastModificationTime: creationTime,
+    lastModifierUserId: 0,
+    creationTime: creationTime,
+    creatorUserId: 0,
+    id: 0
+  }));
+
+  console.log("selectedKeyModels:",selectedKeyModels)
+      finalselect.push(...selectedKeyModels);
+
+const requestModel1: projapirequestmodel[] = this.queryStringsFormArray.controls
+  .filter((group: FormGroup) =>
+    !(group.get('qsType')?.value?.value === '3' && selectedKeysArray.includes(group.get('qsKey')?.value))
+  )
+  .map((group: FormGroup, index: number) => ({
+    apiId: this.createdId,
+    type: group.get('qsType')?.value?.value ?? "0",
+    key: group.get('qsKey')?.value ?? "",
+    inputType: group.get('qsInputType')?.value?.value ?? "0",
+    inputSource: group.get('qsSelectedType')?.value?.value ?? "",
+    inputValue: group.get('qsValue')?.value?.value ?? "",
+    seq: group.get('qsNo')?.value -1,
+    isDeleted: false,
+    deleterUserId: 0,
+    deletionTime: creationTime,
+    lastModificationTime: creationTime,
+    lastModifierUserId: 0,
+    creationTime: creationTime,
+    creatorUserId: 0,
+    id: 0
+  }));
+
+    console.log("requestModels:",requestModel1)
+     requestModels5.push(...requestModel1);
+  }
+
+
+
+
+
+
+if(this.form.controls['isrequireauth'].value==false){
+  const requestModel2: projapirequestmodel[] = this.queryStringsFormArray.controls.map((group: FormGroup, index: number) => {
   return {
     apiId: this.createdId,
     type: group.get('qsType')?.value?.value ?? "0",
@@ -1361,9 +1467,15 @@ const requestModels: projapirequestmodel[] = this.queryStringsFormArray.controls
     id: 0
   };
 });
+  console.log("requestModels:",requestModel2)
+     requestModels5.push(...requestModel2);
 
 
-const maxSeq = requestModels.reduce((max, item) => item.seq > max ? item.seq : max, 0);
+}
+
+
+
+const maxSeq = requestModels5.reduce((max, item) => item.seq > max ? item.seq : max, 0);
 const authType = this.form.controls['authType'].value;
 
 
@@ -1388,9 +1500,10 @@ const methodKeyModel: projapirequestmodel = {
   id: 0
 };
 
-const requestModels2: projapirequestmodel[] = [];
-requestModels2.push(methodKeyModel);
-requestModels2.push(...requestModels);
+
+requestModels.push(methodKeyModel);
+requestModels.push(...requestModels5);
+
 
 if (authType !== null && authType !== '')
 {
@@ -1411,7 +1524,7 @@ if (authType !== null && authType !== '')
   creatorUserId: 0,
   id: 0
 };
-requestModels2.push(AuthKeyModel);  
+requestModels.push(AuthKeyModel);  
 }
 
 
@@ -1441,8 +1554,13 @@ const bodyRequestModels: projapirequestmodel[] = Object.entries(bodyObj).map(
   }
 );
 
-requestModels2.push(...bodyRequestModels);
+requestModels.push(...bodyRequestModels);
 }
+
+
+requestModels.push(...finalselect);
+
+console.log("requestModels:",requestModels)
 
 
 
@@ -1465,7 +1583,7 @@ requestModels2.push(...bodyRequestModels);
 
 
 
-this.saveRequestsSequentially(requestModels2);
+this.saveRequestsSequentially(requestModels);
 
 
 
