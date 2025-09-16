@@ -19,6 +19,7 @@ import { withLoader } from '../../services/common/common';
 import { projapirequestmodel } from '../../models/admin/projectapirequest.model';
 import { AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
 
 
 @Component({
@@ -1155,6 +1156,25 @@ const payload = {
 
 }
 
+async saveRequestsSequentially(requestModels2: any[]) {
+  for (const model of requestModels2) {
+    try {
+      const res = await firstValueFrom(
+        this.service.CreateProjectApiRequest(model)
+          .pipe(withLoader(this.loaderService))
+      );
+
+      this.toast.success('ProjectAPIRequest saved successfully.');
+    } catch (err) {
+      console.error('Error creating API:', err);
+      break; 
+    }
+  }
+
+ 
+  this.router.navigate(['/admin/apilist']);
+}
+
 
 
 RemoveHeader(index:any){
@@ -1429,19 +1449,29 @@ requestModels2.push(...bodyRequestModels);
 
  
 
-console.log(requestModels2);
-requestModels2.forEach(model => {
-  this.service.CreateProjectApiRequest(model).pipe(withLoader(this.loaderService)).subscribe({
-   next: (res) => {
-   this.toast.success('ProjectAPIRequest saved successfully.');
-    this.router.navigate(['/admin/apilist']);  
+// console.log("requestModels2:",requestModels2);
+// requestModels2.forEach(model => {
+//   this.service.CreateProjectApiRequest(model).pipe(withLoader(this.loaderService)).subscribe({
+//    next: (res) => {
+//    this.toast.success('ProjectAPIRequest saved successfully.');
+//     this.router.navigate(['/admin/apilist']);  
       
-   },
-    error: (err) => {
-      console.error('Error creating API:', err);
-    }
-  });
-})
+//    },
+//     error: (err) => {
+//       console.error('Error creating API:', err);
+//     }
+//   });
+// })
+
+
+
+this.saveRequestsSequentially(requestModels2);
+
+
+
+
+
+
 
 
 
