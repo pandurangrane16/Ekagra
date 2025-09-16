@@ -412,7 +412,7 @@ isSelected(key: string): boolean {
         qsNo: index++,
         qsKey: key,
         qsValue: '',
-        qsType: { name: 'URL', value: '6' },       // or change type if needed
+        qsType: { name: 'AuthenticationInput', value: '3' },       // or change type if needed
         qsInputType: { name: 'Static', value: '3' },
         qsSelectedType: ''
       });
