@@ -185,7 +185,7 @@ export class SopFormComponent {
 
       const projectOptions = items.map((item: any) => ({
         name: item.prmvalue,
-        value: item.id
+        value: item.prmidentifier
       }));
 
 

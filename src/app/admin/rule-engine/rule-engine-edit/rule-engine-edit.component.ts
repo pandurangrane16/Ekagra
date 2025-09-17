@@ -887,9 +887,12 @@ patch_expression(ruleExpression: string) {
       });
     };
 
-    processNext(); // start processing
+    processNext(); 
+     this.patchCronForEdit(this.ruleData.cron);
 
     return parsed;
+    
+   
 
   } catch (error) {
     console.error("Error parsing rule expression:", error);
