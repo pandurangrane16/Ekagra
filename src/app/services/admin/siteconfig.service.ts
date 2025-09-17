@@ -24,10 +24,15 @@ SiteCreate(_data: any) {
     return this._httpService._putMethod(_data, 'api/services/app/Site/Update');
   }
 
-    CheckSiteId(SiteId: any,ProjectId:any) {
-    return this._httpService._postMethod(null, 'api/services/app/Site/CheckSiteId?SiteId='+SiteId+'&ProjectId='+ProjectId);
+ CheckSiteId(SiteId: any, ProjectId: any, id?: any) {
+  let url = `api/services/app/Site/CheckSiteId?SiteId=${SiteId}&ProjectId=${ProjectId}`;
+  
+  if (id !== undefined && id !== null) {
+    url += `&id=${id}`;
   }
 
+  return this._httpService._postMethod(null, url);
+}
 
 
 GetAll(MaxResultCount: number, SkipCount: number,) {

@@ -279,6 +279,7 @@ export class SiteMngComponent implements OnInit {
   if (state1?.mode === 'edit') {
     this.form.get('name')?.disable();   // Disables the project name dropdown
   }
+  
 
     this.form.get('siteId')?.valueChanges
       .pipe(
@@ -287,9 +288,21 @@ export class SiteMngComponent implements OnInit {
       )
       .subscribe((siteId: any) => {
           const state = history.state;
-        if (state?.mode === 'edit') return;
+        if (state?.mode === 'edit'){
 
-        if (siteId) {
+            const projectId = this.form.controls['name'].value?.value;
+
+          if (!projectId) {
+            this.toast.error('Please select a project before entering Site ID.');
+            this.form.patchValue({ siteId: null }); 
+            return;
+          }
+    debugger;
+          this.checkSiteIdExists(siteId, projectId,this.editId);
+
+        };
+
+        if (siteId  &&  state?.mode != 'edit') {
           const projectId = this.form.controls['name'].value?.value;
 
           if (!projectId) {
@@ -316,9 +329,9 @@ export class SiteMngComponent implements OnInit {
   }
 
 
-  checkSiteIdExists(siteId: string, projectid: any): void {
+  checkSiteIdExists(siteId: string, projectid: any, id?:any): void {
     debugger;
-    this.service.CheckSiteId(siteId, projectid).pipe(withLoader(this.loaderService)).subscribe({
+    this.service.CheckSiteId(siteId, projectid,id).pipe(withLoader(this.loaderService)).subscribe({
       next: (response: any) => {
         if (response.result === 1) {
           this.toast.error('Site Id already exists.');
