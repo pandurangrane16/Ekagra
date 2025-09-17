@@ -167,6 +167,7 @@ apiTypeSettings = {
       selectedProjType: [null, Validators.required],
       method: ['', Validators.required],
       apiName: ['', Validators.required],
+      datasource: ['', Validators.required],
       apiUrl: ['', [Validators.required,Validators.pattern(/^(https?:\/\/)[^\s]+$/)]],
       apiseq: ['', Validators.required],
       isActive:  [true, Validators.required],
@@ -915,6 +916,14 @@ this.isProjtypeOptionsLoaded=true;
     apiName: {
       // labelHeader: 'Name',
       placeholder: 'Enter API Name',
+      appearance: 'outline',
+      isDisabled: false,
+      color: 'primary',
+      formFieldClass: "w-100"
+    },
+      datasource: {
+      // labelHeader: 'Name',
+      placeholder: 'Enter DataSource',
       appearance: 'outline',
       isDisabled: false,
       color: 'primary',
