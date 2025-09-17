@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, SimpleChanges,OnInit ,Input,EventEmitter,Output} from '@angular/core';
 import { MaterialModule } from '../../Material.module';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormArray } from '@angular/forms';
@@ -16,7 +16,8 @@ export class CmCronComponent {
   cronForm: FormGroup;
   cronExpression: string = '* * * * *';
   humanReadable: string = 'Every minute';
-
+  @Output() cronChange = new EventEmitter<string>();
+  @Input() initialCron: string = '* * * * *';  
 
   constructor(private fb: FormBuilder) {
     this.cronForm = this.fb.group({
@@ -29,12 +30,36 @@ export class CmCronComponent {
     this.buildCron();
     this.cronForm.valueChanges.subscribe(() => this.buildCron());
   }
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['initialCron'] && changes['initialCron'].currentValue) {
+      this.applyCron(this.initialCron);
+    }
+  }
+
+    private applyCron(cron: string) {
+    const parts = cron.split(' ');
+    if (parts.length === 5) {
+      this.cronForm.patchValue({
+        minute: parts[0],
+        hour: parts[1],
+        dayOfMonth: parts[2],
+        month: parts[3],
+        dayOfWeek: parts[4]
+      }, { emitEvent: false });
+
+      this.cronExpression = cron;
+      this.humanReadable = this.humanize(parts);
+    }
+  }
 
 
   buildCron() {
     const { minute, hour, dayOfMonth, month, dayOfWeek } = this.cronForm.value;
     this.cronExpression = `${minute || '*'} ${hour || '*'} ${dayOfMonth || '*'} ${month || '*'} ${dayOfWeek || '*'}`;
     this.humanReadable = this.humanize([minute, hour, dayOfMonth, month, dayOfWeek]);
+
+       this.cronChange.emit(this.cronExpression);
+       
   }
 
 

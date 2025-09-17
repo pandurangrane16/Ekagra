@@ -21,6 +21,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { LoaderService } from '../../services/common/loader.service';
 import { withLoader } from '../../services/common/common';
 import { SessionService } from '../../services/common/session.service';
+import { SiteRequestModel } from '../../models/admin/siteresponse.model';
 
 interface Junction {
   value: string;
@@ -83,7 +84,7 @@ endDate: Date | null = null;
 
 
   }
-  onMarkerClicked(siteId: string) {
+  onMarkerClicked2(siteId: string) {
     this.service.login().pipe(withLoader(this.loaderService)).subscribe({
       next: (res: any) => {
         const token = res?.token;
@@ -117,6 +118,44 @@ endDate: Date | null = null;
       }
     });
   }
+
+  onMarkerClicked(siteId: string) {
+      const model: SiteRequestModel = {
+  projectId: 1,
+  type: 0,
+  inputs: siteId,
+  bodyInputs: null,
+  seq: 43
+}
+  this.service.SiteResponse(model).pipe(withLoader(this.loaderService)).subscribe({
+    next: (res: any) => {
+      if (!res?.result) {
+        console.error("No result found in site response");
+        return;
+      }
+
+     
+      let parsedResult;
+      try {
+        parsedResult = JSON.parse(res.result);
+      } catch (e) {
+        console.error("Failed to parse result JSON:", e);
+        return;
+      }
+
+      console.log("Fetched site response:", parsedResult);
+
+    
+      this.popupData = {
+        [siteId]: parsedResult
+      };
+    },
+    error: (err) => {
+      console.error("Error fetching site response:", err);
+    }
+  });
+}
+
 
 
 

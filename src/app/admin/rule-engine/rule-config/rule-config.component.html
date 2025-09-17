@@ -356,7 +356,20 @@
                             <h3>Rule Schedule</h3>
                             <p class="info-text">Add your work experience here...</p>
                             <hr>
+
+
+                         <app-cm-cron (cronChange)="onCronUpdate($event)"></app-cm-cron>
+
+<p>Selected Cron: {{ parentCron }}</p>
+
+
+
+
+<!-- 
                             <div [formGroup]="thirdFormGroup">
+
+
+
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label style="position: relative; top: 6px; display: block;">Minute*</label>
@@ -369,6 +382,10 @@
                                             [settings]="hourSettings" (returnObject)="setThirdFormValues($event,'hour')" ></app-cm-select-check>
                                     </div>
                                 </div>
+
+
+
+
                                 <div class="row">
                                     <div class="col-md-4">
                                         <label style="position: relative; top: 6px; display: block;">Day Of
@@ -389,8 +406,14 @@
                                         <app-cm-select-check [formGroup]="thirdFormGroup" [controlName]="'dayOfWeek'"
                                             [settings]="dayWeekSettings" (returnObject)="setThirdFormValues($event,'day')"></app-cm-select-check>
                                     </div>
+
                                 </div>
-                            </div>
+
+                            </div> -->
+
+
+
+
                         </div>
                         <hr>
                         <div class="row">

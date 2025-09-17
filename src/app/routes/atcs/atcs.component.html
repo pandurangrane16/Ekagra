@@ -25,7 +25,7 @@
 <app-zonal [fromDate]="startDate" [toDate]="endDate"></app-zonal>
         </div>
 
-<div class="col-md-9" *ngIf="labelList && labelList.length > 0; else noFields">
+<div class="col-md-9" *ngIf="siteList && siteList.length > 0; else noFields">
   <app-cm-leaflet
     *ngIf="isMap"
     [showMap]="isMap"
