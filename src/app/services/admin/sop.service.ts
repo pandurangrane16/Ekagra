@@ -69,6 +69,27 @@ export class SOPService {
   return this._httpService._getMethod(url);
 }
 
+
+  CheckSOPNameExist(
+  SOPName?: number,
+  Id?: string,
+ 
+) {
+  let params: string[] = [];
+
+  if (SOPName !== null && SOPName !== undefined) {
+    params.push(`SOPName=${SOPName}`);
+  }
+
+  if (Id !== null && Id !== undefined && Id.trim() !== '') {
+    params.push(`Id=${encodeURIComponent(Id)}`);
+  }
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/SOPConfig/CheckSOPNameExist${queryString}`;
+
+  return this._httpService._postMethod(null,url);
+}
+
   
 
 

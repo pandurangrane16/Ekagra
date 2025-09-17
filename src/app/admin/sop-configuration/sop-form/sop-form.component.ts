@@ -185,7 +185,7 @@ export class SopFormComponent {
 
       const projectOptions = items.map((item: any) => ({
         name: item.prmvalue,
-        value: item.id
+        value: item.prmidentifier
       }));
 
 
@@ -272,11 +272,13 @@ ngOnInit(): void {
 
   submit() {
     console.log(this.form.controls)
-  try {
+
+  try 
+  {
   if (!this.form.invalid) {
 
 
-const actions = this.form.get('actions')?.value || [];
+    const actions = this.form.get('actions')?.value || [];
     const totalActions = actions.length;
     const sequences = actions.map((a: any) => Number(a.sequence));
     const invalidRange = sequences.some((seq:any) => seq < 1 || seq > totalActions);
@@ -294,6 +296,21 @@ const actions = this.form.get('actions')?.value || [];
 
 
     else{
+
+         const sopName = this.form.controls['sopname'].value;
+
+
+this.service.CheckSOPNameExist(sopName)
+  .pipe(withLoader(this.loaderService))
+  .subscribe({
+    next: (res: any) => {
+      if (res?.result === true) {
+      
+        this.toast.error("This SOP name already exists. Please choose another name.");
+        return;
+      }
+       else {
+            
       this.form.markAllAsTouched(); 
      
 let _SopConfig = new SopConfig();
@@ -356,7 +373,22 @@ this.form.reset();
       this.toast.error("Failed to create SOP");
     }
   });
+      }
+    },
+    error: (err) => {
+      console.error("Error checking duplicate SOP name:", err);
+      this.toast.error("Failed to validate SOP name");
     }
+  });
+
+
+
+
+
+
+
+    }
+
 
   }
   else {
@@ -366,10 +398,14 @@ this.form.reset();
     
   }
 
-} catch (error) {
+  } 
+catch (error) 
+  {
     console.error('Unexpected error in submit:', error);
     this.toast.error('An unexpected error occurred');
   }
+
+
   }
 
 

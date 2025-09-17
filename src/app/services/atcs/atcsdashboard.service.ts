@@ -126,6 +126,12 @@ getKeysDataForConfig(key: string): Observable<any> {
     GetZones(id:any) {
     return this._httpService._getMethod('api/services/app/Zone/GetZoneListOnProjectId?ProjectId='+id);
   } 
+
+    SiteResponse(data:any) {
+    return this._httpService._postMethod(data,'api/services/app/ProjectAPI/SiteResponse');
+  } 
+
+
 //   GetSiteMasterByProjectId
 
     GetSiteMasterByProjectId(id: number) {

@@ -328,7 +328,7 @@ onPaginationChanged(event: { pageNo: number; perPage: number }) {
 //   });
 // }
 editRow(rowData: any) {
-  this.router.navigate(['/admin/projform'], {
+  this.router.navigate(['/admin/sopform'], {
     state: {
       mode: 'edit',
       record: rowData

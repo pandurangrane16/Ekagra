@@ -19,6 +19,7 @@ import { withLoader } from '../../services/common/common';
 import { projapirequestmodel } from '../../models/admin/projectapirequest.model';
 import { AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
 
 
 @Component({
@@ -166,9 +167,10 @@ apiTypeSettings = {
       selectedProjType: [null, Validators.required],
       method: ['', Validators.required],
       apiName: ['', Validators.required],
+      datasource: ['', Validators.required],
       apiUrl: ['', [Validators.required,Validators.pattern(/^(https?:\/\/)[^\s]+$/)]],
       apiseq: ['', Validators.required],
-      isActive: [''],
+      isActive:  [true, Validators.required],
       isrequireauth: [null, Validators.required],
       selectedapi:[''],
       queryStrings: this.fb.array([]),
@@ -397,16 +399,55 @@ isSelected(key: string): boolean {
       get f() {
   return this.form.controls;
   }
+  addSelectedKeysToForm() {
+  let index = this.queryStringsFormArray.length + 1; 
+  
+  this.selectedKeys.forEach((key) => {
+    // Check if it's already added (avoid duplicates)
+    const alreadyExists = this.queryStringsFormArray.controls.some(
+      (control: any) => control.get('qsKey')?.value === key
+    );
+
+    if (!alreadyExists) {
+      this.createQueryStrings({
+        qsNo: index++,
+        qsKey: key,
+        qsValue: '',
+        qsType: { name: 'AuthenticationInput', value: '3' },   
+        qsInputType: { name: 'Static', value: '3' },
+        qsSelectedType: ''
+      });
+    }
+  });
+}
+removeKeyFromForm(key: string) {
+  const index = this.queryStringsFormArray.controls.findIndex(
+    (control: any) => control.get('qsKey')?.value === key
+  );
+
+  if (index !== -1) {
+    this.queryStringsFormArray.removeAt(index);
+
+  
+  this.queryStringsFormArray.controls.forEach((control: any, idx: number) => {
+  control.get('qsNo')?.setValue(idx + 1);
+});
+  }
+}
+
+
 onCheckboxChange(event: Event, key: string): void {
   const checked = (event.target as HTMLInputElement).checked;
 
   if (checked) {
     this.selectedKeys.add(key);
     console.log(this.selectedKeys)
+    this.addSelectedKeysToForm();
     this.updateRequestParam(); 
   } else {
     this.selectedKeys.delete(key);
     console.log(this.selectedKeys)
+    this.removeKeyFromForm(key);
     this.updateRequestParam(); 
   }
 }
@@ -880,6 +921,14 @@ this.isProjtypeOptionsLoaded=true;
       color: 'primary',
       formFieldClass: "w-100"
     },
+      datasource: {
+      // labelHeader: 'Name',
+      placeholder: 'Enter DataSource',
+      appearance: 'outline',
+      isDisabled: false,
+      color: 'primary',
+      formFieldClass: "w-100"
+    },
       apiSeq: {
       // labelHeader: 'Name',
       placeholder: 'Enter API Seq.',
@@ -1155,6 +1204,25 @@ const payload = {
 
 }
 
+async saveRequestsSequentially(requestModels2: any[]) {
+  for (const model of requestModels2) {
+    try {
+      const res = await firstValueFrom(
+        this.service.CreateProjectApiRequest(model)
+          .pipe(withLoader(this.loaderService))
+      );
+
+      this.toast.success('ProjectAPIRequest saved successfully.');
+    } catch (err) {
+      console.error('Error creating API:', err);
+      break; 
+    }
+  }
+
+ 
+  this.router.navigate(['/admin/apilist']);
+}
+
 
 
 RemoveHeader(index:any){
@@ -1162,6 +1230,7 @@ RemoveHeader(index:any){
     itemsArray.removeAt(index);
   }
 submit(): void {
+  
   console.log(this.form.controls['isActive'].value )
 
 
@@ -1317,11 +1386,78 @@ console.log(creationTime);
       console.log('API created successfully:', res);
       console.log(this.createdId);
 
-      
+
+const requestModels5: projapirequestmodel[] = [];
+const requestModels: projapirequestmodel[] = [];
+const finalselect: projapirequestmodel[] = [];
 
 
 
-const requestModels: projapirequestmodel[] = this.queryStringsFormArray.controls.map((group: FormGroup, index: number) => {
+
+
+if(formValues.isrequireauth)
+  {const selectedKeysArray = Array.from(this.selectedKeys);
+
+let seqCounter = 0;
+const selectedKeyModels: projapirequestmodel[] = this.queryStringsFormArray.controls
+  .filter((group: FormGroup) => 
+    group.get('qsType')?.value?.value === '3' && 
+    selectedKeysArray.includes(group.get('qsKey')?.value)
+  )
+  .map((group: FormGroup, index: number) => ({
+    apiId: this.createdId,
+    type: group.get('qsType')?.value?.value ?? "0",
+    key: group.get('qsKey')?.value ?? "",
+    inputType: group.get('qsInputType')?.value?.value ?? "0",
+    inputSource: group.get('qsSelectedType')?.value?.value ?? "",
+    inputValue: group.get('qsValue')?.value?.value ?? "",
+    seq: seqCounter++, 
+    isDeleted: false,
+    deleterUserId: 0,
+    deletionTime: creationTime,
+    lastModificationTime: creationTime,
+    lastModifierUserId: 0,
+    creationTime: creationTime,
+    creatorUserId: 0,
+    id: 0
+  }));
+
+  console.log("selectedKeyModels:",selectedKeyModels)
+      finalselect.push(...selectedKeyModels);
+
+const requestModel1: projapirequestmodel[] = this.queryStringsFormArray.controls
+  .filter((group: FormGroup) =>
+    !(group.get('qsType')?.value?.value === '3' && selectedKeysArray.includes(group.get('qsKey')?.value))
+  )
+  .map((group: FormGroup, index: number) => ({
+    apiId: this.createdId,
+    type: group.get('qsType')?.value?.value ?? "0",
+    key: group.get('qsKey')?.value ?? "",
+    inputType: group.get('qsInputType')?.value?.value ?? "0",
+    inputSource: group.get('qsSelectedType')?.value?.value ?? "",
+    inputValue: group.get('qsValue')?.value?.value ?? "",
+    seq: group.get('qsNo')?.value -1,
+    isDeleted: false,
+    deleterUserId: 0,
+    deletionTime: creationTime,
+    lastModificationTime: creationTime,
+    lastModifierUserId: 0,
+    creationTime: creationTime,
+    creatorUserId: 0,
+    id: 0
+  }));
+
+    console.log("requestModels:",requestModel1)
+     requestModels5.push(...requestModel1);
+  }
+
+
+
+
+
+
+if(this.form.controls['isrequireauth'].value==false){
+  const requestModel2: projapirequestmodel[] = this.queryStringsFormArray.controls.map((group: FormGroup, index: number) => {
   return {
     apiId: this.createdId,
     type: group.get('qsType')?.value?.value ?? "0",
@@ -1340,9 +1476,17 @@ const requestModels: projapirequestmodel[] = this.queryStringsFormArray.controls
     id: 0
   };
 });
+  console.log("requestModels:",requestModel2)
+     requestModels5.push(...requestModel2);
 
 
-const maxSeq = requestModels.reduce((max, item) => item.seq > max ? item.seq : max, 0);
+}
+
+
+
+const maxSeq = requestModels5.reduce((max, item) => item.seq > max ? item.seq : max, 0);
+const authType = this.form.controls['authType'].value;
+
 
 
 const methodKeyModel: projapirequestmodel = {
@@ -1350,6 +1494,33 @@ const methodKeyModel: projapirequestmodel = {
   type: 7,
   key: this.form.controls['method'].value.value,
   inputType: null,
+  inputSource: null,
+  inputValue: null,
+  seq: (authType !== null && authType !== '' && authType.trim() !== '')
+  ? maxSeq + 2
+  : maxSeq + 1,
+  isDeleted: false,
+  deleterUserId: 0,
+  deletionTime: creationTime,
+  lastModificationTime: creationTime,
+  lastModifierUserId: 0,
+  creationTime: creationTime,
+  creatorUserId: 0,
+  id: 0
+};
+
+
+requestModels.push(methodKeyModel);
+requestModels.push(...requestModels5);
+
+
+if (authType !== null && authType !== '')
+{
+  const AuthKeyModel: projapirequestmodel = {
+  apiId: this.createdId,
+  type: 4,
+  key: this.form.controls['authType'].value,
+  inputType: 3,
   inputSource: null,
   inputValue: null,
   seq: maxSeq+1,
@@ -1362,15 +1533,24 @@ const methodKeyModel: projapirequestmodel = {
   creatorUserId: 0,
   id: 0
 };
+requestModels.push(AuthKeyModel);  
+}
 
-const AuthKeyModel: projapirequestmodel = {
-  apiId: this.createdId,
-  type: 4,
-  key: this.form.controls['authType'].value,
-  inputType: null,
+
+if (bodyValue && bodyValue.trim() !== '' && bodyValue.trim() !== '{}') {
+const bodyValue = this.form.get('body')?.value?.[0]?.bodyValue;
+const bodyObj = JSON.parse(bodyValue);
+
+const bodyRequestModels: projapirequestmodel[] = Object.entries(bodyObj).map(
+  ([k, v], index) => {
+    return {
+     apiId: this.createdId,
+  type: 2,
+  key:k,
+  inputType: 3,
   inputSource: null,
-  inputValue: null,
-  seq: maxSeq+2,
+  inputValue: v,
+  seq: index,
   isDeleted: false,
   deleterUserId: 0,
   deletionTime: creationTime,
@@ -1379,24 +1559,46 @@ const AuthKeyModel: projapirequestmodel = {
   creationTime: creationTime,
   creatorUserId: 0,
   id: 0
-};
+    };
+  }
+);
 
-requestModels.push(methodKeyModel); 
-requestModels.push(AuthKeyModel);   
+requestModels.push(...bodyRequestModels);
+}
 
-console.log(requestModels);
-requestModels.forEach(model => {
-  this.service.CreateProjectApiRequest(model).pipe(withLoader(this.loaderService)).subscribe({
-   next: (res) => {
-   this.toast.success('ProjectAPIRequest saved successfully.');
-    this.router.navigate(['/admin/apilist']);  
+
+requestModels.push(...finalselect);
+
+console.log("requestModels:",requestModels)
+
+
+
+
+ 
+
+// console.log("requestModels2:",requestModels2);
+// requestModels2.forEach(model => {
+//   this.service.CreateProjectApiRequest(model).pipe(withLoader(this.loaderService)).subscribe({
+//    next: (res) => {
+//    this.toast.success('ProjectAPIRequest saved successfully.');
+//     this.router.navigate(['/admin/apilist']);  
       
-   },
-    error: (err) => {
-      console.error('Error creating API:', err);
-    }
-  });
-})
+//    },
+//     error: (err) => {
+//       console.error('Error creating API:', err);
+//     }
+//   });
+// })
+
+
+
+this.saveRequestsSequentially(requestModels);
+
+
+
+
+
+
 
 
 

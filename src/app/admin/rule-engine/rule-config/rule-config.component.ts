@@ -17,12 +17,13 @@ import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {MatButtonModule} from '@angular/material/button';
+import { CmCronComponent } from '../../../common/cm-cron/cm-cron.component';
 import { CmCheckboxGroupComponent } from '../../../common/cm-checkbox-group/cm-checkbox-group.component';
 import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-select-check.component";
 
 @Component({
   selector: 'app-rule-config',
-  imports: [MaterialModule,MatIconModule,MatButtonModule,MatTooltipModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,
+  imports: [MaterialModule,MatIconModule,CmCronComponent,MatButtonModule,MatTooltipModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,
     CmToggleComponent, CmButtonComponent, CmSelectCheckComponent],
   templateUrl: './rule-config.component.html',
   styleUrl: './rule-config.component.css',
@@ -38,6 +39,7 @@ export class RuleConfigComponent implements OnInit {
   selectedProjectName: any;
   selectedProjectId: any;
   AndFlag: any;
+ parentCron: string = '';
   expOption: boolean = false;
  typeOperatorMap: Record<string, { name: string; value: string }[]> = {
   string: [
@@ -357,11 +359,11 @@ export class RuleConfigComponent implements OnInit {
 
   ngOnInit(): void {
     this.thirdFormGroup = this._formBuilder.group({
-      minute: ['', Validators.required],
-      hour: ['', Validators.required],
-      dayOfMonth: ['', Validators.required],
-      month: ['', Validators.required],
-      dayOfWeek: ['', Validators.required],
+      minute: [''],
+      hour: [''],
+      dayOfMonth: [''],
+      month: [''],
+      dayOfWeek: [''],
     });
     this.secondFormGroup = this._formBuilder.group({
       selectedProject: [null, Validators.required],
@@ -408,6 +410,11 @@ export class RuleConfigComponent implements OnInit {
   }
   get f() {
     return this.firstFormGroup.controls;
+  }
+
+    onCronUpdate(cron: string) {
+    this.parentCron = cron;
+    console.log('Parent received cron:', cron);
   }
   minFormArrayLength(min: number): ValidatorFn {
     return (control: AbstractControl) => {
@@ -616,6 +623,7 @@ buildProjectExpressions(formValue: any) {
 
       return {
         APIID: item.apiName.value,
+        DataSource: item.apiName.dataSource, 
         Expression: {
           [field]: {
             [operator]: isNaN(value) ? value : Number(value),
@@ -716,7 +724,7 @@ console.log('Generated Cron:', cron);
       apiName: null,
       apiId: null,
       ruleExpression: JSON.stringify(result),
-      cron: cron,
+      cron: this.parentCron,
       isDeleted: false,
       deleterUserId: 0,
       deletionTime: creationTime,
@@ -763,7 +771,8 @@ console.log('Generated Cron:', cron);
         const projectOptions = items.map((item: any) => ({
           name: item.apiName,
           value: item.id,
-          projectid: item.projectId
+          projectid: item.projectId,
+          dataSource:item.dataSource
         }));
         const settings = {
           singleSelection: true,

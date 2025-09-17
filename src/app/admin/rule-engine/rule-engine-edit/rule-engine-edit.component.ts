@@ -18,6 +18,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {MatButtonModule} from '@angular/material/button';
+import { CmCronComponent } from '../../../common/cm-cron/cm-cron.component';
 
 import { CmCheckboxGroupComponent } from '../../../common/cm-checkbox-group/cm-checkbox-group.component';
 import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-select-check.component";
@@ -25,7 +26,7 @@ import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-selec
 @Component({
  
   imports: [MaterialModule,MatIconModule,MatButtonModule,MatTooltipModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,
-    CmToggleComponent, CmButtonComponent, CmSelectCheckComponent],
+    CmToggleComponent,CmCronComponent, CmButtonComponent, CmSelectCheckComponent],
 
     selector: 'app-rule-engine-edit',
 
@@ -45,6 +46,8 @@ export class RuleEngineEditComponent implements OnInit {
   selectedProjectId: any;
   AndFlag: any;
   id:any;
+  parentCron: string = '';
+  parent_true :boolean = false;
   expOption: boolean = false;
  typeOperatorMap: Record<string, { name: string; value: string }[]> = {
   string: [
@@ -502,16 +505,19 @@ export class RuleEngineEditComponent implements OnInit {
 // }
 
 patchCronForEdit(cronString: string) {
+  console.log("cronString:",cronString)
   if (!cronString) return;
 
-  const [minute, hour, dayOfMonth, month, dayOfWeek] = cronString.split(" ");
+  // const [minute, hour, dayOfMonth, month, dayOfWeek] = cronString.split(" ");
 
-  // Call setThirdFormValues for each field
-  this.setThirdFormValues(minute, 'min');
-  this.setThirdFormValues(hour, 'hour');
-  this.setThirdFormValues(dayOfMonth, 'daymon');
-  this.setThirdFormValues(month, 'mon');
-  this.setThirdFormValues(dayOfWeek.split(','), 'day'); // pass array for dayOfWeek
+  // // Call setThirdFormValues for each field
+  // this.setThirdFormValues(minute, 'min');
+  // this.setThirdFormValues(hour, 'hour');
+  // this.setThirdFormValues(dayOfMonth, 'daymon');
+  // this.setThirdFormValues(month, 'mon');
+  // this.setThirdFormValues(dayOfWeek.split(','), 'day');
+  this.parentCron=cronString;
+  this.parent_true= true;
 }
 
 
@@ -519,11 +525,11 @@ patchCronForEdit(cronString: string) {
   buildForms(): void {
     
    this.thirdFormGroup = this._formBuilder.group({
-      minute: ['', Validators.required],
-      hour: ['', Validators.required],
-      dayOfMonth: ['', Validators.required],
-      month: ['', Validators.required],
-      dayOfWeek: ['', Validators.required],
+      minute: [''],
+      hour: [''],
+      dayOfMonth: [''],
+      month: [''],
+      dayOfWeek: [''],
     });
     this.secondFormGroup = this._formBuilder.group({
       selectedProject: [null],
@@ -551,6 +557,11 @@ patchCronForEdit(cronString: string) {
       }
       return null;
     };
+  }
+
+    onCronUpdate(cron: string) {
+    this.parentCron = cron;
+    console.log('Updated cron from child:', cron);
   }
   getErrorMessage(_controlName: any, _controlLable: any, _isPattern: boolean = false, _msg: string) {
     return getErrorMsg(this.firstFormGroup, _controlName, _controlLable, _isPattern, _msg);
@@ -876,9 +887,12 @@ patch_expression(ruleExpression: string) {
       });
     };
 
-    processNext(); // start processing
+    processNext(); 
+     this.patchCronForEdit(this.ruleData.cron);
 
     return parsed;
+    
+   
 
   } catch (error) {
     console.error("Error parsing rule expression:", error);
@@ -992,7 +1006,7 @@ console.log('Generated Cron:', cron);
       apiName: null,
       apiId: null,
       ruleExpression: JSON.stringify(result),
-      cron: cron,
+      cron: this.parentCron,
       isDeleted: false,
       deleterUserId: 0,
       deletionTime: creationTime,
