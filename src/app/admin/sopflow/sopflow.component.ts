@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { MaterialModule } from '../../Material.module';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { SmsActionComponent } from '../../user/alert/actions/sms-action/sms-action.component';
+import { EmailActionComponent } from '../../user/alert/actions/email-action/email-action.component';
 
 interface SopActivity {
   id: string;
@@ -9,6 +11,7 @@ interface SopActivity {
   activity: string;
   duration: string;
   type: string;
+  action : string;
 }
 
 interface Sop {
@@ -20,7 +23,7 @@ interface Sop {
 
 @Component({
   selector: 'app-sopflow',
-  imports: [MaterialModule,CommonModule,ReactiveFormsModule],
+  imports: [MaterialModule, CommonModule, ReactiveFormsModule, SmsActionComponent,EmailActionComponent],
   templateUrl: './sopflow.component.html',
   styleUrl: './sopflow.component.css'
 })
@@ -31,20 +34,20 @@ export class SopflowComponent {
       title: 'Device Failure Detection',
       system: 'VMS',
       activities: [
-        { id: 'ACT-001', useCase: 'VMD Device Failure Detection', activity: 'If EMS/NMS finds device unhealthy...', duration: 'Instant', type: 'Auto' },
-        { id: 'ACT-002', useCase: 'ICCC creates incident', activity: 'Incident created automatically', duration: 'Instant', type: 'Auto' },
-        { id: 'ACT-003', useCase: 'Notify operator', activity: 'Operator verifies incident', duration: '1-2 mins', type: 'Auto' },
+        { id: 'ACT-001', useCase: 'SMS Management', activity: 'If EMS/NMS finds device unhealthy...', duration: 'Instant', type: 'Auto',action : "sms" },
+        { id: 'ACT-002', useCase: 'Email Management', activity: 'Incident created automatically', duration: 'Instant', type: 'Auto',action : "email" },
+        { id: 'ACT-003', useCase: 'API Management', activity: 'Operator verifies incident', duration: '1-2 mins', type: 'Auto',action : "workflow" },
       ]
     },
-    {
-      frsId: 'SOP_ATCS_001',
-      title: 'Controller Health Alert',
-      system: 'ATCS',
-      activities: [
-        { id: 'ACT-001', useCase: 'Controller health alert', activity: 'System generates health alert...', duration: 'Instant', type: 'Auto' },
-        { id: 'ACT-002', useCase: 'ICCC creates incident', activity: 'Incident created automatically', duration: 'Instant', type: 'Auto' },
-        { id: 'ACT-004', useCase: 'Operator acknowledges', activity: 'Operator confirms issue', duration: '2-5 mins', type: 'Manual' },
-      ]
-    }
+    // {
+    //   frsId: 'SOP_ATCS_001',
+    //   title: 'Controller Health Alert',
+    //   system: 'ATCS',
+    //   activities: [
+    //     { id: 'ACT-001', useCase: 'Controller health alert', activity: 'System generates health alert...', duration: 'Instant', type: 'Auto' },
+    //     { id: 'ACT-002', useCase: 'ICCC creates incident', activity: 'Incident created automatically', duration: 'Instant', type: 'Auto' },
+    //     { id: 'ACT-004', useCase: 'Operator acknowledges', activity: 'Operator confirms issue', duration: '2-5 mins', type: 'Manual' },
+    //   ]
+    // }
   ];
 }

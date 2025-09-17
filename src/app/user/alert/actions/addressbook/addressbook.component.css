@@ -1,0 +1,23 @@
+.btnAddress {
+    background-color: black;
+    color: white;
+    font-weight: 600;
+    padding: 10px 14px;      
+    border-radius: 8px;
+    font-size: 13px;         
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-transform: none;
+    white-space: nowrap;  
+}
+
+.btnCancel {
+    background-color: orangered;
+    color: white;
+    font-weight: 600;
+    padding: 10px 14px;      
+    border-radius: 8px;
+    font-size: 13px;         
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-transform: none;
+    white-space: nowrap;  
+}
