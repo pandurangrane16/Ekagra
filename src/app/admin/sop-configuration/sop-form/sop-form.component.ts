@@ -88,6 +88,15 @@ export class SopFormComponent {
           options: []
         };
            PolicySettings = {
+            
+        
+          lableClass: 'form-label',
+          formFieldClass: '', 
+          appearance: 'fill',
+          options: []
+        };
+          PolicySettings2 = {
+            
         
           lableClass: 'form-label',
           formFieldClass: '', 
@@ -206,8 +215,81 @@ export class SopFormComponent {
     }, error => {
       console.error('Error fetching Action list', error);
     });
+
+
+ 
   }
 
+
+      GetPolicyList_all() {
+    this.service.GetPolicyList_all().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+      const items = response?.result || [];
+
+      const projectOptions = items.map((item: any) => ({
+        name: item.policyName,
+        value: item.id
+      }));
+      this.PolicySettings2.options = projectOptions;
+     
+
+
+     if (this.state?.mode === 'edit' && this.state?.record) {
+
+
+const selectedProj = (this.PolicySettings2.options as any[]).find(
+  proj => proj.name === this.state.record.policyName
+
+);
+console.log("hello selectedProj");
+
+//this.editid=this.state.record.id;
+    this.form.patchValue({
+      sopname: this.state.record.sopName,
+      name: selectedProj,
+      isActive:this.state.record.isActive,
+    });
+
+
+    this.form.get('name')?.disable();
+  this.service.GetSOPActionMasterbySOPId(this.state.record.id)
+    .pipe(withLoader(this.loaderService))
+    .subscribe((res: any) => {
+      const actions = res?.result || [];
+      this.patchActions(actions);
+    });
+
+  }
+
+
+
+      console.log("hello",this.PolicySettings.options)
+    }, error => {
+      console.error('Error fetching policy list', error);
+    });
+
+
+
+
+
+
+  }
+
+patchActions(actions: any[]) {
+  this.actions.clear();
+
+  actions.forEach((act, index) => {
+    // Find matching dropdown option by value (actionId)
+  const selectedAction = (this.ActionSettings?.options as { name: any, value: any }[] || [])
+  .find(opt => opt.value === act.actionId);
+
+    const row = this.fb.group({
+      actionName: [selectedAction ?? { name: act.actionName, value: act.actionId }, Validators.required],
+      sequence: [act.sequence ?? index + 1, Validators.required]
+    });
+
+    this.actions.push(row);
+  });
+}
     GetPolicyList() {
     this.service.GetPolicyList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
       const items = response?.result || [];
@@ -218,10 +300,22 @@ export class SopFormComponent {
       }));
       this.PolicySettings.options = projectOptions;
       this.isPolicyOptionLoaded = true;
+
+
+ 
+
+
+
       console.log("hello",this.PolicySettings.options)
     }, error => {
       console.error('Error fetching policy list', error);
     });
+
+
+
+
+
+
   }
 
 ReturnValue($event:any) {
@@ -242,8 +336,15 @@ removeActionRow(index: number) {
 
 
 ngOnInit(): void {
+
+   this.state = history.state;
+         const state = this.state;
+        
  this.GetPolicyList();
  this.GetActionList();
+this.GetPolicyList_all();
+
+
 
   this.form = this.fb.group({
     name: ['', [Validators.required,]],
@@ -253,6 +354,7 @@ ngOnInit(): void {
   });
 
   this.addActionRow(); 
+   
 }
   getErrorMessage(_controlName: any, _controlLable: any, _isPattern: boolean = false, _msg: string) {
     return getErrorMsg(this.form, _controlName, _controlLable, _isPattern, _msg);
@@ -296,10 +398,109 @@ ngOnInit(): void {
 
 
     else{
+if (this.state?.mode === 'edit' && this.state?.record) {
+  const sopName = this.form.controls['sopname'].value;
 
-         const sopName = this.form.controls['sopname'].value;
+  this.service.CheckSOPNameExist(sopName, this.state.record.id)
+    .pipe(withLoader(this.loaderService))
+    .subscribe({
+      next: (res: any) => {
+        if (res?.result === true) {
+          this.toast.error("This SOP name already exists. Please choose another name.");
+          return;
+
+        }
+
+        
+        else {
+  const actions = this.form.get('actions')?.value || [];
+          const actionNames = actions.map((a: any) => a.actionName?.value);
+          const hasDuplicates = new Set(actionNames).size !== actionNames.length;
+
+          if (hasDuplicates) {
+            this.toast.error("Duplicate action names are not allowed. Please make sure all actions are unique.");
+            return;
+          }
+
+ else{
+            this.form.markAllAsTouched();
+
+          let _SopConfig = new SopConfig();
+          _SopConfig.policyId = this.form.controls['name'].value.value;
+          _SopConfig.sopName = this.form.controls['sopname'].value;
+          _SopConfig.isActive = this.form.controls['isActive'].value;
+          _SopConfig.creationTime = "2025-06-20T05:32:25.067Z";
+          _SopConfig.creatorUserId = 0;
+          _SopConfig.id = this.state.record.id;
+
+          this.service.SOPConfigUpdate(_SopConfig)
+            .pipe(withLoader(this.loaderService))
+            .subscribe({
+              next: (response: any) => {
+                if (response?.result?.id) {
+                  const sopId = response.result.id;
+                  const actions = this.form.get('actions')?.value || [];
+
+                  this.service.SOPActionDelete(sopId)
+                    .pipe(withLoader(this.loaderService))
+                    .subscribe({
+                      next: () => {
+                     
+                        actions.forEach((action: any) => {
+                          let _SopAction = new SopAction();
+                          _SopAction.sopId = sopId;
+                          _SopAction.actionId = action.actionName?.value;
+                          _SopAction.actionTag = action.actionName?.name;
+                          _SopAction.sequence = Number(action.sequence);
+                          _SopAction.creationTime = new Date().toISOString();
+                          _SopAction.creatorUserId = 0;
+                          _SopAction.lastModificationTime = null;
+                          _SopAction.lastModifierUserId = 0;
+
+                          this.service.SOPActionCreate(_SopAction)
+                            .pipe(withLoader(this.loaderService))
+                            .subscribe({
+                              next: (res: any) => {
+                                console.log("Saved action:", res);
+                              },
+                              error: (err) => {
+                                console.error("Error updating action:", err);
+                                this.toast.error("Failed to update an action");
+                              }
+                            });
+                        });
+
+                        this.toast.success("SOP and all actions updated!");
+                        this.form.reset();
+                        this.router.navigate(['/admin/sopconfig']);
+                      },
+                      error: (err) => {
+                        console.error("Error deleting old SOP actions:", err);
+                        this.toast.error("Failed to delete old SOP actions");
+                      }
+                    });
+                }
+              },
+              error: (err) => {
+                console.error("Error in SOP update:", err);
+                this.toast.error("Failed to update SOP");
+              }
+            });
+ }
 
 
+        }
+      },
+      error: (err) => {
+        console.error("Error checking duplicate SOP name:", err);
+        this.toast.error("Failed to validate SOP name");
+      }
+    });
+}
+
+
+else{
+   const sopName = this.form.controls['sopname'].value;
 this.service.CheckSOPNameExist(sopName)
   .pipe(withLoader(this.loaderService))
   .subscribe({
@@ -309,9 +510,24 @@ this.service.CheckSOPNameExist(sopName)
         this.toast.error("This SOP name already exists. Please choose another name.");
         return;
       }
+
+
+
+
        else {
-            
-      this.form.markAllAsTouched(); 
+
+
+  const actions = this.form.get('actions')?.value || [];
+          const actionNames = actions.map((a: any) => a.actionName?.value);
+          const hasDuplicates = new Set(actionNames).size !== actionNames.length;
+
+          if (hasDuplicates) {
+            this.toast.error("Duplicate action names are not allowed. Please make sure all actions are unique.");
+            return;
+          }
+
+else{
+        this.form.markAllAsTouched(); 
      
 let _SopConfig = new SopConfig();
 
@@ -373,6 +589,10 @@ this.form.reset();
       this.toast.error("Failed to create SOP");
     }
   });
+}
+
+            
+
       }
     },
     error: (err) => {
@@ -380,12 +600,7 @@ this.form.reset();
       this.toast.error("Failed to validate SOP name");
     }
   });
-
-
-
-
-
-
+}
 
     }
 
