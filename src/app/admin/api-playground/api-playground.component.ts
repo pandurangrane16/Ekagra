@@ -1230,8 +1230,13 @@ RemoveHeader(index:any){
     itemsArray.removeAt(index);
   }
 submit(): void {
-  
-  console.log(this.form.controls['isActive'].value )
+
+  if (!this.responseText || this.responseText.trim() === '') {
+    this.toast.error("Response text cannot be empty. Make sure to click Send first.");
+    return; 
+  }
+else{
+   console.log(this.form.controls['isActive'].value )
 
 
 
@@ -1612,6 +1617,9 @@ this.saveRequestsSequentially(requestModels);
   });
  }
 }
+}
+  
+ 
 }
   close() {
       this.router.navigate(['/admin/apilist']);   
