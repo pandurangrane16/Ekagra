@@ -155,6 +155,12 @@ debugger;
         {
           icon: './assets/img/icon_settings.svg',
           activeIcon: './assets/img/icon_settings1.svg',
+          label: 'Sop Configuration',
+          link: 'admin/sopconfig',
+        },
+        {
+          icon: './assets/img/icon_settings.svg',
+          activeIcon: './assets/img/icon_settings1.svg',
           label: 'Project field Configuration',
           link: 'admin/projfieldconfig',
         }, {
