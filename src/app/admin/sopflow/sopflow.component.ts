@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { SmsActionComponent } from '../../user/alert/actions/sms-action/sms-action.component';
 import { EmailActionComponent } from '../../user/alert/actions/email-action/email-action.component';
 import { ApiActionComponent } from '../../user/alert/actions/api-action/api-action.component';
+import { PaActionComponent } from "../../user/alert/actions/pa-action/pa-action.component";
 
 interface SopActivity {
   id: string;
@@ -24,7 +25,7 @@ interface Sop {
 
 @Component({
   selector: 'app-sopflow',
-  imports: [MaterialModule, CommonModule, ReactiveFormsModule, SmsActionComponent,EmailActionComponent,ApiActionComponent],
+  imports: [MaterialModule, CommonModule, ReactiveFormsModule, SmsActionComponent, EmailActionComponent, ApiActionComponent, PaActionComponent],
   templateUrl: './sopflow.component.html',
   styleUrl: './sopflow.component.css'
 })
@@ -38,6 +39,7 @@ export class SopflowComponent {
         { id: 'ACT-001', useCase: 'SMS Management', activity: 'If EMS/NMS finds device unhealthy...', duration: 'Instant', type: 'Auto',action : "sms" },
         { id: 'ACT-002', useCase: 'Email Management', activity: 'Incident created automatically', duration: 'Instant', type: 'Auto',action : "email" },
         { id: 'ACT-003', useCase: 'API Management', activity: 'Operator verifies incident', duration: '1-2 mins', type: 'Auto',action : "api" },
+        { id: 'ACT-004', useCase: 'PA Management', activity: 'Public Announcement', duration: 'Instant', type: 'Auto',action : "pa" },
       ]
     },
     // {
