@@ -1,0 +1,57 @@
+<div class="row mt-1">
+    <div class="col-md-12">
+        <div class="card">
+            <form [formGroup]="form">
+                <div class="card-body" id="editForm">
+
+                    <div class="row">
+                        <mat-card-header>
+                            <div class="col-md-12" style="padding-left: 10px;">
+                                <mat-card-title>
+                                    <h2 style="margin-top: 10px;">API Management</h2>
+                                </mat-card-title>
+                            </div>
+
+                        </mat-card-header>
+                    </div>
+
+                    <hr>
+
+                    <mat-card-content>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <app-cm-select2 *ngIf="!isApiLoaded" [formGroup]="form" [controlName]="'apiId'"
+                                    [settings]="apiSettings" (optionSelected)="onManagerSelected($event)">
+                                </app-cm-select2>
+                            </div>
+                            <div class="col-md-6">
+                                <app-cm-input [formGroup]="form" [controlName]="'requestType'"
+                                    [_inputData]="requestTypeSettings">
+                                </app-cm-input>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <app-cm-textarea [formGroup]="form" [controlName]="'requestBody'"
+                                    [_inputData]="inputFields.requestBodySettings">
+                                </app-cm-textarea>
+                            </div>
+                            <div class="col-md-6 bottom">
+                                <button mat-flat-button class="btnSubmit" (click)="SubmitAction()">
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <app-cm-textarea [formGroup]="form" [controlName]="'responseBody'"
+                                    [_inputData]="inputFields.responseBodySettings">
+                                </app-cm-textarea>
+                            </div>
+                        </div>
+                    </mat-card-content>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

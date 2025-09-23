@@ -26,7 +26,7 @@ import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-selec
 @Component({
  
   imports: [MaterialModule,MatIconModule,MatButtonModule,MatTooltipModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,
-    CmToggleComponent,CmCronComponent, CmButtonComponent, CmSelectCheckComponent],
+    CmToggleComponent,CmCronComponent, CmButtonComponent,],
 
     selector: 'app-rule-engine-edit',
 

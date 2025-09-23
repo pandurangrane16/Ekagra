@@ -18,24 +18,33 @@
               </mat-panel-title>
             </mat-expansion-panel-header>
 
-           @if(act.action === 'sms') {
-              <mat-panel-description>
-                <div class="row">
-                  <div class="col-md-12">
-<app-sms-action></app-sms-action>
-                  </div>
+            @if(act.action === 'sms') {
+            <mat-panel-description>
+              <div class="row">
+                <div class="col-md-12">
+                  <app-sms-action></app-sms-action>
                 </div>
-              </mat-panel-description>
-              }
-              @else if(act.action === 'email') {
-              <mat-panel-description>
-                <div class="row">
-                  <div class="col-md-12">
-<app-email-action></app-email-action>
-                  </div>
+              </div>
+            </mat-panel-description>
+            }
+            @else if(act.action === 'email') {
+            <mat-panel-description>
+              <div class="row">
+                <div class="col-md-12">
+                  <app-email-action></app-email-action>
                 </div>
-              </mat-panel-description>
-              }
+              </div>
+            </mat-panel-description>
+            }
+            @else if(act.action === 'api') {
+            <mat-panel-description>
+              <div class="row">
+                <div class="col-md-12">
+                  <app-api-action></app-api-action>
+                </div>
+              </div>
+            </mat-panel-description>
+            }
           </mat-expansion-panel>
         </mat-accordion>
       </mat-card-content>
