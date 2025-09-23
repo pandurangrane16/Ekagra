@@ -1,6 +1,6 @@
     {
         "version": "2.0.7",
-        "api_url": "https://172.19.32.51:8089/",
+        "api_url": "https://172.19.10.43:8089/",
         "hls_url": "https://10.100.43.108:7000/",
         "ruleConditions": [
             {

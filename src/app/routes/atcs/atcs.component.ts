@@ -56,7 +56,17 @@ endDate: Date | null = null;
 
   isCardExpanded = false;
   siteList: any[] = [];
-  labelList: any[] = [];
+labelList: any[] = [
+  { key: 'pt', label: 'Phase Time' },
+  { key: 'sl', label: 'Saturation Level' }, 
+  { key: 'm', label: 'Mode' },
+  { key: 'it', label: 'Interval Time' },
+  { key: 'pn', label: 'Plan Number' },
+  { key: 'h', label: 'Health' },
+  { key: 'ct', label: 'Cycle Time' },
+  { key: 'serverTime', label: 'Server Time' },
+  { key: 'id', label: 'Server Id' }
+];
   popupData: { [siteId: string]: any } = {};
   session = inject(SessionService);
 
@@ -78,7 +88,7 @@ endDate: Date | null = null;
 
       this.loadJunctions();
       this.loadpoints();
-      this.loadpopuplabels();
+     // this.loadpopuplabels();
 
     });
 
@@ -198,17 +208,17 @@ endDate: Date | null = null;
       }
     });
   }
-  loadpopuplabels(): void {
-    this.service.getlabels(this.id).pipe(withLoader(this.loaderService)).subscribe((res: any) => {
-      if (res && res.result && Array.isArray(res.result.items)) {
-        this.labelList = res.result.items;
-        this.islabel = true
-        console.log(this.labelList)
-      } else {
-        this.labelList = [];
-      }
-    });
-  }
+  // loadpopuplabels(): void {
+  //   this.service.getlabels(this.id).pipe(withLoader(this.loaderService)).subscribe((res: any) => {
+  //     if (res && res.result && Array.isArray(res.result.items)) {
+  //       this.labelList = res.result.items;
+  //       this.islabel = true
+  //       console.log("labellist",this.labelList)
+  //     } else {
+  //       this.labelList = [];
+  //     }
+  //   });
+  // }
 
   loadJunctions(): void {
     this.service.GetAll().pipe(withLoader(this.loaderService)).subscribe((res: any) => {

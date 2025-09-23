@@ -21,8 +21,8 @@ export class CmLeafletComponent implements OnInit {
   @Input() labelList: any[] = [];
   @Input() siteData: any[] = [];
   @Output() polygonDrawn = new EventEmitter<any>();
- @Output() markerClicked = new EventEmitter<string>();
- @Input() popupData: { [siteId: string]: any } = {};
+  @Output() markerClicked = new EventEmitter<string>();
+  @Input() popupData: { [siteId: string]: any } = {};
  sites: any[] = []; 
 markerMap: Map<string, any> = new Map(); 
 
@@ -234,51 +234,211 @@ private waitAndBindPopup(siteId: string, marker: any): void {
   checkAndBind();
 }
 
+// private generatePopupHtml(siteId: string, statusData: any): string {
+//   const site = this.sites.find(s => s.siteId === siteId);
+//   const lat = site?.lat ?? '';
+//   const lng = site?.long ?? '';
+
+//   const controllerData =statusData?.[siteId]?.controller ?? {};
+//   const controllerKeys = Object.keys(controllerData);
+
+//   const mapLabelsHtml = this.labelList
+//     .filter(label => label.mapLabel)
+//     .map(label => {
+//       const labelKey = label.mapLabel;
+//       let value;
+
+//       if (controllerData.hasOwnProperty(labelKey)) {
+//         value = controllerData[labelKey];
+//       } else {
+//         const randomKey = controllerKeys[Math.floor(Math.random() * controllerKeys.length)];
+//         value = controllerData[randomKey];
+//       }
+
+//       // Format value for display
+//       if (Array.isArray(value)) {
+//         value = value.join(', ');
+//       } else if (value === null || value === undefined) {
+//         value = '—';
+//       }
+
+//       return `<li><strong>${labelKey}:</strong> ${value}</li>`;
+//     })
+//     .join('');
+
+//   return `
+//     <div style="font-family: Arial, sans-serif; font-size: 11px; line-height: 1.2; max-width: 200px;">
+//       <strong style="font-size: 12px;">${site?.siteName ?? 'Unknown Site'}</strong>
+//       <p style="margin: 2px 0;"><strong>Coords:</strong> ${lat}, ${lng}</p>
+//       <div style="margin-top: 4px;">
+//         <strong>Status Info:</strong>
+//         <ul style="padding-left: 14px; margin: 2px 0;">
+//           ${mapLabelsHtml}
+//         </ul>
+//       </div>
+//     </div>
+//   `;
+// }
+
+
+  getMode(input: number): string {
+    switch (input) {
+      case 3: return "Adaptive Mode";
+      case 4: return "Cableless Mode";
+      case 5: return "Auxiliary Mode";
+      case 6: return "VA Mode";
+      case 7: return "Manual Mode";
+      case 8: return "Hurry Call Mode";
+      default: return "";
+    }
+  }
+
+  getHealth(input: number): string {
+    switch (input) {
+      case 2: return "Boot up Success";
+      case 3: return "Startup Flash";
+      case 4: return "Startup Red";
+      case 5: return "Plan running";
+      case 6: return "Plan Stopped";
+      case 7: return "POPA Flash";
+      case 8: return "POPA Lamp Off";
+      case 9: return "POPA All Red";
+      case 10: return "POPA Manual";
+      case 11: return "POPA S1";
+      case 12: return "POPA Hurry Call";
+      case 13: return "POPA Step";
+      case 14: return "POPA Panel test";
+      case 15: return "POPA VA";
+      case 16: return "Intra Conflict";
+      case 17: return "Inter Conflict";
+      case 18: return "Voltage Fail";
+      case 19: return "Frequency Fails";
+      case 20: return "Overload";
+      case 21: return "Phase reversal";
+      case 22: return "Lamp Fail";
+      case 23: return "Traffic Error";
+      case 24: return "Jn Recovered";
+      case 25: return "Jn Flash Mode";
+      case 30: return "Siteid error";
+      case 31: return "LMS Error";
+      case 32: return "RTC Error";
+      case 33: return "Traffic Error";
+      case 34: return "POPA S2";
+      case 35: return "SENSETXFORMER";
+      default: return "";
+    }
+  }
+
+
+// private generatePopupHtml(siteId: string, statusData: any): string {
+//   const site = this.sites.find(s => s.siteId === siteId);
+//   const lat = site?.lat ?? '';
+//   const lng = site?.long ?? '';
+
+//   const controllerData = statusData?.[siteId]?.controller ?? {};
+
+//   const mapLabelsHtml = this.labelList.map(label => {
+//     let value: any;
+
+//     switch (label.key) {
+//       case 'sl':
+//         // special case: nested in jnAdaptiveInfo
+//         value = (controllerData.jnAdaptiveInfo?.CoordPhaseSaturationLevel ?? 0) * 100;
+//         break;
+
+//       case 'm':
+//         // call your getMode method
+//         value = this.getMode(controllerData[label.key]);
+//         break;
+
+//       case 'h':
+//         // call your getHealth method
+//         value = this.getHealth(controllerData[label.key]);
+//         break;
+
+//       default:
+//         // default: take value directly
+//         value = controllerData[label.key];
+//         break;
+//     }
+
+//     // handle null/undefined nicely
+//     if (value === null || value === undefined || value === '') {
+//       value = '—';
+//     }
+
+//     return `<li><strong>${label.label}:</strong> ${value}</li>`;
+//   }).join('');
+
+//   return `
+//     <div style="font-family: Arial, sans-serif; font-size: 11px; line-height: 1.2; max-width: 200px;">
+//       <strong style="font-size: 12px;">${site?.siteName ?? 'Unknown Site'}</strong>
+//       <p style="margin: 2px 0;"><strong>Coords:</strong> ${lat}, ${lng}</p>
+//       <div style="margin-top: 4px;">
+//         <strong>Status Info:</strong>
+//         <ul style="padding-left: 14px; margin: 2px 0;">
+//           ${mapLabelsHtml}
+//         </ul>
+//       </div>
+//     </div>
+//   `;
+// }
+
+
 private generatePopupHtml(siteId: string, statusData: any): string {
   const site = this.sites.find(s => s.siteId === siteId);
   const lat = site?.lat ?? '';
   const lng = site?.long ?? '';
 
-  const controllerData =statusData?.[siteId]?.controller ?? {};
-  const controllerKeys = Object.keys(controllerData);
+  const controllerData = statusData?.[siteId]?.controller ?? {};
 
-  const mapLabelsHtml = this.labelList
-    .filter(label => label.mapLabel)
-    .map(label => {
-      const labelKey = label.mapLabel;
-      let value;
+  const rowsHtml = this.labelList.map(label => {
+    let value: any;
 
-      if (controllerData.hasOwnProperty(labelKey)) {
-        value = controllerData[labelKey];
-      } else {
-        const randomKey = controllerKeys[Math.floor(Math.random() * controllerKeys.length)];
-        value = controllerData[randomKey];
-      }
+    switch (label.key) {
+      case 'sl':
+        value = (controllerData.jnAdaptiveInfo?.CoordPhaseSaturationLevel ?? 0) * 100;
+        break;
+      case 'm':
+        value = this.getMode(controllerData[label.key]);
+        break;
+      case 'h':
+        value = this.getHealth(controllerData[label.key]);
+        break;
+      default:
+        value = controllerData[label.key];
+        break;
+    }
 
-      // Format value for display
-      if (Array.isArray(value)) {
-        value = value.join(', ');
-      } else if (value === null || value === undefined) {
-        value = '—';
-      }
+    if (value === null || value === undefined || value === '') {
+      value = '—';
+    }
 
-      return `<li><strong>${labelKey}:</strong> ${value}</li>`;
-    })
-    .join('');
+    return `
+      <tr>
+        <td style="padding: 4px 8px; font-weight: bold; color: #333;">${label.label}</td>
+        <td style="padding: 4px 8px; color: #555;">${value}</td>
+      </tr>
+    `;
+  }).join('');
 
   return `
-    <div style="font-family: Arial, sans-serif; font-size: 11px; line-height: 1.2; max-width: 200px;">
-      <strong style="font-size: 12px;">${site?.siteName ?? 'Unknown Site'}</strong>
-      <p style="margin: 2px 0;"><strong>Coords:</strong> ${lat}, ${lng}</p>
-      <div style="margin-top: 4px;">
-        <strong>Status Info:</strong>
-        <ul style="padding-left: 14px; margin: 2px 0;">
-          ${mapLabelsHtml}
-        </ul>
+    <div style="font-family: Arial, sans-serif; font-size: 12px; max-width: 280px;">
+      <div style="text-align: center; font-weight: bold; font-size: 14px; margin-bottom: 6px; color: #2c3e50;">
+        ${site?.siteName ?? 'Unknown Site'}
       </div>
+  
+      <table style="width: 100%; border-collapse: collapse; background: #f9f9f9; border-radius: 4px; overflow: hidden;">
+        <tbody>
+          ${rowsHtml}
+        </tbody>
+      </table>
     </div>
   `;
 }
+
+
+
 
 
 
