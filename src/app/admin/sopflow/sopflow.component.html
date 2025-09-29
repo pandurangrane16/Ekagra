@@ -46,13 +46,45 @@
             </mat-panel-description>
             }
             @else if(act.action === "pa") {
-              <mat-panel-description>
+            <mat-panel-description>
               <div class="row">
                 <div class="col-md-12">
                   <app-pa-action></app-pa-action>
                 </div>
               </div>
             </mat-panel-description>
+            } @else if (act.action === "vmsdevicefailure") {
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+              <mat-panel-description>
+                <div class="row">
+                  <div class="col-md-12">
+                    <app-vms-device-failure [task]="act"></app-vms-device-failure>
+                  </div>
+                </div>
+              </mat-panel-description>
+            </div>
+            }
+            @else if (act.action === "vmsemergency") {
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+              <mat-panel-description>
+                <div class="row">
+                  <div class="col-md-12">
+                    <app-vms-emergency-play [task]="act"></app-vms-emergency-play>
+                  </div>
+                </div>
+              </mat-panel-description>
+            </div>
+            }
+            @else if (act.action === "atcshealth") {
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+              <mat-panel-description>
+                <div class="row">
+                  <div class="col-md-12">
+                    <app-atcs-health [task]="act"></app-atcs-health>
+                  </div>
+                </div>
+              </mat-panel-description>
+            </div>
             }
           </mat-expansion-panel>
         </mat-accordion>
