@@ -9,13 +9,19 @@ import { CmSelect2Component } from '../../../../common/cm-select2/cm-select2.com
 import { SmsActionComponent } from '../sms-action/sms-action.component';
 import { EmailActionComponent } from '../email-action/email-action.component';
 import { ApiStatusComponent } from '../api-status/api-status.component';
+import { PaActionComponent } from '../pa-action/pa-action.component';
+import { CmSelectCheckComponent } from '../../../../common/cm-select-check/cm-select-check.component';
+import { CmInputComponent } from '../../../../common/cm-input/cm-input.component';
+import { VmsBroadcastingComponent } from "../vms-broadcasting/vms-broadcasting.component";
 
 @Component({
   selector: 'app-atcs-health',
-  imports: [MaterialModule, CommonModule, CmSelect2Component, SmsActionComponent, EmailActionComponent, CmTextareaComponent],
+  imports: [MaterialModule, CommonModule, CmSelect2Component, SmsActionComponent, 
+    EmailActionComponent, PaActionComponent, VmsBroadcastingComponent],
   templateUrl: './atcs-health.component.html',
   styleUrl: './atcs-health.component.css',
-  standalone : true
+  standalone : true,
+  host: { 'ngSkipHydration': '' } 
 })
 export class AtcsHealthComponent implements OnInit {
   form: any;
@@ -41,8 +47,37 @@ export class AtcsHealthComponent implements OnInit {
       isDisabled: false,
       color: 'primary',
       formFieldClass: "w-100"
+    },
+    unitValue : {
+      labelHeader: 'Unit Value',
+      placeholder: 'Unit Value',
+      appearance: 'outline',
+      isDisabled: false,
+      color: 'primary',
+      formFieldClass: "w-100"
     }
   }
+  vmdTypeSettings = {
+    labelHeader: 'Select VMD(Controller)',
+    lableClass: 'form-label',
+    formFieldClass: 'w-100',
+    appearance: 'fill',
+    options: [
+      { name: 'SMS', value: 0 },
+      { name: 'EMAIL', value: 1 },
+    ]
+  };
+  unitSettings = {
+    labelHeader: 'Select Unit',
+      lableClass: 'form-label',
+      formFieldClass: 'w-100',
+      appearance: 'fill',
+      options: [
+        { name: 'Seconds', value: 0 },
+        { name: 'Minutes', value: 1 },
+      ]
+  }
+  isVmdSelected : boolean = true;
   constructor(private fb: FormBuilder, private dialog : MatDialog) { }
 
   ngOnInit(): void {
@@ -50,8 +85,11 @@ export class AtcsHealthComponent implements OnInit {
       this.isTypeSelected = true;
       this.form = this.fb.group({
         selectedAction: ['', Validators.required],
+        selectedVmdAction :[],
         remarks: ['', Validators.required],
         isVerified: [false, Validators.required],
+        selectedUnit : [],
+        unitValue : []
       })
     }
   }
