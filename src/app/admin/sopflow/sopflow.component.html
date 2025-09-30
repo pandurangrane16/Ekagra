@@ -86,6 +86,17 @@
               </mat-panel-description>
             </div>
             }
+            @else if (act.action === "atcscongestion") {
+              <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+                <mat-panel-description>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <app-atcs-congestion [task]="act"></app-atcs-congestion>
+                    </div>
+                  </div>
+                </mat-panel-description>
+              </div>
+              }
           </mat-expansion-panel>
         </mat-accordion>
       </mat-card-content>

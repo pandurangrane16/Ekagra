@@ -15,15 +15,15 @@ import { CmInputComponent } from '../../../../common/cm-input/cm-input.component
 import { VmsBroadcastingComponent } from "../vms-broadcasting/vms-broadcasting.component";
 
 @Component({
-  selector: 'app-atcs-health',
+  selector: 'app-atcs-congestion',
   imports: [MaterialModule, CommonModule, CmSelect2Component, SmsActionComponent, 
-    EmailActionComponent,CmTextareaComponent],
-  templateUrl: './atcs-health.component.html',
-  styleUrl: './atcs-health.component.css',
+    EmailActionComponent, PaActionComponent, VmsBroadcastingComponent],
+  templateUrl: './atcs-congestion.component.html',
+  styleUrl: './atcs-congestion.component.css',
   standalone : true,
   host: { 'ngSkipHydration': '' } 
 })
-export class AtcsHealthComponent implements OnInit {
+export class AtcsCongestionComponent implements OnInit {
   form: any;
   @Input() task: any;
   isEmail: boolean = false;

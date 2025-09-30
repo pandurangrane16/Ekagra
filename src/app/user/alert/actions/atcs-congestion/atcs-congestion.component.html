@@ -1,0 +1,120 @@
+<div class="pageWrapper">
+    <mat-card class="cardWithShadow theme-card">
+      <hr />
+      <mat-card-content>
+        <form [formGroup]="form">
+          @if(this.task.sequence == 0) {
+          <div [ngClass]="{ 'readonly-div': !this.task.hasAccess }">
+            <div class="row">
+              <label>Verification</label>
+              <br />
+              <div class="col-md-6">
+                <button
+                  mat-flat-button
+                  class="btnSubmit"
+                  (click)="ViewOnMap(this.task)"
+                >
+                  View on Camera
+                </button>
+              </div>
+            </div>
+            <hr />
+            <div class="row">
+              <div class="col-md-12">
+                <button mat-flat-button class="btnSubmit" (click)="SubmitAction()">
+                  Next
+                </button>
+                &nbsp;&nbsp;&nbsp;
+                <button mat-flat-button class="btnCancel" (click)="CancelAction()">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+          }
+  
+          @if(this.task.sequence == 1) {
+          <div class="row">
+            <div class="col-md-6">
+              <app-cm-select2
+                *ngIf="isTypeSelected"
+                [formGroup]="form"
+                [controlName]="'selectedAction'"
+                [settings]="actionTypeSettings"
+                (returnObject)="onActionTypeSelected($event)"
+                ngSkipHydration
+              >
+              </app-cm-select2>
+            </div>
+          </div>
+          <div class="row">
+            @if(isSMS) {
+            <div class="col-md-12">
+              <app-sms-action ngSkipHydration></app-sms-action>
+            </div>
+            } @else if(isEmail) {
+            <div class="col-md-12">
+              <app-email-action ngSkipHydration></app-email-action>
+            </div>
+            }
+          </div>
+          }
+  
+          @if(this.task.sequence == 2) {
+          <div [ngClass]="{ 'readonly-div': !this.task.hasAccess }">
+            <div class="row">
+              <h3>Broadcasting</h3>
+            </div>
+            <hr />
+  
+            <!-- Wrap whole tab group to avoid mismatches -->
+            <ng-container ngSkipHydration>
+              <div class="row">
+                <div class="col-md-12">
+                  <mat-tab-group>
+                    <mat-tab>
+                      <ng-template mat-tab-label>
+                        <mat-icon class="example-tab-icon">thumb_up</mat-icon>
+                        PA Broadcasting
+                      </ng-template>
+                      <app-pa-action></app-pa-action>
+                    </mat-tab>
+  
+                    <mat-tab>
+                      <ng-template mat-tab-label>
+                        <mat-icon class="example-tab-icon">thumb_up</mat-icon>
+                        VMS Broadcasting
+                      </ng-template>
+                      <app-vms-broadcasting></app-vms-broadcasting>
+                    </mat-tab>
+  
+                    <mat-tab>
+                      <ng-template mat-tab-label>
+                        <mat-icon class="example-tab-icon">thumb_up</mat-icon>
+                        Flash Mode
+                      </ng-template>
+                      <app-vms-broadcasting></app-vms-broadcasting>
+                    </mat-tab>
+                  </mat-tab-group>
+                </div>
+              </div>
+            </ng-container>
+  
+            <div class="row">
+              <div class="col-md-12">
+                <button mat-flat-button class="btnSubmit" (click)="SubmitAction()">
+                  Closed
+                </button>
+                &nbsp;&nbsp;&nbsp;
+                <button mat-flat-button class="btnCancel" (click)="CancelAction()">
+                  Reassign
+                </button>
+              </div>
+            </div>
+          </div>
+          }
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  

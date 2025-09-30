@@ -9,6 +9,7 @@ import { PaActionComponent } from "../../user/alert/actions/pa-action/pa-action.
 import { VmsDeviceFailureComponent } from "../../user/alert/actions/vms-device-failure/vms-device-failure.component";
 import { VmsEmergencyPlayComponent } from "../../user/alert/actions/vms-emergency-play/vms-emergency-play.component";
 import { AtcsHealthComponent } from "../../user/alert/actions/atcs-health/atcs-health.component";
+import { AtcsCongestionComponent } from "../../user/alert/actions/atcs-congestion/atcs-congestion.component";
 
 interface SopActivity {
   id: string;
@@ -30,7 +31,7 @@ interface Sop {
 
 @Component({
   selector: 'app-sopflow',
-  imports: [MaterialModule, CommonModule, ReactiveFormsModule, SmsActionComponent, EmailActionComponent, ApiActionComponent, PaActionComponent, VmsDeviceFailureComponent, VmsEmergencyPlayComponent, AtcsHealthComponent],
+  imports: [MaterialModule, CommonModule, ReactiveFormsModule, SmsActionComponent, EmailActionComponent, ApiActionComponent, PaActionComponent, VmsDeviceFailureComponent, VmsEmergencyPlayComponent, AtcsHealthComponent, AtcsCongestionComponent],
   templateUrl: './sopflow.component.html',
   styleUrl: './sopflow.component.css'
 })
@@ -75,10 +76,10 @@ export class SopflowComponent {
       title: 'ATCS Congestion',
       system: 'ATCS',
       activities: [
-        { id: 'ACT-001', useCase: 'Visual Verification', activity: 'Conduct visual verification by opening camera', duration: 'Instant', type: 'Auto', action: "atcshealth", sequence: 0, hasAccess: true },
-        { id: 'ACT-002', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "atcshealth", sequence: 1, hasAccess: true },
-        { id: 'ACT-003', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "atcshealth", sequence: 2, hasAccess: true },
-        { id: 'ACT-004', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "atcshealth", sequence: 3, hasAccess: true },
+        { id: 'ACT-001', useCase: 'Visual Verification', activity: 'Conduct visual verification by opening camera', duration: 'Instant', type: 'Auto', action: "atcscongestion", sequence: 0, hasAccess: true },
+        { id: 'ACT-002', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "atcscongestion", sequence: 1, hasAccess: true },
+        { id: 'ACT-003', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "atcscongestion", sequence: 2, hasAccess: true },
+        { id: 'ACT-004', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "atcscongestion", sequence: 3, hasAccess: true },
       ]
     }
   ];
