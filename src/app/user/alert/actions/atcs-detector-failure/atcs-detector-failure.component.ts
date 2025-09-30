@@ -15,16 +15,17 @@ import { CmInputComponent } from '../../../../common/cm-input/cm-input.component
 import { VmsBroadcastingComponent } from "../vms-broadcasting/vms-broadcasting.component";
 import { ApiActionComponent } from "../api-action/api-action.component";
 
+
 @Component({
-  selector: 'app-atcs-congestion',
+  selector: 'app-atcs-detector-failure',
   imports: [MaterialModule, CommonModule, CmSelect2Component, SmsActionComponent,
-    EmailActionComponent, PaActionComponent, VmsBroadcastingComponent, ApiActionComponent],
-  templateUrl: './atcs-congestion.component.html',
-  styleUrl: './atcs-congestion.component.css',
+    EmailActionComponent, CmTextareaComponent, ApiActionComponent],
+  templateUrl: './atcs-detector-failure.component.html',
+  styleUrl: './atcs-detector-failure.component.css',
   standalone : true,
   host: { 'ngSkipHydration': '' } 
 })
-export class AtcsCongestionComponent implements OnInit {
+export class AtcsDetectorFailureComponent implements OnInit {
   form: any;
   @Input() task: any;
   isEmail: boolean = false;

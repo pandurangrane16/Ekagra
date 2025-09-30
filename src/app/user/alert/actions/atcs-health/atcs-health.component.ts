@@ -13,11 +13,12 @@ import { PaActionComponent } from '../pa-action/pa-action.component';
 import { CmSelectCheckComponent } from '../../../../common/cm-select-check/cm-select-check.component';
 import { CmInputComponent } from '../../../../common/cm-input/cm-input.component';
 import { VmsBroadcastingComponent } from "../vms-broadcasting/vms-broadcasting.component";
+import { ApiActionComponent } from "../api-action/api-action.component";
 
 @Component({
   selector: 'app-atcs-health',
-  imports: [MaterialModule, CommonModule, CmSelect2Component, SmsActionComponent, 
-    EmailActionComponent,CmTextareaComponent],
+  imports: [MaterialModule, CommonModule, CmSelect2Component, SmsActionComponent,
+    EmailActionComponent, CmTextareaComponent, ApiActionComponent],
   templateUrl: './atcs-health.component.html',
   styleUrl: './atcs-health.component.css',
   standalone : true,

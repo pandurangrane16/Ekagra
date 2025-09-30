@@ -87,16 +87,93 @@
             </div>
             }
             @else if (act.action === "atcscongestion") {
-              <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
-                <mat-panel-description>
-                  <div class="row">
-                    <div class="col-md-12">
-                      <app-atcs-congestion [task]="act"></app-atcs-congestion>
-                    </div>
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+              <mat-panel-description>
+                <div class="row">
+                  <div class="col-md-12">
+                    <app-atcs-congestion [task]="act"></app-atcs-congestion>
                   </div>
-                </mat-panel-description>
-              </div>
-              }
+                </div>
+              </mat-panel-description>
+            </div>
+            }
+            @else if (act.action === "atcslampfailure") {
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+              <mat-panel-description>
+                <div class="row">
+                  <div class="col-md-12">
+                    <app-atcs-lamp-failure [task]="act"></app-atcs-lamp-failure>
+                  </div>
+                </div>
+              </mat-panel-description>
+            </div>
+            }
+            @else if (act.action === "atcsdetectorfailure") {
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+              <mat-panel-description>
+                <div class="row">
+                  <div class="col-md-12">
+                    <app-atcs-detector-failure [task]="act"></app-atcs-detector-failure>
+                  </div>
+                </div>
+              </mat-panel-description>
+            </div>
+            }
+            @else if (act.action === "itmscamerafailure") {
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+              <mat-panel-description>
+                <div class="row">
+                  <div class="col-md-12">
+                    <app-itms-camera-failure [task]="act"></app-itms-camera-failure>
+                  </div>
+                </div>
+              </mat-panel-description>
+            </div>
+            }
+            @else if (act.action === "itmslpufailure") {
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+              <mat-panel-description>
+                <div class="row">
+                  <div class="col-md-12">
+                    <app-itms-lpu-failure [task]="act"></app-itms-lpu-failure>
+                  </div>
+                </div>
+              </mat-panel-description>
+            </div>
+            }
+            @else if (act.action === "itmschallancollection") {
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+              <mat-panel-description>
+                <div class="row">
+                  <div class="col-md-12">
+                    <app-itms-challan-collection [task]="act"></app-itms-challan-collection>
+                  </div>
+                </div>
+              </mat-panel-description>
+            </div>
+            }
+            @else if (act.action === "envsensorfailure") {
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+              <mat-panel-description>
+                <div class="row">
+                  <div class="col-md-12">
+                    <app-env-sensor-failure [task]="act"></app-env-sensor-failure>
+                  </div>
+                </div>
+              </mat-panel-description>
+            </div>
+            }
+            @else if (act.action === "envsensorpollution") {
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+              <mat-panel-description>
+                <div class="row">
+                  <div class="col-md-12">
+                    <app-env-sensor-pollution [task]="act"></app-env-sensor-pollution>
+                  </div>
+                </div>
+              </mat-panel-description>
+            </div>
+            }
           </mat-expansion-panel>
         </mat-accordion>
       </mat-card-content>

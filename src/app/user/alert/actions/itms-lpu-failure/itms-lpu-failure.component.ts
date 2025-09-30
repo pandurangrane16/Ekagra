@@ -16,15 +16,15 @@ import { VmsBroadcastingComponent } from "../vms-broadcasting/vms-broadcasting.c
 import { ApiActionComponent } from "../api-action/api-action.component";
 
 @Component({
-  selector: 'app-atcs-congestion',
-  imports: [MaterialModule, CommonModule, CmSelect2Component, SmsActionComponent,
-    EmailActionComponent, PaActionComponent, VmsBroadcastingComponent, ApiActionComponent],
-  templateUrl: './atcs-congestion.component.html',
-  styleUrl: './atcs-congestion.component.css',
+  selector: 'app-itms-lpu-failure',
+  imports:  [MaterialModule, CommonModule, CmSelect2Component, SmsActionComponent,
+    EmailActionComponent, CmTextareaComponent, ApiActionComponent],
+  templateUrl: './itms-lpu-failure.component.html',
+  styleUrl: './itms-lpu-failure.component.css',
   standalone : true,
   host: { 'ngSkipHydration': '' } 
 })
-export class AtcsCongestionComponent implements OnInit {
+export class ItmsLpuFailureComponent implements OnInit {
   form: any;
   @Input() task: any;
   isEmail: boolean = false;
@@ -120,3 +120,4 @@ export class AtcsCongestionComponent implements OnInit {
     })
   }
 }
+

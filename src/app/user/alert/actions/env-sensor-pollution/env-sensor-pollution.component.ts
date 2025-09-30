@@ -16,15 +16,15 @@ import { VmsBroadcastingComponent } from "../vms-broadcasting/vms-broadcasting.c
 import { ApiActionComponent } from "../api-action/api-action.component";
 
 @Component({
-  selector: 'app-atcs-congestion',
+  selector: 'app-env-sensor-pollution',
   imports: [MaterialModule, CommonModule, CmSelect2Component, SmsActionComponent,
-    EmailActionComponent, PaActionComponent, VmsBroadcastingComponent, ApiActionComponent],
-  templateUrl: './atcs-congestion.component.html',
-  styleUrl: './atcs-congestion.component.css',
+    EmailActionComponent, CmTextareaComponent, ApiActionComponent, VmsBroadcastingComponent],
+  templateUrl: './env-sensor-pollution.component.html',
+  styleUrl: './env-sensor-pollution.component.css',
   standalone : true,
   host: { 'ngSkipHydration': '' } 
 })
-export class AtcsCongestionComponent implements OnInit {
+export class EnvSensorPollutionComponent implements OnInit {
   form: any;
   @Input() task: any;
   isEmail: boolean = false;

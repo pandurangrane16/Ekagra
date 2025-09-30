@@ -10,6 +10,13 @@ import { VmsDeviceFailureComponent } from "../../user/alert/actions/vms-device-f
 import { VmsEmergencyPlayComponent } from "../../user/alert/actions/vms-emergency-play/vms-emergency-play.component";
 import { AtcsHealthComponent } from "../../user/alert/actions/atcs-health/atcs-health.component";
 import { AtcsCongestionComponent } from "../../user/alert/actions/atcs-congestion/atcs-congestion.component";
+import { AtcsLampFailureComponent } from "../../user/alert/actions/atcs-lamp-failure/atcs-lamp-failure.component";
+import { AtcsDetectorFailureComponent } from "../../user/alert/actions/atcs-detector-failure/atcs-detector-failure.component";
+import { ItmsCameraFailureComponent } from "../../user/alert/actions/itms-camera-failure/itms-camera-failure.component";
+import { ItmsLpuFailureComponent } from "../../user/alert/actions/itms-lpu-failure/itms-lpu-failure.component";
+import { ItmsChallanCollectionComponent } from "../../user/alert/actions/itms-challan-collection/itms-challan-collection.component";
+import { EnvSensorFailureComponent } from "../../user/alert/actions/env-sensor-failure/env-sensor-failure.component";
+import { EnvSensorPollutionComponent } from "../../user/alert/actions/env-sensor-pollution/env-sensor-pollution.component";
 
 interface SopActivity {
   id: string;
@@ -31,7 +38,7 @@ interface Sop {
 
 @Component({
   selector: 'app-sopflow',
-  imports: [MaterialModule, CommonModule, ReactiveFormsModule, SmsActionComponent, EmailActionComponent, ApiActionComponent, PaActionComponent, VmsDeviceFailureComponent, VmsEmergencyPlayComponent, AtcsHealthComponent, AtcsCongestionComponent],
+  imports: [MaterialModule, CommonModule, ReactiveFormsModule, SmsActionComponent, EmailActionComponent, ApiActionComponent, PaActionComponent, VmsDeviceFailureComponent, VmsEmergencyPlayComponent, AtcsHealthComponent, AtcsCongestionComponent, AtcsLampFailureComponent, AtcsDetectorFailureComponent, ItmsCameraFailureComponent, ItmsLpuFailureComponent, ItmsChallanCollectionComponent, EnvSensorFailureComponent, EnvSensorPollutionComponent],
   templateUrl: './sopflow.component.html',
   styleUrl: './sopflow.component.css'
 })
@@ -80,6 +87,76 @@ export class SopflowComponent {
         { id: 'ACT-002', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "atcscongestion", sequence: 1, hasAccess: true },
         { id: 'ACT-003', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "atcscongestion", sequence: 2, hasAccess: true },
         { id: 'ACT-004', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "atcscongestion", sequence: 3, hasAccess: true },
+      ]
+    },
+    {
+      frsId: 'SOP_ATCS_003',
+      title: 'ATCS LAMP FAILURE',
+      system: 'ATCS',
+      activities: [
+        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "atcslampfailure", sequence: 0, hasAccess: true },
+        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "atcslampfailure", sequence: 1, hasAccess: true },
+        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "atcslampfailure", sequence: 2, hasAccess: true },
+      ]
+    },
+    {
+      frsId: 'SOP_ATCS_004',
+      title: 'ATCS DETECTOR FAILURE',
+      system: 'ATCS',
+      activities: [
+        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "atcsdetectorfailure", sequence: 0, hasAccess: true },
+        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "atcsdetectorfailure", sequence: 1, hasAccess: true },
+        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "atcsdetectorfailure", sequence: 2, hasAccess: true },
+      ]
+    },
+    {
+      frsId: 'SOP_ITMS_001',
+      title: 'ITMS CAMERA FAILURE',
+      system: 'ITMS',
+      activities: [
+        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "itmscamerafailure", sequence: 0, hasAccess: true },
+        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "itmscamerafailure", sequence: 1, hasAccess: true },
+        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "itmscamerafailure", sequence: 2, hasAccess: true },
+      ]
+    },
+    {
+      frsId: 'SOP_ITMS_002',
+      title: 'ITMS LPU FAILURE',
+      system: 'ITMS',
+      activities: [
+        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "itmslpufailure", sequence: 0, hasAccess: true },
+        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "itmslpufailure", sequence: 1, hasAccess: true },
+        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "itmslpufailure", sequence: 2, hasAccess: true },
+      ]
+    },
+    {
+      frsId: 'SOP_ITMS_003',
+      title: 'ITMS CHALLAN COLLECTION',
+      system: 'ITMS',
+      activities: [
+        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "itmschallancollection", sequence: 0, hasAccess: true },
+        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "itmschallancollection", sequence: 1, hasAccess: true },
+        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "itmschallancollection", sequence: 2, hasAccess: true },
+      ]
+    },
+    {
+      frsId: 'SOP_ENV_001',
+      title: 'ENVIRONMENT SENSOR FAILURE',
+      system: 'ENV',
+      activities: [
+        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "envsensorfailure", sequence: 0, hasAccess: true },
+        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "envsensorfailure", sequence: 1, hasAccess: true },
+        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "envsensorfailure", sequence: 2, hasAccess: true },
+      ]
+    },
+    {
+      frsId: 'SOP_ENV_002',
+      title: 'ENVIRONMENT SENSOR POLLUTION',
+      system: 'ENV',
+      activities: [
+        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "envsensorpollution", sequence: 0, hasAccess: true },
+        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "envsensorpollution", sequence: 1, hasAccess: true },
+        { id: 'ACT-003', useCase: 'Publish Message on VMD\'s', activity: 'Publish environment message on vmd', duration: 'Instant', type: 'Auto', action: "envsensorpollution", sequence: 2, hasAccess: true },
       ]
     }
   ];

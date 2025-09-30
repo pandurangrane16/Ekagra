@@ -16,15 +16,15 @@ import { VmsBroadcastingComponent } from "../vms-broadcasting/vms-broadcasting.c
 import { ApiActionComponent } from "../api-action/api-action.component";
 
 @Component({
-  selector: 'app-atcs-congestion',
+  selector: 'app-itms-challan-collection',
   imports: [MaterialModule, CommonModule, CmSelect2Component, SmsActionComponent,
-    EmailActionComponent, PaActionComponent, VmsBroadcastingComponent, ApiActionComponent],
-  templateUrl: './atcs-congestion.component.html',
-  styleUrl: './atcs-congestion.component.css',
+    EmailActionComponent, CmTextareaComponent, ApiActionComponent],
+  templateUrl: './itms-challan-collection.component.html',
+  styleUrl: './itms-challan-collection.component.css',
   standalone : true,
   host: { 'ngSkipHydration': '' } 
 })
-export class AtcsCongestionComponent implements OnInit {
+export class ItmsChallanCollectionComponent implements OnInit {
   form: any;
   @Input() task: any;
   isEmail: boolean = false;

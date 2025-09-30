@@ -64,7 +64,7 @@
 
                 @if(this.task.sequence == 2) {
                 <div [ngClass]="{ 'readonly-div': !this.task.hasAccess}">
-                    <app-api-action></app-api-action>
+                    <app-vms-broadcasting></app-vms-broadcasting>
                     <div class="row">
                         <div class="col-md-12">
                             <button mat-flat-button class="btnSubmit" (click)="SubmitAction()">
