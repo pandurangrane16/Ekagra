@@ -46,7 +46,7 @@ export class SopflowComponent {
   sops: Sop[] = [
     {
       frsId: 'SOP_VMS_001',
-      title: 'Device Failure Detection',
+      title: 'DEVICE FAILURE DETECTION',
       system: 'VMS',
       activities: [
         // { id: 'ACT-001', useCase: 'SMS Management', activity: 'If EMS/NMS finds device unhealthy...', duration: 'Instant', type: 'Auto',action : "sms" },
@@ -60,7 +60,7 @@ export class SopflowComponent {
     },
     {
       frsId: 'SOP_VMS_002',
-      title: 'VMD Emergency Message Publish',
+      title: 'VMD EMERGENCY MESSAGE PUBLISH',
       system: 'VMS',
       activities: [
         { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'VMD Emergency Message Publish', duration: 'Instant', type: 'Auto', action: "vmsemergency", sequence: 0, hasAccess: true },
@@ -70,7 +70,7 @@ export class SopflowComponent {
     },
     {
       frsId: 'SOP_ATCS_001',
-      title: 'ATCS Controller health',
+      title: 'ATCS CONTROLLER HEALTH',
       system: 'ATCS',
       activities: [
         { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "atcshealth", sequence: 0, hasAccess: true },
@@ -80,7 +80,7 @@ export class SopflowComponent {
     },
     {
       frsId: 'SOP_ATCS_002',
-      title: 'ATCS Congestion',
+      title: 'ATCS CONGESTION',
       system: 'ATCS',
       activities: [
         { id: 'ACT-001', useCase: 'Visual Verification', activity: 'Conduct visual verification by opening camera', duration: 'Instant', type: 'Auto', action: "atcscongestion", sequence: 0, hasAccess: true },
