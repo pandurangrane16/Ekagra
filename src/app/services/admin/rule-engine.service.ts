@@ -78,7 +78,27 @@ export class RuleEngineService {
   return this._httpService._getMethod(url);
 }
 
+CheckPolicyNameExist(
+  PolicyName?: any,
+  Id?: any,
+ 
+) {
+  let params: string[] = [];
 
+  if (PolicyName !== null && PolicyName !== undefined) {
+    params.push(`PolicyName=${PolicyName}`);
+  }
+
+
+  if (Id !== null && Id !== undefined) {
+    params.push(`Id=${Id}`);
+  }
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/RuleEngine/CheckPolicyNameExist${queryString}`;
+
+  return this._httpService._postMethod(null,url);
+}
 
 
 

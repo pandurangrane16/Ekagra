@@ -23,7 +23,8 @@
   </mat-slide-toggle>
 </div> -->
 
-<div [formGroup]="formGroup">
+<!-- commented to add placeholder for dropdown-->
+<!-- <div [formGroup]="formGroup">
   <mat-label>{{settings.labelHeader}}</mat-label>
   <br>
 
@@ -31,7 +32,7 @@
     <input matInput aria-label="State" [matAutocomplete]="auto" [formControlName]="controlName" (click)="onInputClick()"
       [disabled]="!!formGroup.get(controlName)?.disabled" />
 
-    <!-- Arrow icon -->
+    
     <button mat-icon-button matSuffix disableRipple tabIndex="-1" style="margin-left: -8px;">
       <mat-icon>{{ isPanelOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
     </button>
@@ -45,6 +46,38 @@
         <span>{{ state.name }}</span>
       </mat-option>
       }
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+</div> -->
+
+<div [formGroup]="formGroup"> 
+  <mat-label>{{settings.labelHeader}}</mat-label>
+  <br>
+
+  <mat-form-field [appearance]="settings.appearance || 'fill'" [class]="settings.formFieldClass">
+    <input matInput
+           aria-label="State"
+           [matAutocomplete]="auto"
+           [formControlName]="controlName"
+           (click)="onInputClick(); autocompleteTrigger.openPanel()"
+           [readonly]="true"               
+           placeholder="-- select --"        
+           [disabled]="!!formGroup.get(controlName)?.disabled" />
+
+    <!-- Arrow icon -->
+    <button mat-icon-button matSuffix disableRipple tabIndex="-1" (click)="autocompleteTrigger.openPanel()">
+      <mat-icon>{{ isPanelOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
+    </button>
+
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith" (optionSelected)="ChangeSelection($event)">
+      <!-- Only real options, no disabled placeholder -->
+      @if(settings.options != undefined){
+        @for (state of filteredOptions | async; track state) {
+          <mat-option [value]="state">
+            <span>{{ state.name }}</span>
+          </mat-option>
+        }
       }
     </mat-autocomplete>
   </mat-form-field>

@@ -151,6 +151,9 @@
                                                 <app-cm-input [formGroup]="firstFormGroup" [controlName]="'policyName'"
                                                     [_inputData]="inputFields.policyName">
                                                 </app-cm-input>
+                                                <div *ngIf="f['policyName'].touched && f['policyName'].errors?.pattern" class="text-danger mt-1">
+                                                  Special characters are not allowed.
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6" style="margin-top: 12px">
@@ -169,6 +172,9 @@
                                                 <app-cm-input [formGroup]="firstFormGroup" [controlName]="'ticketabb'"
                                                     [_inputData]="inputFields.ticketabb">
                                                 </app-cm-input>
+                                                <div *ngIf="f['ticketabb'].touched && f['ticketabb'].errors?.pattern" class="text-danger mt-1">
+                                                  Special characters are not allowed.
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6" style="margin-top: 12px">
