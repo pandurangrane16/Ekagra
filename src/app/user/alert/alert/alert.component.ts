@@ -15,17 +15,23 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { CmConfirmationDialogComponent } from '../../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 import { ResolvedByItselfComponent } from '../resolved-by-itself/resolved-by-itself.component';
 import { AlertTransferComponent } from '../alert-transfer/alert-transfer.component';
+import { alertservice } from '../../../services/admin/alert.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-alert',
   imports: [CommonModule,
     CmTableComponent,
-    CmInputComponent,
-    CmSelect2Component,
+    CmInputComponent,MatDatepickerModule,
+    CmSelect2Component,MatFormFieldModule,
     MatCardModule],
   templateUrl: './alert.component.html',
   styleUrl: './alert.component.css',
+    providers: [provideNativeDateAdapter()],
   standalone: true
+
 })
 export class AlertComponent implements OnInit {
   loaderService = inject(LoaderService);
@@ -35,7 +41,7 @@ export class AlertComponent implements OnInit {
   items: any;
   _request: any = new InputRequest();
   totalPages: number = 1;
-  pager: number = 1;
+  pager: number = 0;
   MaxResultCount = 10;
   SkipCount = 0;
   perPage = 10;
@@ -49,6 +55,8 @@ export class AlertComponent implements OnInit {
   selectedProject: any;
   selectedStatus: any;
   form!: FormGroup;
+    startDate: Date | null = null;
+endDate: Date | null = null;
 
   collectionSize = 2;
   list!: any;
@@ -80,14 +88,14 @@ export class AlertComponent implements OnInit {
     options: []
   };
   statusSelectSettings = {
-    labelHeader: 'Select Status',
+    labelHeader: 'Select Ticket Type',
     lableClass: 'form-label',
     formFieldClass: 'w-100',
     appearance: 'fill',
     options: [
-      { name: 'Enable', value: true },
-      { name: 'Disable', value: false },
-      { name: 'All', value: null }
+      { name: 'Open Tickets', value: '0' },
+      { name: 'My Tickets', value: '1' },
+      { name: 'All Tickets', value: '2' }
     ]
   };
   searchInputSettings = {
@@ -115,7 +123,7 @@ export class AlertComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
     private dialog: MatDialog,
-    private service: projconfigservice,
+    private service: alertservice,
   ) { }
 
 
@@ -126,8 +134,10 @@ export class AlertComponent implements OnInit {
       searchText: ['']
     });
     this.buildHeader();
-    this.getProjConfigList();
-    this.getProjList();
+   // this.getProjConfigList();
+   // this.getProjList();
+   this.getFilteredList();
+
 
 
     this.form.get('searchText')?.valueChanges
@@ -162,6 +172,18 @@ export class AlertComponent implements OnInit {
     // Apply filtering or logic here
   }
 
+    DateWiseFilter(evtData: any, category: string) {
+    if (category == "start")
+{
+       this.startDate = evtData.value;
+      console.log("Start Date : " + evtData.value);
+}  
+    else{
+       this.endDate = evtData.value;
+      console.log("End Date : " + evtData.value);
+    }
+  }
+
   onProjectSelected(event: any) {
     console.log('Selected Project:', event);
   }
@@ -179,10 +201,12 @@ export class AlertComponent implements OnInit {
   buildHeader() {
     this.headArr = [
       { header: 'Action', fieldValue: 'buttonlist', position: 1 },
-      { header: 'Name', fieldValue: 'name', position: 2 },
-      { header: 'Description', fieldValue: 'description', position: 3 },
-      { header: 'Status', fieldValue: 'isActive', "type": "boolean", position: 4 },
-      { header: 'Action', fieldValue: 'button', position: 5 }
+      { header: 'Ticket Id', fieldValue: 'ticketid', position: 2 },
+      { header: 'Policy Name', fieldValue: 'policyname', position: 3 },
+      { header: 'Category', fieldValue: 'category', position: 4 },
+      { header: '[Alert Date]', fieldValue: 'alertdate', position: 5 },
+      { header: 'Handeled By', fieldValue: 'handledby', position: 6},
+      { header: 'Devices', fieldValue: 'devices', position: 7 }
     ];
     ;
   }
@@ -247,7 +271,7 @@ export class AlertComponent implements OnInit {
       this.editRow(data);
       console.log(data);
     } else if (event.type === 'delete') {
-      this.deleteRow(data);
+     // this.deleteRow(data);
     } else if (event.type === 'resolved') {
       const dialogRef = this.dialog.open(ResolvedByItselfComponent, {
         width: '800px',
@@ -256,7 +280,7 @@ export class AlertComponent implements OnInit {
         position: { top: '20px' },
         panelClass: 'custom-confirm-dialog',
         data :{
-          policyName : "Policy 001"
+          policyName : data.policyname
         }
       })
     } else if (event.type === 'transfer') {
@@ -267,50 +291,57 @@ export class AlertComponent implements OnInit {
         position: { top: '20px' },
         panelClass: 'custom-confirm-dialog',
         data :{
-          policyName : "Policy 001"
+          policyName : data.policyname,
+           id: data.id
         }
       })
+
+     dialogRef.afterClosed().subscribe(result => {
+    if (result)  {
+        this.getFilteredList();   
+      }
+    });
     } else if(event.type === 'perform') {
       this.router.navigate(['user/sopflow']);
     }
   }
-  deleteRow(rowData: any): void {
-    const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
-      width: '400px',
-      position: { top: '20px' },
-      panelClass: 'custom-confirm-dialog',
-      data: {
-        title: 'Confirm Delete',
-        message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.name}</b> will be deleted.</div>`,
+  // deleteRow(rowData: any): void {
+  //   const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
+  //     width: '400px',
+  //     position: { top: '20px' },
+  //     panelClass: 'custom-confirm-dialog',
+  //     data: {
+  //       title: 'Confirm Delete',
+  //       message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.name}</b> will be deleted.</div>`,
 
-        type: 'delete',
-        confirmButtonText: 'Confirm',
-        cancelButtonText: 'Cancel'
-      }
-    });
+  //       type: 'delete',
+  //       confirmButtonText: 'Confirm',
+  //       cancelButtonText: 'Cancel'
+  //     }
+  //   });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
+  //   dialogRef.afterClosed().subscribe(result => {
+  //     if (result) {
 
-        this.service.Delete(rowData.id).pipe(withLoader(this.loaderService)).subscribe({
-          next: (res: any) => {
-            if (res.success) {
-              this.getProjConfigList();
-              console.log('Deleted successfully');
+  //       this.service.Delete(rowData.id).pipe(withLoader(this.loaderService)).subscribe({
+  //         next: (res: any) => {
+  //           if (res.success) {
+  //             this.getProjConfigList();
+  //             console.log('Deleted successfully');
 
-            } else {
-              console.error('Delete failed:', res.error);
-            }
-          },
-          error: (err) => {
-            console.error('API error:', err);
-          }
-        });
-      } else {
-        console.log('User cancelled');
-      }
-    });
-  }
+  //           } else {
+  //             console.error('Delete failed:', res.error);
+  //           }
+  //         },
+  //         error: (err) => {
+  //           console.error('API error:', err);
+  //         }
+  //       });
+  //     } else {
+  //       console.log('User cancelled');
+  //     }
+  //   });
+  // }
   editRow(rowData: any) {
     this.router.navigate(['/admin/projform'], {
       state: {
@@ -320,65 +351,65 @@ export class AlertComponent implements OnInit {
     });
   }
 
-  getProjConfigList() {
-    this._request.currentPage = this.pager;
-    this._request.pageSize = Number(this.recordPerPage);
-    this._request.startId = this.startId;
-    this._request.searchItem = this.searchText;
-    this.service.GetAll().pipe(withLoader(this.loaderService)).subscribe((response: any) => {
+  // getProjConfigList() {
+  //   this._request.currentPage = this.pager;
+  //   this._request.pageSize = Number(this.recordPerPage);
+  //   this._request.startId = this.startId;
+  //   this._request.searchItem = this.searchText;
+  //   this.service.GetAll().pipe(withLoader(this.loaderService)).subscribe((response: any) => {
 
-      const items = response.result?.items;
+  //     const items = response.result?.items;
 
-      this.items = items;
-      const totalCount = response.result?.totalCount;
-
-
-
-
-
-
-
-      if (Array.isArray(items)) {
-
-        items.forEach((element: any) => {
-
-
-          //let _data = JSON.parse(element);
-          element.name = element.name;
-          element.description = element.description;
-          element.isActive = !!element.isActive;
-          element.ruleEngine = !!element.ruleEngine;
-          element.map = !!element.map;
-
-          element.button = [
-            { label: 'Edit', icon: 'edit', type: 'edit' },
-            { label: 'Delete', icon: 'delete', type: 'delete' }
-          ];
-
-          element.buttonlist = [
-            { label: 'Transfer', icon: 'output', type: 'transfer',disabled: false },
-            { label: 'Perform', icon: 'schedule', type: 'perform', disabled: false },
-            { label: 'Resolved By Itself', icon: 'check_circle', type: 'resolved', disabled: false },
-            // { label: 'Transfer', icon: 'output', type: 'transfer' },
-          ]
+  //     this.items = items;
+  //     const totalCount = response.result?.totalCount;
 
 
 
 
 
 
-        });
-        var _length = totalCount / Number(this.recordPerPage);
-        if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-          this.totalRecords = Number(this.recordPerPage) * (_length);
-        else if (Math.floor(_length) == 0)
-          this.totalRecords = 10;
-        else
-          this.totalRecords = totalCount;
-        this.totalPages = this.totalRecords / this.pager;
-      }
-    })
-  }
+
+  //     if (Array.isArray(items)) {
+
+  //       items.forEach((element: any) => {
+
+
+  //         //let _data = JSON.parse(element);
+  //         element.name = element.name;
+  //         element.description = element.description;
+  //         element.isActive = !!element.isActive;
+  //         element.ruleEngine = !!element.ruleEngine;
+  //         element.map = !!element.map;
+
+  //         element.button = [
+  //           { label: 'Edit', icon: 'edit', type: 'edit' },
+  //           { label: 'Delete', icon: 'delete', type: 'delete' }
+  //         ];
+
+  //         element.buttonlist = [
+  //           { label: 'Transfer', icon: 'output', type: 'transfer',disabled: false },
+  //           { label: 'Perform', icon: 'schedule', type: 'perform', disabled: false },
+  //           { label: 'Resolved By Itself', icon: 'check_circle', type: 'resolved', disabled: false },
+  //           // { label: 'Transfer', icon: 'output', type: 'transfer' },
+  //         ]
+
+
+
+
+
+
+  //       });
+  //       var _length = totalCount / Number(this.recordPerPage);
+  //       if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+  //         this.totalRecords = Number(this.recordPerPage) * (_length);
+  //       else if (Math.floor(_length) == 0)
+  //         this.totalRecords = 10;
+  //       else
+  //         this.totalRecords = totalCount;
+  //       this.totalPages = this.totalRecords / this.pager;
+  //     }
+  //   })
+  // }
   getFilteredList() {
     const selectedProjectId = this.form.controls['selectedProject'].value.value;
     const selectedStatus = this.form.controls['selectedStatus'].value.value;
@@ -387,7 +418,7 @@ export class AlertComponent implements OnInit {
     this.SkipCount = this.MaxResultCount * this.pager;
     this.recordPerPage = this.perPage;
 
-    this.service.GetFilteredList(selectedProjectId, search, selectedStatus, this.MaxResultCount, this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
+    this.service.GetFilteredList(null,null,null,null,this.MaxResultCount, this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
       //  const items = response?.result || [];
 
       //      this.items=items;
@@ -402,17 +433,26 @@ export class AlertComponent implements OnInit {
 
 
           //let _data = JSON.parse(element);
-          element.name = element.name;
-          element.description = element.description;
-          element.isActive = !!element.isActive;
-          element.ruleEngine = !!element.ruleEngine;
-          element.map = !!element.map;
+          element.ticketid = element.ticketNo;
+          element.policyname = element.policyName;
+         element.category = element.category === 0 ? 'Low' :
+                   element.category === 1 ? 'Medium' :
+                   element.category === 2 ? 'High' : '';
+          element.alertdate = element.creationTime;
+          element.handledby = element.handledUser;
+          element.devices = element.devices
 
-          element.button = [
-            { label: 'Edit', icon: 'edit', type: 'edit' },
-            { label: 'Delete', icon: 'delete', type: 'delete' }
-          ];
+          // element.button = [
+          //   { label: 'Edit', icon: 'edit', type: 'edit' },
+          //   { label: 'Delete', icon: 'delete', type: 'delete' }
+          // ];
 
+            element.buttonlist = [
+            { label: 'Transfer', icon: 'output', type: 'transfer',disabled: false },
+            { label: 'Perform', icon: 'schedule', type: 'perform', disabled: false },
+            { label: 'Resolved By Itself', icon: 'check_circle', type: 'resolved', disabled: false },
+            // { label: 'Transfer', icon: 'output', type: 'transfer' },
+          ]
 
 
 
@@ -429,36 +469,36 @@ export class AlertComponent implements OnInit {
     })
   }
 
-  getProjList() {
-    this.service.GetProjectList().pipe(withLoader(this.loaderService)).subscribe((response: any) => {
-      const items = response?.result || [];
+  // getProjList() {
+  //   this.service.GetProjectList().pipe(withLoader(this.loaderService)).subscribe((response: any) => {
+  //     const items = response?.result || [];
 
-      const projectOptions = items.map((item: any) => ({
-        name: item.name || item.shortCode,
-        value: item.id
-      }));
+  //     const projectOptions = items.map((item: any) => ({
+  //       name: item.name || item.shortCode,
+  //       value: item.id
+  //     }));
 
 
-      projectOptions.unshift({
-        name: 'All',
-        value: null
-      });
+  //     projectOptions.unshift({
+  //       name: 'All',
+  //       value: null
+  //     });
 
-      this.projectSelectSettings.options = projectOptions;
-      this.form.controls['selectedProject'].setValue({
-        name: 'All',
-        value: null
-      });
+  //     this.projectSelectSettings.options = projectOptions;
+  //     this.form.controls['selectedProject'].setValue({
+  //       name: 'All',
+  //       value: null
+  //     });
 
-      this.form.controls['selectedStatus'].setValue({
-        name: 'All',
-        value: null
-      });
-      this.isProjectOptionsLoaded = true;
-    }, error => {
-      console.error('Error fetching project list', error);
-    });
-  }
+  //     this.form.controls['selectedStatus'].setValue({
+  //       name: 'All',
+  //       value: null
+  //     });
+  //     this.isProjectOptionsLoaded = true;
+  //   }, error => {
+  //     console.error('Error fetching project list', error);
+  //   });
+  // }
 
 
 
