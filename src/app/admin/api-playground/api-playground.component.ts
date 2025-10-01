@@ -1240,7 +1240,7 @@ else{
 
 
 
-  //logic to update only proejct API request data on edit mode
+
 debugger;
 this.state = history.state;
 const state = this.state;

@@ -15,7 +15,7 @@
         {{ _inputData.labelHeader }}
       </mat-label>
     
-      <input matInput [placeholder]="_inputData.placeholder" [disabled]="_inputData.isDisabled" [value]="value"
+      <input matInput [placeholder]="_inputData.placeholder" [disabled]="_inputData.isDisabled" [value]="value" [readonly]="_inputData.isDisabled"
       [formControlName]="controlName" [type]="type"     (input)="_inputData.restrictToDigits ? restrictToDigits($event) :
           _inputData.restrictToDecimal ? restrictToDecimal($event) : _inputData.restrictToAlphanumeric ? restrictToAlphanumeric($event): null" />
     

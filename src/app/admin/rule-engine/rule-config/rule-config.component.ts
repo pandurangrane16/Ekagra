@@ -24,7 +24,7 @@ import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-selec
 @Component({
   selector: 'app-rule-config',
   imports: [MaterialModule,MatIconModule,CmCronComponent,MatButtonModule,MatTooltipModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,
-    CmToggleComponent, CmButtonComponent, CmSelectCheckComponent],
+    CmToggleComponent, CmButtonComponent,],
   templateUrl: './rule-config.component.html',
   styleUrl: './rule-config.component.css',
 })
