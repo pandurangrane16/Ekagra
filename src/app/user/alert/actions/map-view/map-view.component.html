@@ -1,0 +1,7 @@
+<div class="row">
+    <div class="col-md-12" *ngIf="siteList && siteList.length > 0; else noFields">
+        <app-cm-leaflet *ngIf="isMap" [showMap]="isMap" [siteData]="siteList" [labelList]="labelList"
+            [popupData]="popupData" [enableDraw]="false">
+        </app-cm-leaflet>
+    </div>
+</div>
