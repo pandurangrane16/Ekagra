@@ -29,6 +29,7 @@ import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-selec
   styleUrl: './rule-config.component.css',
 })
 export class RuleConfigComponent implements OnInit {
+  state: any;
   router = inject(Router);
   loaderService = inject(LoaderService)
   private _formBuilder = inject(FormBuilder);
@@ -358,6 +359,7 @@ export class RuleConfigComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.state = history.state;
     this.thirdFormGroup = this._formBuilder.group({
       minute: [''],
       hour: [''],
@@ -370,8 +372,8 @@ export class RuleConfigComponent implements OnInit {
       groups: this._formBuilder.array([], [this.minFormArrayLength(1)]),
     });
     this.firstFormGroup = this._formBuilder.group({
-      policyName: ['', Validators.required],
-      ticketabb: ['', Validators.required],
+  policyName: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
+  ticketabb: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
       tat: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
       selectedCategory: ['', Validators.required],
       selectedUserGroup: ['', Validators.required],
@@ -690,67 +692,69 @@ buildProjectExpressions(formValue: any) {
   }
 
   Submit() {
-
-
     const firstFormValues = this.firstFormGroup.value;
     const secondFormValues = this.secondFormGroup.value;
     const thirdFormValues = this.thirdFormGroup.value;
     console.log(thirdFormValues)
     if (this.thirdFormGroup.invalid) {
-
       this.toast.error('Please select all the values before Submitting.');
       this.thirdFormGroup.markAllAsTouched();
       return;
     }
-else{ 
-  
-const formValue = this.secondFormGroup.value;
-const creationTime = new Date();
-const result = this.buildProjectExpressions(formValue)
-
-const cron = this.createCronExpression();
-console.log("result",JSON.stringify(result));
-console.log('Generated Cron:', cron);
- console.log(JSON.stringify(result))
-    const policyData: Policy = {
-      policyName: firstFormValues.policyName,
-      ticketAbbrevation: firstFormValues.ticketabb,
-      tat: firstFormValues.tat,
-      policyRoles: this.firstFormGroup.controls['selectedUserGroup'].value?.value,
-      priority: this.firstFormGroup.controls['selectedCategory'].value?.value,
-      isActive: firstFormValues.isActive,
-      intervalTime: firstFormValues.intervalTime,
-      isInternal: firstFormValues.isinternal,
-      apiName: null,
-      apiId: null,
-      ruleExpression: JSON.stringify(result),
-      cron: this.parentCron,
-      isDeleted: false,
-      deleterUserId: 0,
-      deletionTime: creationTime,
-      lastModificationTime: creationTime,
-      lastModifierUserId: 0,
-      creationTime: creationTime,
-      creatorUserId: 0,
-      id: 0,
-      description: firstFormValues.policyName,
-    };
-
-      this.ruleService.CreateRuleEngine(policyData)
-        .pipe(withLoader(this.loaderService))
-        .subscribe({
-          next: (res: any) => {
-            console.log(res);
-            this.toast.success('Rule Engine saved successfully.');
-            this.router.navigate(['/admin/ruleenginelist']);
-          },
-          error: (err) => {
-            console.error('Error creating rule engine:', err);
-            this.toast.error('Failed to save Rule Engine. Please try again.');
-          }
-        });
-    }
-
+    // Check if policy name exists before saving
+    this.ruleService.CheckPolicyNameExist(firstFormValues.policyName, this.state?.record?.id)
+      .pipe(withLoader(this.loaderService))
+      .subscribe((response: any) => {
+        if (response.result === true) {
+          this.toast.error('Policy name is already exists.');
+          this.firstFormGroup.setErrors({ duplicateName: true });
+          return;
+        } else {
+          const formValue = this.secondFormGroup.value;
+          const creationTime = new Date();
+          const result = this.buildProjectExpressions(formValue)
+          const cron = this.createCronExpression();
+          console.log('result', JSON.stringify(result));
+          console.log('Generated Cron:', cron);
+          console.log(JSON.stringify(result))
+          const policyData: Policy = {
+            policyName: firstFormValues.policyName,
+            ticketAbbrevation: firstFormValues.ticketabb,
+            tat: firstFormValues.tat,
+            policyRoles: this.firstFormGroup.controls['selectedUserGroup'].value?.value,
+            priority: this.firstFormGroup.controls['selectedCategory'].value?.value,
+            isActive: firstFormValues.isActive,
+            intervalTime: firstFormValues.intervalTime,
+            isInternal: firstFormValues.isinternal,
+            apiName: null,
+            apiId: null,
+            ruleExpression: JSON.stringify(result),
+            cron: this.parentCron,
+            isDeleted: false,
+            deleterUserId: 0,
+            deletionTime: creationTime,
+            lastModificationTime: creationTime,
+            lastModifierUserId: 0,
+            creationTime: creationTime,
+            creatorUserId: 0,
+            id: 0,
+            description: firstFormValues.policyName,
+          };
+          this.ruleService.CreateRuleEngine(policyData)
+            .pipe(withLoader(this.loaderService))
+            .subscribe({
+              next: (res: any) => {
+                console.log(res);
+                this.toast.success('Rule Engine saved successfully.');
+                this.router.navigate(['/admin/ruleenginelist']);
+              },
+              error: (err) => {
+                console.error('Error creating rule engine:', err);
+                this.toast.error('Failed to save Rule Engine. Please try again.');
+              }
+            });
+        }
+      });
   }
 
   fieldOption: any;
