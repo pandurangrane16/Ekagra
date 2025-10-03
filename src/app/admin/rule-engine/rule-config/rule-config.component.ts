@@ -120,7 +120,7 @@ export class RuleConfigComponent implements OnInit {
   };
   inputFields = {
     policyName: {
-      labelHeader: 'Policy Name*',
+     
       placeholder: 'Policy Name*',
       appearance: 'outline',
       isDisabled: false,

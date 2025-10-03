@@ -27,6 +27,9 @@
                     [settings]="PolicySettings"
                     (optionSelected)="onProjectSelected($event)">
                     </app-cm-select2>
+                                <div *ngIf="f['name'].touched && f['name'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('name', 'Policy Name', false, '') }}
+      </div>
               
                 <!-- <mat-error *ngIf="form.get('name')?.hasError('whitespace')">
   Name cannot be empty or just spaces.
@@ -44,7 +47,7 @@
                 </app-cm-input>
                 
                    <div *ngIf="f['sopname'].touched && f['sopname'].errors" class="text-danger mt-1">
-        {{ getErrorMessage('sopname', 'sopname', false, '') }}
+        {{ getErrorMessage('sopname', 'Sop Name', false, '') }}
       </div>
             </div>
         </div>
@@ -79,6 +82,10 @@
       [settings]="ActionSettings"
       (optionSelected)="onProjectSelected($event)">
     </app-cm-select2>
+
+                <!-- <div *ngIf="f['actionName'].touched && f['actionName'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('actionName', 'Action Name', false, '') }}
+      </div> -->
   
 </td>
 
