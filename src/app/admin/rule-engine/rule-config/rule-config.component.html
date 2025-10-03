@@ -151,12 +151,22 @@
                                                 <app-cm-input [formGroup]="firstFormGroup" [controlName]="'policyName'"
                                                     [_inputData]="inputFields.policyName">
                                                 </app-cm-input>
+                                                 <div *ngIf="f['tat'].touched && f['tat'].errors"
+                                                    class="text-danger mt-1">
+                                                    {{ getErrorMessage('policyName', 'Policy Name', true, 'Enter a valid
+                                                    Name.') }}
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6" style="margin-top: 12px">
                                             <app-cm-select2 [formGroup]="firstFormGroup"
                                                 [controlName]="'selectedCategory'" [settings]="categorySelectSettings">
                                             </app-cm-select2>
+                                             <div *ngIf="f['tat'].touched && f['tat'].errors"
+                                                    class="text-danger mt-1">
+                                                    {{ getErrorMessage('selectedCategory', 'Category', true, 'Enter a valid
+                                                    Category.') }}
+                                                </div>
                                         </div>
                                     </div>
                                     <br>
@@ -169,12 +179,22 @@
                                                 <app-cm-input [formGroup]="firstFormGroup" [controlName]="'ticketabb'"
                                                     [_inputData]="inputFields.ticketabb">
                                                 </app-cm-input>
+                                                 <div *ngIf="f['tat'].touched && f['tat'].errors"
+                                                    class="text-danger mt-1">
+                                                    {{ getErrorMessage('ticketabb', 'Ticket Abbreviation', true, 'Enter a valid
+                                                    Abbreviation.') }}
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6" style="margin-top: 12px">
                                             <app-cm-select2 *ngIf="userOptionsLoaded" [formGroup]="firstFormGroup"
                                                 [controlName]="'selectedUserGroup'" [settings]="userGroupSettings">
                                             </app-cm-select2>
+                                                <div *ngIf="f['tat'].touched && f['tat'].errors"
+                                                    class="text-danger mt-1">
+                                                    {{ getErrorMessage('selectedUserGroup', 'User group', true, 'Enter a valid
+                                                    User Group.') }}
+                                                </div>
                                         </div>
                                     </div>
                                     <br>
@@ -188,8 +208,8 @@
                                                 </app-cm-input>
                                                 <div *ngIf="f['tat'].touched && f['tat'].errors"
                                                     class="text-danger mt-1">
-                                                    {{ getErrorMessage('tat', 'Api Url', true, 'Enter a valid
-                                                    Duration.') }}
+                                                    {{ getErrorMessage('tat', 'TAT', true, 'Enter a valid
+                                                    TAT.') }}
                                                 </div>
                                             </div>
                                         </div>
@@ -209,7 +229,7 @@
 
                                                 <div *ngIf="f['intervalTime'].touched && f['intervalTime'].errors"
                                                     class="text-danger mt-1">
-                                                    {{ getErrorMessage('intervalTime', 'intervalTime', true, 'Enter a
+                                                    {{ getErrorMessage('intervalTime', 'Interval Time', true, 'Enter a
                                                     valid Duration.') }}
                                                 </div>
 

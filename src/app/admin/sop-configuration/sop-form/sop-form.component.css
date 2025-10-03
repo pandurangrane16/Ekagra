@@ -135,7 +135,7 @@
     gap: 5px;
   }
   
-  /* Fixed footer buttons */
+
   .dialog-actions {
     display: flex;
     justify-content: flex-end;
@@ -146,6 +146,8 @@
     position: sticky;
     bottom: 0;
   }
+  /* Fixed footer buttons */
+
   .pageWrapper {
     padding: 30px!important;
 }
