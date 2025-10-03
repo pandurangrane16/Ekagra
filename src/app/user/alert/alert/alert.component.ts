@@ -19,6 +19,7 @@ import { alertservice } from '../../../services/admin/alert.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { AlertHistoryComponent } from '../alert-history/alert-history.component';
 
 @Component({
   selector: 'app-alert',
@@ -303,6 +304,24 @@ endDate: Date | null = null;
     });
     } else if(event.type === 'perform') {
       this.router.navigate(['user/sopflow']);
+    } else if(event.type === 'history') {
+      const dialogRef = this.dialog.open(AlertHistoryComponent, {
+        width: '800px',
+        height : '700px',
+        //title : "Resolved By Iteself",
+        position: { top: '20px' },
+        panelClass: 'custom-confirm-dialog',
+        data :{
+          policyName : data.policyname,
+           id: data.id
+        }
+      })
+
+     dialogRef.afterClosed().subscribe(result => {
+    if (result)  {
+        this.getFilteredList();   
+      }
+    });
     }
   }
   // deleteRow(rowData: any): void {
@@ -451,6 +470,7 @@ endDate: Date | null = null;
             { label: 'Transfer', icon: 'output', type: 'transfer',disabled: false },
             { label: 'Perform', icon: 'schedule', type: 'perform', disabled: false },
             { label: 'Resolved By Itself', icon: 'check_circle', type: 'resolved', disabled: false },
+            { label: 'History', icon: 'history', type: 'history', disabled: false },
             // { label: 'Transfer', icon: 'output', type: 'transfer' },
           ]
 
