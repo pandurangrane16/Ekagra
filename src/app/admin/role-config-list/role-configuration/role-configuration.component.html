@@ -1,0 +1,59 @@
+<div class="pageWrapper">
+    <mat-card class="cardWithShadow theme-card">
+        <div class="row">
+            <mat-card-header>
+                <div class="col-md-11" style="padding-left: 40px;">
+                    <mat-card-title>
+                        <h2 style="margin-top: 10px;">Role Configuration</h2>
+                    </mat-card-title>
+                </div>
+                <div class="col text-right">
+                    <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()">
+                        <mat-icon>reply</mat-icon>
+                    </button>
+
+                </div>
+            </mat-card-header>
+        </div>
+        <hr>
+        <mat-card-content class="b-t-1 scroll">
+
+            <form [formGroup]="form" class="form-container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Role Name</label>
+                        <app-cm-input [formGroup]="form" [controlName]="'roleName'" [_inputData]="inputFields.roleName">
+                        </app-cm-input>
+                        <div *ngIf="f['roleName'].touched && f['roleName'].errors" class="text-danger mt-1">
+                            {{ getErrorMessage('roleName', 'Role Name', false, '') }}
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <label>Description</label>
+                        <app-cm-input [formGroup]="form" [controlName]="'roleDesc'" [_inputData]="inputFields.roleDesc">
+                        </app-cm-input>
+                        <div *ngIf="f['roleDesc'].touched && f['roleDesc'].errors" class="text-danger mt-1">
+                            {{ getErrorMessage('roleDesc', 'Description', false, '') }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="toggle-label margin-top:4px">Active</label><br />
+                        <app-cm-toggle [formGroup]="form" [settings]="isActiveSettings">
+                        </app-cm-toggle>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="dialog-actions">
+                        <button mat-button (click)="close()">Cancel</button>
+                        <button mat-flat-button color="primary" (click)="submit()">Save</button>
+                    </div>
+                </div>
+            </form>
+
+
+        </mat-card-content>
+    </mat-card>
+</div>
