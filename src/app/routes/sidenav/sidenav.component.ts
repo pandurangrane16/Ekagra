@@ -206,6 +206,18 @@ debugger;
           activeIcon: './assets/img/icon_settings1.svg',
           label: 'User Dashboard',
           link: 'user/user-dash',
+        },
+        {
+          icon: './assets/img/icon_settings.svg',
+          activeIcon: './assets/img/icon_settings1.svg',
+          label: 'Role Configuration',
+          link: 'admin/roleconfiguration',
+        },
+        {
+          icon: './assets/img/icon_settings.svg',
+          activeIcon: './assets/img/icon_settings1.svg',
+          label: 'User Mappings',
+          link: 'admin/userMappings',
         }]
       }
     ];

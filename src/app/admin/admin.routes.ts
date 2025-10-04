@@ -27,6 +27,9 @@ import { CmQueryBuilderComponent } from "../common/cm-query-builder/cm-query-bui
 import { SopflowComponent } from "./sopflow/sopflow.component";
 import { SopFormComponent } from "./sop-configuration/sop-form/sop-form.component";
 import { SopConfigurationComponent } from "./sop-configuration/sop-configuration.component";
+import { RoleConfigListComponent } from "./role-config-list/role-config-list.component";
+import { RoleConfigurationComponent } from "./role-config-list/role-configuration/role-configuration.component";
+import { UserMappingsComponent } from "./user-mappings/user-mappings.component";
 export const AdminRoutes: Routes = [
   {
     path: '',
@@ -311,6 +314,39 @@ export const AdminRoutes: Routes = [
       title: 'SOP Process',
       urls: [
         { title: 'SOP Process', url: '/admin/sopflow' },
+        { title: 'SOP Process' }
+      ]
+    }
+  },
+  {
+    path: 'roleconfiguration',
+    component: RoleConfigListComponent,
+    data: {
+      title: 'Role Configuration',
+      urls: [
+        { title: 'SOP Process', url: '/admin/sopflow' },
+        { title: 'SOP Process' }
+      ]
+    }
+  },
+  {
+    path: 'roleCreation',
+    component: RoleConfigurationComponent,
+    data: {
+      title: 'Role Configuration',
+      urls: [
+        { title: 'SOP Process', url: '/admin/sopflow' },
+        { title: 'SOP Process' }
+      ]
+    }
+  },
+  {
+    path: 'userMappings',
+    component: UserMappingsComponent,
+    data: {
+      title: 'User Mappings',
+      urls: [
+        { title: 'SOP Process', url: '/admin/userMappings' },
         { title: 'SOP Process' }
       ]
     }
