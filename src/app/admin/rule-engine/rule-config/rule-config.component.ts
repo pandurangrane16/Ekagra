@@ -120,7 +120,7 @@ export class RuleConfigComponent implements OnInit {
   };
   inputFields = {
     policyName: {
-      labelHeader: 'Policy Name*',
+     
       placeholder: 'Policy Name*',
       appearance: 'outline',
       isDisabled: false,
@@ -409,6 +409,9 @@ export class RuleConfigComponent implements OnInit {
     // });
 
 
+    this.firstFormGroup.controls['policyName'].valueChanges.subscribe((value: string) => {
+      this.onPolicyNameChange(value);
+    });
   }
   get f() {
     return this.firstFormGroup.controls;
@@ -1070,5 +1073,33 @@ buildProjectExpressions(formValue: any) {
         dayOfWeek : evt
       })
     }
+  }
+
+  policyNameExists = false;
+
+  onPolicyNameChange(value: string) {
+    if (!value || this.firstFormGroup.controls['policyName'].errors?.pattern) {
+      this.policyNameExists = false;
+      return;
+    }
+    this.ruleService.CheckPolicyNameExist(value, this.state?.record?.id)
+      .pipe(withLoader(this.loaderService))
+      .subscribe((response: any) => {
+        this.policyNameExists = response.result === true;
+        if (this.policyNameExists) {
+          this.firstFormGroup.controls['policyName'].setErrors({ duplicateName: true });
+        } else {
+          // Remove duplicateName error if exists
+          if (this.firstFormGroup.controls['policyName'].hasError('duplicateName')) {
+            const errors = { ...this.firstFormGroup.controls['policyName'].errors };
+            delete errors['duplicateName'];
+            if (Object.keys(errors).length === 0) {
+              this.firstFormGroup.controls['policyName'].setErrors(null);
+            } else {
+              this.firstFormGroup.controls['policyName'].setErrors(errors);
+            }
+          }
+        }
+      });
   }
 }
