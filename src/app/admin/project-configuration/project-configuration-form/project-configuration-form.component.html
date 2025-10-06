@@ -1,20 +1,16 @@
-<div class="pageWrapper">
-<mat-card class="cardWithShadow theme-card">
-    <div class="row">
-  <mat-card-header>
-      <div class="col-md-11" style="padding-left: 40px;">
-        <mat-card-title><h2 style="margin-top: 10px;">Project Configuration</h2></mat-card-title>
-      </div>
-      <div class="col text-right">
-       <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()">
+
+<div class="card mt-1">
+    <div class="card-header d-flex justify-content-between align-items-center">
+  
+        <mat-card-title><h4 class="mt-1 mb-0">Project Configuration</h4></mat-card-title>
+           
+       <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()" style="margin-top: -10px; margin-bottom: -10px;">
   <mat-icon>reply</mat-icon>
 </button>
-        
-      </div>
-  </mat-card-header>
+ 
     </div>
-  <hr>
-  <mat-card-content class="b-t-1 scroll">
+  
+  <div class="card-body">
 
     <form [formGroup]="form" class="form-container">
         <div class="row">
@@ -107,7 +103,7 @@
 
        <div class="row">
 
-  <div class="col-md-6" file-upload>
+  <div class="col-md-4" file-upload>
     <label class="form-label">Map Icon*</label>
     <input type="file" (change)="onFileSelect($event, 'mapIcon')" class="form-control" />
       <small class="text-muted d-block mt-1">Only JPEG or PNG images are allowed.</small>
@@ -123,7 +119,7 @@
     </div>
   </div>
 
-  <div class="col-md-6" file-upload>
+  <div class="col-md-4" file-upload>
     <label class="form-label">Project Icon*</label>
     <input type="file" (change)="onFileSelect($event, 'projectIcon')" class="form-control" />
 
@@ -141,14 +137,9 @@
     </div>
   </div>
 
-</div>
 
-
-
-         <!-- Toggles -->
-             <div class="row">
-            <div class="col-md-6">
-                <label class="toggle-label">Enabled</label>
+            <div class="col-md-3">
+                <label class="form-label m-0">Enabled</label>
                 <app-cm-toggle [formGroup]="form" [settings]="toggleSettingsWithoutHeader" style="margin-top: -35px;"></app-cm-toggle>
             </div>
         </div>
@@ -163,8 +154,8 @@
     </form>
 
 
-     </mat-card-content>
-</mat-card>
+     </div>
+
 </div>
 
    

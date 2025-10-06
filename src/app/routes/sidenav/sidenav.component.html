@@ -18,20 +18,42 @@
             <i *ngIf="item.children && !isSidebarCollapsed" class="fas fa-chevron-down sidebar-item-arrow"
               [ngClass]="{ rotated: item.isOpen }"></i>
           </button>
-
+<!-- <ul *ngIf="item.children && item.isOpen" class="submenu">
+      <li *ngFor="let child of item.children" class="submenu-item">
+        <a [routerLink]="child.link" routerLinkActive="active">{{ child.label }}</a>
+      </li>
+    </ul> -->
           }
           @else {
           <!-- <button matButton [matMenuTriggerFor]="menu">{{ item.label }}</button> -->
-          <button mat-button [matMenuTriggerFor]="menu" class="sidebar-item with-icon">
+           <!-- <button mat-button  class="sidebar-item with-icon" (click)="showSubSubMenu = !showSubSubMenu" class="parent" [matMenuTriggerFor]="menu">
             <img src="assets/img/icon_settings.svg" alt="settings icon" class="sidebar-icon" />
             {{ item.label }}
+            </button> -->
+          <!-- <button mat-button  class="sidebar-item" (click)="showSubSubMenu = !showSubSubMenu" class="parent">
+            <img [src]="item.icon" alt="settings icon" class="sidebar-icon" style="max-width: 20px; max-height: 20px;" class="mr-1"/>
+             <span class="sidebar-item-text">{{ item.label }}</span>
+          </button> -->
+          <button mat-button type="button" class="sidebar-item"
+            [ngClass]="{ 'has-children': item.children, 'menu-item-active': item.isOpen }"
+            (click)="showSubSubMenu = !showSubSubMenu">
+            <img [src]="item.icon" style="max-width: 20px; max-height: 20px;" class="mr-1">
+            <span class="sidebar-item-text">{{ item.label }}</span>
+            <i *ngIf="item.children && !isSidebarCollapsed" class="fas fa-chevron-down sidebar-item-arrow"
+              [ngClass]="{ rotated: item.isOpen }"></i>
           </button>
-          <mat-menu #menu="matMenu">
+          <!-- <mat-menu #menu="matMenu">
             <a href="#" class="sidebar-item" routerLinkActive="active-link" [routerLink]="[child.link]"
               #rla="routerLinkActive" *ngFor="let child of item.children">
               {{child.label}}
             </a>
-          </mat-menu>
+          </mat-menu> -->
+          <div class="submenu" [ngClass]="{'expanded' : showSubSubMenu}">
+					<!-- <mat-list-item routerLinkActive="active-link" [routerLink]="[child.link]" #rla="routerLinkActive" *ngFor="let child of item.children">{{child.label}}</mat-list-item> -->
+					<a href="#" routerLinkActive="active-link" [routerLink]="[child.link]"
+              #rla="routerLinkActive" *ngFor="let child of item.children">{{child.label}}
+            </a>
+				</div>
           }
 
         </li>
