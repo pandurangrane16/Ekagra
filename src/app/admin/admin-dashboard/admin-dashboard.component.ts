@@ -66,7 +66,7 @@ export class AdminDashboardComponent implements OnInit {
     const vmdDivIcon = this.L.divIcon({
       html: '<div style="background:#e91e63; color:white; padding:6px 10px; border-radius:8px; font-weight:bold;">VMD</div>',
       className: '',  // removes default styles
-      iconSize: [40, 40],
+      iconSize: [45, 40],
       iconAnchor: [20, 40],
       popupAnchor: [0, -35]
     });
@@ -77,12 +77,18 @@ export class AdminDashboardComponent implements OnInit {
   
       const marker = this.L.marker([lat, lng], { icon: vmdDivIcon }).addTo(this.map);
   
+      // const popupContent = `
+      //   <strong>${site.siteName}</strong><br/>
+      //   Description: ${site.description}<br/>
+      //   Hardcoded Info: ${JSON.stringify({ status: 'active', assigned: true })}
+      // `;
       const popupContent = `
-        <strong>${site.siteName}</strong><br/>
-        Description: ${site.description}<br/>
-        Hardcoded Info: ${JSON.stringify({ status: 'active', assigned: true })}
+        <strong class="text-primary">${site.siteName}</strong><br/>
+        <hr class="mt-1 mb-1"/>
+        <strong>Description:</strong> ${site.description}<br/>
+        <strong>Status:</strong> <span class="badge rounded-pill bg-success">  Active</span> <br/>
+        <strong>Assigned:</strong> True 
       `;
-  
       marker.bindPopup(popupContent);
     });
   }

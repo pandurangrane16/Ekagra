@@ -23,7 +23,7 @@ export class CmInputComponent {
     
   }
   ngOnInit(): void {
-    this.value = this._inputData.labelHeader;
+   // this.value = this._inputData.labelHeader;
     console.log(this._inputData);
     if(this._inputData.type != undefined)
       this.type = this._inputData.type;
@@ -56,7 +56,6 @@ export class CmInputComponent {
 restrictToDecimal(event: Event): void {
   const input = event.target as HTMLInputElement;
   let value = input.value;
-
 
   const regex = /^-?\d*\.?\d{0,6}$/;
 

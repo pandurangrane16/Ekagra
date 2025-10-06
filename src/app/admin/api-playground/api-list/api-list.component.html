@@ -1,22 +1,12 @@
-
-
 <div class="row mt-1">
     <div class="col-md-12">
 <div class="card">
+  <div class="card-header">
+     <mat-card-title><h4 class="mt-1 mb-0">API List</h4></mat-card-title>   
+  </div>
     <div class="card-body"  id="editForm">
 
-  <div class="row">
-  <mat-card-header>
-      <div class="col-md-11" style="padding-left: 10px;">
-        <mat-card-title><h2 style="margin-top: 10px;">API List</h2></mat-card-title>
-      </div>
-     
-  </mat-card-header>
-    </div>
-
-<hr>
-
-<div class="filter-row" style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px;">
+<div class="filter-row d-flex justify-content-between align-items-start">
 
   <!-- Left Filters -->
   <app-cm-select2
@@ -43,18 +33,7 @@
   </app-cm-select2>
 
   <button mat-flat-button
-        style="
-        background-color: black;
-        color: white;
-        font-weight: 600;
-        padding: 10px 25px;      
-        border-radius: 8px;
-        font-size: 13px;         
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        text-transform: none;
-        white-space: nowrap;
-        display: flex ; gap:420px ;margin-top: 32px;margin-left:25px;   " (click)="submit()"  
-       >
+        class="btn-primary mt-4" (click)="submit()" >
         Submit
     </button>
 
@@ -65,17 +44,7 @@
     
       <!-- Create Button -->
       <button mat-flat-button
-      style="
-    background-color: black;
-    color: white;
-    font-weight: 600;
-    padding: 10px 14px;      
-    border-radius: 8px;
-    font-size: 13px;         
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    text-transform: none;
-    white-space: nowrap;     
-  " (click)="openDialog()">
+      class="btn-primary w-100" (click)="openDialog()">
       + API Configuration
     </button>
 

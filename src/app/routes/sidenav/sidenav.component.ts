@@ -51,8 +51,9 @@ export class SidenavComponent implements OnInit {
     }
   }
   @Output() eventChange = new EventEmitter<Event>();
-
-
+ showSubmenu: boolean = false;
+  isShowing = false;
+  showSubSubMenu: boolean = false;
 
   onClick(event: Event) {
     this.eventChange.emit(event);
@@ -131,9 +132,9 @@ debugger;
       },
 
       {
-        icon: './assets/img/icon_Chat.svg',
-        activeIcon: './assets/img/icon_Chat1.svg',
-        label: 'Admin',
+        icon: './assets/img/config.png',
+        activeIcon: './assets/img/config.png',
+        label: 'Config',
         link: '',
         isOpen: true,
         children: [{

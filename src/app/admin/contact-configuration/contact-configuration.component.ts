@@ -49,7 +49,7 @@ export class ContactConfigurationComponent implements OnInit {
   contactTypeMap: { [key: string]: string } = {};
   router = inject(Router);
   _headerName = 'Contact Configuration Table';
-  isContactLoaded: boolean = false;
+  isContactLoaded: boolean = true;
   headArr: any[] = [];
   items: any;
   _request: any = new InputRequest();
