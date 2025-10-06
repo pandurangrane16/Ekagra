@@ -34,17 +34,17 @@
               "src/theme.scss",
               "src/custom-theme.scss",
               "node_modules/slick-carousel/slick/slick.css",
+              "node_modules/slick-carousel/slick/slick-theme.css",
               "node_modules/ol/ol.css",
               "node_modules/leaflet/dist/leaflet.css",
               "node_modules/ngx-toastr/toastr.css",
               "node_modules/leaflet/dist/leaflet.css",
               "node_modules/select2/dist/css/select2.min.css"
             ],
-            "scripts": [
+       "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/signalr/jquery.signalR.min.js",
               "node_modules/slick-carousel/slick/slick.min.js",
-              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/signalr/jquery.signalR.min.js",
               "node_modules/select2/dist/js/select2.min.js"
             ],
             "allowedCommonJsDependencies": [
