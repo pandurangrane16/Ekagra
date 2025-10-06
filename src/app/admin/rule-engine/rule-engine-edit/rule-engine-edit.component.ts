@@ -127,7 +127,7 @@ export class RuleEngineEditComponent implements OnInit {
   };
   inputFields = {
     policyName: {
-      labelHeader: 'Policy Name*',
+     
       placeholder: 'Policy Name*',
       appearance: 'outline',
       isDisabled: false,

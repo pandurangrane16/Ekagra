@@ -437,7 +437,9 @@ endDate: Date | null = null;
     this.SkipCount = this.MaxResultCount * this.pager;
     this.recordPerPage = this.perPage;
 
-    this.service.GetFilteredList(null,null,null,null,this.MaxResultCount, this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
+     console.log(this.startDate,this.endDate)
+
+    this.service.GetFilteredList(this.startDate,this.endDate,selectedStatus,search,this.MaxResultCount, this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
       //  const items = response?.result || [];
 
       //      this.items=items;
