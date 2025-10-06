@@ -15,7 +15,16 @@
                                     <mat-label>Minute</mat-label>
                                     <input matInput formControlName="minute"
                                         placeholder="* or 0-59 or e.g. 0,15,30,45 or */5" />
+
+                                          <mat-error *ngIf="cronForm.get('minute')?.hasError('pattern')">
+    Please enter a valid cron minute (e.g. *, 0-59, 0,15,30, or */5)
+  </mat-error>
+  <mat-error *ngIf="cronForm.get('minute')?.hasError('required')">
+    Minute is required
+  </mat-error>
+         
                                 </mat-form-field>
+
                                 <br>
                                 <span>* or 0-59 or e.g. 0,15,30,45 or */5</span>
                             </div>

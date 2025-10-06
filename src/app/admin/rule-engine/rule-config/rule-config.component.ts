@@ -417,10 +417,16 @@ export class RuleConfigComponent implements OnInit {
     return this.firstFormGroup.controls;
   }
 
-    onCronUpdate(cron: string) {
-    this.parentCron = cron;
-    console.log('Parent received cron:', cron);
+
+  onCronUpdate(event: string | null) {
+    console.log("event:",event)
+  if (event === null) {
+    this.parentCron = '❌ Invalid cron format';
+  } else {
+    this.parentCron = event;
   }
+}
+
   minFormArrayLength(min: number): ValidatorFn {
     return (control: AbstractControl) => {
       if (control instanceof FormArray) {
@@ -713,6 +719,17 @@ buildProjectExpressions(formValue: any) {
           this.firstFormGroup.setErrors({ duplicateName: true });
           return;
         } else {
+
+
+
+  if (!this.parentCron || this.parentCron === '❌ Invalid cron format') {
+  this.toast.error('Invalid Cron');
+  this.firstFormGroup.setErrors({ cronEmpty: true });
+  return;
+}
+
+else{
+  
           const formValue = this.secondFormGroup.value;
           const creationTime = new Date();
           const result = this.buildProjectExpressions(formValue)
@@ -756,6 +773,9 @@ buildProjectExpressions(formValue: any) {
                 this.toast.error('Failed to save Rule Engine. Please try again.');
               }
             });
+}
+
+
         }
       });
   }

@@ -559,10 +559,14 @@ patchCronForEdit(cronString: string) {
     };
   }
 
-    onCronUpdate(cron: string) {
-    this.parentCron = cron;
-    console.log('Updated cron from child:', cron);
+  onCronUpdate(event: string | null) {
+    console.log("event:",event)
+  if (event === null) {
+    this.parentCron = '❌ Invalid cron format';
+  } else {
+    this.parentCron = event;
   }
+}
   getErrorMessage(_controlName: any, _controlLable: any, _isPattern: boolean = false, _msg: string) {
     return getErrorMsg(this.firstFormGroup, _controlName, _controlLable, _isPattern, _msg);
   }
@@ -986,7 +990,12 @@ createFormArrayGroup() {
     }
 else{ 
   
-const formValue = this.secondFormGroup.value;
+if (!this.parentCron || this.parentCron === '❌ Invalid cron format') {
+  this.toast.error('Invalid Cron');
+  this.firstFormGroup.setErrors({ cronEmpty: true });
+  return;
+}
+else{const formValue = this.secondFormGroup.value;
 const creationTime = new Date();
 const result = this.buildProjectExpressions(formValue)
 
@@ -1030,7 +1039,7 @@ console.log('Generated Cron:', cron);
             console.error('Error creating rule engine:', err);
             this.toast.error('Failed to Update Rule Engine. Please try again.');
           }
-        });
+        });}
     }
 
   }

@@ -16,16 +16,36 @@ export class CmCronComponent {
   cronForm: FormGroup;
   cronExpression: string = '* * * * *';
   humanReadable: string = 'Every minute';
-  @Output() cronChange = new EventEmitter<string>();
+  @Output() cronChange = new EventEmitter<any>();
   @Input() initialCron: string = '* * * * *';  
 
   constructor(private fb: FormBuilder) {
     this.cronForm = this.fb.group({
-      minute: ['*'],
-      hour: ['*'],
-      dayOfMonth: ['*'],
-      month: ['*'],
-      dayOfWeek: ['*']
+      minute: ['*',  [
+      Validators.required,
+      Validators.pattern(/^(\*|(\*\/([0-5]?\d))|([0-5]?\d)|([0-5]?\d-[0-5]?\d))(\s*,\s*(\*|(\*\/([0-5]?\d))|([0-5]?\d)|([0-5]?\d-[0-5]?\d)))*$/)
+
+    ]],
+      hour: ['*', [
+      Validators.required,
+      Validators.pattern(/^(\*|(\*\/([0-1]?\d|2[0-3]))|([0-1]?\d|2[0-3])|(([0-1]?\d|2[0-3])-([0-1]?\d|2[0-3])))(\s*,\s*(\*|(\*\/([0-1]?\d|2[0-3]))|([0-1]?\d|2[0-3])|(([0-1]?\d|2[0-3])-([0-1]?\d|2[0-3]))))*$/)
+
+    ]],
+      dayOfMonth: ['*',[
+      Validators.required,
+      Validators.pattern(/^(\*|(\*\/([1-9]|[12]\d|3[01]))|([1-9]|[12]\d|3[01])|(([1-9]|[12]\d|3[01])-([1-9]|[12]\d|3[01])))(\s*,\s*(\*|(\*\/([1-9]|[12]\d|3[01]))|([1-9]|[12]\d|3[01])|(([1-9]|[12]\d|3[01])-([1-9]|[12]\d|3[01]))))*$/)
+
+    ]],
+      month: ['*',[
+      Validators.required,
+      Validators.pattern(/^(\*|(\*\/([1-9]|1[0-2]))|([1-9]|1[0-2])|(([1-9]|1[0-2])-([1-9]|1[0-2])))(\s*,\s*(\*|(\*\/([1-9]|1[0-2]))|([1-9]|1[0-2])|(([1-9]|1[0-2])-([1-9]|1[0-2]))))*$/)
+
+    ]],
+      dayOfWeek: ['*',[
+      Validators.required,
+      Validators.pattern(/^(\*|(\*\/([0-6]))|([0-6])|([0-6]-[0-6])|((SUN|MON|TUE|WED|THU|FRI|SAT)(,(SUN|MON|TUE|WED|THU|FRI|SAT))*))(\s*,\s*(\*|(\*\/([0-6]))|([0-6])|([0-6]-[0-6])))*$/)
+
+    ]]
     });
     this.buildCron();
     this.cronForm.valueChanges.subscribe(() => this.buildCron());
@@ -54,11 +74,21 @@ export class CmCronComponent {
 
 
   buildCron() {
-    const { minute, hour, dayOfMonth, month, dayOfWeek } = this.cronForm.value;
+
+
+      if (this.cronForm.invalid) {
+    this.humanReadable = 'Invalid cron format';
+     this.cronExpression = 'Invalid cron format';
+     this.cronChange.emit(null);
+    return;
+  }
+  else{   const { minute, hour, dayOfMonth, month, dayOfWeek } = this.cronForm.value;
     this.cronExpression = `${minute || '*'} ${hour || '*'} ${dayOfMonth || '*'} ${month || '*'} ${dayOfWeek || '*'}`;
     this.humanReadable = this.humanize([minute, hour, dayOfMonth, month, dayOfWeek]);
 
        this.cronChange.emit(this.cronExpression);
+       }
+
        
   }
 
