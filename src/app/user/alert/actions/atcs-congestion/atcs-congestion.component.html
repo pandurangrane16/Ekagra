@@ -32,21 +32,10 @@
         @if(this.task.sequence == 1) {
         <div class="row">
           <div class="col-md-6">
-            <app-cm-select2 *ngIf="isTypeSelected" [formGroup]="form" [controlName]="'selectedAction'"
-              [settings]="actionTypeSettings" (returnObject)="onActionTypeSelected($event)" ngSkipHydration>
-            </app-cm-select2>
+            <button mat-flat-button class="btnSubmit" (click)="SubmitAction()">
+              Assign to Site Engineer
+            </button>
           </div>
-        </div>
-        <div class="row">
-          @if(isSMS) {
-          <div class="col-md-12">
-            <app-sms-action ngSkipHydration></app-sms-action>
-          </div>
-          } @else if(isEmail) {
-          <div class="col-md-12">
-            <app-email-action ngSkipHydration></app-email-action>
-          </div>
-          }
         </div>
         }
 
@@ -136,16 +125,16 @@
                 </mat-tab>
               </mat-tab-group>
               <div class="row">
-                    <div class="col-md-12">
-                      <button mat-flat-button class="btnSubmit" (click)="SubmitAction()">
-                        Submit
-                      </button>
-                      &nbsp;&nbsp;&nbsp;
-                      <button mat-flat-button class="btnCancel" (click)="CancelAction()">
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
+                <div class="col-md-12">
+                  <button mat-flat-button class="btnSubmit" (click)="SubmitAction()">
+                    Submit
+                  </button>
+                  &nbsp;&nbsp;&nbsp;
+                  <button mat-flat-button class="btnCancel" (click)="CancelAction()">
+                    Cancel
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </ng-container>

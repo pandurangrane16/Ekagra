@@ -44,7 +44,7 @@
     "ng-select2-component": "^17.2.7",
     "ngx-dynamic-hooks": "^3.1.2",
     "ngx-json-viewer": "^3.2.1",
-    "ngx-slick-carousel": "^17.0.0",
+    "ngx-slick-carousel": "^0.6.0",
     "ngx-slickjs": "^1.5.2",
     "ngx-toastr": "^19.0.0",
     "ol": "^10.4.0",

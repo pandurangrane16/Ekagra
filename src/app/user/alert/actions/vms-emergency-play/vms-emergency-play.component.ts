@@ -14,7 +14,7 @@ import { ApiStatusComponent } from '../api-status/api-status.component';
 
 @Component({
   selector: 'app-vms-emergency-play',
-  imports: [MaterialModule, CommonModule, CmSelect2Component,CmSelectCheckComponent, SmsActionComponent, EmailActionComponent,CmInputComponent],
+  imports: [MaterialModule, CommonModule, CmSelect2Component,CmSelectCheckComponent,CmInputComponent],
   templateUrl: './vms-emergency-play.component.html',
   styleUrl: './vms-emergency-play.component.css',
   standalone:true

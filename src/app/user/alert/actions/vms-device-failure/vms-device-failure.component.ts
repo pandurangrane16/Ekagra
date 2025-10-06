@@ -2,16 +2,13 @@ import { Component, Input, input, OnInit } from '@angular/core';
 import { MaterialModule } from '../../../../Material.module';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, Validators } from '@angular/forms';
-import { CmSelect2Component } from '../../../../common/cm-select2/cm-select2.component';
-import { SmsActionComponent } from "../sms-action/sms-action.component";
-import { EmailActionComponent } from "../email-action/email-action.component";
 import { CmTextareaComponent } from '../../../../common/cm-textarea/cm-textarea.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AddressbookComponent } from '../addressbook/addressbook.component';
 
 @Component({
   selector: 'app-vms-device-failure',
-  imports: [MaterialModule, CommonModule, CmSelect2Component, SmsActionComponent, EmailActionComponent, CmTextareaComponent],
+  imports: [MaterialModule, CommonModule, CmTextareaComponent],
   templateUrl: './vms-device-failure.component.html',
   styleUrl: './vms-device-failure.component.css',
   standalone:true

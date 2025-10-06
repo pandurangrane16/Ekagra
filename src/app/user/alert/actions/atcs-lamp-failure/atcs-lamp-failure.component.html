@@ -5,23 +5,11 @@
             <form [formGroup]="form">
                 @if(this.task.sequence == 0) {
                 <div class="row">
-                    <div class="col-md-6">
-                        <app-cm-select2 *ngIf="isTypeSelected" [formGroup]="form" [controlName]="'selectedAction'"
-                            [settings]="actionTypeSettings" (returnObject)="onActionTypeSelected($event)"
-                            ngSkipHydration>
-                        </app-cm-select2>
+                   <div class="col-md-6">
+                        <button mat-flat-button class="btnSubmit" (click)="SubmitAction()">
+                            Assign to Site Engineer
+                        </button>
                     </div>
-                </div>
-                <div class="row">
-                    @if(isSMS) {
-                    <div class="col-md-12">
-                        <app-sms-action ngSkipHydration></app-sms-action>
-                    </div>
-                    } @else if(isEmail) {
-                    <div class="col-md-12">
-                        <app-email-action ngSkipHydration></app-email-action>
-                    </div>
-                    }
                 </div>
                 }
 

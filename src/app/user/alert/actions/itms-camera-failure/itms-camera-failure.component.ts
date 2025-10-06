@@ -17,8 +17,7 @@ import { ApiActionComponent } from "../api-action/api-action.component";
 
 @Component({
   selector: 'app-itms-camera-failure',
-  imports:  [MaterialModule, CommonModule, CmSelect2Component, SmsActionComponent,
-    EmailActionComponent, CmTextareaComponent, ApiActionComponent],
+  imports:  [MaterialModule, CommonModule, CmTextareaComponent, ApiActionComponent],
   templateUrl: './itms-camera-failure.component.html',
   styleUrl: './itms-camera-failure.component.css',
   standalone : true,

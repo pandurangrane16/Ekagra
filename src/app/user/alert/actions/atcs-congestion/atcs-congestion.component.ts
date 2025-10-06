@@ -5,9 +5,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { CmTextareaComponent } from '../../../../common/cm-textarea/cm-textarea.component';
 import { MaterialModule } from '../../../../Material.module';
 import { CommonModule } from '@angular/common';
-import { CmSelect2Component } from '../../../../common/cm-select2/cm-select2.component';
-import { SmsActionComponent } from '../sms-action/sms-action.component';
-import { EmailActionComponent } from '../email-action/email-action.component';
 import { ApiStatusComponent } from '../api-status/api-status.component';
 import { PaActionComponent } from '../pa-action/pa-action.component';
 import { CmSelectCheckComponent } from '../../../../common/cm-select-check/cm-select-check.component';
@@ -17,8 +14,7 @@ import { ApiActionComponent } from "../api-action/api-action.component";
 
 @Component({
   selector: 'app-atcs-congestion',
-  imports: [MaterialModule, CommonModule, CmSelect2Component, SmsActionComponent,
-    EmailActionComponent, PaActionComponent, VmsBroadcastingComponent, ApiActionComponent],
+  imports: [MaterialModule, CommonModule, PaActionComponent, VmsBroadcastingComponent, ApiActionComponent],
   templateUrl: './atcs-congestion.component.html',
   styleUrl: './atcs-congestion.component.css',
   standalone : true,

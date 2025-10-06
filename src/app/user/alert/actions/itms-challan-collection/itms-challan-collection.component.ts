@@ -17,8 +17,7 @@ import { ApiActionComponent } from "../api-action/api-action.component";
 
 @Component({
   selector: 'app-itms-challan-collection',
-  imports: [MaterialModule, CommonModule, CmSelect2Component, SmsActionComponent,
-    EmailActionComponent, CmTextareaComponent, ApiActionComponent],
+  imports: [MaterialModule, CommonModule, CmTextareaComponent, ApiActionComponent],
   templateUrl: './itms-challan-collection.component.html',
   styleUrl: './itms-challan-collection.component.css',
   standalone : true,
