@@ -18,8 +18,7 @@ import { ApiActionComponent } from "../api-action/api-action.component";
 
 @Component({
   selector: 'app-atcs-detector-failure',
-  imports: [MaterialModule, CommonModule, CmSelect2Component, SmsActionComponent,
-    EmailActionComponent, CmTextareaComponent, ApiActionComponent],
+  imports: [MaterialModule, CommonModule, CmTextareaComponent, ApiActionComponent],
   templateUrl: './atcs-detector-failure.component.html',
   styleUrl: './atcs-detector-failure.component.css',
   standalone : true,

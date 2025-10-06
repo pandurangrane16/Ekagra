@@ -1,21 +1,15 @@
-<div class="pageWrapper">
-<mat-card class="cardWithShadow theme-card">
-    <div class="row">
-  <mat-card-header>
-      <div class="col-md-11" style="padding-left: 40px;">
-        <mat-card-title><h2 style="margin-top: 10px;">Project Field Configuration</h2></mat-card-title>
-      </div>
-      <div class="col text-right">
-       <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()">
+<div class="card mt-1">
+    <div class="card-header d-flex justify-content-between align-items-center">
+  
+        <mat-card-title><h4 class="mt-1 mb-0">Project Field Configuration</h4></mat-card-title>
+           
+       <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()" style="margin-top: -10px; margin-bottom: -10px;">
   <mat-icon>reply</mat-icon>
 </button>
-        
-      </div>
-  </mat-card-header>
+ 
     </div>
-  <hr>
-  <mat-card-content class="b-t-1 scroll">
-
+  
+  <div class="card-body">
     <form [formGroup]="form" class="form-container">
         <div class="row">
             <div class="col-md-6" style="margin-top: -10px;">
@@ -55,7 +49,7 @@
 
         <div class="row">
           
-            <div class="col-md-4">
+            <div class="col-md-3">
               <label>Map Label</label>
               <app-cm-input
                 [formGroup]="form"
@@ -69,9 +63,9 @@
           
            
 
-   <div class="col-md-4 d-flex align-items-center justify-content-center">
+   <div class="col-md-3 d-flex align-items-center justify-content-center">
     <div style="width: 100%; text-align: center;">
-      <label class="toggle-label margin-top:4px">Is Same As</label><br />
+      <label class="form-label m-0">Is Same As</label><br />
       <app-cm-toggle
         [formGroup]="form"
         [settings]="isSameas">
@@ -79,7 +73,7 @@
     </div>
   </div>
 
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label>Api Label</label>
                 <app-cm-input
                   [formGroup]="form"
@@ -90,11 +84,9 @@
         {{ getErrorMessage('apilabel', 'Api Label', false, '') }}
       </div>
               </div>
-        </div>
-       
-        <div class="row">
-            <div class="col-md-6">
-                <label class="toggle-label">Enabled</label>
+        
+            <div class="col-md-3">
+                <label class="form-label m-0">Enabled</label>
                 <app-cm-toggle [formGroup]="form" [settings]="projectEnabled" style="margin-top: -35px;"></app-cm-toggle>
             </div>
         </div>
@@ -104,13 +96,8 @@
             <button mat-button (click)="close()">Cancel</button>
             <button mat-flat-button color="primary" (click)="submit()">Save</button>
           </div>
-        
-           
-          
+   
       
     </form>
-
-
-     </mat-card-content>
-</mat-card>
+</div>
 </div>

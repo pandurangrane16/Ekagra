@@ -6,8 +6,6 @@ import { CmTextareaComponent } from '../../../../common/cm-textarea/cm-textarea.
 import { MaterialModule } from '../../../../Material.module';
 import { CommonModule } from '@angular/common';
 import { CmSelect2Component } from '../../../../common/cm-select2/cm-select2.component';
-import { SmsActionComponent } from '../sms-action/sms-action.component';
-import { EmailActionComponent } from '../email-action/email-action.component';
 import { ApiStatusComponent } from '../api-status/api-status.component';
 import { PaActionComponent } from '../pa-action/pa-action.component';
 import { CmSelectCheckComponent } from '../../../../common/cm-select-check/cm-select-check.component';
@@ -17,8 +15,7 @@ import { ApiActionComponent } from "../api-action/api-action.component";
 
 @Component({
   selector: 'app-atcs-health',
-  imports: [MaterialModule, CommonModule, CmSelect2Component, SmsActionComponent,
-    EmailActionComponent, CmTextareaComponent, ApiActionComponent],
+  imports: [MaterialModule, CommonModule,CmTextareaComponent, ApiActionComponent],
   templateUrl: './atcs-health.component.html',
   styleUrl: './atcs-health.component.css',
   standalone : true,

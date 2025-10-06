@@ -17,8 +17,7 @@ import { ApiActionComponent } from "../api-action/api-action.component";
 
 @Component({
   selector: 'app-env-sensor-failure',
-  imports: [MaterialModule, CommonModule, CmSelect2Component, SmsActionComponent,
-    EmailActionComponent, CmTextareaComponent, ApiActionComponent],
+  imports: [MaterialModule, CommonModule, CmTextareaComponent, ApiActionComponent],
   templateUrl: './env-sensor-failure.component.html',
   styleUrl: './env-sensor-failure.component.css',
   standalone : true,

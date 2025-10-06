@@ -17,8 +17,7 @@ import { ApiActionComponent } from "../api-action/api-action.component";
 
 @Component({
   selector: 'app-env-sensor-pollution',
-  imports: [MaterialModule, CommonModule, CmSelect2Component, SmsActionComponent,
-    EmailActionComponent, CmTextareaComponent, VmsBroadcastingComponent],
+  imports: [MaterialModule, CommonModule, CmTextareaComponent, VmsBroadcastingComponent],
   templateUrl: './env-sensor-pollution.component.html',
   styleUrl: './env-sensor-pollution.component.css',
   standalone : true,

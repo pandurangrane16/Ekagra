@@ -17,8 +17,7 @@ import { ApiActionComponent } from "../api-action/api-action.component";
 
 @Component({
   selector: 'app-atcs-lamp-failure',
-  imports: [MaterialModule, CommonModule, CmSelect2Component, SmsActionComponent,
-    EmailActionComponent, CmTextareaComponent, ApiActionComponent],
+  imports: [MaterialModule, CommonModule, CmTextareaComponent, ApiActionComponent],
   templateUrl: './atcs-lamp-failure.component.html',
   styleUrl: './atcs-lamp-failure.component.css',
   standalone : true,

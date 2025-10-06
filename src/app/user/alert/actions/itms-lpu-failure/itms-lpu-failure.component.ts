@@ -17,8 +17,7 @@ import { ApiActionComponent } from "../api-action/api-action.component";
 
 @Component({
   selector: 'app-itms-lpu-failure',
-  imports:  [MaterialModule, CommonModule, CmSelect2Component, SmsActionComponent,
-    EmailActionComponent, CmTextareaComponent, ApiActionComponent],
+  imports:  [MaterialModule, CommonModule, CmTextareaComponent, ApiActionComponent],
   templateUrl: './itms-lpu-failure.component.html',
   styleUrl: './itms-lpu-failure.component.css',
   standalone : true,
