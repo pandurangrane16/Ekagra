@@ -44,14 +44,18 @@
                                         <div class="col-md-6">
                                             <label style="position: relative; top: 6px; display: block;">Policy
                                                 Name*</label>
-                                            <div>
+                                          <div *ngIf="firstFormGroup">
                                                 <app-cm-input [formGroup]="firstFormGroup" [controlName]="'policyName'"
                                                     [_inputData]="inputFields.policyName">
                                                 </app-cm-input>
-                                                  <div *ngIf="f['tat'].touched && f['tat'].errors"
-                                                    class="text-danger mt-1">
-                                                    {{ getErrorMessage('policyName', 'Policy Name', true, 'Enter a valid
-                                                    Name.') }}
+                                                  <!-- <div *ngIf="f?.['tat']?.touched && f?.['tat']?.errors" class="text-danger mt-1">
+                                                    {{ getErrorMessage('policyName', 'Policy Name', true, 'Enter a valid Name.') }}
+                                                    </div> -->
+                                                    <div *ngIf="f['policyName']?.errors?.['invalidChars']" class="text-danger mt-1">
+                                                    Special characters are not allowed.
+                                                    </div>
+                                                <div *ngIf="policyNameExists" class="text-danger mt-1">
+                                                  Policy name is already exists.
                                                 </div>
                                             </div>
                                         </div>
@@ -59,7 +63,7 @@
                                             <app-cm-select2 [formGroup]="firstFormGroup"
                                                 [controlName]="'selectedCategory'" [settings]="categorySelectSettings">
                                             </app-cm-select2>
-                                               <div *ngIf="f['tat'].touched && f['tat'].errors"
+                                               <div *ngIf="f['selectedCategory'].touched && f['selectedCategory'].errors"
                                                     class="text-danger mt-1">
                                                     {{ getErrorMessage('selectedCategory', 'Category', true, 'Enter a valid
                                                     Category.') }}
@@ -76,18 +80,16 @@
                                                 <app-cm-input [formGroup]="firstFormGroup" [controlName]="'ticketabb'"
                                                     [_inputData]="inputFields.ticketabb">
                                                 </app-cm-input>
-                                                    <div *ngIf="f['tat'].touched && f['tat'].errors"
-                                                    class="text-danger mt-1">
-                                                    {{ getErrorMessage('ticketabb', 'Ticket Abbreviation', true, 'Enter a valid
-                                                    Abbreviation.') }}
-                                                </div>
+                                                  <div *ngIf="f['ticketabb']?.errors?.['invalidChars']" class="text-danger mt-1">
+            Special characters are not allowed.
+            </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6" style="margin-top: 12px">
                                             <app-cm-select2 *ngIf="userOptionsLoaded" [formGroup]="firstFormGroup"
                                                 [controlName]="'selectedUserGroup'" [settings]="userGroupSettings">
                                             </app-cm-select2>
-                                                   <div *ngIf="f['tat'].touched && f['tat'].errors"
+                                                   <div *ngIf="f['selectedUserGroup'].touched && f['selectedUserGroup'].errors"
                                                     class="text-danger mt-1">
                                                     {{ getErrorMessage('selectedUserGroup', 'User group', true, 'Enter a valid
                                                     User Group.') }}
