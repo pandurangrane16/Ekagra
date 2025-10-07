@@ -20,11 +20,12 @@ import {MatButtonModule} from '@angular/material/button';
 import { CmCronComponent } from '../../../common/cm-cron/cm-cron.component';
 import { CmCheckboxGroupComponent } from '../../../common/cm-checkbox-group/cm-checkbox-group.component';
 import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-select-check.component";
+import { CmCronExpressionComponent } from "../../../common/cm-cron-expression/cm-cron-expression.component";
 
 @Component({
   selector: 'app-rule-config',
-  imports: [MaterialModule,MatIconModule,CmCronComponent,MatButtonModule,MatTooltipModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,
-    CmToggleComponent, CmButtonComponent,],
+  imports: [MaterialModule, MatIconModule, MatButtonModule, MatTooltipModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,
+    CmToggleComponent, CmButtonComponent, CmCronExpressionComponent],
   templateUrl: './rule-config.component.html',
   styleUrl: './rule-config.component.css',
 })
