@@ -104,21 +104,23 @@
     </mat-card>
 </div> -->
 <div class="pageWrapper">
-<mat-card class="cardWithShadow theme-card">
-    <div class="row">
-  <mat-card-header>
-      <div class="col-md-11" style="padding-left: 40px;">
-        <mat-card-title><h2 style="margin-top: 10px;">Rule Engine</h2></mat-card-title>
-      </div>
-      <div class="col text-right">
-       <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()">
-  <mat-icon>reply</mat-icon>
-</button>
-        
-      </div>
-  </mat-card-header>
-    </div>
-  <hr>
+    <mat-card class="cardWithShadow theme-card">
+        <div class="row">
+            <mat-card-header>
+                <div class="col-md-11" style="padding-left: 40px;">
+                    <mat-card-title>
+                        <h2 style="margin-top: 10px;">Rule Engine</h2>
+                    </mat-card-title>
+                </div>
+                <div class="col text-right">
+                    <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()">
+                        <mat-icon>reply</mat-icon>
+                    </button>
+
+                </div>
+            </mat-card-header>
+        </div>
+        <hr>
         <div class="row">
             <mat-card-content>
 
@@ -151,13 +153,13 @@
                                                 <app-cm-input [formGroup]="firstFormGroup" [controlName]="'policyName'"
                                                     [_inputData]="inputFields.policyName">
                                                 </app-cm-input>
-                                                 <div *ngIf="f['tat'].touched && f['tat'].errors"
+                                                <div *ngIf="f['tat'].touched && f['tat'].errors"
                                                     class="text-danger mt-1">
                                                     {{ getErrorMessage('policyName', 'Policy Name', true, 'Enter a valid
                                                     Name.') }}
                                                 </div>
                                                 <div *ngIf="policyNameExists" class="text-danger mt-1">
-                                                  Policy name is already exists.
+                                                    Policy name is already exists.
                                                 </div>
                                             </div>
                                         </div>
@@ -165,11 +167,10 @@
                                             <app-cm-select2 [formGroup]="firstFormGroup"
                                                 [controlName]="'selectedCategory'" [settings]="categorySelectSettings">
                                             </app-cm-select2>
-                                             <div *ngIf="f['tat'].touched && f['tat'].errors"
-                                                    class="text-danger mt-1">
-                                                    {{ getErrorMessage('selectedCategory', 'Category', true, 'Enter a valid
-                                                    Category.') }}
-                                                </div>
+                                            <div *ngIf="f['tat'].touched && f['tat'].errors" class="text-danger mt-1">
+                                                {{ getErrorMessage('selectedCategory', 'Category', true, 'Enter a valid
+                                                Category.') }}
+                                            </div>
                                         </div>
                                     </div>
                                     <br>
@@ -182,9 +183,10 @@
                                                 <app-cm-input [formGroup]="firstFormGroup" [controlName]="'ticketabb'"
                                                     [_inputData]="inputFields.ticketabb">
                                                 </app-cm-input>
-                                                 <div *ngIf="f['tat'].touched && f['tat'].errors"
+                                                <div *ngIf="f['tat'].touched && f['tat'].errors"
                                                     class="text-danger mt-1">
-                                                    {{ getErrorMessage('ticketabb', 'Ticket Abbreviation', true, 'Enter a valid
+                                                    {{ getErrorMessage('ticketabb', 'Ticket Abbreviation', true, 'Enter
+                                                    a valid
                                                     Abbreviation.') }}
                                                 </div>
                                             </div>
@@ -193,11 +195,11 @@
                                             <app-cm-select2 *ngIf="userOptionsLoaded" [formGroup]="firstFormGroup"
                                                 [controlName]="'selectedUserGroup'" [settings]="userGroupSettings">
                                             </app-cm-select2>
-                                                <div *ngIf="f['tat'].touched && f['tat'].errors"
-                                                    class="text-danger mt-1">
-                                                    {{ getErrorMessage('selectedUserGroup', 'User group', true, 'Enter a valid
-                                                    User Group.') }}
-                                                </div>
+                                            <div *ngIf="f['tat'].touched && f['tat'].errors" class="text-danger mt-1">
+                                                {{ getErrorMessage('selectedUserGroup', 'User group', true, 'Enter a
+                                                valid
+                                                User Group.') }}
+                                            </div>
                                         </div>
                                     </div>
                                     <br>
@@ -284,20 +286,19 @@
 
                                                 </div>
 
-                                                  <div class="row rmBtn" *ngIf="i !== 0"> 
-                                                        <div class="col">
-                                                            <app-cm-select2 [formGroup]="arr"
-                                                                [controlName]="'condition2'"
-                                                                [settings]="conditionSelectSettings">
-                                                            </app-cm-select2>
-                                                        </div>
+                                                <div class="row rmBtn" *ngIf="i !== 0">
+                                                    <div class="col">
+                                                        <app-cm-select2 [formGroup]="arr" [controlName]="'condition2'"
+                                                            [settings]="conditionSelectSettings">
+                                                        </app-cm-select2>
                                                     </div>
+                                                </div>
                                                 <div class="col text-right">
 
                                                     <span class="material-icons" (click)="removeGroup(i)">
                                                         close
                                                     </span>
-                                                  
+
                                                 </div>
                                             </div>
                                             <div *ngIf="getExpressionGroup(i).value.length > 0">
@@ -329,20 +330,21 @@
                                                                 (returnObject)="onApiChange($event, i, j)">
                                                             </app-cm-select2>
                                                         </div>
-                                                    
+
                                                         <div class="col">
-                                                            
-                                                            <app-cm-select2 [formGroup]="group" 
-                                                            *ngIf="group.get('fieldOption')?.value"
+
+                                                            <app-cm-select2 [formGroup]="group"
+                                                                *ngIf="group.get('fieldOption')?.value"
                                                                 [controlName]="'fieldName'"
                                                                 [settings]="group.get('fieldSettings')?.value"
                                                                 (returnObject)="onFieldChange($event, i, j)">
                                                             </app-cm-select2>
                                                         </div>
                                                         <div class="col">
-                                                            <app-cm-select2  [formGroup]="group"  *ngIf="group.get('expOption')?.value"
+                                                            <app-cm-select2 [formGroup]="group"
+                                                                *ngIf="group.get('expOption')?.value"
                                                                 [controlName]="'expression'"
-                                                                 [settings]="group.get('expressionSettings')?.value"></app-cm-select2>
+                                                                [settings]="group.get('expressionSettings')?.value"></app-cm-select2>
                                                         </div>
                                                         <div class="col">
                                                             <label
@@ -357,12 +359,13 @@
                                                         </div>
                                                         <div class="col text-right">
 
-                                                            <span class="material-icons"    *ngIf="j !== 0"(click)="removeArray(i,j)">
+                                                            <span class="material-icons" *ngIf="j !== 0"
+                                                                (click)="removeArray(i,j)">
                                                                 close
                                                             </span>
-                                                          
 
-                                                            
+
+
                                                         </div>
                                                     </div>
                                                 </div>
@@ -381,14 +384,14 @@
                             <hr>
 
 
-                         <app-cm-cron (cronChange)="onCronUpdate($event)"></app-cm-cron>
+                            <app-cm-cron-expression></app-cm-cron-expression>
 
-<p>Selected Cron: {{ parentCron }}</p>
-
-
+                            <p>Selected Cron: {{ parentCron }}</p>
 
 
-<!-- 
+
+
+                            <!-- 
                             <div [formGroup]="thirdFormGroup">
 
 
