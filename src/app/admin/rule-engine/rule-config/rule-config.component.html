@@ -104,23 +104,23 @@
     </mat-card>
 </div> -->
 <div class="pageWrapper">
-<mat-card class="cardWithShadow theme-card">
-    <div class="row">
-  <mat-card-header>
-      <div class="col-md-11" style="padding-left: 40px;">
+    <mat-card class="cardWithShadow theme-card">
+        <div class="row">
+            <mat-card-header>
+                <div class="col-md-11" style="padding-left: 40px;">
                     <mat-card-title>
                         <h2 style="margin-top: 10px;">Rule Engine</h2>
                     </mat-card-title>
-      </div>
-      <div class="col text-right">
-       <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()">
-  <mat-icon>reply</mat-icon>
-</button>
-        
-      </div>
-  </mat-card-header>
-    </div>
-  <hr>
+                </div>
+                <div class="col text-right">
+                    <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()">
+                        <mat-icon>reply</mat-icon>
+                    </button>
+
+                </div>
+            </mat-card-header>
+        </div>
+        <hr>
         <div class="row">
             <mat-card-content>
 
@@ -157,7 +157,7 @@
                                                     Special characters are not allowed.
                                                     </div>
                                                 <div *ngIf="policyNameExists" class="text-danger mt-1">
-                                                  Policy name is already exists.
+                                                    Policy name is already exists.
                                                 </div>
                                             </div>
                                         </div>
@@ -282,20 +282,20 @@
 
                                                 </div>
 
-                                                  <div class="row rmBtn" *ngIf="i !== 0"> 
-                                                        <div class="col">
+                                                <div class="row rmBtn" *ngIf="i !== 0">
+                                                    <div class="col">
                                                             <app-cm-select2 [formGroup]="arr"
                                                                 [controlName]="'condition2'"
-                                                                [settings]="conditionSelectSettings">
-                                                            </app-cm-select2>
-                                                        </div>
+                                                            [settings]="conditionSelectSettings">
+                                                        </app-cm-select2>
                                                     </div>
+                                                </div>
                                                 <div class="col text-right">
 
                                                     <span class="material-icons" (click)="removeGroup(i)">
                                                         close
                                                     </span>
-                                                  
+
                                                 </div>
                                             </div>
                                             <div *ngIf="getExpressionGroup(i).value.length > 0">
@@ -327,11 +327,11 @@
                                                                 (returnObject)="onApiChange($event, i, j)">
                                                             </app-cm-select2>
                                                         </div>
-                                                    
+
                                                         <div class="col">
-                                                            
-                                                            <app-cm-select2 [formGroup]="group" 
-                                                            *ngIf="group.get('fieldOption')?.value"
+
+                                                            <app-cm-select2 [formGroup]="group"
+                                                                *ngIf="group.get('fieldOption')?.value"
                                                                 [controlName]="'fieldName'"
                                                                 [settings]="group.get('fieldSettings')?.value"
                                                                 (returnObject)="onFieldChange($event, i, j)">
@@ -340,7 +340,7 @@
                                                         <div class="col">
                                                             <app-cm-select2  [formGroup]="group"  *ngIf="group.get('expOption')?.value"
                                                                 [controlName]="'expression'"
-                                                                 [settings]="group.get('expressionSettings')?.value"></app-cm-select2>
+                                                                [settings]="group.get('expressionSettings')?.value"></app-cm-select2>
                                                         </div>
                                                         <div class="col">
                                                             <label
@@ -358,9 +358,9 @@
                                                             <span class="material-icons"    *ngIf="j !== 0"(click)="removeArray(i,j)">
                                                                 close
                                                             </span>
-                                                          
 
-                                                            
+
+
                                                         </div>
                                                     </div>
                                                 </div>
@@ -381,12 +381,12 @@
 
                          <app-cm-cron (cronChange)="onCronUpdate($event)"></app-cm-cron>
 
-<p>Selected Cron: {{ parentCron }}</p>
+                            <p>Selected Cron: {{ parentCron }}</p>
 
 
 
 
-<!-- 
+                            <!-- 
                             <div [formGroup]="thirdFormGroup">
 
 
