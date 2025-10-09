@@ -153,11 +153,9 @@
                                                 <app-cm-input [formGroup]="firstFormGroup" [controlName]="'policyName'"
                                                     [_inputData]="inputFields.policyName">
                                                 </app-cm-input>
-                                                <div *ngIf="f['tat'].touched && f['tat'].errors"
-                                                    class="text-danger mt-1">
-                                                    {{ getErrorMessage('policyName', 'Policy Name', true, 'Enter a valid
-                                                    Name.') }}
-                                                </div>
+                                                 <div *ngIf="f['policyName']?.errors?.['invalidChars']" class="text-danger mt-1">
+                                                    Special characters are not allowed.
+                                                    </div>
                                                 <div *ngIf="policyNameExists" class="text-danger mt-1">
                                                     Policy name is already exists.
                                                 </div>
@@ -167,10 +165,11 @@
                                             <app-cm-select2 [formGroup]="firstFormGroup"
                                                 [controlName]="'selectedCategory'" [settings]="categorySelectSettings">
                                             </app-cm-select2>
-                                            <div *ngIf="f['tat'].touched && f['tat'].errors" class="text-danger mt-1">
-                                                {{ getErrorMessage('selectedCategory', 'Category', true, 'Enter a valid
-                                                Category.') }}
-                                            </div>
+                                             <div *ngIf="f['selectedCategory'].touched && f['selectedCategory'].errors"
+                                                    class="text-danger mt-1">
+                                                    {{ getErrorMessage('selectedCategory', 'Category', true, 'Enter a valid
+                                                    Category.') }}
+                                                </div>
                                         </div>
                                     </div>
                                     <br>
@@ -183,11 +182,8 @@
                                                 <app-cm-input [formGroup]="firstFormGroup" [controlName]="'ticketabb'"
                                                     [_inputData]="inputFields.ticketabb">
                                                 </app-cm-input>
-                                                <div *ngIf="f['tat'].touched && f['tat'].errors"
-                                                    class="text-danger mt-1">
-                                                    {{ getErrorMessage('ticketabb', 'Ticket Abbreviation', true, 'Enter
-                                                    a valid
-                                                    Abbreviation.') }}
+                                                <div *ngIf="f['ticketabb']?.errors?.['invalidChars']" class="text-danger mt-1">
+                                                Special characters are not allowed.
                                                 </div>
                                             </div>
                                         </div>
@@ -195,13 +191,13 @@
                                             <app-cm-select2 *ngIf="userOptionsLoaded" [formGroup]="firstFormGroup"
                                                 [controlName]="'selectedUserGroup'" [settings]="userGroupSettings">
                                             </app-cm-select2>
-                                            <div *ngIf="f['tat'].touched && f['tat'].errors" class="text-danger mt-1">
-                                                {{ getErrorMessage('selectedUserGroup', 'User group', true, 'Enter a
-                                                valid
-                                                User Group.') }}
+                                                <div *ngIf="f['selectedUserGroup'].touched && f['selectedUserGroup'].errors"
+                                                    class="text-danger mt-1">
+                                                    {{ getErrorMessage('selectedUserGroup', 'User group', true, 'Enter a valid
+                                                    User Group.') }}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
                                     <br>
                                     <div class="row">
                                         <div class="col-md-6">
@@ -232,7 +228,7 @@
                                                     [_inputData]="inputFields.intervalTime">
                                                 </app-cm-input>
 
-                                                <div *ngIf="f['intervalTime'].touched && f['intervalTime'].errors"
+                                                 <div *ngIf="f['intervalTime'].touched && f['intervalTime'].errors"
                                                     class="text-danger mt-1">
                                                     {{ getErrorMessage('intervalTime', 'Interval Time', true, 'Enter a
                                                     valid Duration.') }}
@@ -288,7 +284,8 @@
 
                                                 <div class="row rmBtn" *ngIf="i !== 0">
                                                     <div class="col">
-                                                        <app-cm-select2 [formGroup]="arr" [controlName]="'condition2'"
+                                                            <app-cm-select2 [formGroup]="arr"
+                                                                [controlName]="'condition2'"
                                                             [settings]="conditionSelectSettings">
                                                         </app-cm-select2>
                                                     </div>
@@ -341,8 +338,7 @@
                                                             </app-cm-select2>
                                                         </div>
                                                         <div class="col">
-                                                            <app-cm-select2 [formGroup]="group"
-                                                                *ngIf="group.get('expOption')?.value"
+                                                            <app-cm-select2  [formGroup]="group"  *ngIf="group.get('expOption')?.value"
                                                                 [controlName]="'expression'"
                                                                 [settings]="group.get('expressionSettings')?.value"></app-cm-select2>
                                                         </div>
@@ -359,8 +355,7 @@
                                                         </div>
                                                         <div class="col text-right">
 
-                                                            <span class="material-icons" *ngIf="j !== 0"
-                                                                (click)="removeArray(i,j)">
+                                                            <span class="material-icons"    *ngIf="j !== 0"(click)="removeArray(i,j)">
                                                                 close
                                                             </span>
 
@@ -384,7 +379,7 @@
                             <hr>
 
 
-                            <app-cm-cron-expression></app-cm-cron-expression>
+                         <app-cm-cron (cronChange)="onCronUpdate($event)"></app-cm-cron>
 
                             <p>Selected Cron: {{ parentCron }}</p>
 
