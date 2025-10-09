@@ -19,6 +19,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 })
 export class CmSelect2Component implements OnChanges {
 
+searchControl = new FormControl('');
+
+
   myControl = new FormControl<string | any>('');
   selectedItem: any;
   value: string = '';
@@ -78,16 +81,11 @@ this.filteredOptions = this.stateCtrl.valueChanges.pipe(
 
 ngOnChanges(): void {
   if (this.settings && Array.isArray(this.settings.options)) {
-    this.filteredOptions = this.stateCtrl.valueChanges.pipe(
-      startWith(''),
-      map(state => 
-        typeof state === 'string'
-          ? this._filterStates(state)
-          : this.settings.options.slice()
-      )
-    );
+ this.filteredOptions = this.searchControl.valueChanges.pipe(
+  startWith(''),
+  map(search => this._filterStates(search || ''))  // <-- add || ''
+);
   }
-
 }
   displayFn(option: any): string {
     return option && option.name ? option.name : '';
@@ -101,6 +99,8 @@ ngOnChanges(): void {
   ChangeSelection(event: any) {
     this.returnObject.emit(event.option.value);
   }
+
+
 
   displayWith(state: any): string {
     return state ? state.name : '';  // Ensure it displays the 'name' property

@@ -103,24 +103,18 @@
         <hr>
     </mat-card>
 </div> -->
-<div class="pageWrapper">
-<mat-card class="cardWithShadow theme-card">
-    <div class="row">
-  <mat-card-header>
-      <div class="col-md-11" style="padding-left: 40px;">
-        <mat-card-title><h2 style="margin-top: 10px;">Rule Engine</h2></mat-card-title>
-      </div>
-      <div class="col text-right">
-       <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()">
+<div class="card mt-1">
+    <div class="card-header d-flex justify-content-between align-items-center">
+  
+        <mat-card-title><h4 class="mt-1 mb-0">Rule Engine</h4></mat-card-title>
+           
+       <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()" style="margin-top: -10px; margin-bottom: -10px;">
   <mat-icon>reply</mat-icon>
 </button>
-        
-      </div>
-  </mat-card-header>
+ 
     </div>
-  <hr>
-        <div class="row">
-            <mat-card-content>
+  
+  <div class="card-body">
 
                 <div class="container">
                     <!-- Stepper Sidebar -->
@@ -143,11 +137,12 @@
                             <hr>
                             <div [formGroup]="firstFormGroup">
                                 <form>
-                                    <div class="row">
+                                    <div class="row mt-2">
                                         <div class="col-md-6">
-                                            <label style="position: relative; top: 6px; display: block;">Policy
-                                                Name*</label>
+                                            
                                             <div>
+                                                <label class="mb-1">Policy
+                                                Name*</label>
                                                 <app-cm-input [formGroup]="firstFormGroup" [controlName]="'policyName'"
                                                     [_inputData]="inputFields.policyName">
                                                 </app-cm-input>
@@ -159,7 +154,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6" style="margin-top: 12px">
+                                        <div class="col-md-6">
                                             <app-cm-select2 [formGroup]="firstFormGroup"
                                                 [controlName]="'selectedCategory'" [settings]="categorySelectSettings">
                                             </app-cm-select2>
@@ -170,11 +165,11 @@
                                                 </div>
                                         </div>
                                     </div>
-                                    <br>
-                                    <div class="row">
+                                    
+                                    <div class="row mt-2">
 
                                         <div class="col-md-6">
-                                            <label style="position: relative; top: 6px; display: block;">Ticket
+                                            <label class="mb-1">Ticket
                                                 Abbreviation</label>
                                             <div>
                                                 <app-cm-input [formGroup]="firstFormGroup" [controlName]="'ticketabb'"
@@ -185,7 +180,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6" style="margin-top: 12px">
+                                        <div class="col-md-6">
                                             <app-cm-select2 *ngIf="userOptionsLoaded" [formGroup]="firstFormGroup"
                                                 [controlName]="'selectedUserGroup'" [settings]="userGroupSettings">
                                             </app-cm-select2>
@@ -199,7 +194,7 @@
                                     <br>
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <label style="position: relative; top: 6px; display: block;">TAT
+                                            <label class="mb-1">TAT
                                                 (Hours)</label>
                                             <div>
                                                 <app-cm-input [formGroup]="firstFormGroup" [controlName]="'tat'"
@@ -212,13 +207,9 @@
                                                 </div>
                                             </div>
                                         </div>
-
-
-                                    </div>
-                                    <br>
-                                    <div class="row">
+                                 
                                         <div class="col-md-6">
-                                            <label style="position: relative; top: 6px; display: block;">Interval
+                                            <label class="mb-1">Interval
                                                 (Minutes)</label>
                                             <div>
                                                 <app-cm-input [formGroup]="firstFormGroup"
@@ -229,6 +220,7 @@
                                                  <div *ngIf="f['intervalTime'].touched && f['intervalTime'].errors"
                                                     class="text-danger mt-1">
                                                     {{ getErrorMessage('intervalTime', 'Interval Time', true, 'Enter a
+                                                    {{ getErrorMessage('intervalTime', 'Interval Time', true, 'Enter a
                                                     valid Duration.') }}
                                                 </div>
 
@@ -237,17 +229,16 @@
 
                                     </div>
 
-                                    <br>
-                                    <div class="row">
+                                    <div class="row mt-2">
                                         <div class="col-md-3">
                                             <label class="toggle-label">Enabled</label>
                                             <app-cm-toggle [formGroup]="firstFormGroup" [settings]="isActiveToggle"
-                                                style="margin-top: -35px;"></app-cm-toggle>
+                                               ></app-cm-toggle>
                                         </div>
                                         <div class="col-md-3">
                                             <label class="toggle-label">IsInternal</label>
                                             <app-cm-toggle [formGroup]="firstFormGroup" [settings]="isinternal"
-                                                style="margin-top: -35px;"></app-cm-toggle>
+                                               ></app-cm-toggle>
                                         </div>
                                     </div>
                                 </form>
@@ -260,18 +251,18 @@
                             <div [formGroup]="secondFormGroup">
                                 <form>
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col d-flex justify-content-start align-items-center gap-2">
                                             <app-cm-select2 *ngIf="isProjectOptionsLoaded" [formGroup]="secondFormGroup"
                                                 [controlName]="'selectedProject'"
                                                 [settings]="projectSettings"></app-cm-select2>
-                                        </div>
-                                        <div class="col-md-1 text-left" style="padding-top : 30px">
-                                            <app-cm-button color="primary" type="stroked" class="m-r-8" return="submit"
-                                                (click)="onAddGroup()">Add</app-cm-button>
+                                                                             
+                                            <button color="primary"  class="mt-4 px-3"  return="submit"
+                                                (click)="onAddGroup()"> + Add</button>
                                         </div>
                                     </div>
-                                    <hr>
+                                   
                                     <div *ngIf="groupsFormArray.length > 0">
+                                         <hr>
                                         <div class="row" *ngFor="let arr of groupsFormArray.controls; let i = index"
                                             [formGroup]="arr">
                                             <div class="row">
@@ -290,24 +281,25 @@
                                                 </div>
                                                 <div class="col text-right">
 
-                                                    <span class="material-icons" (click)="removeGroup(i)">
+                                                    <span class="material-icons closeRow" (click)="removeGroup(i)" color="warn">
                                                         close
                                                     </span>
 
                                                 </div>
                                             </div>
                                             <div *ngIf="getExpressionGroup(i).value.length > 0">
-                                                <div class="grey-box">
+                                                <div class="bg-light p-3 rounded-4 border-1 mb-3">
                                                     <div class="row">
-                                                        <div class="col text-right">
-                                                            <app-cm-button color="primary" type="stroked" class="rmBtn"
+                                                        <div class="col d-flex gap-2 justify-content-end">
+                                                            <app-cm-button color="primary" type="stroked" class="" matTooltip="Add"
                                                                 return="remove"
-                                                                (click)="addFormArrayGroup(i)">Add</app-cm-button>
-                                                            <app-cm-button color="primary" type="stroked" class="rmBtn"
-                                                                return="remove">Remove</app-cm-button>
+                                                                (click)="addFormArrayGroup(i)"><mat-icon fontset="material-icons-outlined"> add </mat-icon> </app-cm-button>
+                                                            <app-cm-button mat-icon-button color="warn" type="stroked"  matTooltip="Remove"
+                                                                return="remove"><mat-icon fontset="material-icons-outlined">delete</mat-icon></app-cm-button>
+                                                                
                                                         </div>
                                                     </div>
-                                                    <div class="row rmBtn">
+                                                    <div class="row mb-2">
                                                         <div class="col">
                                                             <app-cm-select2 [formGroup]="arr"
                                                                 [controlName]="'condition'"
@@ -315,10 +307,10 @@
                                                             </app-cm-select2>
                                                         </div>
                                                     </div>
-                                                    <div class="row"
+                                                    <div class="row mt-2"
                                                         *ngFor="let group of getExpressionGroup(i).controls; let j = index"
                                                         [formGroup]="group">
-                                                        <div class="col">
+                                                        <div class="col-6" *ngIf="apiOption">
                                                             <app-cm-select2 [formGroup]="group" *ngIf="apiOption"
                                                                 [controlName]="'apiName'"
                                                                 [settings]="group.get('apiSettings')?.value"
@@ -326,7 +318,7 @@
                                                             </app-cm-select2>
                                                         </div>
 
-                                                        <div class="col">
+                                                        <div class="col-6" *ngIf="group.get('fieldOption')?.value">
 
                                                             <app-cm-select2 [formGroup]="group"
                                                                 *ngIf="group.get('fieldOption')?.value"
@@ -335,14 +327,13 @@
                                                                 (returnObject)="onFieldChange($event, i, j)">
                                                             </app-cm-select2>
                                                         </div>
-                                                        <div class="col">
+                                                        <div class="col-6" *ngIf="group.get('expOption')?.value">
                                                             <app-cm-select2  [formGroup]="group"  *ngIf="group.get('expOption')?.value"
                                                                 [controlName]="'expression'"
                                                                 [settings]="group.get('expressionSettings')?.value"></app-cm-select2>
                                                         </div>
-                                                        <div class="col">
-                                                            <label
-                                                                style="position: relative; top: 6px; display: block;">Field
+                                                        <div class="col-5">
+                                                            <label class="mb-1">Field
                                                                 Value*</label>
                                                             <div>
                                                                 <app-cm-input [formGroup]="group"
@@ -351,9 +342,9 @@
                                                                 </app-cm-input>
                                                             </div>
                                                         </div>
-                                                        <div class="col text-right">
+                                                        <div class="col d-flex justify-content-end flex-shrink-1" style="align-items:center">
 
-                                                            <span class="material-icons"    *ngIf="j !== 0"(click)="removeArray(i,j)">
+                                                            <span class="material-icons mt-3 closeRow"    *ngIf="j !== 0"(click)="removeArray(i,j)">
                                                                 close
                                                             </span>
 
@@ -436,15 +427,15 @@
                         </div>
                         <hr>
                         <div class="row">
-                            <div class="col-md-6 text-left" *ngIf="currentStep != 0 ">
-                                <button (click)="goBack()">Previous</button>
-                            </div>
-                            <div class="col-md-6 text-right">
+                            <div class="col d-flex justify-content-end gap-2">
+                                 @if(currentStep != 0 ){
+                                <button (click)="goBack()" class="d-flex align-items-center"> <mat-icon> arrow_left </mat-icon> Previous </button>
+                                 }
                                 @if(currentStep == 2){
                                 <button (click)="Submit()">Submit</button>
                                 }
                                 @else {
-                                <button (click)="goNext()">Next</button>
+                                <button (click)="goNext()" class="d-flex align-items-center">Next <mat-icon> arrow_right  </mat-icon> </button>
                                 }
                             </div>
 
@@ -452,8 +443,6 @@
 
 
                     </div>
-                </div>
-            </mat-card-content>
+                </div> 
         </div>
-    </mat-card>
 </div>

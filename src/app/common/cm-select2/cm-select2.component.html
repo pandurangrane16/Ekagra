@@ -25,6 +25,8 @@
 
 <!-- commented to add placeholder for dropdown-->
 <!-- <div [formGroup]="formGroup">
+<!-- commented to add placeholder for dropdown-->
+<!-- <div [formGroup]="formGroup">
   <mat-label>{{settings.labelHeader}}</mat-label>
   <mat-form-field [appearance]="settings.appearance || 'fill'" [class]="settings.formFieldClass">
     <input matInput aria-label="State" [matAutocomplete]="auto" [formControlName]="controlName" (click)="onInputClick()"
@@ -49,10 +51,8 @@
   </mat-form-field>
 </div> -->
 
-<div [formGroup]="formGroup"> 
-  <mat-label>{{settings.labelHeader}}</mat-label>
-  <br>
-
+<div [formGroup]="formGroup" class="d-flex flex-column"> 
+  <mat-label class="mb-1">{{settings.labelHeader}}</mat-label>
   <mat-form-field [appearance]="settings.appearance || 'fill'" [class]="settings.formFieldClass">
     <input matInput
            aria-label="State"
@@ -68,15 +68,39 @@
       <mat-icon>{{ isPanelOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
     </button>
 
-    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith" (optionSelected)="ChangeSelection($event)">
-      <!-- Only real options, no disabled placeholder -->
-      @if(settings.options != undefined){
-        @for (state of filteredOptions | async; track state) {
-          <mat-option [value]="state">
-            <span>{{ state.name }}</span>
-          </mat-option>
-        }
-      }
-    </mat-autocomplete>
+
+    
+<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith" (optionSelected)="ChangeSelection($event)">
+  
+  <!-- Search box inside dropdown -->
+ <mat-option class="search-option">
+    <mat-icon>search</mat-icon>
+    <input matInput
+           placeholder="Type to search..."
+           [formControl]="searchControl"
+           (click)="$event.stopPropagation()"
+           style="border: 1px solid #ccc; border-radius: 4px; padding: 4px 8px; width: 100%;"/>
+  </mat-option>
+
+  <!-- Filtered options -->
+
+
+
+
+  <ng-container *ngIf="filteredOptions | async as options">
+    <mat-option *ngFor="let state of options" [value]="state">
+      {{ state.name }}
+    </mat-option>
+  </ng-container> 
+  
+
+
+
+
+
+
+
+</mat-autocomplete>
+
   </mat-form-field>
 </div>

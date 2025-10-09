@@ -25,13 +25,14 @@ import { AlertHistoryComponent } from '../alert-history/alert-history.component'
   selector: 'app-alert',
   imports: [CommonModule,
     CmTableComponent,
-    CmInputComponent,MatDatepickerModule,
-    CmSelect2Component,MatFormFieldModule,
+    CmInputComponent, MatDatepickerModule, MatDatepickerModule,
+    CmSelect2Component, MatFormFieldModule, MatFormFieldModule,
     MatCardModule],
   templateUrl: './alert.component.html',
   styleUrl: './alert.component.css',
-    providers: [provideNativeDateAdapter()],
+  providers: [provideNativeDateAdapter()],
   standalone: true
+
 
 })
 export class AlertComponent implements OnInit {
@@ -56,8 +57,8 @@ export class AlertComponent implements OnInit {
   selectedProject: any;
   selectedStatus: any;
   form!: FormGroup;
-    startDate: Date | null = null;
-endDate: Date | null = null;
+  startDate: Date | null = null;
+  endDate: Date | null = null;
 
   collectionSize = 2;
   list!: any;
@@ -72,14 +73,6 @@ endDate: Date | null = null;
       action: ''
 
     },
-    {
-      name: 'Alpha Project',
-      ruleEngine: 'as',
-      map: 'as',
-      description: 'as',
-      status: 'Active',
-      action: ''
-    }
   ];
   projectSelectSettings = {
     labelHeader: 'Select Project',
@@ -135,9 +128,11 @@ endDate: Date | null = null;
       searchText: ['']
     });
     this.buildHeader();
-   // this.getProjConfigList();
-   // this.getProjList();
-   this.getFilteredList();
+    //// this.getProjConfigList();
+    //// this.getProjList();
+    this.getFilteredList();
+
+    this.getFilteredList();
 
 
 
@@ -173,14 +168,14 @@ endDate: Date | null = null;
     // Apply filtering or logic here
   }
 
-    DateWiseFilter(evtData: any, category: string) {
-    if (category == "start")
-{
-       this.startDate = evtData.value;
+
+  DateWiseFilter(evtData: any, category: string) {
+    if (category == "start") {
+      this.startDate = evtData.value;
       console.log("Start Date : " + evtData.value);
-}  
-    else{
-       this.endDate = evtData.value;
+    }
+    else {
+      this.endDate = evtData.value;
       console.log("End Date : " + evtData.value);
     }
   }
@@ -206,10 +201,9 @@ endDate: Date | null = null;
       { header: 'Policy Name', fieldValue: 'policyname', position: 3 },
       { header: 'Category', fieldValue: 'category', position: 4 },
       { header: '[Alert Date]', fieldValue: 'alertdate', position: 5 },
-      { header: 'Handeled By', fieldValue: 'handledby', position: 6},
+      { header: 'Handeled By', fieldValue: 'handledby', position: 6 },
       { header: 'Devices', fieldValue: 'devices', position: 7 }
     ];
-    ;
   }
 
   handleBtnAction(e: any) {
@@ -272,95 +266,107 @@ endDate: Date | null = null;
       this.editRow(data);
       console.log(data);
     } else if (event.type === 'delete') {
-     // this.deleteRow(data);
+      // this.deleteRow(data);
     } else if (event.type === 'resolved') {
       const dialogRef = this.dialog.open(ResolvedByItselfComponent, {
         width: '800px',
-        height : '700px',
+        height: 'auto',
         //title : "Resolved By Iteself",
         position: { top: '20px' },
         panelClass: 'custom-confirm-dialog',
-        data :{
-          policyName : data.policyname
+        data: {
+          policyName: data.policyname
         }
       })
     } else if (event.type === 'transfer') {
       const dialogRef = this.dialog.open(AlertTransferComponent, {
         width: '800px',
-        height : '700px',
+        height: 'auto',
         //title : "Resolved By Iteself",
         position: { top: '20px' },
         panelClass: 'custom-confirm-dialog',
-        data :{
-          policyName : data.policyname,
-           id: data.id
+        data: {
+          policyName: data.policyname,
+          id: data.id
         }
       })
 
-     dialogRef.afterClosed().subscribe(result => {
-    if (result)  {
-        this.getFilteredList();   
-      }
-    });
-    } else if(event.type === 'perform') {
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.getFilteredList();
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.getFilteredList();
+        }
+      });
+    } else if (event.type === 'perform') {
       this.router.navigate(['user/sopflow']);
-    } else if(event.type === 'history') {
+    } else if (event.type === 'history') {
       const dialogRef = this.dialog.open(AlertHistoryComponent, {
         width: '800px',
-        height : '700px',
+        height: 'auto',
         //title : "Resolved By Iteself",
         position: { top: '20px' },
         panelClass: 'custom-confirm-dialog',
-        data :{
-          policyName : data.policyname,
-           id: data.id
+        data: {
+          policyName: data.policyname,
+          id: data.id
         }
       })
 
-     dialogRef.afterClosed().subscribe(result => {
-    if (result)  {
-        this.getFilteredList();   
-      }
-    });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.getFilteredList();
+          dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+              this.getFilteredList();
+            }
+          });
+        }
+      });
+      // deleteRow(rowData: any): void {
+      //   const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
+      //     width: '400px',
+      //     position: { top: '20px' },
+      //     panelClass: 'custom-confirm-dialog',
+      //     data: {
+      //       title: 'Confirm Delete',
+      //       message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.name}</b> will be deleted.</div>`,
+
+      //       type: 'delete',
+      //       confirmButtonText: 'Confirm',
+      //       cancelButtonText: 'Cancel'
+      //     }
+      //   });
+
+      //   dialogRef.afterClosed().subscribe(result => {
+      //     if (result) {
+
+      //       this.service.Delete(rowData.id).pipe(withLoader(this.loaderService)).subscribe({
+      //         next: (res: any) => {
+      //           if (res.success) {
+      //             this.getProjConfigList();
+      //             console.log('Deleted successfully');
+
+      //           } else {
+      //             console.error('Delete failed:', res.error);
+      //           }
+      //         },
+      //         error: (err) => {
+      //           console.error('API error:', err);
+      //         }
+      //       });
+      //     } else {
+      //       console.log('User cancelled');
+      //     }
+      //   });
+      // }
     }
   }
-  // deleteRow(rowData: any): void {
-  //   const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
-  //     width: '400px',
-  //     position: { top: '20px' },
-  //     panelClass: 'custom-confirm-dialog',
-  //     data: {
-  //       title: 'Confirm Delete',
-  //       message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.name}</b> will be deleted.</div>`,
 
-  //       type: 'delete',
-  //       confirmButtonText: 'Confirm',
-  //       cancelButtonText: 'Cancel'
-  //     }
-  //   });
-
-  //   dialogRef.afterClosed().subscribe(result => {
-  //     if (result) {
-
-  //       this.service.Delete(rowData.id).pipe(withLoader(this.loaderService)).subscribe({
-  //         next: (res: any) => {
-  //           if (res.success) {
-  //             this.getProjConfigList();
-  //             console.log('Deleted successfully');
-
-  //           } else {
-  //             console.error('Delete failed:', res.error);
-  //           }
-  //         },
-  //         error: (err) => {
-  //           console.error('API error:', err);
-  //         }
-  //       });
-  //     } else {
-  //       console.log('User cancelled');
-  //     }
-  //   });
-  // }
   editRow(rowData: any) {
     this.router.navigate(['/admin/projform'], {
       state: {
@@ -370,65 +376,6 @@ endDate: Date | null = null;
     });
   }
 
-  // getProjConfigList() {
-  //   this._request.currentPage = this.pager;
-  //   this._request.pageSize = Number(this.recordPerPage);
-  //   this._request.startId = this.startId;
-  //   this._request.searchItem = this.searchText;
-  //   this.service.GetAll().pipe(withLoader(this.loaderService)).subscribe((response: any) => {
-
-  //     const items = response.result?.items;
-
-  //     this.items = items;
-  //     const totalCount = response.result?.totalCount;
-
-
-
-
-
-
-
-  //     if (Array.isArray(items)) {
-
-  //       items.forEach((element: any) => {
-
-
-  //         //let _data = JSON.parse(element);
-  //         element.name = element.name;
-  //         element.description = element.description;
-  //         element.isActive = !!element.isActive;
-  //         element.ruleEngine = !!element.ruleEngine;
-  //         element.map = !!element.map;
-
-  //         element.button = [
-  //           { label: 'Edit', icon: 'edit', type: 'edit' },
-  //           { label: 'Delete', icon: 'delete', type: 'delete' }
-  //         ];
-
-  //         element.buttonlist = [
-  //           { label: 'Transfer', icon: 'output', type: 'transfer',disabled: false },
-  //           { label: 'Perform', icon: 'schedule', type: 'perform', disabled: false },
-  //           { label: 'Resolved By Itself', icon: 'check_circle', type: 'resolved', disabled: false },
-  //           // { label: 'Transfer', icon: 'output', type: 'transfer' },
-  //         ]
-
-
-
-
-
-
-  //       });
-  //       var _length = totalCount / Number(this.recordPerPage);
-  //       if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-  //         this.totalRecords = Number(this.recordPerPage) * (_length);
-  //       else if (Math.floor(_length) == 0)
-  //         this.totalRecords = 10;
-  //       else
-  //         this.totalRecords = totalCount;
-  //       this.totalPages = this.totalRecords / this.pager;
-  //     }
-  //   })
-  // }
   getFilteredList() {
     const selectedProjectId = this.form.controls['selectedProject'].value.value;
     const selectedStatus = this.form.controls['selectedStatus'].value.value;
@@ -437,93 +384,75 @@ endDate: Date | null = null;
     this.SkipCount = this.MaxResultCount * this.pager;
     this.recordPerPage = this.perPage;
 
-     console.log(this.startDate,this.endDate)
+    console.log(this.startDate, this.endDate)
 
-    this.service.GetFilteredList(this.startDate,this.endDate,selectedStatus,search,this.MaxResultCount, this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
-      //  const items = response?.result || [];
-
-      //      this.items=items;
-      const items = response.result?.items;
-      this.items = items;
-      const totalCount = response.result?.totalCount;
+    this.service.GetFilteredList(this.startDate, this.endDate, selectedStatus, search, this.MaxResultCount, this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
+      console.log(this.startDate, this.endDate)
+        const items = response.result?.items;
+        this.items = items;
+        const totalCount = response.result?.totalCount;
 
 
-      if (Array.isArray(items)) {
+        if (Array.isArray(items)) {
 
-        items.forEach((element: any) => {
+          items.forEach((element: any) => {
 
 
-          //let _data = JSON.parse(element);
-          element.ticketid = element.ticketNo;
-          element.policyname = element.policyName;
-         element.category = element.category === 0 ? 'Low' :
-                   element.category === 1 ? 'Medium' :
-                   element.category === 2 ? 'High' : '';
-          element.alertdate = element.creationTime;
-          element.handledby = element.handledUser;
-          element.devices = element.devices
+            //let _data = JSON.parse(element);
+            element.ticketid = element.ticketNo;
+            element.policyname = element.policyName;
+            element.category = element.category === 0 ? 'Low' :
+              element.category === 1 ? 'Medium' :
+                element.category === 2 ? 'High' : '';
+            element.alertdate = element.creationTime;
+            element.handledby = element.handledUser;
+            element.devices = element.devices
 
-          // element.button = [
-          //   { label: 'Edit', icon: 'edit', type: 'edit' },
-          //   { label: 'Delete', icon: 'delete', type: 'delete' }
-          // ];
+            // element.button = [
+            //   { label: 'Edit', icon: 'edit', type: 'edit' },
+            //   { label: 'Delete', icon: 'delete', type: 'delete' }
+            // ];
+            element.ticketid = element.ticketNo;
+            element.policyname = element.policyName;
+            element.category = element.category === 0 ? 'Low' :
+              element.category === 1 ? 'Medium' :
+                element.category === 2 ? 'High' : '';
+            element.alertdate = element.creationTime;
+            element.handledby = element.handledUser;
+            element.devices = element.devices
+
+            // element.button = [
+            //   { label: 'Edit', icon: 'edit', type: 'edit' },
+            //   { label: 'Delete', icon: 'delete', type: 'delete' }
+            // ];
 
             element.buttonlist = [
-            { label: 'Transfer', icon: 'output', type: 'transfer',disabled: false },
-            { label: 'Perform', icon: 'schedule', type: 'perform', disabled: false },
-            { label: 'Resolved By Itself', icon: 'check_circle', type: 'resolved', disabled: false },
-            { label: 'History', icon: 'history', type: 'history', disabled: false },
-            // { label: 'Transfer', icon: 'output', type: 'transfer' },
-          ]
+              { label: 'Transfer', icon: 'output', type: 'transfer', disabled: false },
+              { label: 'Perform', icon: 'schedule', type: 'perform', disabled: false },
+              { label: 'Resolved By Itself', icon: 'check_circle', type: 'resolved', disabled: false },
+              { label: 'History', icon: 'history', type: 'history', disabled: false },
+              // { label: 'Transfer', icon: 'output', type: 'transfer' },
+            ]
+            element.buttonlist = [
+              { label: 'Transfer', icon: 'output', type: 'transfer', disabled: false },
+              { label: 'Perform', icon: 'schedule', type: 'perform', disabled: false },
+              { label: 'Resolved By Itself', icon: 'check_circle', type: 'resolved', disabled: false },
+              { label: 'History', icon: 'history', type: 'history', disabled: false },
+              // { label: 'Transfer', icon: 'output', type: 'transfer' },
+            ]
 
 
 
-        });
-        var _length = totalCount / Number(this.recordPerPage);
-        if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-          this.totalRecords = Number(this.recordPerPage) * (_length);
-        else if (Math.floor(_length) == 0)
-          this.totalRecords = 10;
-        else
-          this.totalRecords = totalCount;
-        this.totalPages = this.totalRecords / this.pager;
-      }
-    })
+          });
+          var _length = totalCount / Number(this.recordPerPage);
+          if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+            this.totalRecords = Number(this.recordPerPage) * (_length);
+          else if (Math.floor(_length) == 0)
+            this.totalRecords = 10;
+          else
+            this.totalRecords = totalCount;
+          this.totalPages = this.totalRecords / this.pager;
+        }
+      });
+    }
   }
-
-  // getProjList() {
-  //   this.service.GetProjectList().pipe(withLoader(this.loaderService)).subscribe((response: any) => {
-  //     const items = response?.result || [];
-
-  //     const projectOptions = items.map((item: any) => ({
-  //       name: item.name || item.shortCode,
-  //       value: item.id
-  //     }));
-
-
-  //     projectOptions.unshift({
-  //       name: 'All',
-  //       value: null
-  //     });
-
-  //     this.projectSelectSettings.options = projectOptions;
-  //     this.form.controls['selectedProject'].setValue({
-  //       name: 'All',
-  //       value: null
-  //     });
-
-  //     this.form.controls['selectedStatus'].setValue({
-  //       name: 'All',
-  //       value: null
-  //     });
-  //     this.isProjectOptionsLoaded = true;
-  //   }, error => {
-  //     console.error('Error fetching project list', error);
-  //   });
-  // }
-
-
-
-
-
-}

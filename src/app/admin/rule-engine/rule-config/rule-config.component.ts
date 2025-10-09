@@ -121,6 +121,7 @@ export class RuleConfigComponent implements OnInit {
   };
   inputFields = {
     policyName: {
+      labelHeader: 'Policy Name',
      
       placeholder: 'Policy Name*',
       appearance: 'outline',
@@ -410,6 +411,9 @@ export class RuleConfigComponent implements OnInit {
     // });
 
 
+    this.firstFormGroup.controls['policyName'].valueChanges.subscribe((value: string) => {
+      this.onPolicyNameChange(value);
+    });
     // this.firstFormGroup.controls['policyName'].valueChanges.subscribe((value: string) => {
     //   this.onPolicyNameChange(value);
     // });

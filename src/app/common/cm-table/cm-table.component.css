@@ -1,13 +1,19 @@
 .table-dark th {
     color: black !important; 
   }
-
-  table th, table td {
+table td {
     text-align: center;
     vertical-align: middle;
-    padding: 8px 12px;
+    padding: 2px 5px;
   }
-  
+  table th{
+    text-align: center;
+    vertical-align: middle;
+    padding: 8px 5px;
+    white-space: nowrap;
+    text-transform: capitalize;
+  }
+  table td:last-child {width: 140px;}
   .table-dark {
     
     color: white !important;
@@ -49,4 +55,13 @@ background-color:#EDF2F6;
 
 .td-css{
   border-spacing: 0cap;
+}
+
+.table thead {
+  --bs-table-bg:transparent;
+  --bs-table-color:#fff;
+}
+.bg-blue{
+  background-color: var(--primary-color);
+  color:#fff;
 }

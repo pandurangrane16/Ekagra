@@ -12,8 +12,8 @@
   <div class="card-body">
     <form [formGroup]="form" class="form-container">
         <div class="row">
-            <div class="col-md-6" style="margin-top: -10px;">
-                <label style="position: relative; top: 6px; display: block;">Project Name</label>
+            <div class="col-md-6">
+                <label >Project Name</label>
 
                 <div >
                   <app-cm-select2
@@ -93,7 +93,7 @@
         
          <!-- Action Buttons -->
          <div class="dialog-actions">
-            <button mat-button (click)="close()">Cancel</button>
+            <button mat-stroked-button (click)="close()">Cancel</button>
             <button mat-flat-button color="primary" (click)="submit()">Save</button>
           </div>
    

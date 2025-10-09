@@ -1,7 +1,7 @@
 <div class="dialog-header">
     <div class="row dialog-title">
         <div class="col-md-6 text-left">
-            <span class="dialog-title">Transfer Ticket</span>
+            <span class="dialog-title">Transfer Ticket - <span style="color:yellow;">{{data.policyName}} </span></span>
         </div>
         <div class="col-md-6 text-right">
             <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()">
@@ -13,15 +13,15 @@
 <div class="pageWrapper">
     <mat-card class="cardWithShadow theme-card">
         <div class="row">
-            <mat-card-header>
+            <!-- <mat-card-header>
                 <div class="col-md-11" style="padding-left: 40px;">
                     <mat-card-title>
                         <h2 style="margin-top: 10px;">{{data.policyName}}</h2>
                     </mat-card-title>
                 </div>
             </mat-card-header>
-            <hr>
-            <mat-card-content>
+            <hr> -->
+            <mat-card-content class="p-5 pt-3">
                 <form [formGroup]="form">
                      <div class="row">
                         <app-cm-select2 *ngIf="isUserLoaded" [formGroup]="form"
@@ -39,17 +39,18 @@
                             </app-cm-textarea>
                         </div>
                     </div>
-                    <hr>
-                    <hr>
-                    <div class="row">
-                        <div class="col-md-12 text-right">
-                            <app-cm-button color="primary" type="stroked" class="m-r-8" return="submit"
-                                (click)="submitAction()">Submit</app-cm-button>
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                            <app-cm-button color="warn" type="stroked" class="m-r-8" return="cancel"
-                                (click)="close()">Cancel</app-cm-button>
-                        </div>
-                    </div>
+                  
+
+                     <div class="dialog-actions mt-2">
+ 
+                                <button mat-stroked-button
+                                (click)="close()">Cancel</button> 
+                      
+                      <button mat-flat-button class="btn-primary"
+                                (click)="submitAction()">Submit</button>       
+                           
+          
+          </div>
                 </form>
             </mat-card-content>
         </div>

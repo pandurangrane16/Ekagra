@@ -11,7 +11,7 @@
 }
 
 .dialog-header.delete {
-  background-color: #1a2a6c; /* You can override per type if needed */
+  background-color: #d60b04; /* You can override per type if needed */
 }
 
 .dialog-header.warning {
@@ -23,7 +23,7 @@
 }
 
 .dialog-header.alert {
-  background-color: #d32f2f;
+  background-color: #fd1706;
 }
 
 .dialog-title {
@@ -80,11 +80,11 @@
 
 /* Confirm Button (mat-raised-button) */
 .confirm-button {
-  background-color: #b1123f;
+  background-color: #d60b04;
   color: white;
 }
 
 .confirm-button:hover {
-  background-color: #1a2a6c;
+  background-color: #d60b04;
   color :white
 }

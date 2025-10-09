@@ -311,6 +311,19 @@ border-radius: var(--mdc-elevated-card-container-shape);
     padding: 24px;
 }
 
+
+ .text-right{text-align: right;}
+}
+ .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+    background-color: #fff;
+    position: sticky;
+    bottom: 0;
+  }
 .mat-mdc-outlined-button{
 --mat-sys-primary:#1c2d7b;
 border-color: var(--mat-sys-primary);
@@ -320,7 +333,4 @@ color: var(--mat-sys-primary);
   --mat-sys-primary:#1c2d7b;
     color: white;
     background-color: var(--mat-sys-primary);
-}
-
- .text-right{text-align: right;}
 }

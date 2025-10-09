@@ -54,11 +54,15 @@
 
 /* ========== Dialog Actions ========== */
 .dialog-actions {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  padding: 0px 16px 16px 16px;
-}
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+    background-color: #fff;
+    position: sticky;
+    bottom: 0;
+  }
 
 /* ========== Buttons ========== */
 .dialog-actions button {
@@ -89,4 +93,34 @@
 .confirm-button:hover {
   background-color: #1a2a6c;
   color :white
+}
+.btn-primary{background-color:var(--primary-color);
+    color: var(--White);;
+    font-weight: 600;
+    padding: 10px 14px;      
+    border-radius: 8px;
+    font-size: 13px;         
+    box-shadow: none;
+    text-transform: none;
+    white-space: nowrap; border:none; }
+
+     .mat-mdc-outlined-button{
+--mat-sys-primary:#1c2d7b;
+border-color: var(--mat-sys-primary);
+color: var(--mat-sys-primary);
+}
+.mat-button-toggle-appearance-standard.mat-button-toggle-checked {
+  --mat-sys-primary:#1c2d7b;
+    color: white;
+    background-color: var(--mat-sys-primary);
+}
+.mdc-button--outlined .mdc-button__ripple {
+  --mat-sys-primary:#1c2d7b;
+border-color: var(--mat-sys-primary)!important;
+
+}
+ .mdc-dialog__surface {  overflow-y: inherit!important;}
+ ::ng-deep .mat-mdc-dialog-content {
+  max-height: 70vh;
+  overflow-y: auto;
 }

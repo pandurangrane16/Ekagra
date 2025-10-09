@@ -20,9 +20,9 @@
 }
 
   .toggle-label {
-    font-weight: 500;
+    font-weight: 400;
     font-size: 14px;
-    margin-bottom: 4px;
+    margin-bottom: 0px;
   }
 
 .step-icon {
@@ -75,14 +75,16 @@ h2 {
   justify-content: space-between;
 }
 
-button {
-  background-color: black;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  font-size: 16px;
-  border-radius: 4px;
-  cursor: pointer;
+.container button {
+  background-color:var(--primary-color);
+    color: var(--White);;
+    font-weight: 600;
+    padding: 10px 14px;      
+    border-radius: 8px;
+    font-size: 13px;         
+    box-shadow: none;
+    text-transform: none;
+    white-space: nowrap; border:none;
 }
 
 button:disabled {
@@ -93,19 +95,19 @@ button:disabled {
 
 .container {
   display: flex;
-  max-width: 80%;
+  /* max-width: 80%;
   margin: 50px auto;
   border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0,0,0,0.1); */
   overflow: hidden;
-  font-family: Arial, sans-serif;
 }
 
 .sidebar {
   width: 25%;
-  background-color: #1a2e49;
+  background-color: #1c2d7b;
   color: white;
   padding: 30px;
+  border-radius: 12px 0 0 12px;
 }
 
 .sidebar h2 {
@@ -147,7 +149,7 @@ button:disabled {
 
 .active {
   border-color: #0fd81d !important;
-  background-color: #1a2e49;
+  background-color: #1c2d7b;
   color: rgb(11, 239, 7) !important;
 }
 
@@ -155,6 +157,7 @@ button:disabled {
   width: 65%;
   padding: 40px;
   background-color: #fff;
+  border: 1px solid #ccc;
 }
 
 .content h3 {
@@ -214,3 +217,14 @@ button:disabled {
 .rmBtn {
   padding: 16px;
 }
+.btn-primary{background-color:var(--primary-color);
+    color: var(--White);;
+    font-weight: 600;
+    padding: 10px 14px;      
+    border-radius: 8px;
+    font-size: 13px;         
+    box-shadow: none;
+    text-transform: none;
+    white-space: nowrap; border:none; }
+
+  .closeRow:hover{color:red;box-shadow: 0 0 10px rgba(0,0,0,0.1);border-radius: 50%; background-color: white;cursor:pointer}

@@ -13,14 +13,14 @@
   <div class="card-body">
     <form [formGroup]="form" class="form-container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                      <label>Select Type</label>
               <app-cm-select2
   *ngIf="isContactLoaded"
   [formGroup]="form"
   [controlName]="'ContactType'"
   [settings]="ContactTypeSettings"
-  (optionSelected)="onContactTypeSelected($event)">
+  (optionSelected)="onContactTypeSelected($event)" class="d-block">
 </app-cm-select2>
   <div *ngIf="f['name'].touched && f['name'].errors" class="text-danger mt-1">
     {{ getErrorMessage('ContactType', 'ContactType', true, 'Special characters are not allowed') }}

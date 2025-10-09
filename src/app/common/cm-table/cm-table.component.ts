@@ -95,4 +95,15 @@ export class CmTableComponent implements OnInit {
       else
         this.notChecked.emit(data);
     }
+    getButtonColor(btn: any): 'primary' | 'accent' | 'warn' | 'orange' {
+  switch (btn.label) {
+    case 'Edit':
+      return 'primary';
+    case 'Delete':
+      return 'warn';
+    default:
+      return 'accent';
+  }
+}
+
   }

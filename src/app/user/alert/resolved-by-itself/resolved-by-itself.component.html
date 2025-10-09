@@ -1,7 +1,7 @@
 <div class="dialog-header">
     <div class="row dialog-title">
         <div class="col-md-6 text-left">
-            <span class="dialog-title">Resolved By Itself</span>
+            <span class="dialog-title">Resolved By Itself - <span style="color:yellow;">{{data.policyName}} </span></span>
         </div>
         <div class="col-md-6 text-right">
             <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()">
@@ -12,15 +12,7 @@
 </div>
 <div class="pageWrapper">
     <mat-card class="cardWithShadow theme-card">
-        <div class="row">
-            <mat-card-header>
-                <div class="col-md-11" style="padding-left: 40px;">
-                    <mat-card-title>
-                        <h2 style="margin-top: 10px;">{{data.policyName}}</h2>
-                    </mat-card-title>
-                </div>
-            </mat-card-header>
-            <hr>
+      
             <mat-card-content>
                 <form [formGroup]="form">
                     <div class="row">
@@ -31,24 +23,42 @@
                         </div>
                     </div>
                     <hr>
-                    <div class="row">
+                    <!-- <div class="row">
                         <label>Attach File</label>
                         <div class="col-md-12">
-                            <input type="file" />
+                            <input type="file"/>
                         </div>
-                    </div>
-                    <hr>
+                    </div> -->
+
                     <div class="row">
-                        <div class="col-md-12 text-right">
-                            <app-cm-button color="primary" type="stroked" class="m-r-8" return="submit"
-                                (click)="submitAction()">Submit</app-cm-button>
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                            <app-cm-button color="warn" type="stroked" class="m-r-8" return="cancel"
-                                (click)="cancelAction()">Cancel</app-cm-button>
-                        </div>
-                    </div>
+                        <label>Attach File</label>
+                        <div class="col-6 d-flex gap-2 flex-row align-items-center">
+                        <button mat-raised-button color="primary" class="btn-primary" (click)="fileInput.click()">
+  <mat-icon>attach_file</mat-icon>
+  Choose File
+</button>
+<span [matTooltip]="fileName">{{ fileName || 'No file selected' }}</span>
+
+<input
+  type="file"
+  #fileInput
+  hidden
+  (change)="onFileSelected($event)"
+/>
+                    </div></div>
+                   
+                      <div class="dialog-actions mt-2">
+ 
+                                <button mat-stroked-button
+                                (click)="close()">Cancel</button> 
+                      
+                      <button mat-flat-button class="btn-primary"
+                                (click)="submitAction()">Submit</button>       
+                           
+          
+          </div>
                 </form>
             </mat-card-content>
-        </div>
+        
     </mat-card>
 </div>

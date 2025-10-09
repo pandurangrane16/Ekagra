@@ -7,16 +7,13 @@
     padding: 24px;
     background: #fff;
     border-radius: 8px;
-    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
-       
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);  
     overflow-x: hidden;   
-    overflow-y: auto;  
+
   }
   
   .form-container {
     flex: 1;
-    overflow-y: auto;              /* Enables scrolling if content overflows */
-    overflow-x: hidden;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -118,4 +115,13 @@
     position: sticky;
     bottom: 0;
   }
-  
+  .mat-mdc-outlined-button{
+--mat-sys-primary:#1c2d7b;
+border-color: var(--mat-sys-primary);
+color: var(--mat-sys-primary);
+}
+.mat-button-toggle-appearance-standard.mat-button-toggle-checked {
+  --mat-sys-primary:#1c2d7b;
+    color: white;
+    background-color: var(--mat-sys-primary);
+}

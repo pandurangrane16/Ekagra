@@ -7,12 +7,6 @@
                         <h2 style="margin-top: 10px;">User-Role-Zone Mapping</h2>
                     </mat-card-title>
                 </div>
-                <div class="col text-right">
-                    <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()">
-                        <mat-icon>reply</mat-icon>
-                    </button>
-
-                </div>
             </mat-card-header>
         </div>
         <hr>
@@ -20,24 +14,48 @@
             <form [formGroup]="form">
                 <div class="row">
                     <div class="col-md-4">
-                        <label>Select User</label>
+                        <!-- <label>Select User</label>
                         <select #selectElement class="form-control" style="width: 100%;">
                             <option *ngFor="let option of yourOptions" [value]="option.id">{{ option.text }}</option>
-                        </select>
+                        </select> -->
+                        <mat-form-field appearance="fill">
+                            <mat-label>Select User</mat-label>
+                            <mat-select multiple>
+                                <mat-option *ngFor="let option of yourOptions" [value]="option.id">
+                                    {{ option.text }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
 
                     </div>
                     <div class="col-md-4">
-                        <label>Select Zone</label>
-                        <select #selectElement class="form-control" style="width: 100%;">
+                        <!-- <label>Select Zone</label>
+                        <select multiple #selectElement class="form-control" style="width: 100%;" [attr.size]="5">
                             <option *ngFor="let option of yourOptions" [value]="option.id">{{ option.text }}</option>
-                        </select>
+                        </select> -->
+                        <mat-form-field appearance="fill">
+                            <mat-label>Select Zone</mat-label>
+                            <mat-select multiple>
+                                <mat-option *ngFor="let option of yourOptions" [value]="option.id">
+                                    {{ option.text }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
 
                     </div>
                     <div class="col-md-4">
-                        <label>Select Role</label>
-                        <select #selectElement class="form-control" style="width: 100%;">
+                        <!-- <label>Select Role</label>
+                        <select multiple #selectElement class="form-select" style="width: 100%;" [attr.size]="5">
                             <option *ngFor="let option of yourOptions" [value]="option.id">{{ option.text }}</option>
-                        </select>
+                        </select> -->
+                        <mat-form-field appearance="fill">
+                            <mat-label>Select Role</mat-label>
+                            <mat-select multiple>
+                                <mat-option *ngFor="let option of yourOptions" [value]="option.id">
+                                    {{ option.text }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
 
                     </div>
                 </div>
@@ -52,3 +70,4 @@
         </mat-card-content>
     </mat-card>
 </div>
+</div> </div>
