@@ -21,6 +21,10 @@ import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { LoaderService } from '../../services/common/loader.service';
 import { withLoader } from '../../services/common/common';
+import { ToastrService } from 'ngx-toastr';
+import { SopConfig } from '../../models/admin/sopconfig.model';
+import { switchMap } from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
 import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 
 
@@ -138,6 +142,7 @@ router = inject(Router);
       constructor(private fb: FormBuilder,
         private dialog: MatDialog,
         private service: SOPService,
+          private toast: ToastrService,
         ) {}
         
         
@@ -287,48 +292,62 @@ onPaginationChanged(event: { pageNo: number; perPage: number }) {
     this.editRow(data);
     console.log(data);
   } else if (event.type === 'delete') {
-   // this.deleteRow(data);
+   this.deleteRow(data);
   }
 }
-// deleteRow(rowData: any): void {
-//   const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
-//     width: '400px',
-//       position: { top: '20px' },
-//   panelClass: 'custom-confirm-dialog',
-//     data: {
-//       title: 'Confirm Delete',
-//      message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.name}</b> will be deleted.</div>`,
+deleteRow(rowData: any): void {
+  const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
+    width: '400px',
+      position: { top: '20px' },
+  panelClass: 'custom-confirm-dialog',
+    data: {
+      title: 'Confirm Delete',
+     message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.sopName}</b> will be deleted.</div>`,
 
-//       type: 'delete',
-//       confirmButtonText: 'Confirm',
-//       cancelButtonText: 'Cancel'
-//     }
-//   });
+      type: 'delete',
+      confirmButtonText: 'Confirm',
+      cancelButtonText: 'Cancel'
+    }
+  });
 
-//   dialogRef.afterClosed().subscribe(result => {
-//     if (result) {
-     
-//       this.service.Delete(rowData.id).pipe(withLoader(this.loaderService)).subscribe({
-//         next: (res:any) => {
-//           if (res.success) {
-//             this.getProjConfigList();
-//             console.log('Deleted successfully');
-           
-//           } else {
-//             console.error('Delete failed:', res.error);
-//           }
-//         },
-//         error: (err) => {
-//           console.error('API error:', err);
-//         }
-//       });
-//     } else {
-//       console.log('User cancelled');
-//     }
-//   });
-// }
+dialogRef.afterClosed().subscribe(result => {
+  if (result) {
+    const sopId = rowData.id;
+
+ 
+    this.service.SOPConfigDelete(sopId) 
+      .pipe(
+        withLoader(this.loaderService),
+        switchMap((response: any) => {
+          if (response?.success || response?.result) {
+            // Step 2: On success → call SOP actions delete API
+            return this.service.SOPActionDelete(sopId);
+          } else {
+            this.toast.error("Failed to delete SOP Config.");
+            return EMPTY;
+          }
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.toast.success("SOP and its actions deleted successfully.");
+          this.getFilteredList();
+        },
+        error: (err) => {
+          console.error(err);
+          this.toast.error("An error occurred while deleting SOP or its actions.");
+        }
+      });
+
+  } else {
+    console.log("User cancelled");
+  }
+});
+
+
+}
 editRow(rowData: any) {
-  this.router.navigate(['/admin/projform'], {
+  this.router.navigate(['/admin/sopform'], {
     state: {
       mode: 'edit',
       record: rowData

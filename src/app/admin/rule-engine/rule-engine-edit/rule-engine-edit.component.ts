@@ -26,7 +26,7 @@ import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-selec
 @Component({
  
   imports: [MaterialModule,MatIconModule,MatButtonModule,MatTooltipModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,
-    CmToggleComponent,CmCronComponent, CmButtonComponent, CmSelectCheckComponent],
+    CmToggleComponent,CmCronComponent, CmButtonComponent],
 
     selector: 'app-rule-engine-edit',
 
@@ -127,7 +127,7 @@ export class RuleEngineEditComponent implements OnInit {
   };
   inputFields = {
     policyName: {
-      labelHeader: 'Policy Name*',
+     
       placeholder: 'Policy Name*',
       appearance: 'outline',
       isDisabled: false,
@@ -887,9 +887,12 @@ patch_expression(ruleExpression: string) {
       });
     };
 
-    processNext(); // start processing
+    processNext(); 
+     this.patchCronForEdit(this.ruleData.cron);
 
     return parsed;
+    
+   
 
   } catch (error) {
     console.error("Error parsing rule expression:", error);

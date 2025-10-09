@@ -13,5 +13,4 @@ background-color:#fff;
     position: relative; top: 6px; display: block;
  }
 
-
- 
+ .mat-mdc-form-field {display: flex;}

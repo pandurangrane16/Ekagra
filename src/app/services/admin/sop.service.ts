@@ -22,12 +22,37 @@ export class SOPService {
   }
 
 
+
+   GetSOPActionMasterbySOPId(id:any) {
+    return this._httpService._getMethod('api/services/app/SOPAction/GetSOPActionMasterbySOPId?Id='+id);
+  }
+
+
  SOPConfigCreate(_data: any) {
     return this._httpService._postMethod(_data, 'api/services/app/SOPConfig/Create');
   }
 
+   SOPConfigUpdate(_data: any) {
+    return this._httpService._putMethod(_data, 'api/services/app/SOPConfig/Update');
+  }
+    SOPActionUpdate(_data: any) {
+    return this._httpService._putMethod(_data, 'api/services/app/SOPAction/Update');
+  }
+
  SOPActionCreate(_data: any) {
     return this._httpService._postMethod(_data, 'api/services/app/SOPAction/Create');
+  }
+
+   SOPConfigDelete(id: any) {
+    return this._httpService._deleteMethod( 'api/services/app/SOPConfig/Delete?Id='+id);
+  }
+
+   SOPActionDelete(id: any) {
+    return this._httpService._deleteMethod('api/services/app/SOPAction/DeleteSOPActionsBySOPConfigId?sopConfigId='+id);
+  }
+
+      GetPolicyList_all() {
+    return this._httpService._getMethod('api/services/app/RuleEngine/GetPolicytList');
   }
 
   
@@ -68,6 +93,25 @@ export class SOPService {
 
   return this._httpService._getMethod(url);
 }
+
+
+CheckSOPNameExist(SOPName?: string, Id?: number | string) {
+  let params: string[] = [];
+
+  if (SOPName !== null && SOPName !== undefined) {
+    params.push(`SOPName=${encodeURIComponent(SOPName.toString().trim())}`);
+  }
+
+  if (Id !== null && Id !== undefined && Id.toString().trim() !== '') {
+    params.push(`Id=${encodeURIComponent(Id.toString().trim())}`);
+  }
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/SOPConfig/CheckSOPNameExist${queryString}`;
+
+  return this._httpService._postMethod(null, url);
+}
+
 
   
 

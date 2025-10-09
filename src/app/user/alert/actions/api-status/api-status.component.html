@@ -1,0 +1,30 @@
+@if(data.type == "vms") {
+<div class="pageWrapper">
+    <mat-card class="cardWithShadow theme-card">
+        <hr>
+        <mat-card-content>
+            <form [formGroup]="form">
+                <div class="row">
+                    <div class="col-md-6">
+                        <app-cm-select2 *ngIf="isTypeSelected" [formGroup]="form" [controlName]="'selectedVms'"
+                            [settings]="vmsSettings" (returnObject)="onActionTypeSelected($event)">
+                        </app-cm-select2>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button mat-flat-button class="btnSubmit" (click)="SubmitAction()">
+                            Submit
+                        </button>
+                        &nbsp;&nbsp;&nbsp;
+                        <button mat-flat-button class="btnCancel" (click)="CancelAction()">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>
+}

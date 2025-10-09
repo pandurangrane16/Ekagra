@@ -4,8 +4,8 @@
     <hr /> -->
     <div class="table-responsive" *ngIf="headArr">
       <!-- {{activePage}} -->
-      <table class="w-100 table table-bordered" id="datatableexample">
-        <thead>
+      <table class="w-100 table table-bordered table-striped" id="datatableexample">
+        <thead class="bg-blue">
           <tr>
             <th>Sr No.</th>
             <th class="f-w-600 f-s-14" *ngFor="let col of headArr">{{ col.header }}</th>
@@ -33,17 +33,17 @@
               </div>
               }
               @else if(head.fieldValue === 'button') {
-              <div *ngFor="let btn of item.button" class="d-inline-block me-2">
-                <button mat-icon-button color="primary" (click)="GoToBtnAction(btn, item)" [matTooltip]="btn.label">
-                  <mat-icon>{{ btn.icon || 'add' }}</mat-icon>
+              <span *ngFor="let btn of item.button" class="me-2">
+                <button mat-icon-button  [color]="getButtonColor(btn)" (click)="GoToBtnAction(btn, item)" [matTooltip]="btn.label">
+                  <mat-icon fontSet="material-icons-outlined">{{ btn.icon || 'add' }}</mat-icon>
                 </button>
-              </div>
+              </span>
               }
               @else if(head.type === 'boolean') {
-              <button mat-flat-button
-                [ngClass]="item[head.fieldValue] ? 'bg-success text-white' : 'bg-secondary text-white'" disabled>
+              <badge
+                [ngClass]="item[head.fieldValue] ? 'bg-success text-white rounded px-2 py-1' : 'bg-secondary text-white rounded px-2 py-1'" disabled>
                 {{ item[head.fieldValue] ? 'Enable' : 'Disable' }}
-              </button>
+              </badge>
               }
               @else if(head.fieldValue==='buttonlist') {
               <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
@@ -51,7 +51,7 @@
               </button>
               <mat-menu #menu="matMenu">
                 <button mat-menu-item *ngFor="let btn of item.buttonlist" (click)="GoToBtnAction(btn, item)" [disabled]="btn.disabled">
-                  <mat-icon>{{btn.icon}}</mat-icon>
+                  <mat-icon fontSet="material-icons-outlined">{{btn.icon}}</mat-icon>
                   <span>{{btn.label}}</span>
                 </button>
               </mat-menu>

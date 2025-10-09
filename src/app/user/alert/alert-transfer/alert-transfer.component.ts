@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component,inject, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ResolvedByData } from '../resolved-by-itself/resolved-by-itself.component';
@@ -11,15 +11,20 @@ import { CmSelect2Component } from '../../../common/cm-select2/cm-select2.compon
 import { withLoader } from '../../../services/common/common';
 import { LoaderService } from '../../../services/common/loader.service';
 import { projconfigservice } from '../../../services/admin/progconfig.service';
+import { alertservice } from '../../../services/admin/alert.service';
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-alert-transfer',
-  imports: [MaterialModule, CommonModule, ReactiveFormsModule,CmTextareaComponent, CmButtonComponent,CmSelect2Component],
+  imports: [MaterialModule, CommonModule, ReactiveFormsModule,CmTextareaComponent, CmSelect2Component],
   templateUrl: './alert-transfer.component.html',
   styleUrl: './alert-transfer.component.css'
 })
 export class AlertTransferComponent implements OnInit {
   form: FormGroup;
+    router = inject(Router);
   inputFields = {
     remarks : {
       labelHeader: '',
@@ -38,8 +43,10 @@ export class AlertTransferComponent implements OnInit {
     appearance: 'fill',
     options: []
   };
-  constructor(@Inject(MAT_DIALOG_DATA) public data: ResolvedByData, private fb: FormBuilder,
-  private dialog : Dialog, private loaderService : LoaderService,private service: projconfigservice,) { }
+  
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any,  private fb: FormBuilder,
+  private dialog : Dialog, private loaderService : LoaderService,private service: alertservice, private toast: ToastrService,) { }
+  
   
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -52,17 +59,17 @@ export class AlertTransferComponent implements OnInit {
       value : 1
     }]
 
-    this.getProjList();
+    this.GetAllUsers();
   }
 
-    getProjList() {
-      this.service.GetProjectList().pipe(withLoader(this.loaderService)).subscribe((response: any) => {
-        const items = response?.result || [];
-  
-        const projectOptions = items.map((item: any) => ({
-          name: item.name || item.shortCode,
-          value: item.id
-        }));
+    GetAllUsers() {
+      this.service.GetAllUsers().pipe(withLoader(this.loaderService)).subscribe((response: any) => {
+      const items = response?.result?.items || [];
+
+const projectOptions = items.map((item: any) => ({
+  name: item.name,
+  value: item.id
+}));
   
   
         projectOptions.unshift({
@@ -89,9 +96,47 @@ export class AlertTransferComponent implements OnInit {
     this.dialog.closeAll();
   }
 
+
+
   submitAction() {
+  try {
+    if (this.form.valid) {
+      this.form.markAllAsTouched();
+
+
+      let alertModel = {
+        alertId: this.data.id,
+        userId: this.form.controls['selectedUser'].value.value,
+        remarks: this.form.controls['remarks'].value
+      };
+
     
+      this.service.TransferSOP(alertModel)
+        .pipe(withLoader(this.loaderService))
+        .subscribe({
+          next: () => {
+            this.toast.success('Alert submitted successfully');
+            
+             this.dialog.closeAll();
+            this.router.navigate(['/alerts']); 
+          },
+          error: (err) => {
+            console.error('Save failed:', err);
+            this.toast.error('Failed to submit alert');
+          }
+        });
+
+    } else {
+      this.form.markAllAsTouched();
+      this.toast.error('Form is not valid');
+    }
+
+  } catch (error) {
+    console.error('Unexpected error in submit:', error);
+    this.toast.error('An unexpected error occurred');
   }
+}
+
   cancelAction() {
 
   }

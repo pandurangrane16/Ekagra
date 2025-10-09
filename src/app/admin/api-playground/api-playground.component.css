@@ -1,8 +1,8 @@
 .query-container {
   position: relative;
-  width: 80%;
+  width: 98%;
   margin: 40px auto;
-  border: 2px solid black;
+  border: 1px solid rgb(194, 193, 193);
   padding: 20px;
 }
 
@@ -11,7 +11,7 @@
     width: 250px;
   }
 .narrow-select-wrapper ::ng-deep app-cm-select2 .mat-mdc-text-field-wrapper {
-  max-width: 100px !important;
+  /* max-width: 100px !important; */
   width: 100% !important;
   display: inline-block;
    
@@ -94,4 +94,28 @@
 
 .padStyle {
   padding: 25px;
+}
+
+mat-label{font-size: 14px; font-weight: 400!important;}
+ /* Fixed footer buttons */
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+    background-color: #fff;
+    position: sticky;
+    bottom: 0;
+  }
+
+   .mat-mdc-outlined-button{
+--mat-sys-primary:#1c2d7b;
+border-color: var(--mat-sys-primary);
+color: var(--mat-sys-primary);
+}
+.mat-button-toggle-appearance-standard.mat-button-toggle-checked {
+  --mat-sys-primary:#1c2d7b;
+    color: white;
+    background-color: var(--mat-sys-primary);
 }

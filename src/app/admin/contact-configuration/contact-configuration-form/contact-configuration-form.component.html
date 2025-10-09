@@ -1,30 +1,26 @@
 
-<div class="pageWrapper">
-<mat-card class="cardWithShadow theme-card">
-    <div class="row">
-  <mat-card-header>
-      <div class="col-md-11" style="padding-left: 40px;">
-        <mat-card-title><h2 style="margin-top: 10px;">Contact Configuration</h2></mat-card-title>
-      </div>
-      <div class="col text-right">
-       <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()">
+ <div class="card mt-1">
+    <div class="card-header d-flex justify-content-between align-items-center">
+  
+        <mat-card-title><h4 class="mt-1 mb-0">Contact Configuration</h4></mat-card-title>
+           
+       <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()" style="margin-top: -10px; margin-bottom: -10px;">
   <mat-icon>reply</mat-icon>
 </button>
-      </div>
-  </mat-card-header>
+ 
     </div>
-  <hr>
-  <mat-card-content class="b-t-1 scroll">
+  
+  <div class="card-body">
     <form [formGroup]="form" class="form-container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                      <label>Select Type</label>
               <app-cm-select2
   *ngIf="isContactLoaded"
   [formGroup]="form"
   [controlName]="'ContactType'"
   [settings]="ContactTypeSettings"
-  (optionSelected)="onContactTypeSelected($event)">
+  (optionSelected)="onContactTypeSelected($event)" class="d-block">
 </app-cm-select2>
   <div *ngIf="f['name'].touched && f['name'].errors" class="text-danger mt-1">
     {{ getErrorMessage('ContactType', 'ContactType', true, 'Special characters are not allowed') }}
@@ -96,12 +92,8 @@
           <button mat-flat-button color="primary" (click)="submit()">Save</button>
         </div>
     </form>
-
-
-     </mat-card-content>
-</mat-card>
 </div>
-
+</div>
 
    
   

@@ -22,6 +22,7 @@ export interface ResolvedByData {
   styleUrl: './resolved-by-itself.component.css'
 })
 export class ResolvedByItselfComponent implements OnInit {
+
   form: FormGroup;
   inputFields = {
     remarks : {
@@ -33,6 +34,7 @@ export class ResolvedByItselfComponent implements OnInit {
        formFieldClass: "w-100"
     }
   }
+  fileName: string;
   constructor(@Inject(MAT_DIALOG_DATA) public data: ResolvedByData, private fb: FormBuilder,private dialog : Dialog) { }
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -49,4 +51,13 @@ export class ResolvedByItselfComponent implements OnInit {
   cancelAction() {
 
   }
+  onFileSelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+  if (input.files?.length) {
+    const file = input.files[0];
+    this.fileName = file.name;
+    this.form.patchValue({ document: file });
+  }
+}
+
 }

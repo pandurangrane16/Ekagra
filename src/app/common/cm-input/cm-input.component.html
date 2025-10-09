@@ -5,9 +5,7 @@
     <ng-container *ngIf="_inputData.labelHeader && _inputData.labelHeader !== 'Search'">
       <!-- <mat-label  [class]="_inputData.labelClass"
       class="label" > {{ _inputData.labelHeader }}</mat-label> -->
-     
-
-    </ng-container>
+     </ng-container>
     <mat-form-field [hideRequiredMarker]="true"  [class]="_inputData.formFieldClass" [appearance]="'outline'">
   
       <!-- Show floating mat-label inside input ONLY if labelHeader === 'Search' -->
@@ -15,7 +13,7 @@
         {{ _inputData.labelHeader }}
       </mat-label>
     
-      <input matInput [placeholder]="_inputData.placeholder" [disabled]="_inputData.isDisabled" [value]="value"
+      <input matInput [placeholder]="_inputData.placeholder" [disabled]="_inputData.isDisabled" [value]="value" [readonly]="_inputData.isDisabled"
       [formControlName]="controlName" [type]="type"     (input)="_inputData.restrictToDigits ? restrictToDigits($event) :
           _inputData.restrictToDecimal ? restrictToDecimal($event) : _inputData.restrictToAlphanumeric ? restrictToAlphanumeric($event): null" />
     

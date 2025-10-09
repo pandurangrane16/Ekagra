@@ -1,0 +1,45 @@
+import { Component, Inject, OnInit } from '@angular/core';
+import { MaterialModule } from '../../../Material.module';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { CmTextareaComponent } from '../../../common/cm-textarea/cm-textarea.component';
+import { CmButtonComponent } from '../../../common/cm-button/cm-button.component';
+import { Dialog } from '@angular/cdk/dialog';
+import { ResolvedByData } from '../resolved-by-itself/resolved-by-itself.component';
+
+@Component({
+  selector: 'app-alert-history',
+  imports: [MaterialModule, CommonModule, ReactiveFormsModule],
+  templateUrl: './alert-history.component.html',
+  styleUrl: './alert-history.component.css',
+})
+export class AlertHistoryComponent implements OnInit {
+  form: FormGroup;
+  inputFields = {
+    remarks : {
+      labelHeader: '',
+      placeholder: 'Remarks',
+      appearance: 'outline',
+      isDisabled: false,
+      color: 'primary',
+       formFieldClass: "w-100"
+    }
+  }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: ResolvedByData, private fb: FormBuilder,private dialog : Dialog) { }
+  ngOnInit(): void {
+    this.form = this.fb.group({
+      remarks: ['', Validators.required]
+    });
+  }
+  close() {
+    this.dialog.closeAll();
+  }
+
+  submitAction() {
+    
+  }
+  cancelAction() {
+
+  }
+}

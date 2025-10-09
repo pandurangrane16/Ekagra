@@ -28,7 +28,7 @@ export class LoginComponent {
 loaderService=inject(LoaderService);
 sessionService=inject(SessionService);
   loginForm!: FormGroup;
-  version: string = "2.0.7";
+  version: string = "2.0.8";
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,

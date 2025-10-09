@@ -1,24 +1,19 @@
-<div class="pageWrapper">
-<mat-card class="cardWithShadow theme-card">
-    <div class="row">
-  <mat-card-header>
-      <div class="col-md-11" style="padding-left: 40px;">
-        <mat-card-title><h2 style="margin-top: 10px;">SOP Configuration</h2></mat-card-title>
-      </div>
-      <div class="col text-right">
-       <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()">
+<div class="card mt-1">
+    <div class="card-header d-flex justify-content-between align-items-center">
+  
+        <mat-card-title><h4 class="mt-1 mb-0">SOP Configuration</h4></mat-card-title>
+           
+       <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()" style="margin-top: -10px; margin-bottom: -10px;">
   <mat-icon>reply</mat-icon>
 </button>
-        
-      </div>
-  </mat-card-header>
+ 
     </div>
-  <hr>
-  <mat-card-content class="b-t-1 scroll">
+  
+  <div class="card-body">
 
     <form [formGroup]="form" class="form-container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-5">
                 <label>Policy Name</label>
                     <app-cm-select2 
                     *ngIf="isPolicyOptionLoaded"
@@ -27,6 +22,9 @@
                     [settings]="PolicySettings"
                     (optionSelected)="onProjectSelected($event)">
                     </app-cm-select2>
+                                <div *ngIf="f['name'].touched && f['name'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('name', 'Policy Name', false, '') }}
+      </div>
               
                 <!-- <mat-error *ngIf="form.get('name')?.hasError('whitespace')">
   Name cannot be empty or just spaces.
@@ -35,7 +33,7 @@
     {{ getErrorMessage('name', 'Name', true, 'Special characters are not allowed') }}
   </div> -->
             </div>
-             <div class="col-md-6">
+             <div class="col-md-5">
                 <label>SOP Name</label>
                 <app-cm-input
                   [formGroup]="form"
@@ -44,23 +42,29 @@
                 </app-cm-input>
                 
                    <div *ngIf="f['sopname'].touched && f['sopname'].errors" class="text-danger mt-1">
-        {{ getErrorMessage('sopname', 'sopname', false, '') }}
+        {{ getErrorMessage('sopname', 'Sop Name', false, '') }}
       </div>
+            </div>
+            <div class="col-md-2">
+              <label class="toggle-label">Enabled</label>
+                <app-cm-toggle [formGroup]="form" [settings]="toggleSettingsWithoutHeader" style="margin-top: -35px;"></app-cm-toggle>
             </div>
         </div>
 
 
 
 <!-- Dynamic Table -->
-<div class="mt-4">
-  <label>Actions</label>
-  <table class="table table-borderless align-middle">
+<div class="mt-4 card">
+  <div class="card-body">
+  <h6 class="mt-0">Actions</h6>
+  <hr class="mt-0">
+  <table class="table table-bordered align-middle">
     <thead>
       <tr class="text-muted small">
 <th style="width:10%;">SR NO.</th>
-<th style="width:30%;">ACTIONNAME</th>
-<th style="width:30%;">SEQUENCE</th>
-<th style="width:30%;">ACTION</th>
+<th style="width:40%;">ACTIONNAME</th>
+<th style="width:10%;">SEQUENCE</th>
+<th style="width:10%;" class="text-center">ACTION</th>
       </tr>
     </thead>
     <tbody formArrayName="actions">
@@ -77,13 +81,17 @@
       [formGroup]="action"
       [controlName]="'actionName'"
       [settings]="ActionSettings"
-      (optionSelected)="onProjectSelected($event)">
+      (optionSelected)="onProjectSelected($event)" class="d-block">
     </app-cm-select2>
+
+                <!-- <div *ngIf="f['actionName'].touched && f['actionName'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('actionName', 'Action Name', false, '') }}
+      </div> -->
   
 </td>
 
         <!-- Sequence Input -->
-        <td>
+        <td >
           <app-cm-input
             [formGroup]="action"
             [controlName]="'sequence'"
@@ -92,7 +100,7 @@
         </td>
 
         <!-- Action Buttons -->
-        <td>
+        <td class="text-center">
           <button mat-icon-button color="primary" (click)="addActionRow()">
             <mat-icon>add_circle</mat-icon>
           </button>
@@ -103,18 +111,19 @@
       </tr>
     </tbody>
   </table>
-</div>
+</div></div>
 
          <!-- Toggles -->
-             <div class="row">
+             <!-- <div class="row">
             <div class="col-md-6">
                 <label class="toggle-label">Enabled</label>
                 <app-cm-toggle [formGroup]="form" [settings]="toggleSettingsWithoutHeader" style="margin-top: -35px;"></app-cm-toggle>
             </div>
         </div>
-  
+   -->
      
         <!-- Action Buttons -->
+  
         <div class="dialog-actions">
          
           <button mat-stroked-button (click)="close()">Cancel</button>
@@ -122,10 +131,7 @@
         </div>
     </form>
 
-
-     </mat-card-content>
-</mat-card>
 </div>
-
+</div>
    
   

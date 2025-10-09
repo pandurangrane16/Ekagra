@@ -5,6 +5,7 @@ import { Chart3dComponent } from "./chart3d/chart3d.component";
 import { UserDashComponent } from "./user-dash/user-dash.component";
 import { AlertComponent } from "./alert/alert/alert.component";
 import { SopflowComponent } from "../admin/sopflow/sopflow.component";
+import { AlertHistoryComponent } from "./alert/alert-history/alert-history.component";
 
 export const UserRoutes: Routes = [
     {
@@ -78,6 +79,17 @@ export const UserRoutes: Routes = [
         component: SopflowComponent,
         data: {
             title: 'Custom Widget',
+            urls: [
+                { title: 'Custom Widget', url: '/3d' },
+                { title: 'UserDashboard' },
+            ],
+        },
+    },
+    {
+        path: 'alertlog',
+        component: AlertHistoryComponent,
+        data: {
+            title: 'Alert Log',
             urls: [
                 { title: 'Custom Widget', url: '/3d' },
                 { title: 'UserDashboard' },

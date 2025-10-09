@@ -51,8 +51,9 @@ export class SidenavComponent implements OnInit {
     }
   }
   @Output() eventChange = new EventEmitter<Event>();
-
-
+ showSubmenu: boolean = false;
+  isShowing = false;
+  showSubSubMenu: boolean = false;
 
   onClick(event: Event) {
     this.eventChange.emit(event);
@@ -131,9 +132,9 @@ debugger;
       },
 
       {
-        icon: './assets/img/icon_Chat.svg',
-        activeIcon: './assets/img/icon_Chat1.svg',
-        label: 'Admin',
+        icon: './assets/img/config.png',
+        activeIcon: './assets/img/config.png',
+        label: 'Config',
         link: '',
         isOpen: true,
         children: [{
@@ -151,6 +152,12 @@ debugger;
           activeIcon: './assets/img/icon_settings1.svg',
           label: 'Site Configuration',
           link: 'admin/siteconfig',
+        },
+        {
+          icon: './assets/img/icon_settings.svg',
+          activeIcon: './assets/img/icon_settings1.svg',
+          label: 'Sop Configuration',
+          link: 'admin/sopconfig',
         },
         {
           icon: './assets/img/icon_settings.svg',
@@ -200,6 +207,18 @@ debugger;
           activeIcon: './assets/img/icon_settings1.svg',
           label: 'User Dashboard',
           link: 'user/user-dash',
+        },
+        {
+          icon: './assets/img/icon_settings.svg',
+          activeIcon: './assets/img/icon_settings1.svg',
+          label: 'Role Configuration',
+          link: 'admin/roleconfiguration',
+        },
+        {
+          icon: './assets/img/icon_settings.svg',
+          activeIcon: './assets/img/icon_settings1.svg',
+          label: 'User Mappings',
+          link: 'admin/userMappings',
         }]
       }
     ];

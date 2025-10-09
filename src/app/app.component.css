@@ -39,3 +39,14 @@ display: flex;
   left: 70px;
 }
 .shift120{margin-left: 120px;}
+.mat-mdc-button .mdc-button__label,.mat-button .mdc-button__label{display: flex!important;}
+  .btn-primary{background-color:var(--primary-color);
+    color: var(--White);;
+    font-weight: 600;
+    padding: 10px 14px;      
+    border-radius: 8px;
+    font-size: 13px;         
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-transform: none;
+    white-space: nowrap; }
+  

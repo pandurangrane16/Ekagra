@@ -1,8 +1,11 @@
-<div class="d-flex flex-column flex-column-fluid text-dark" id="kt_content">
-<hr>
-  <h4>Project Field Map</h4>
 
-  <div class="container-fluid">
+<div class="card">
+  <div class="card-header">
+     <h4 class="mt-1 mb-0">Project Field Configuration</h4>   
+  </div>
+    <div class="card-body">
+
+  
 
     <div class="row">
 
@@ -39,7 +42,7 @@
 
             <!-- API Details Section -->
             <div *ngIf="showApiDetails">
-              <div class="col-md-12">
+              <div class="w-100 mb-2">
                 <label id="api_name_label">API Name:</label>
                 <div class="field-map-page">
                   <app-cm-input
@@ -50,7 +53,7 @@
                 </div>
               </div>
 
-              <div class="col-md-12">
+              <div class="w-100 mb-2">
                 <label id="api_url_label">API URL:</label>
                 <div class="field-map-page">
                   <app-cm-input
@@ -61,7 +64,7 @@
                 </div>
               </div>
 
-              <div class="col-md-12">
+              <div class="w-100 mb-2">
                 <label id="api_response_label">API Response:</label>
                 <pre class="json-tree">
 <app-json-tree
