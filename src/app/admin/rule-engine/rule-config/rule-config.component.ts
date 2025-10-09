@@ -25,12 +25,11 @@ import { CmCronExpressionComponent } from "../../../common/cm-cron-expression/cm
 @Component({
   selector: 'app-rule-config',
   imports: [MaterialModule, MatIconModule, MatButtonModule, MatTooltipModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,
-    CmToggleComponent, CmButtonComponent, CmCronExpressionComponent],
+    CmToggleComponent, CmButtonComponent, CmCronComponent],
   templateUrl: './rule-config.component.html',
   styleUrl: './rule-config.component.css',
 })
 export class RuleConfigComponent implements OnInit {
-  state: any;
   state: any;
   router = inject(Router);
   loaderService = inject(LoaderService)
@@ -375,8 +374,6 @@ export class RuleConfigComponent implements OnInit {
       groups: this._formBuilder.array([], [this.minFormArrayLength(1)]),
     });
     this.firstFormGroup = this._formBuilder.group({
-  policyName: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
-  ticketabb: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
   policyName: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
   ticketabb: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
       tat: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
@@ -1169,34 +1166,6 @@ else{
         dayOfWeek : evt
       })
     }
-  }
-
-  policyNameExists = false;
-
-  onPolicyNameChange(value: string) {
-    if (!value || this.firstFormGroup.controls['policyName'].errors?.pattern) {
-      this.policyNameExists = false;
-      return;
-    }
-    this.ruleService.CheckPolicyNameExist(value, this.state?.record?.id)
-      .pipe(withLoader(this.loaderService))
-      .subscribe((response: any) => {
-        this.policyNameExists = response.result === true;
-        if (this.policyNameExists) {
-          this.firstFormGroup.controls['policyName'].setErrors({ duplicateName: true });
-        } else {
-          // Remove duplicateName error if exists
-          if (this.firstFormGroup.controls['policyName'].hasError('duplicateName')) {
-            const errors = { ...this.firstFormGroup.controls['policyName'].errors };
-            delete errors['duplicateName'];
-            if (Object.keys(errors).length === 0) {
-              this.firstFormGroup.controls['policyName'].setErrors(null);
-            } else {
-              this.firstFormGroup.controls['policyName'].setErrors(errors);
-            }
-          }
-        }
-      });
   }
 
   policyNameExists = false;
