@@ -4,6 +4,9 @@
   <div class="card-header">
      <mat-card-title><h4 class="mt-1 mb-0">Project Configuration</h4></mat-card-title>   
   </div>
+  <div class="card-header">
+     <mat-card-title><h4 class="mt-1 mb-0">Project Configuration</h4></mat-card-title>   
+  </div>
     <div class="card-body"  id="editForm">
  
 
@@ -28,6 +31,8 @@
 
   <!-- <button mat-flat-button
          (click)="submit()"  class="btn btn-primary"
+  <!-- <button mat-flat-button
+         (click)="submit()"  class="btn btn-primary"
        >
         Submit
     </button> -->
@@ -39,6 +44,8 @@
   <div class="d-flex justify-content-start flex-column gap-1">
     
       <!-- Create Button -->
+      <button mat-flat-button class="btn-primary w-100"
+      (click)="openDialog()">
       <button mat-flat-button class="btn-primary w-100"
       (click)="openDialog()">
       + Create Project Configuration
@@ -70,4 +77,5 @@
 </app-cm-table>
 </div>
 </div>
+</div> </div>
 </div> </div>

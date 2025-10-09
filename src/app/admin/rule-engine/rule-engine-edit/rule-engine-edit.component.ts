@@ -35,7 +35,7 @@ import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-selec
 })
 export class RuleEngineEditComponent implements OnInit {
   router = inject(Router);
-
+state: any;
   loaderService = inject(LoaderService)
   private _formBuilder = inject(FormBuilder);
   signalRService = inject(SignalRService);
@@ -228,14 +228,6 @@ export class RuleEngineEditComponent implements OnInit {
     ],
   };
 
-  // expressionSettings = {
-  //   labelHeader: 'Expression',
-  //   lableClass: 'form-label',
-  //   formFieldClass: '',
-  //   appearance: 'outline',
-  //   options: [
-  //   ]
-  // }
   expressionSettings = {
     labelHeader: 'Expression',
     lableClass: 'form-label',
@@ -367,70 +359,106 @@ export class RuleEngineEditComponent implements OnInit {
     
   }
 
-  ngOnInit(): void {
+//   ngOnInit(): void {
 
-    this.id = this.route.snapshot.paramMap.get('id');
-    console.log('Extracted ID:', this.id);
+//     this.id = this.route.snapshot.paramMap.get('id');
+//     console.log('Extracted ID:', this.id);
 
 
-     this.ruleService.GetDataById(this.id).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
+//      this.ruleService.GetDataById(this.id).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
      
-            this.ruleData = response?.result;
-            console.log('Stored Rule Data:', this.ruleData);
-            this.buildForms();
-    
+//             this.ruleData = response?.result;
+//             console.log('Stored Rule Data:', this.ruleData);
+//             this.buildForms();
 
-    }, error => {
-      console.error('Error fetching fields', error);
-      this.buildForms();
-    });
+//         // ✅ Trim + Special character validation for Policy Name
+//       this.firstFormGroup.get('policyName')?.valueChanges.subscribe((val: string) => {
+//         if (val !== null && val !== undefined) {
+//           const trimmed = val.trim();
+//           if (trimmed !== val) {
+//             this.firstFormGroup.get('policyName')?.setValue(trimmed, { emitEvent: false });
+//           }
 
+//           // Allow only letters, numbers, space, underscore, and hyphen
+//           const valid = /^[A-Za-z0-9 _-]*$/.test(trimmed);
+//           if (!valid) {
+//             this.firstFormGroup.get('policyName')?.setErrors({ invalidChars: true });
+//           } else {
+//             const errors = this.firstFormGroup.get('policyName')?.errors;
+//             if (errors && errors['invalidChars']) {
+//               delete errors['invalidChars'];
+//               if (Object.keys(errors).length === 0) {
+//                 this.firstFormGroup.get('policyName')?.setErrors(null);
+//               } else {
+//                 this.firstFormGroup.get('policyName')?.setErrors(errors);
+//               }
+//             }
+//           }
 
+//           // Call duplicate name check if needed
+//           this.onPolicyNameChange(trimmed);
+//         }
+//       });
 
+//       // ✅ Trim + Special character validation for Ticket Abbreviation
+//       this.firstFormGroup.get('ticketabb')?.valueChanges.subscribe((val: string) => {
+//         if (val !== null && val !== undefined) {
+//           const trimmed = val.trim();
+//           if (trimmed !== val) {
+//             this.firstFormGroup.get('ticketabb')?.setValue(trimmed, { emitEvent: false });
+//           }
 
+//           // Allow only letters, numbers, underscore, and hyphen
+//           const valid = /^[A-Za-z0-9_-]*$/.test(trimmed);
+//           if (!valid) {
+//             this.firstFormGroup.get('ticketabb')?.setErrors({ invalidChars: true });
+//           } else {
+//             const errors = this.firstFormGroup.get('ticketabb')?.errors;
+//             if (errors && errors['invalidChars']) {
+//               delete errors['invalidChars'];
+//               if (Object.keys(errors).length === 0) {
+//                 this.firstFormGroup.get('ticketabb')?.setErrors(null);
+//               } else {
+//                 this.firstFormGroup.get('ticketabb')?.setErrors(errors);
+//               }
+//             }
+//           }
+//         }
+//       });
+//     },
+//     (error) => {
+//       console.error('Error fetching fields', error);
+//       this.buildForms();
+//     }
+//   );
 
+//     this.getProjList();
+//    setTimeout(() => {
+//   this.getRoles();
+//   this.patchCronForEdit(this.ruleData.cron);
+//   //this.patchCron(this.thirdFormGroup, this.ruleData.cron);
+// }, 1000); 
+//     //this.getfields();
+//     this.checkBoxSettings = {
+//       labelHeader: '',
+//       placeholder: 'Choose',
+//       isDisabled: true,
+//       isRequired: false,
+//       mode: 'single',
+//       options: [
+//         { label: 'AND', value: 'and' },
+//         { label: 'OR', value: 'or' }
+//       ]
+//     }
 
+//   // this.firstFormGroup.controls['policyName'].valueChanges.subscribe((value: string) => {
+//   //     this.onPolicyNameChange(value);
+//   //   });
 
-
-
- 
-
-    this.getProjList();
-   setTimeout(() => {
-  this.getRoles();
-  this.patchCronForEdit(this.ruleData.cron);
-  //this.patchCron(this.thirdFormGroup, this.ruleData.cron);
-}, 1000); 
-    //this.getfields();
-    this.checkBoxSettings = {
-      labelHeader: '',
-      placeholder: 'Choose',
-      isDisabled: true,
-      isRequired: false,
-      mode: 'single',
-      options: [
-        { label: 'AND', value: 'and' },
-        { label: 'OR', value: 'or' }
-      ]
-    }
-
-
-    //     this.secondFormGroup.get('selectedProject')?.valueChanges.subscribe((value:any) => {
-    //     this.AndFlag = false; 
-
-
-    //       if (value?.value) { 
-    //         this.AndFlag = true; 
-    //         //this.selectedProjectName = value.name
-    //         console.log(value.value);   
-    //   }  
-    // });
-
-
-  }
-  get f() {
-    return this.firstFormGroup.controls;
-  }
+//   }
+//   get f() {
+//     return this.firstFormGroup.controls;
+//   }
 
 //   patchCron(form: FormGroup, cron: string) {
 //   if (!cron) return;
@@ -504,6 +532,118 @@ export class RuleEngineEditComponent implements OnInit {
 //   this.thirdFormGroup.patchValue(patchObj);
 // }
 
+ngOnInit(): void {
+  this.id = this.route.snapshot.paramMap.get('id');
+  console.log('Extracted ID:', this.id);
+
+  this.ruleService.GetDataById(this.id)
+    .pipe(withLoader(this.loaderService))
+    .subscribe(
+      (response: any) => {
+        this.ruleData = response?.result;
+        console.log('Stored Rule Data:', this.ruleData);
+        this.buildForms();
+
+        // ---- Policy Name ----
+        this.firstFormGroup.get('policyName')?.valueChanges.subscribe((val: string) => {
+          if (val !== null && val !== undefined) {
+            const trimmed = val.trim();
+            if (trimmed !== val) {
+              this.firstFormGroup.get('policyName')?.setValue(trimmed, { emitEvent: false });
+            }
+
+            // disallow anything except letters, numbers, space, underscore, hyphen
+            const valid = /^[A-Za-z0-9 _-]*$/.test(trimmed);
+            if (!valid) {
+              this.firstFormGroup.get('policyName')?.setErrors({ invalidChars: true });
+            } else {
+              const ctrl = this.firstFormGroup.get('policyName');
+              if (ctrl?.hasError('invalidChars')) {
+                const e = { ...ctrl.errors };
+                delete e['invalidChars'];
+                ctrl.setErrors(Object.keys(e).length ? e : null);
+              }
+            }
+
+            this.onPolicyNameChange(trimmed);
+          }
+        });
+
+        // ---- Ticket Abbreviation ----
+        this.firstFormGroup.get('ticketabb')?.valueChanges.subscribe((val: string) => {
+          if (val !== null && val !== undefined) {
+            const trimmed = val.trim();
+            if (trimmed !== val) {
+              this.firstFormGroup.get('ticketabb')?.setValue(trimmed, { emitEvent: false });
+            }
+
+            // disallow anything except letters, numbers, underscore, hyphen
+            const valid = /^[A-Za-z0-9_-]*$/.test(trimmed);
+            if (!valid) {
+              this.firstFormGroup.get('ticketabb')?.setErrors({ invalidChars: true });
+            } else {
+              const ctrl = this.firstFormGroup.get('ticketabb');
+              if (ctrl?.hasError('invalidChars')) {
+                const e = { ...ctrl.errors };
+                delete e['invalidChars'];
+                ctrl.setErrors(Object.keys(e).length ? e : null);
+              }
+            }
+          }
+        });
+
+      // ✅ TAT (trim + remove all spaces)
+  this.firstFormGroup.get('tat')?.valueChanges.subscribe((val: string) => {
+    if (val !== null && val !== undefined) {
+      const sanitized = val.replace(/\s+/g, '');
+      if (sanitized !== val) {
+        this.firstFormGroup.get('tat')?.setValue(sanitized, { emitEvent: false });
+      }
+    }
+  });
+
+  // ✅ Interval Time (trim + remove all spaces)
+  this.firstFormGroup.get('intervalTime')?.valueChanges.subscribe((val: string) => {
+    if (val !== null && val !== undefined) {
+      const sanitized = val.replace(/\s+/g, '');
+      if (sanitized !== val) {
+        this.firstFormGroup.get('intervalTime')?.setValue(sanitized, { emitEvent: false });
+      }
+    }
+  });
+
+
+      },
+      (error) => {
+        console.error('Error fetching fields', error);
+        this.buildForms();
+      }
+    );
+
+  this.getProjList();
+
+  setTimeout(() => {
+    this.getRoles();
+    this.patchCronForEdit(this.ruleData?.cron);
+  }, 1000);
+
+  this.checkBoxSettings = {
+    labelHeader: '',
+    placeholder: 'Choose',
+    isDisabled: true,
+    isRequired: false,
+    mode: 'single',
+    options: [
+      { label: 'AND', value: 'and' },
+      { label: 'OR', value: 'or' }
+    ]
+  };
+}
+
+get f() {
+  return this.firstFormGroup.controls;
+}
+
 patchCronForEdit(cronString: string) {
   console.log("cronString:",cronString)
   if (!cronString) return;
@@ -536,13 +676,21 @@ patchCronForEdit(cronString: string) {
       groups: this._formBuilder.array([], [this.minFormArrayLength(1)]),
     });
     this.firstFormGroup = this._formBuilder.group({
-      policyName: ['', Validators.required],
-      ticketabb: ['', Validators.required],
+      // policyName: ['', Validators.required],
+      // ticketabb: ['', Validators.required],
+      // tat: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+      // selectedCategory: ['', Validators.required],
+      // selectedUserGroup: ['', Validators.required],
+      // intervalTime: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+      // isActive: [false, Validators.required],
+      // isinternal: [false, Validators.required]
+      policyName: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
+  ticketabb: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
       tat: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
       selectedCategory: ['', Validators.required],
       selectedUserGroup: ['', Validators.required],
       intervalTime: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
-      isActive: [false, Validators.required],
+      isActive: [true, Validators.required],
       isinternal: [false, Validators.required]
     });
     this.thirdFormLoadValues();
@@ -559,10 +707,14 @@ patchCronForEdit(cronString: string) {
     };
   }
 
-    onCronUpdate(cron: string) {
-    this.parentCron = cron;
-    console.log('Updated cron from child:', cron);
+  onCronUpdate(event: string | null) {
+    console.log("event:",event)
+  if (event === null) {
+    this.parentCron = '❌ Invalid cron format';
+  } else {
+    this.parentCron = event;
   }
+}
   getErrorMessage(_controlName: any, _controlLable: any, _isPattern: boolean = false, _msg: string) {
     return getErrorMsg(this.firstFormGroup, _controlName, _controlLable, _isPattern, _msg);
   }
@@ -986,7 +1138,12 @@ createFormArrayGroup() {
     }
 else{ 
   
-const formValue = this.secondFormGroup.value;
+if (!this.parentCron || this.parentCron === '❌ Invalid cron format') {
+  this.toast.error('Invalid Cron');
+  this.firstFormGroup.setErrors({ cronEmpty: true });
+  return;
+}
+else{const formValue = this.secondFormGroup.value;
 const creationTime = new Date();
 const result = this.buildProjectExpressions(formValue)
 
@@ -1030,7 +1187,7 @@ console.log('Generated Cron:', cron);
             console.error('Error creating rule engine:', err);
             this.toast.error('Failed to Update Rule Engine. Please try again.');
           }
-        });
+        });}
     }
 
   }
@@ -1916,4 +2073,36 @@ getApi(selectedProject: any, groupIndex: number, callback?: () => void) {
       })
     }
   }
+
+policyNameExists = false;
+
+  onPolicyNameChange(value: string) {
+    if (!value || this.firstFormGroup.controls['policyName'].errors?.pattern) {
+      this.policyNameExists = false;
+      return;
+    }
+
+    this.ruleService.CheckPolicyNameExist(value, this.id)
+      .pipe(withLoader(this.loaderService))
+      .subscribe((response: any) => {
+        this.policyNameExists = response.result === true;
+        if (this.policyNameExists) {
+          this.firstFormGroup.controls['policyName'].setErrors({ duplicateName: true });
+        } else {
+          // Remove duplicateName error if exists
+          if (this.firstFormGroup.controls['policyName'].hasError('duplicateName')) {
+            const errors = { ...this.firstFormGroup.controls['policyName'].errors };
+            delete errors['duplicateName'];
+            if (Object.keys(errors).length === 0) {
+              this.firstFormGroup.controls['policyName'].setErrors(null);
+            } else {
+              this.firstFormGroup.controls['policyName'].setErrors(errors);
+            }
+          }
+        }
+      });
+  }
+
+
+
 }

@@ -20,15 +20,17 @@ import {MatButtonModule} from '@angular/material/button';
 import { CmCronComponent } from '../../../common/cm-cron/cm-cron.component';
 import { CmCheckboxGroupComponent } from '../../../common/cm-checkbox-group/cm-checkbox-group.component';
 import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-select-check.component";
+import { CmCronExpressionComponent } from "../../../common/cm-cron-expression/cm-cron-expression.component";
 
 @Component({
   selector: 'app-rule-config',
-  imports: [MaterialModule,MatIconModule,CmCronComponent,MatButtonModule,MatTooltipModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,
-    CmToggleComponent, CmButtonComponent,],
+  imports: [MaterialModule, MatIconModule, MatButtonModule, MatTooltipModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,
+    CmToggleComponent, CmButtonComponent, CmCronExpressionComponent],
   templateUrl: './rule-config.component.html',
   styleUrl: './rule-config.component.css',
 })
 export class RuleConfigComponent implements OnInit {
+  state: any;
   state: any;
   router = inject(Router);
   loaderService = inject(LoaderService)
@@ -121,6 +123,7 @@ export class RuleConfigComponent implements OnInit {
   inputFields = {
     policyName: {
       labelHeader: 'Policy Name',
+     
       placeholder: 'Policy Name*',
       appearance: 'outline',
       isDisabled: false,
@@ -374,6 +377,8 @@ export class RuleConfigComponent implements OnInit {
     this.firstFormGroup = this._formBuilder.group({
   policyName: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
   ticketabb: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
+  policyName: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
+  ticketabb: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
       tat: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
       selectedCategory: ['', Validators.required],
       selectedUserGroup: ['', Validators.required],
@@ -412,15 +417,92 @@ export class RuleConfigComponent implements OnInit {
     this.firstFormGroup.controls['policyName'].valueChanges.subscribe((value: string) => {
       this.onPolicyNameChange(value);
     });
+    // this.firstFormGroup.controls['policyName'].valueChanges.subscribe((value: string) => {
+    //   this.onPolicyNameChange(value);
+    // });
+
+     // ---- Policy Name ----
+        this.firstFormGroup.get('policyName')?.valueChanges.subscribe((val: string) => {
+          if (val !== null && val !== undefined) {
+            const trimmed = val.trim();
+            if (trimmed !== val) {
+              this.firstFormGroup.get('policyName')?.setValue(trimmed, { emitEvent: false });
+            }
+
+            // disallow anything except letters, numbers, space, underscore, hyphen
+            const valid = /^[A-Za-z0-9 _-]*$/.test(trimmed);
+            if (!valid) {
+              this.firstFormGroup.get('policyName')?.setErrors({ invalidChars: true });
+            } else {
+              const ctrl = this.firstFormGroup.get('policyName');
+              if (ctrl?.hasError('invalidChars')) {
+                const e = { ...ctrl.errors };
+                delete e['invalidChars'];
+                ctrl.setErrors(Object.keys(e).length ? e : null);
+              }
+            }
+
+            this.onPolicyNameChange(trimmed);
+          }
+        });
+
+     // ---- Ticket Abbreviation ----
+        this.firstFormGroup.get('ticketabb')?.valueChanges.subscribe((val: string) => {
+          if (val !== null && val !== undefined) {
+            const trimmed = val.trim();
+            if (trimmed !== val) {
+              this.firstFormGroup.get('ticketabb')?.setValue(trimmed, { emitEvent: false });
+            }
+
+            // disallow anything except letters, numbers, underscore, hyphen
+            const valid = /^[A-Za-z0-9_-]*$/.test(trimmed);
+            if (!valid) {
+              this.firstFormGroup.get('ticketabb')?.setErrors({ invalidChars: true });
+            } else {
+              const ctrl = this.firstFormGroup.get('ticketabb');
+              if (ctrl?.hasError('invalidChars')) {
+                const e = { ...ctrl.errors };
+                delete e['invalidChars'];
+                ctrl.setErrors(Object.keys(e).length ? e : null);
+              }
+            }
+          }
+        });
+
+      // ✅ TAT (trim + remove all spaces)
+  this.firstFormGroup.get('tat')?.valueChanges.subscribe((val: string) => {
+    if (val !== null && val !== undefined) {
+      const sanitized = val.replace(/\s+/g, '');
+      if (sanitized !== val) {
+        this.firstFormGroup.get('tat')?.setValue(sanitized, { emitEvent: false });
+      }
+    }
+  });
+
+  // ✅ Interval Time (trim + remove all spaces)
+  this.firstFormGroup.get('intervalTime')?.valueChanges.subscribe((val: string) => {
+    if (val !== null && val !== undefined) {
+      const sanitized = val.replace(/\s+/g, '');
+      if (sanitized !== val) {
+        this.firstFormGroup.get('intervalTime')?.setValue(sanitized, { emitEvent: false });
+      }
+    }
+  });
   }
   get f() {
     return this.firstFormGroup.controls;
   }
 
-    onCronUpdate(cron: string) {
-    this.parentCron = cron;
-    console.log('Parent received cron:', cron);
+
+  onCronUpdate(event: string | null) {
+    console.log("event:",event)
+  if (event === null) {
+    this.parentCron = '❌ Invalid cron format';
+  } else {
+    this.parentCron = event;
   }
+}
+
   minFormArrayLength(min: number): ValidatorFn {
     return (control: AbstractControl) => {
       if (control instanceof FormArray) {
@@ -713,6 +795,17 @@ buildProjectExpressions(formValue: any) {
           this.firstFormGroup.setErrors({ duplicateName: true });
           return;
         } else {
+
+
+
+  if (!this.parentCron || this.parentCron === '❌ Invalid cron format') {
+  this.toast.error('Invalid Cron');
+  this.firstFormGroup.setErrors({ cronEmpty: true });
+  return;
+}
+
+else{
+  
           const formValue = this.secondFormGroup.value;
           const creationTime = new Date();
           const result = this.buildProjectExpressions(formValue)
@@ -756,6 +849,9 @@ buildProjectExpressions(formValue: any) {
                 this.toast.error('Failed to save Rule Engine. Please try again.');
               }
             });
+}
+
+
         }
       });
   }
@@ -1073,6 +1169,34 @@ buildProjectExpressions(formValue: any) {
         dayOfWeek : evt
       })
     }
+  }
+
+  policyNameExists = false;
+
+  onPolicyNameChange(value: string) {
+    if (!value || this.firstFormGroup.controls['policyName'].errors?.pattern) {
+      this.policyNameExists = false;
+      return;
+    }
+    this.ruleService.CheckPolicyNameExist(value, this.state?.record?.id)
+      .pipe(withLoader(this.loaderService))
+      .subscribe((response: any) => {
+        this.policyNameExists = response.result === true;
+        if (this.policyNameExists) {
+          this.firstFormGroup.controls['policyName'].setErrors({ duplicateName: true });
+        } else {
+          // Remove duplicateName error if exists
+          if (this.firstFormGroup.controls['policyName'].hasError('duplicateName')) {
+            const errors = { ...this.firstFormGroup.controls['policyName'].errors };
+            delete errors['duplicateName'];
+            if (Object.keys(errors).length === 0) {
+              this.firstFormGroup.controls['policyName'].setErrors(null);
+            } else {
+              this.firstFormGroup.controls['policyName'].setErrors(errors);
+            }
+          }
+        }
+      });
   }
 
   policyNameExists = false;
