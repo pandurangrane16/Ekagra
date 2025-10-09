@@ -1,0 +1,14 @@
+.btn-primary{background-color:var(--primary-color);
+    color: var(--White);;
+    font-weight: 600;
+    padding: 10px 14px;      
+    border-radius: 8px;
+    font-size: 13px;         
+    box-shadow: none;
+    text-transform: none;
+    white-space: nowrap; border:none; }
+
+
+::ng-deep .custom-confirm-dialog .mat-mdc-dialog-surface {
+  overflow-y: inherit !important;
+}

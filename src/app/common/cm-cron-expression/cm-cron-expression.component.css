@@ -1,0 +1,22 @@
+.cron-field {
+  margin-bottom: 12px;
+}
+
+label {
+  display: inline-block;
+  width: 150px;
+}
+
+select {
+  width: 200px;
+  padding: 4px;
+}
+
+.preview {
+  margin-top: 20px;
+  font-family: monospace;
+  background: #f9f9f9;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}

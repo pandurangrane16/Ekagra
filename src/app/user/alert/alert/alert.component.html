@@ -3,33 +3,17 @@
 <div class="row mt-1">
     <div class="col-md-12">
 <div class="card">
+  <div class="card-header">
+     <mat-card-title><h4 class="mt-1 mb-0">Alerts List</h4></mat-card-title>   
+  </div>
     <div class="card-body"  id="editForm">
-
-  <div class="row">
-  <mat-card-header>
-      <div class="col-md-11" style="padding-left: 10px;">
-        <mat-card-title><h2 style="margin-top: 10px;">Alerts List</h2></mat-card-title>
-      </div>
-     
-  </mat-card-header>
-    </div>
-
-<hr>
-
-
-
-
-
-
-
-
-<div class="filter-row" style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px;">
+           <div class="filter-row d-flex justify-content-start align-items-center gap-2 mb-2">
 
           <div class="col-md-3">
-         <div class="card text-left" style="margin-top: 15px;">
+             <label>Select Date Range</label>
+                    
             <mat-form-field>
-                <mat-label>Enter a date range</mat-label>
-                <mat-date-range-input [rangePicker]="picker">
+             <mat-date-range-input [rangePicker]="picker">
                     <input matStartDate placeholder="Start date" (dateChange)="DateWiseFilter($event,'start')">
                     <input matEndDate placeholder="End date" (dateChange)="DateWiseFilter($event,'end')">
                 </mat-date-range-input>
@@ -37,8 +21,7 @@
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-date-range-picker #picker></mat-date-range-picker>
             </mat-form-field>
-        </div>
-    </div>
+          </div>
 
 
   <!-- Left Filters -->
@@ -58,17 +41,7 @@
   </app-cm-select2>
 
   <button mat-flat-button
-        style="
-        background-color: black;
-        color: white;
-        font-weight: 600;
-        padding: 10px 25px;      
-        border-radius: 8px;
-        font-size: 13px;         
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        text-transform: none;
-        white-space: nowrap;
-        display: flex ; gap:420px ;margin-top: 20px;margin-left:25px;   " (click)="submit()"  
+       class="btn-primary mt-4" (click)="submit()"  
        >
         Submit
     </button>
@@ -79,6 +52,7 @@
   <div style="margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
     
       <!-- Create Button -->
+      <!-- <button mat-flat-button
       <!-- <button mat-flat-button
       style="
     background-color: black;
@@ -106,6 +80,8 @@
 </div>
 
 <app-cm-table
+
+ 
 
  
   [headArr]="headArr"

@@ -31,8 +31,8 @@
 
       <form [formGroup]="form" class="form-container">
         <div class="row">
-          <div class="col-md-6" style="margin-top: -10px;">
-            <label style="position: relative; top: 6px; display: block;">Project Name</label>
+          <div class="col-md-6">
+            <label>Project Name</label>
 
             <div>
               <app-cm-select2 *ngIf="isProjectOptionsLoaded" [formGroup]="form" [controlName]="'name'" [settings]="projectSelectSettings"
@@ -110,8 +110,8 @@
 
 
         <div class="row" *ngIf="isLocationsOptionsLoaded">
-          <div class="col-md-6" style="margin-top: -10px;">
-            <label style="position: relative; top: 6px; display: block;">Location/Area</label>
+          <div class="col-md-6">
+            <label>Location/Area</label>
 
             <div>
               <app-cm-select2 *ngIf="isLocationsOptionsLoaded" [formGroup]="form" [controlName]="'locationDropdown'" [settings]="locationDropdownSettings"

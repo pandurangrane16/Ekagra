@@ -242,7 +242,7 @@ const matchedUserGroup = (this.userGroupSettings.options as { name: string; valu
             { header: 'User Group', fieldValue: 'usergroup', position: 2 },
             { header: 'Category', fieldValue: 'category2',position: 3 },
            
-            { header: 'Interval(Minutes)', fieldValue: 'interval', position: 4 },
+            { header: 'Interval (Minutes)', fieldValue: 'interval', position: 4 },
             { header: 'Status', fieldValue: 'isActive',"type": "boolean", position: 5 },
             { header: 'Action', fieldValue: 'button', position: 6 }
           ];

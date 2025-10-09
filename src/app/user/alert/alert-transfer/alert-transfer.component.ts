@@ -18,7 +18,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-alert-transfer',
-  imports: [MaterialModule, CommonModule, ReactiveFormsModule,CmTextareaComponent, CmButtonComponent,CmSelect2Component],
+  imports: [MaterialModule, CommonModule, ReactiveFormsModule,CmTextareaComponent, CmSelect2Component],
   templateUrl: './alert-transfer.component.html',
   styleUrl: './alert-transfer.component.css'
 })

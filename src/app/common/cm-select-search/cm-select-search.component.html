@@ -1,3 +1,3 @@
-<select #selectElem [attr.disabled]="disabled ? true : null" class="form-control">
+<select #selectElem multiple [attr.disabled]="disabled ? true : null" class="form-control">
       <option *ngFor="let item of data" [value]="item.id">{{ item.text }}</option>
     </select>

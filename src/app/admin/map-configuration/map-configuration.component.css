@@ -21,7 +21,7 @@
   white-space: normal !important;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  max-width: 300px; /* Optional, limits how wide the cell can go */
+  max-width: 200px; /* Optional, limits how wide the cell can go */
 }
 
   

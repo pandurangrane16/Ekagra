@@ -25,6 +25,8 @@
 
 <!-- commented to add placeholder for dropdown-->
 <!-- <div [formGroup]="formGroup">
+<!-- commented to add placeholder for dropdown-->
+<!-- <div [formGroup]="formGroup">
   <mat-label>{{settings.labelHeader}}</mat-label>
   <mat-form-field [appearance]="settings.appearance || 'fill'" [class]="settings.formFieldClass">
     <input matInput aria-label="State" [matAutocomplete]="auto" [formControlName]="controlName" (click)="onInputClick()"
@@ -49,10 +51,8 @@
   </mat-form-field>
 </div> -->
 
-<div [formGroup]="formGroup"> 
-  <mat-label>{{settings.labelHeader}}</mat-label>
-  <br>
-
+<div [formGroup]="formGroup" class="d-flex flex-column"> 
+  <mat-label class="mb-1">{{settings.labelHeader}}</mat-label>
   <mat-form-field [appearance]="settings.appearance || 'fill'" [class]="settings.formFieldClass">
     <input matInput
            aria-label="State"
