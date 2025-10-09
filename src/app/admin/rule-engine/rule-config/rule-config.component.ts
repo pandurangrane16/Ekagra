@@ -25,7 +25,7 @@ import { CmCronExpressionComponent } from "../../../common/cm-cron-expression/cm
 @Component({
   selector: 'app-rule-config',
   imports: [MaterialModule, MatIconModule, MatButtonModule, MatTooltipModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,
-    CmToggleComponent, CmButtonComponent, CmCronExpressionComponent],
+    CmToggleComponent, CmButtonComponent, CmCronComponent],
   templateUrl: './rule-config.component.html',
   styleUrl: './rule-config.component.css',
 })
