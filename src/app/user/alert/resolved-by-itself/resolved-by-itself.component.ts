@@ -17,7 +17,7 @@ export interface ResolvedByData {
 
 @Component({
   selector: 'app-resolved-by-itself',
-  imports: [MaterialModule, CommonModule, ReactiveFormsModule,CmTextareaComponent, CmButtonComponent],
+  imports: [MaterialModule, CommonModule, ReactiveFormsModule,CmTextareaComponent],
   templateUrl: './resolved-by-itself.component.html',
   styleUrl: './resolved-by-itself.component.css'
 })
