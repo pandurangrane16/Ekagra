@@ -31,7 +31,6 @@ import { AlertHistoryComponent } from '../alert-history/alert-history.component'
   templateUrl: './alert.component.html',
   styleUrl: './alert.component.css',
     providers: [provideNativeDateAdapter()],
-    providers: [provideNativeDateAdapter()],
   standalone: true
 
 
@@ -44,7 +43,6 @@ export class AlertComponent implements OnInit {
   items: any;
   _request: any = new InputRequest();
   totalPages: number = 1;
-  pager: number = 0;
   pager: number = 0;
   MaxResultCount = 10;
   SkipCount = 0;
@@ -61,8 +59,6 @@ export class AlertComponent implements OnInit {
   form!: FormGroup;
     startDate: Date | null = null;
 endDate: Date | null = null;
-    startDate: Date | null = null;
-endDate: Date | null = null;
 
   collectionSize = 2;
   list!: any;
@@ -77,14 +73,6 @@ endDate: Date | null = null;
       action: ''
 
     },
-    {
-      name: 'Alpha Project',
-      ruleEngine: 'as',
-      map: 'as',
-      description: 'as',
-      status: 'Active',
-      action: ''
-    }
   ];
   projectSelectSettings = {
     labelHeader: 'Select Project',
@@ -95,14 +83,10 @@ endDate: Date | null = null;
   };
   statusSelectSettings = {
     labelHeader: 'Select Ticket Type',
-    labelHeader: 'Select Ticket Type',
     lableClass: 'form-label',
     formFieldClass: 'w-100',
     appearance: 'fill',
     options: [
-      { name: 'Open Tickets', value: '0' },
-      { name: 'My Tickets', value: '1' },
-      { name: 'All Tickets', value: '2' }
       { name: 'Open Tickets', value: '0' },
       { name: 'My Tickets', value: '1' },
       { name: 'All Tickets', value: '2' }
@@ -133,7 +117,6 @@ endDate: Date | null = null;
 
   constructor(private fb: FormBuilder,
     private dialog: MatDialog,
-    private service: alertservice,
     private service: alertservice,
   ) { }
 
@@ -185,17 +168,6 @@ endDate: Date | null = null;
     // Apply filtering or logic here
   }
 
-    DateWiseFilter(evtData: any, category: string) {
-    if (category == "start")
-{
-       this.startDate = evtData.value;
-      console.log("Start Date : " + evtData.value);
-}  
-    else{
-       this.endDate = evtData.value;
-      console.log("End Date : " + evtData.value);
-    }
-  }
 
     DateWiseFilter(evtData: any, category: string) {
     if (category == "start")
@@ -232,14 +204,7 @@ endDate: Date | null = null;
       { header: '[Alert Date]', fieldValue: 'alertdate', position: 5 },
       { header: 'Handeled By', fieldValue: 'handledby', position: 6},
       { header: 'Devices', fieldValue: 'devices', position: 7 }
-      { header: 'Ticket Id', fieldValue: 'ticketid', position: 2 },
-      { header: 'Policy Name', fieldValue: 'policyname', position: 3 },
-      { header: 'Category', fieldValue: 'category', position: 4 },
-      { header: '[Alert Date]', fieldValue: 'alertdate', position: 5 },
-      { header: 'Handeled By', fieldValue: 'handledby', position: 6},
-      { header: 'Devices', fieldValue: 'devices', position: 7 }
     ];
-    ;
   }
 
   handleBtnAction(e: any) {
@@ -312,7 +277,6 @@ endDate: Date | null = null;
         panelClass: 'custom-confirm-dialog',
         data :{
           policyName : data.policyname
-          policyName : data.policyname
         }
       })
     } else if (event.type === 'transfer') {
@@ -323,8 +287,6 @@ endDate: Date | null = null;
         position: { top: '20px' },
         panelClass: 'custom-confirm-dialog',
         data :{
-          policyName : data.policyname,
-           id: data.id
           policyName : data.policyname,
            id: data.id
         }
@@ -405,43 +367,7 @@ endDate: Date | null = null;
   // }
     }
   }
-  // deleteRow(rowData: any): void {
-  //   const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
-  //     width: '400px',
-  //     position: { top: '20px' },
-  //     panelClass: 'custom-confirm-dialog',
-  //     data: {
-  //       title: 'Confirm Delete',
-  //       message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.name}</b> will be deleted.</div>`,
-
-  //       type: 'delete',
-  //       confirmButtonText: 'Confirm',
-  //       cancelButtonText: 'Cancel'
-  //     }
-  //   });
-
-  //   dialogRef.afterClosed().subscribe(result => {
-  //     if (result) {
-
-  //       this.service.Delete(rowData.id).pipe(withLoader(this.loaderService)).subscribe({
-  //         next: (res: any) => {
-  //           if (res.success) {
-  //             this.getProjConfigList();
-  //             console.log('Deleted successfully');
-
-  //           } else {
-  //             console.error('Delete failed:', res.error);
-  //           }
-  //         },
-  //         error: (err) => {
-  //           console.error('API error:', err);
-  //         }
-  //       });
-  //     } else {
-  //       console.log('User cancelled');
-  //     }
-  //   });
-  // }
+  
   editRow(rowData: any) {
     this.router.navigate(['/admin/projform'], {
       state: {
@@ -451,87 +377,6 @@ endDate: Date | null = null;
     });
   }
 
-  // // getProjConfigList() {
-  // //   this._request.currentPage = this.pager;
-  // //   this._request.pageSize = Number(this.recordPerPage);
-  // //   this._request.startId = this.startId;
-  // //   this._request.searchItem = this.searchText;
-  // //   this.service.GetAll().pipe(withLoader(this.loaderService)).subscribe((response: any) => {
-
-  // //     const items = response.result?.items;
-
-  // //     this.items = items;
-  // //     const totalCount = response.result?.totalCount;
-
-
-
-
-
-
-
-  // //     if (Array.isArray(items)) {
-
-  // //       items.forEach((element: any) => {
-
-
-  // //         //let _data = JSON.parse(element);
-  // //         element.name = element.name;
-  // //         element.description = element.description;
-  // //         element.isActive = !!element.isActive;
-  // //         element.ruleEngine = !!element.ruleEngine;
-  // //         element.map = !!element.map;
-
-  //         element.button = [
-  //           { label: 'Edit', icon: 'edit', type: 'edit' },
-  //           { label: 'Delete', icon: 'delete', type: 'delete' }
-  //         ];
-  //         element.button = [
-  //           { label: 'Edit', icon: 'edit', type: 'edit' },
-  //           { label: 'Delete', icon: 'delete', type: 'delete' }
-  //         ];
-
-  //         element.buttonlist = [
-  //           { label: 'Transfer', icon: 'output', type: 'transfer',disabled: false },
-  //           { label: 'Perform', icon: 'schedule', type: 'perform', disabled: false },
-  //           { label: 'Resolved By Itself', icon: 'check_circle', type: 'resolved', disabled: false },
-  //           // { label: 'Transfer', icon: 'output', type: 'transfer' },
-  //         ]
-  //         element.buttonlist = [
-  //           { label: 'Transfer', icon: 'output', type: 'transfer',disabled: false },
-  //           { label: 'Perform', icon: 'schedule', type: 'perform', disabled: false },
-  //           { label: 'Resolved By Itself', icon: 'check_circle', type: 'resolved', disabled: false },
-  //           // { label: 'Transfer', icon: 'output', type: 'transfer' },
-  //         ]
-
-
-
-
-
-
-  //       });
-  //       var _length = totalCount / Number(this.recordPerPage);
-  //       if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-  //         this.totalRecords = Number(this.recordPerPage) * (_length);
-  //       else if (Math.floor(_length) == 0)
-  //         this.totalRecords = 10;
-  //       else
-  //         this.totalRecords = totalCount;
-  //       this.totalPages = this.totalRecords / this.pager;
-  //     }
-  //   })
-  // }
-  //       });
-  //       var _length = totalCount / Number(this.recordPerPage);
-  //       if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-  //         this.totalRecords = Number(this.recordPerPage) * (_length);
-  //       else if (Math.floor(_length) == 0)
-  //         this.totalRecords = 10;
-  //       else
-  //         this.totalRecords = totalCount;
-  //       this.totalPages = this.totalRecords / this.pager;
-  //     }
-  //   })
-  // }
   getFilteredList() {
     const selectedProjectId = this.form.controls['selectedProject'].value.value;
     const selectedStatus = this.form.controls['selectedStatus'].value.value;
@@ -614,60 +459,7 @@ endDate: Date | null = null;
           this.totalRecords = totalCount;
         this.totalPages = this.totalRecords / this.pager;
       }
-    })
+    });
   }
-
-  // // getProjList() {
-  // //   this.service.GetProjectList().pipe(withLoader(this.loaderService)).subscribe((response: any) => {
-  // //     const items = response?.result || [];
-
-  // //     const projectOptions = items.map((item: any) => ({
-  // //       name: item.name || item.shortCode,
-  // //       value: item.id
-  // //     }));
-
-
-  //     projectOptions.unshift({
-  //       name: 'All',
-  //       value: null
-  //     });
-  //     projectOptions.unshift({
-  //       name: 'All',
-  //       value: null
-  //     });
-
-  //     this.projectSelectSettings.options = projectOptions;
-  //     this.form.controls['selectedProject'].setValue({
-  //       name: 'All',
-  //       value: null
-  //     });
-  //     this.projectSelectSettings.options = projectOptions;
-  //     this.form.controls['selectedProject'].setValue({
-  //       name: 'All',
-  //       value: null
-  //     });
-
-  //     this.form.controls['selectedStatus'].setValue({
-  //       name: 'All',
-  //       value: null
-  //     });
-  //     this.isProjectOptionsLoaded = true;
-  //   }, error => {
-  //     console.error('Error fetching project list', error);
-  //   });
-  // }
-  //     this.form.controls['selectedStatus'].setValue({
-  //       name: 'All',
-  //       value: null
-  //     });
-  //     this.isProjectOptionsLoaded = true;
-  //   }, error => {
-  //     console.error('Error fetching project list', error);
-  //   });
-  // }
-
-
-
-
-
+}
 }
