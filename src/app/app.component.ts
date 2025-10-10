@@ -11,6 +11,9 @@ import { LoginComponent } from "./routes/login/login.component";
 import { CmLoaderComponent } from './common/cm-loader/cm-loader.component';
 import { LoaderService } from './services/common/loader.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { SignalRService } from './services/common/signal-r.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-root',
@@ -54,13 +57,24 @@ export class AppComponent implements OnInit{
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private renderer: Renderer2, 
+    private toastr : ToastrService,
     public headerService : HeaderService,public routes: Router, private route: ActivatedRoute,
-    public loaderService : LoaderService
+    public loaderService : LoaderService,
+    private signalRService: SignalRService,
+    private snackBar: MatSnackBar
   ) {}
 
  
   ngOnInit()  {
-    //this.loaderService.isLoader =true;
+    this.signalRService.notifications$.subscribe((message: string) => {
+      // this.snackBar.open(message, 'Close', {
+      //   duration: 5000,
+      //   verticalPosition: 'top',
+      //   horizontalPosition: 'right',
+      //   panelClass: ['mat-toolbar', 'mat-primary']
+      // });
+      this.toastr.success(message);
+    });
   }
 
 }
