@@ -1,6 +1,6 @@
 
-import { Component,inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AfterViewInit, Component,ElementRef,Inject,inject, Input, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import { CommonModule,isPlatformBrowser } from '@angular/common';
 import { CmTableComponent } from '../../common/cm-table/cm-table.component';
 import { CmSelectComponent } from '../../common/cm-select/cm-select.component';
 import { CmSelect2Component } from '../../common/cm-select2/cm-select2.component';
@@ -21,28 +21,45 @@ import { ToastrService } from 'ngx-toastr';
 
 import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 import _ from 'lodash';
+import { MaterialModule } from "../../Material.module";
 
-
+// jQuery declared globally
+declare var $: any;
 
 @Component({
     selector: 'app-user-mappings',
     standalone: true,
     imports: [
-      CommonModule,
-      CmTableComponent,
-      CmInputComponent,
-      CmSelect2Component,
-      MatCardModule,MatButtonModule
-      
-    ],
+    CommonModule,
+    CmTableComponent,
+    CmInputComponent,
+    CmSelect2Component,
+    MatCardModule, MatButtonModule,
+    MaterialModule
+],
    templateUrl: './user-mappings.component.html',
   styleUrl: './user-mappings.component.css',
 })
 
- 
-
-    export class UserMappingsComponent implements OnInit {
-     loaderService = inject(LoaderService);
+     export class UserMappingsComponent implements OnInit, AfterViewInit, OnDestroy {
+    
+     @ViewChild('selectElement') selectElement!: ElementRef;
+  @Input() options: { id: number; text: string }[] = [];
+yourOptions = [
+  { id: 0, text: 'All' },
+  { id: 1, text: 'One' },
+  { id: 2, text: 'Two' },
+  { id: 3, text: 'Three' },
+  { id: 4, text: 'Shridhar' },
+  { id: 5, text: 'Pandu' },
+  { id: 6, text: 'Sujit' },
+  { id: 7, text: 'AKshay' },
+  { id: 8, text: 'Manoj' },
+  { id: 9, text: 'Ashutosh' },
+];
+  selectedValue: number | null = null;
+     
+      loaderService = inject(LoaderService);
 router = inject(Router);
       _headerName = 'Project Configuration Table';
       headArr: any[] = [];
@@ -148,6 +165,7 @@ router = inject(Router);
       constructor(private fb: FormBuilder,
         private dialog: MatDialog,
         private service: UserMappingService, private toast: ToastrService,
+        @Inject(PLATFORM_ID) private platformId: Object
         ) {}
         
         
@@ -593,8 +611,23 @@ this.form.controls['selectedRole'].setValue({
   });
 }
      
-       
+      ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      // Initialize select2
+      $(this.selectElement.nativeElement).select2();
 
+      // Handle change event
+      $(this.selectElement.nativeElement).on('change', (event: any) => {
+        this.selectedValue = $(event.target).val();
+      });
+    }
+  }   
+  ngOnDestroy(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      // Destroy select2 instance
+      $(this.selectElement.nativeElement).select2('destroy');
+    }
+  }
       
     
       }
