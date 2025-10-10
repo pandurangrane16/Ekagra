@@ -942,7 +942,7 @@ this.isProjtypeOptionsLoaded=true;
       // labelHeader: 'Name',
       placeholder: 'Enter URL',
       appearance: 'outline',
-      isDisabled: true,
+      // isDisabled: true,
       color: 'primary',
       formFieldClass: "w-100"
     },

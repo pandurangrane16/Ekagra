@@ -1,13 +1,11 @@
-<div class="row mt-1">
   <div class="row mt-1">
     <div class="col-md-12">
-      <div class="card">
-        <div class="card-header">
-          <mat-card-title>
-            <h4 class="mt-1 mb-0">Zone Configuration</h4>
-          </mat-card-title>
-        </div>
-        <div class="card-body" id="editForm">
+<div class="card">
+  <div class="card-header">
+     <mat-card-title><h4 class="mt-1 mb-0">Zone Configuration</h4></mat-card-title>   
+  </div>
+  
+    <div class="card-body"  id="editForm">
 
           <div class="filter-row d-flex justify-content-between align-items-start">
             <div class="d-flex justify-content-start align-items-center gap-2">
@@ -20,19 +18,21 @@
                 (optionSelected)="onProjectSelected($event)">
               </app-cm-select2>
 
-              <button mat-flat-button class="btn-primary mt-4" (click)="submit()">
-                Submit
-              </button>
-            </div>
+  <button mat-flat-button
+        class="btn-primary mt-4" (click)="submit()">
+        Submit
+        </button>
+</div>
+        
 
-
-            <!-- Right Side Container for Button + Search -->
-            <div class="d-flex justify-content-start flex-column gap-1">
-
-              <!-- Create Button -->
-              <button mat-flat-button class="btn-primary w-100" (click)="openDialog()">
-                + Create Zone Configuration
-              </button>
+  <!-- Right Side Container for Button + Search -->
+  <div class="d-flex justify-content-start flex-column gap-1">
+    
+      <!-- Create Button -->
+      <button mat-flat-button
+      class="btn-primary w-100" (click)="openDialog()">
+      + Create Zone Configuration
+    </button>
 
               <!-- Search Input -->
               <div class="w-100">

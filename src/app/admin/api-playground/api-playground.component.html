@@ -81,8 +81,8 @@
       </div> -->
 
 
-   <div class="col-md-2" style="margin-top: -15px;">
-                        <label style="position: relative; top: 6px; display: block;">API Name</label>
+   <div class="col">
+                        <label>API Name</label>
                         <div>
                             <app-cm-input [formGroup]="form" [controlName]="'apiName'"
                                 [_inputData]="inputFields.apiName">
@@ -113,7 +113,7 @@
           </div>
         </div>
 
-        <div class="col-2 text-center">
+        <div class="col text-center">
           <mat-label class="mb-1" class="toggle-label"
             >Is Required Auth.</mat-label
           >
@@ -158,8 +158,8 @@
             </app-cm-input>
           </div>
         </div>
-                      <div class="col-md-2" style="margin-top: -15px;">
-                        <label style="position: relative; top: 6px; display: block;">Data Source</label>
+                      <div class="col">
+                        <label>Data Source</label>
                         <div>
                             <app-cm-input [formGroup]="form" [controlName]="'datasource'"
                                 [_inputData]="inputFields.datasource">
@@ -170,9 +170,9 @@
 
 
                     
-                      <div class="col-md-2" style="margin-top: -9px;">
-                <label class="toggle-label">Is Required Auth.</label>
-                <app-cm-toggle [formGroup]="form" [settings]="isrequireauth" style="margin-top: -35px;"></app-cm-toggle>
+                      <div class="col-2 text-center">
+                <label>Is Required Auth.</label>
+                <app-cm-toggle [formGroup]="form" [settings]="isrequireauth"></app-cm-toggle>
             </div>
 
             
@@ -180,8 +180,8 @@
 
 
 
-   <div class="col-md-6" style="margin-top: -10px;">
-                        <label style="position: relative; top: 6px; display: block;">Enter URL</label>
+   <div class="col">
+                        <label>Enter URL</label>
                         <div>
                             <app-cm-input [formGroup]="form" [controlName]="'apiUrl'" [_inputData]="inputFields.apiUrl">
                             </app-cm-input>
@@ -190,8 +190,8 @@
   </div>
                         </div>
                     </div>
-                      <div class="col-md-1" style="margin-top: -10px;">
-                        <label style="position: relative; top: 6px; display: block;">Api Seq</label>
+                      <div class="col">
+                        <label>Api Seq</label>
                         <div>
                             <app-cm-input [formGroup]="form" [controlName]="'apiseq'"
                                 [_inputData]="inputFields.apiSeq">
@@ -208,6 +208,15 @@
             (optionSelected)="onProjectSelected($event)"
           >
           </app-cm-select2>
+        </div>
+          <!-- Toggle section -->
+        <div class="col">
+          <label>Enabled</label>
+          <app-cm-toggle
+            [formGroup]="form"
+            [settings]="projectEnabled"
+            
+          ></app-cm-toggle>
         </div>
       </div>
 
@@ -618,15 +627,7 @@
           </div>
         </div>
 
-        <!-- Toggle section -->
-        <div class="col-md-6" style="margin-top: 10px">
-          <label class="toggle-label">Enabled</label>
-          <app-cm-toggle
-            [formGroup]="form"
-            [settings]="projectEnabled"
-            style="margin-top: -35px"
-          ></app-cm-toggle>
-        </div>
+      
       </div>
 
       <div class="dialog-actions mt-2">
