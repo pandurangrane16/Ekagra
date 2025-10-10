@@ -1,6 +1,6 @@
 <form [formGroup]="form">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <app-cm-select-check ngSkipHydration *ngIf="isVmdSelected" [formGroup]="form"
                 [controlName]="'selectedVmdAction'" [settings]="vmdTypeSettings"
                 (returnObject)="onActionTypeSelected($event)">
@@ -9,19 +9,18 @@
     </div>
     <hr>
     <div class="row">
-        <div class="col-md-12">
-            <label>Attachment(Image or Video)</label> &nbsp;&nbsp;&nbsp;
+        <div class="col-md-6 d-flex align-items-center gap-2">
+            <label class="mb-0">Attachment(Image or Video)</label>
             <input type="file">
         </div>
-    </div>
-    <hr>
-    <div class="row">
-        <div class="col-md-6">
+    
+        <div class="col-md-5" *ngIf="isTypeSelected">
             <app-cm-select2 ngSkipHydration *ngIf="isTypeSelected" [formGroup]="form" [controlName]="'selectedUnit'"
                 [settings]="unitSettings" (returnObject)="onActionTypeSelected($event)">
             </app-cm-select2>
         </div>
-        <div class="col-md-6">
+    
+        <div class="col-md-5">
             <app-cm-input ngSkipHydration [formGroup]="form" [controlName]="'unitValue'"
                 [_inputData]="inputFields.unitValue">
             </app-cm-input>
@@ -29,11 +28,11 @@
     </div>
     <hr>
     <div class="row">
-        <div class="col-md-12">
-            <button mat-flat-button class="btnSubmit" (click)="SubmitAction()">
+        <div class="col-md-12 d-flex gap-2">
+            <button mat-flat-button class="btn-primary ms-auto" (click)="SubmitAction()">
                 Submit
             </button>
-            &nbsp;&nbsp;&nbsp;
+           
             <button mat-flat-button class="btnCancel" (click)="CancelAction()">
                 Cancel
             </button>

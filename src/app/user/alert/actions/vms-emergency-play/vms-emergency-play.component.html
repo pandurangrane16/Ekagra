@@ -1,7 +1,5 @@
-<div class="pageWrapper">
-    <mat-card class="cardWithShadow theme-card">
-        <hr>
-        <mat-card-content>
+
+                <mat-card-content class="p-0">
             <form [formGroup]="form">
                 <!-- <div class="row">
                     <div class="col-md-12">
@@ -31,7 +29,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-md-12">
-                            <label>Attachment(Image or Video)</label> &nbsp;&nbsp;&nbsp;
+                            <label class="mb-1 me-2">Attachment(Image or Video)</label>
                             <input type="file">
                         </div>
                     </div>
@@ -43,6 +41,7 @@
                             </app-cm-select2>
                         </div>
                         <div class="col-md-6">
+                            <label class="mb-1">Unit Value</label>
                             <app-cm-input [formGroup]="form" [controlName]="'unitValue'"
                                 [_inputData]="inputFields.unitValue">
                             </app-cm-input>
@@ -65,24 +64,24 @@
                 @if(this.task.sequence == 2) {
                 <div [ngClass]="{ 'readonly-div': !this.task.hasAccess}">
                     <div class="row">
-                        <label>Verification</label>
-                        <br>
+                        <label class="mb-1">Verification</label>
+                        <hr >
                         <div class="col-md-6">
                             <button mat-flat-button class="btnSubmit" (click)="ViewOnMap(this.task)">
                                 Get API Status
                             </button>
                         </div>
-                        <div class="col-md-6 text-right">
-                            <mat-checkbox class="example-margin" formControlName="isVerified">Mark As Closed</mat-checkbox>
+                        <div class="col-md-6 text-right d-flex align-items-center">
+                            <mat-checkbox class="example-margin" formControlName="isVerified"></mat-checkbox> <label class="mb-0 ms-2">Mark As Closed</label>
                         </div>
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-md-12">
-                            <button mat-flat-button class="btnSubmit" (click)="SubmitAction()">
+                        <div class="col-md-12 d-flex gap-3">
+                            <button mat-flat-button class="btn-primary" (click)="SubmitAction()">
                                 Submit
                             </button>
-                            &nbsp;&nbsp;&nbsp;
+                           
                             <button mat-flat-button class="btnCancel" (click)="CancelAction()">
                                 Reassign
                             </button>
@@ -92,5 +91,3 @@
                 }
             </form>
         </mat-card-content>
-    </mat-card>
-</div>

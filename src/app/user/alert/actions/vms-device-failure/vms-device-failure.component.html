@@ -1,7 +1,5 @@
-<div class="pageWrapper">
-    <mat-card class="cardWithShadow theme-card">
-        <hr>
-        <mat-card-content>
+       
+        <mat-card-content class="p-0">
             <form [formGroup]="form">
                 <!-- <div class="row">
                     <div class="col-md-12">
@@ -29,21 +27,20 @@
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-md-12">
-                            <label>Attachment</label> &nbsp;&nbsp;&nbsp;
+                        <div class="col-md-6">
+                            <label class="me-2">Attachment </label> 
                             <input type="file">
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 text-right">
-                            <mat-checkbox class="example-margin" formControlName="isVerified">Mark as
-                                closed</mat-checkbox>
+                  
+                        <div class="col-md-6 text-right d-flex align-items-center">
+                            <mat-checkbox class="example-margin me-2" formControlName="isVerified"></mat-checkbox>Mark as
+                                closed
                         </div>
                     </div>
                     <hr>
                     <div class="row">
                         <div class="col-md-12">
-                            <button mat-flat-button class="btnSubmit" (click)="SubmitAction()">
+                            <button mat-flat-button class="btn-primary" (click)="SubmitAction()">
                                 Submit
                             </button>
                             &nbsp;&nbsp;&nbsp;
@@ -84,5 +81,4 @@
                 }
             </form>
         </mat-card-content>
-    </mat-card>
-</div>
+

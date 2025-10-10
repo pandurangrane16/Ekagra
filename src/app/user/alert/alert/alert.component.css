@@ -12,3 +12,5 @@
 ::ng-deep .custom-confirm-dialog .mat-mdc-dialog-surface {
   overflow-y: inherit !important;
 }
+
+::ng-deep .mdc-button .mdc-button__label{align-items: center;}
