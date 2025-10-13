@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import * as cronstrue from 'cronstrue';
 import { MaterialModule } from '../../Material.module';
@@ -12,6 +12,7 @@ import { MaterialModule } from '../../Material.module';
   standalone:true
 })
 export class CmCronExpressionComponent {
+   @Output() cronChange = new EventEmitter<any>();
 cronForm: FormGroup;
   cronPreview: string = '';
   humanReadable: string = '';
@@ -56,5 +57,9 @@ cronForm: FormGroup;
 
   getDayOfWeekLabel(value: string) {
     return this.dayOfWeekNames[value] ?? value;
+  }
+
+  returnForm() {
+      this.cronChange.emit(this.cronForm.value);
   }
 }

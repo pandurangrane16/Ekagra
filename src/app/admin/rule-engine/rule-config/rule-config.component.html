@@ -368,7 +368,7 @@
                             <hr>
 
 
-                         <app-cm-cron (cronChange)="onCronUpdate($event)"></app-cm-cron>
+                         <app-cm-cron-expression (cronChange)="getCronFromData($event)"></app-cm-cron-expression>
 
                             <p>Selected Cron: {{ parentCron }}</p>
 

@@ -2,43 +2,45 @@
     <div class="row">
         <div class="col-md-6 cron-field">
             <label for="minute">Minute:</label>
-            <select class="form-control" formControlName="minute" id="minute">
+            <select class="form-control" formControlName="minute" id="minute" (change)="returnForm()">
                 <option *ngFor="let min of minutes" [value]="min">
                     {{ min === '*' ? 'Every Minute (*)' : min }}
                 </option>
             </select>
         </div>
-    </div>
-    <div class="cron-field">
-        <label for="hour">Hour:</label>
-        <select class="form-control" formControlName="hour" id="hour">
-            <option *ngFor="let hr of hours" [value]="hr">
-                {{ hr === '*' ? 'Every Hour (*)' : hr }}
-            </option>
-        </select>
-    </div>
-
-    <div class="cron-field">
-        <label for="dayOfMonth">Day of Month:</label>
-        <select class="form-control" formControlName="dayOfMonth" id="dayOfMonth">
-            <option *ngFor="let day of daysOfMonth" [value]="day">
-                {{ day === '*' ? 'Every Day (*)' : day }}
-            </option>
-        </select>
+        <div class="col-md-6 cron-field">
+            <label for="hour">Hour:</label>
+            <select class="form-control" formControlName="hour" id="hour" (change)="returnForm()">
+                <option *ngFor="let hr of hours" [value]="hr">
+                    {{ hr === '*' ? 'Every Hour (*)' : hr }}
+                </option>
+            </select>
+        </div>
     </div>
 
-    <div class="cron-field">
-        <label for="month">Month:</label>
-        <select class="form-control" formControlName="month" id="month">
-            <option *ngFor="let mon of months" [value]="mon">
-                {{ mon === '*' ? 'Every Month (*)' : mon }}
-            </option>
-        </select>
+    <div class="row">
+        <div class="col-md-6 cron-field">
+            <label for="dayOfMonth">Day of Month:</label>
+            <select class="form-control" formControlName="dayOfMonth" id="dayOfMonth" (change)="returnForm()">
+                <option *ngFor="let day of daysOfMonth" [value]="day">
+                    {{ day === '*' ? 'Every Day (*)' : day }}
+                </option>
+            </select>
+        </div>
+
+        <div class="col-md-6 cron-field">
+            <label for="month">Month:</label>
+            <select class="form-control" formControlName="month" id="month" (change)="returnForm()">
+                <option *ngFor="let mon of months" [value]="mon">
+                    {{ mon === '*' ? 'Every Month (*)' : mon }}
+                </option>
+            </select>
+        </div>
     </div>
 
     <div class="cron-field">
         <label for="dayOfWeek">Day of Week:</label>
-        <select class="form-control" formControlName="dayOfWeek" id="dayOfWeek">
+        <select class="form-control" formControlName="dayOfWeek" id="dayOfWeek" (change)="returnForm()">
             <option *ngFor="let dow of daysOfWeek" [value]="dow">
                 {{ dow === '*' ? 'Every Day (*)' : getDayOfWeekLabel(dow) }}
             </option>

@@ -16,16 +16,17 @@ import { Policy } from '../../../models/admin/ruleengine.model';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { CmCronComponent } from '../../../common/cm-cron/cm-cron.component';
 import { CmCheckboxGroupComponent } from '../../../common/cm-checkbox-group/cm-checkbox-group.component';
 import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-select-check.component";
+import { CmCronExpressionComponent } from "../../../common/cm-cron-expression/cm-cron-expression.component";
 
 
 @Component({
   selector: 'app-rule-config',
   imports: [MaterialModule, MatIconModule, MatButtonModule, MatTooltipModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,
-    CmToggleComponent, CmButtonComponent, CmCronComponent],
+    CmToggleComponent, CmButtonComponent, CmCronExpressionComponent],
   templateUrl: './rule-config.component.html',
   styleUrl: './rule-config.component.css',
 })
@@ -41,65 +42,65 @@ export class RuleConfigComponent implements OnInit {
   selectedProjectName: any;
   selectedProjectId: any;
   AndFlag: any;
- parentCron: string = '';
+  parentCron: string = '';
   expOption: boolean = false;
- typeOperatorMap: Record<string, { name: string; value: string }[]> = {
-  string: [
-    { name: 'equal', value: '$eq' },
-    { name: 'not_equal', value: '$ne' },
-    { name: 'begins_with', value: '$regex' },
-    { name: 'not_begins_with', value: '$not' },
-    { name: 'contains', value: '$regex' },
-    { name: 'not_contains', value: '$not' },
-    { name: 'ends_with', value: '$regex' },
-    { name: 'not_ends_with', value: '$not' },
-    { name: 'is_empty', value: '$eq' },
-    { name: 'is_not_empty', value: '$ne' },
-    { name: 'is_null', value: '$eq' },
-    { name: 'is_not_null', value: '$ne' }
-  ],
-  integer: [
-    { name: 'equal', value: '$eq' },
-    { name: 'not_equal', value: '$ne' },
-    { name: 'less', value: '$lt' },
-    { name: 'less_or_equal', value: '$lte' },
-    { name: 'greater', value: '$gt' },
-    { name: 'greater_or_equal', value: '$gte' },
-    { name: 'between', value: '$between' },
-    { name: 'not_between', value: '$notBetween' }
-  ],
-  double: [
-    { name: 'equal', value: '$eq' },
-    { name: 'not_equal', value: '$ne' },
-    { name: 'less', value: '$lt' },
-    { name: 'less_or_equal', value: '$lte' },
-    { name: 'greater', value: '$gt' },
-    { name: 'greater_or_equal', value: '$gte' },
-    { name: 'between', value: '$between' },
-    { name: 'not_between', value: '$notBetween' }
-  ],
-  boolean: [
-    { name: 'equal', value: '$eq' }
-  ],
-  array: [
-    { name: 'contains', value: '$in' },
-    { name: 'not_contains', value: '$nin' }
-  ],
-  default: [
-    { name: 'equal', value: '$eq' },
-    { name: 'not_equal', value: '$ne' },
-    { name: 'begins_with', value: '$regex' },
-    { name: 'not_begins_with', value: '$not' },
-    { name: 'contains', value: '$regex' },
-    { name: 'not_contains', value: '$not' },
-    { name: 'ends_with', value: '$regex' },
-    { name: 'not_ends_with', value: '$not' },
-    { name: 'is_empty', value: '$eq' },
-    { name: 'is_not_empty', value: '$ne' },
-    { name: 'is_null', value: '$eq' },
-    { name: 'is_not_null', value: '$ne' }
-  ]
-};
+  typeOperatorMap: Record<string, { name: string; value: string }[]> = {
+    string: [
+      { name: 'equal', value: '$eq' },
+      { name: 'not_equal', value: '$ne' },
+      { name: 'begins_with', value: '$regex' },
+      { name: 'not_begins_with', value: '$not' },
+      { name: 'contains', value: '$regex' },
+      { name: 'not_contains', value: '$not' },
+      { name: 'ends_with', value: '$regex' },
+      { name: 'not_ends_with', value: '$not' },
+      { name: 'is_empty', value: '$eq' },
+      { name: 'is_not_empty', value: '$ne' },
+      { name: 'is_null', value: '$eq' },
+      { name: 'is_not_null', value: '$ne' }
+    ],
+    integer: [
+      { name: 'equal', value: '$eq' },
+      { name: 'not_equal', value: '$ne' },
+      { name: 'less', value: '$lt' },
+      { name: 'less_or_equal', value: '$lte' },
+      { name: 'greater', value: '$gt' },
+      { name: 'greater_or_equal', value: '$gte' },
+      { name: 'between', value: '$between' },
+      { name: 'not_between', value: '$notBetween' }
+    ],
+    double: [
+      { name: 'equal', value: '$eq' },
+      { name: 'not_equal', value: '$ne' },
+      { name: 'less', value: '$lt' },
+      { name: 'less_or_equal', value: '$lte' },
+      { name: 'greater', value: '$gt' },
+      { name: 'greater_or_equal', value: '$gte' },
+      { name: 'between', value: '$between' },
+      { name: 'not_between', value: '$notBetween' }
+    ],
+    boolean: [
+      { name: 'equal', value: '$eq' }
+    ],
+    array: [
+      { name: 'contains', value: '$in' },
+      { name: 'not_contains', value: '$nin' }
+    ],
+    default: [
+      { name: 'equal', value: '$eq' },
+      { name: 'not_equal', value: '$ne' },
+      { name: 'begins_with', value: '$regex' },
+      { name: 'not_begins_with', value: '$not' },
+      { name: 'contains', value: '$regex' },
+      { name: 'not_contains', value: '$not' },
+      { name: 'ends_with', value: '$regex' },
+      { name: 'not_ends_with', value: '$not' },
+      { name: 'is_empty', value: '$eq' },
+      { name: 'is_not_empty', value: '$ne' },
+      { name: 'is_null', value: '$eq' },
+      { name: 'is_not_null', value: '$ne' }
+    ]
+  };
 
 
   userGroupSettings = {
@@ -122,7 +123,7 @@ export class RuleConfigComponent implements OnInit {
   inputFields = {
     policyName: {
       labelHeader: 'Policy Name',
-     
+
       placeholder: 'Policy Name*',
       appearance: 'outline',
       isDisabled: false,
@@ -357,7 +358,7 @@ export class RuleConfigComponent implements OnInit {
       this.ruleService.setRulesStorage();
       this.ruleConditions = this.ruleService.getRuleConditions();
     }
-    
+
   }
 
   ngOnInit(): void {
@@ -374,8 +375,8 @@ export class RuleConfigComponent implements OnInit {
       groups: this._formBuilder.array([], [this.minFormArrayLength(1)]),
     });
     this.firstFormGroup = this._formBuilder.group({
-  policyName: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
-  ticketabb: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
+      policyName: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
+      ticketabb: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
       tat: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
       selectedCategory: ['', Validators.required],
       selectedUserGroup: ['', Validators.required],
@@ -418,73 +419,73 @@ export class RuleConfigComponent implements OnInit {
     //   this.onPolicyNameChange(value);
     // });
 
-     // ---- Policy Name ----
-        this.firstFormGroup.get('policyName')?.valueChanges.subscribe((val: string) => {
-          if (val !== null && val !== undefined) {
-            const trimmed = val.trim();
-            if (trimmed !== val) {
-              this.firstFormGroup.get('policyName')?.setValue(trimmed, { emitEvent: false });
-            }
+    // ---- Policy Name ----
+    this.firstFormGroup.get('policyName')?.valueChanges.subscribe((val: string) => {
+      if (val !== null && val !== undefined) {
+        const trimmed = val.trim();
+        if (trimmed !== val) {
+          this.firstFormGroup.get('policyName')?.setValue(trimmed, { emitEvent: false });
+        }
 
-            // disallow anything except letters, numbers, space, underscore, hyphen
-            const valid = /^[A-Za-z0-9 _-]*$/.test(trimmed);
-            if (!valid) {
-              this.firstFormGroup.get('policyName')?.setErrors({ invalidChars: true });
-            } else {
-              const ctrl = this.firstFormGroup.get('policyName');
-              if (ctrl?.hasError('invalidChars')) {
-                const e = { ...ctrl.errors };
-                delete e['invalidChars'];
-                ctrl.setErrors(Object.keys(e).length ? e : null);
-              }
-            }
-
-            this.onPolicyNameChange(trimmed);
+        // disallow anything except letters, numbers, space, underscore, hyphen
+        const valid = /^[A-Za-z0-9 _-]*$/.test(trimmed);
+        if (!valid) {
+          this.firstFormGroup.get('policyName')?.setErrors({ invalidChars: true });
+        } else {
+          const ctrl = this.firstFormGroup.get('policyName');
+          if (ctrl?.hasError('invalidChars')) {
+            const e = { ...ctrl.errors };
+            delete e['invalidChars'];
+            ctrl.setErrors(Object.keys(e).length ? e : null);
           }
-        });
+        }
 
-     // ---- Ticket Abbreviation ----
-        this.firstFormGroup.get('ticketabb')?.valueChanges.subscribe((val: string) => {
-          if (val !== null && val !== undefined) {
-            const trimmed = val.trim();
-            if (trimmed !== val) {
-              this.firstFormGroup.get('ticketabb')?.setValue(trimmed, { emitEvent: false });
-            }
+        this.onPolicyNameChange(trimmed);
+      }
+    });
 
-            // disallow anything except letters, numbers, underscore, hyphen
-            const valid = /^[A-Za-z0-9_-]*$/.test(trimmed);
-            if (!valid) {
-              this.firstFormGroup.get('ticketabb')?.setErrors({ invalidChars: true });
-            } else {
-              const ctrl = this.firstFormGroup.get('ticketabb');
-              if (ctrl?.hasError('invalidChars')) {
-                const e = { ...ctrl.errors };
-                delete e['invalidChars'];
-                ctrl.setErrors(Object.keys(e).length ? e : null);
-              }
-            }
+    // ---- Ticket Abbreviation ----
+    this.firstFormGroup.get('ticketabb')?.valueChanges.subscribe((val: string) => {
+      if (val !== null && val !== undefined) {
+        const trimmed = val.trim();
+        if (trimmed !== val) {
+          this.firstFormGroup.get('ticketabb')?.setValue(trimmed, { emitEvent: false });
+        }
+
+        // disallow anything except letters, numbers, underscore, hyphen
+        const valid = /^[A-Za-z0-9_-]*$/.test(trimmed);
+        if (!valid) {
+          this.firstFormGroup.get('ticketabb')?.setErrors({ invalidChars: true });
+        } else {
+          const ctrl = this.firstFormGroup.get('ticketabb');
+          if (ctrl?.hasError('invalidChars')) {
+            const e = { ...ctrl.errors };
+            delete e['invalidChars'];
+            ctrl.setErrors(Object.keys(e).length ? e : null);
           }
-        });
-
-      // ✅ TAT (trim + remove all spaces)
-  this.firstFormGroup.get('tat')?.valueChanges.subscribe((val: string) => {
-    if (val !== null && val !== undefined) {
-      const sanitized = val.replace(/\s+/g, '');
-      if (sanitized !== val) {
-        this.firstFormGroup.get('tat')?.setValue(sanitized, { emitEvent: false });
+        }
       }
-    }
-  });
+    });
 
-  // ✅ Interval Time (trim + remove all spaces)
-  this.firstFormGroup.get('intervalTime')?.valueChanges.subscribe((val: string) => {
-    if (val !== null && val !== undefined) {
-      const sanitized = val.replace(/\s+/g, '');
-      if (sanitized !== val) {
-        this.firstFormGroup.get('intervalTime')?.setValue(sanitized, { emitEvent: false });
+    // ✅ TAT (trim + remove all spaces)
+    this.firstFormGroup.get('tat')?.valueChanges.subscribe((val: string) => {
+      if (val !== null && val !== undefined) {
+        const sanitized = val.replace(/\s+/g, '');
+        if (sanitized !== val) {
+          this.firstFormGroup.get('tat')?.setValue(sanitized, { emitEvent: false });
+        }
       }
-    }
-  });
+    });
+
+    // ✅ Interval Time (trim + remove all spaces)
+    this.firstFormGroup.get('intervalTime')?.valueChanges.subscribe((val: string) => {
+      if (val !== null && val !== undefined) {
+        const sanitized = val.replace(/\s+/g, '');
+        if (sanitized !== val) {
+          this.firstFormGroup.get('intervalTime')?.setValue(sanitized, { emitEvent: false });
+        }
+      }
+    });
   }
   get f() {
     return this.firstFormGroup.controls;
@@ -492,13 +493,13 @@ export class RuleConfigComponent implements OnInit {
 
 
   onCronUpdate(event: string | null) {
-    console.log("event:",event)
-  if (event === null) {
-    this.parentCron = '❌ Invalid cron format';
-  } else {
-    this.parentCron = event;
+    console.log("event:", event)
+    if (event === null) {
+      this.parentCron = '❌ Invalid cron format';
+    } else {
+      this.parentCron = event;
+    }
   }
-}
 
   minFormArrayLength(min: number): ValidatorFn {
     return (control: AbstractControl) => {
@@ -514,7 +515,7 @@ export class RuleConfigComponent implements OnInit {
     return getErrorMsg(this.firstFormGroup, _controlName, _controlLable, _isPattern, _msg);
   }
 
-      close() {
+  close() {
     this.router.navigate(['/admin/ruleenginelist']);
   }
 
@@ -600,18 +601,18 @@ export class RuleConfigComponent implements OnInit {
       // Reset the expression value
       rowGroup.get('expression')?.setValue(null);
 
- 
-  // Set options only for this row
-    rowGroup.get('expressionSettings')?.setValue({
-      options: operators,
-      singleSelection: true,
-          idField: 'id',
-          textField: 'text',
-          allowSearchFilter: true,
-          labelHeader: 'Expression*',
-          lableClass: 'form-label',
-          formFieldClass: '',
-          appearance: 'outline',
+
+      // Set options only for this row
+      rowGroup.get('expressionSettings')?.setValue({
+        options: operators,
+        singleSelection: true,
+        idField: 'id',
+        textField: 'text',
+        allowSearchFilter: true,
+        labelHeader: 'Expression*',
+        lableClass: 'form-label',
+        formFieldClass: '',
+        appearance: 'outline',
 
       });
       setTimeout(() => {
@@ -650,90 +651,90 @@ export class RuleConfigComponent implements OnInit {
   //   });
   // }
 
-//   buildProjectExpressions(formValue: any) {
-//   return formValue.groups.map((group: any) => {
-//     const conditionOp = "$" + (group.condition?.value?.toLowerCase());
+  //   buildProjectExpressions(formValue: any) {
+  //   return formValue.groups.map((group: any) => {
+  //     const conditionOp = "$" + (group.condition?.value?.toLowerCase());
 
-//     // Build expressions per field (with APIID)
-//     const expressionsWithApi = group.arrayGroup.map((item: any) => {
-//       const field = item.fieldName?.value;
-//       const operator =
-//         typeof item.expression === "object"
-//           ? item.expression.value
-//           : item.expression;
-//       const value = item.fieldValue;
+  //     // Build expressions per field (with APIID)
+  //     const expressionsWithApi = group.arrayGroup.map((item: any) => {
+  //       const field = item.fieldName?.value;
+  //       const operator =
+  //         typeof item.expression === "object"
+  //           ? item.expression.value
+  //           : item.expression;
+  //       const value = item.fieldValue;
 
-//       const expressionObj = {
-//         [conditionOp]: [
-//           {
-//             [field]: {
-//               [operator]: isNaN(value) ? value : Number(value)
-//             }
-//           }
-//         ]
-//       };
+  //       const expressionObj = {
+  //         [conditionOp]: [
+  //           {
+  //             [field]: {
+  //               [operator]: isNaN(value) ? value : Number(value)
+  //             }
+  //           }
+  //         ]
+  //       };
 
-//       return {
-//         APIID: item.apiName.value,  
-//         Expression: expressionObj
-//       };
-//     });
+  //       return {
+  //         APIID: item.apiName.value,  
+  //         Expression: expressionObj
+  //       };
+  //     });
 
-//     return {
-//       ProjectId: group.projId,
-//       ProjectName: group.projName,
-//       Rule: expressionsWithApi
-//     };
-//   });
-// }
+  //     return {
+  //       ProjectId: group.projId,
+  //       ProjectName: group.projName,
+  //       Rule: expressionsWithApi
+  //     };
+  //   });
+  // }
 
-buildProjectExpressions(formValue: any) {
-  return formValue.groups.map((group: any, index: number) => {
-    const conditionOp = "$" + (group.condition?.value?.toLowerCase());   // Rule-level
-    // const conditionOp2 = "$" + (group.condition2?.value?.toLowerCase());
-    
-        const conditionOp2 = index === 0 
-      ? "$and" 
-      : "$" + (group.condition2?.value?.toLowerCase());
+  buildProjectExpressions(formValue: any) {
+    return formValue.groups.map((group: any, index: number) => {
+      const conditionOp = "$" + (group.condition?.value?.toLowerCase());   // Rule-level
+      // const conditionOp2 = "$" + (group.condition2?.value?.toLowerCase());
 
-    // Build expressions per field (with APIID)
-    const expressionsWithApi = group.arrayGroup.map((item: any) => {
-      const field = item.fieldName?.value;
-      const operator =
-        typeof item.expression === "object"
-          ? item.expression.value
-          : item.expression;
-      const value = item.fieldValue;
+      const conditionOp2 = index === 0
+        ? "$and"
+        : "$" + (group.condition2?.value?.toLowerCase());
 
-      return {
-        APIID: item.apiName.value,
-        DataSource: item.apiName.dataSource, 
-        Expression: {
-          [field]: {
-            [operator]: isNaN(value) ? value : Number(value),
+      // Build expressions per field (with APIID)
+      const expressionsWithApi = group.arrayGroup.map((item: any) => {
+        const field = item.fieldName?.value;
+        const operator =
+          typeof item.expression === "object"
+            ? item.expression.value
+            : item.expression;
+        const value = item.fieldValue;
+
+        return {
+          APIID: item.apiName.value,
+          DataSource: item.apiName.dataSource,
+          Expression: {
+            [field]: {
+              [operator]: isNaN(value) ? value : Number(value),
+            },
           },
-        },
+        };
+      });
+
+      // Wrap Rule with condition (condition = and/or)
+      const ruleBlock = {
+        [conditionOp]: expressionsWithApi,
+      };
+
+      // Project block with Rule
+      const projectBlock = {
+        ProjectId: group.projId,
+        ProjectName: group.projName,
+        Rule: [ruleBlock],
+      };
+
+      // Wrap project with condition2 (condition2 = and/or)
+      return {
+        [conditionOp2]: [projectBlock],
       };
     });
-
-    // Wrap Rule with condition (condition = and/or)
-    const ruleBlock = {
-      [conditionOp]: expressionsWithApi,
-    };
-
-    // Project block with Rule
-    const projectBlock = {
-      ProjectId: group.projId,
-      ProjectName: group.projName,
-      Rule: [ruleBlock],
-    };
-
-    // Wrap project with condition2 (condition2 = and/or)
-    return {
-      [conditionOp2]: [projectBlock],
-    };
-  });
-}
+  }
 
 
 
@@ -795,58 +796,58 @@ buildProjectExpressions(formValue: any) {
 
 
 
-  if (!this.parentCron || this.parentCron === '❌ Invalid cron format') {
-  this.toast.error('Invalid Cron');
-  this.firstFormGroup.setErrors({ cronEmpty: true });
-  return;
-}
+          if (!this.parentCron || this.parentCron === '❌ Invalid cron format') {
+            this.toast.error('Invalid Cron');
+            this.firstFormGroup.setErrors({ cronEmpty: true });
+            return;
+          }
 
-else{
-  
-          const formValue = this.secondFormGroup.value;
-          const creationTime = new Date();
-          const result = this.buildProjectExpressions(formValue)
-          const cron = this.createCronExpression();
-          console.log('result', JSON.stringify(result));
-          console.log('Generated Cron:', cron);
-          console.log(JSON.stringify(result))
-          const policyData: Policy = {
-            policyName: firstFormValues.policyName,
-            ticketAbbrevation: firstFormValues.ticketabb,
-            tat: firstFormValues.tat,
-            policyRoles: this.firstFormGroup.controls['selectedUserGroup'].value?.value,
-            priority: this.firstFormGroup.controls['selectedCategory'].value?.value,
-            isActive: firstFormValues.isActive,
-            intervalTime: firstFormValues.intervalTime,
-            isInternal: firstFormValues.isinternal,
-            apiName: null,
-            apiId: null,
-            ruleExpression: JSON.stringify(result),
-            cron: this.parentCron,
-            isDeleted: false,
-            deleterUserId: 0,
-            deletionTime: creationTime,
-            lastModificationTime: creationTime,
-            lastModifierUserId: 0,
-            creationTime: creationTime,
-            creatorUserId: 0,
-            id: 0,
-            description: firstFormValues.policyName,
-          };
-          this.ruleService.CreateRuleEngine(policyData)
-            .pipe(withLoader(this.loaderService))
-            .subscribe({
-              next: (res: any) => {
-                console.log(res);
-                this.toast.success('Rule Engine saved successfully.');
-                this.router.navigate(['/admin/ruleenginelist']);
-              },
-              error: (err) => {
-                console.error('Error creating rule engine:', err);
-                this.toast.error('Failed to save Rule Engine. Please try again.');
-              }
-            });
-}
+          else {
+
+            const formValue = this.secondFormGroup.value;
+            const creationTime = new Date();
+            const result = this.buildProjectExpressions(formValue)
+            const cron = this.createCronExpression();
+            console.log('result', JSON.stringify(result));
+            console.log('Generated Cron:', cron);
+            console.log(JSON.stringify(result))
+            const policyData: Policy = {
+              policyName: firstFormValues.policyName,
+              ticketAbbrevation: firstFormValues.ticketabb,
+              tat: firstFormValues.tat,
+              policyRoles: this.firstFormGroup.controls['selectedUserGroup'].value?.value,
+              priority: this.firstFormGroup.controls['selectedCategory'].value?.value,
+              isActive: firstFormValues.isActive,
+              intervalTime: firstFormValues.intervalTime,
+              isInternal: firstFormValues.isinternal,
+              apiName: null,
+              apiId: null,
+              ruleExpression: JSON.stringify(result),
+              cron: this.parentCron,
+              isDeleted: false,
+              deleterUserId: 0,
+              deletionTime: creationTime,
+              lastModificationTime: creationTime,
+              lastModifierUserId: 0,
+              creationTime: creationTime,
+              creatorUserId: 0,
+              id: 0,
+              description: firstFormValues.policyName,
+            };
+            this.ruleService.CreateRuleEngine(policyData)
+              .pipe(withLoader(this.loaderService))
+              .subscribe({
+                next: (res: any) => {
+                  console.log(res);
+                  this.toast.success('Rule Engine saved successfully.');
+                  this.router.navigate(['/admin/ruleenginelist']);
+                },
+                error: (err) => {
+                  console.error('Error creating rule engine:', err);
+                  this.toast.error('Failed to save Rule Engine. Please try again.');
+                }
+              });
+          }
 
 
         }
@@ -872,7 +873,7 @@ else{
           name: item.apiName,
           value: item.id,
           projectid: item.projectId,
-          dataSource:item.dataSource
+          dataSource: item.dataSource
         }));
         const settings = {
           singleSelection: true,
@@ -1143,27 +1144,27 @@ else{
     console.log(evt);
     if (type == "min") {
       this.thirdFormGroup.patchValue({
-        minute : evt
+        minute: evt
       })
     }
     else if (type == "hour") {
       this.thirdFormGroup.patchValue({
-        hour : evt
+        hour: evt
       })
     }
     else if (type == "daymon") {
       this.thirdFormGroup.patchValue({
-        dayOfMonth : evt
+        dayOfMonth: evt
       })
     }
     else if (type == "mon") {
       this.thirdFormGroup.patchValue({
-        month : evt
+        month: evt
       })
     }
     else if (type == "day") {
       this.thirdFormGroup.patchValue({
-        dayOfWeek : evt
+        dayOfWeek: evt
       })
     }
   }
@@ -1194,5 +1195,9 @@ else{
           }
         }
       });
+  }
+
+  getCronFromData(evt: any) {
+    console.log(evt);
   }
 }
