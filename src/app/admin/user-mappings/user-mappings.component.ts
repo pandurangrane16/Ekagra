@@ -1,7 +1,7 @@
 
 import { AfterViewInit, Component,ElementRef,Inject,inject, Input, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { CommonModule,isPlatformBrowser } from '@angular/common';
-import { CmTableComponent } from '../../common/cm-table/cm-table.component';
+
 import { CmSelectComponent } from '../../common/cm-select/cm-select.component';
 import { CmSelect2Component } from '../../common/cm-select2/cm-select2.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -18,7 +18,7 @@ import {MatButtonModule} from '@angular/material/button';
 import { UserZoneMapping } from '../../models/admin/userZoneMapping.model';
 import { UserMappingService } from '../../services/admin/usermapping.service';
 import { ToastrService } from 'ngx-toastr';
-
+import { CmTableComponent } from '../../common/cm-table/cm-table.component';
 import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 import _ from 'lodash';
 import { MaterialModule } from "../../Material.module";
@@ -31,9 +31,9 @@ declare var $: any;
     standalone: true,
     imports: [
     CommonModule,
-    CmTableComponent,
-    CmInputComponent,
-    CmSelect2Component,
+   CmTableComponent,
+    
+   
     MatCardModule, MatButtonModule,
     MaterialModule
 ],
@@ -45,17 +45,17 @@ declare var $: any;
     
      @ViewChild('selectElement') selectElement!: ElementRef;
   @Input() options: { id: number; text: string }[] = [];
-yourOptions = [
+UserOptions = [
   { id: 0, text: 'All' },
-  { id: 1, text: 'One' },
-  { id: 2, text: 'Two' },
-  { id: 3, text: 'Three' },
-  { id: 4, text: 'Shridhar' },
-  { id: 5, text: 'Pandu' },
-  { id: 6, text: 'Sujit' },
-  { id: 7, text: 'AKshay' },
-  { id: 8, text: 'Manoj' },
-  { id: 9, text: 'Ashutosh' },
+ 
+];
+ZoneOptions = [
+  { id: 0, text: 'All' },
+ 
+];
+RoleOptions = [
+  { id: 0, text: 'All' },
+ 
 ];
   selectedValue: number | null = null;
      
@@ -171,9 +171,9 @@ router = inject(Router);
         
       ngOnInit(): void {
           this.form = this.fb.group({
-            selectedUser: [''],
-            selectedZone: [''],
-            selectedRole: ['']
+            selectedUser: [[]],
+            selectedZone: [[]],
+            selectedRole: [[]]
           });
           this.buildHeader();
           this.getProjConfigList();
@@ -219,6 +219,15 @@ router = inject(Router);
         }
   submit() {
 
+    const zones = this.form.value.selectedZone.map((z: any) => z.id).join(', ');
+    const roles = this.form.value.selectedRole.map((z: any) => z.id).join(', ');
+    const user = this.form.value.selectedUser.map((z: any) => z.id).join(', ');
+
+    this.toast.success(zones || 'No zones selected', 'Zones');
+
+ 
+    
+
     if (!this.form.invalid) {
       this.form.markAllAsTouched();
 
@@ -231,9 +240,9 @@ router = inject(Router);
       _UserZoneMapping.isDeleted=false
       _UserZoneMapping.lastModificationTime="2025-06-16 12:45:23.982"
       _UserZoneMapping.lastModifierUserId=0
-      _UserZoneMapping.roleId=0
-      _UserZoneMapping.userId=this.form.controls['selectedUser'].value.value;
-      _UserZoneMapping.zoneId=this.form.controls['selectedZone'].value.value;
+      _UserZoneMapping.roleId=roles
+      _UserZoneMapping.userId=user
+      _UserZoneMapping.zoneId=zones
 
 
 
@@ -245,10 +254,20 @@ this.service.Create(_UserZoneMapping)
     next: () => {
       console.log('Saved successfully');
       this.toast.success('UserMapping saved successfully');
+        this.form.reset({
+    selectedUser: [],      
+    selectedZone: [],      
+    selectedRole: []        
+  });
       // this.router.navigate(['/admin/projfieldconfig']);
     },
     error: (err) => {
       console.error('Save failed:', err);
+           this.form.reset({
+    selectedUser: [],      
+    selectedZone: [],      
+    selectedRole: []        
+  });
       // Optionally show a toast
       this.toast.error('Failed to save UserMapping');
     }
@@ -281,12 +300,11 @@ this.service.Create(_UserZoneMapping)
 }
         buildHeader() {  
           this.headArr = [
-            { header: 'Name', fieldValue: 'name', position: 1 },
-            { header: 'Description', fieldValue: 'description', position: 2 },
-            { header: 'Status', fieldValue: 'isActive',"type": "boolean", position: 3 },
+            { header: 'UserName', fieldValue: 'name', position: 1 },
+            { header: 'Zone', fieldValue: 'description', position: 2 },
+            { header: 'Role', fieldValue: 'isActive',"type": "boolean", position: 3 },
            
-            // { header: 'Rule Engine', fieldValue: 'ruleEngine',"type": "boolean", position: 4 },
-            // { header: 'Map', fieldValue: 'map',"type": "boolean", position: 5 },
+     
             { header: 'Action', fieldValue: 'button', position: 4 }
           ];
           ;}
@@ -510,20 +528,21 @@ getUserList() {
 
      
       const projectOptions = items.map((item: any) => ({
-        name: item.userName || 'Unknown',
-        value: item.id
+        text: item.userName || 'Unknown',
+        id: item.id
       }));
 
   
     projectOptions.unshift({
-      name: 'All',
-      value: null
+      text: 'All',
+      id: 0
     });
 
     this.UserSelectSettings.options = projectOptions;
+    this.UserOptions=projectOptions
 this.form.controls['selectedUser'].setValue({
-  name: 'All',
-  value: null
+  text: 'All',
+  id: 0
 });
 
 // this.form.controls['selectedStatus'].setValue({
@@ -544,20 +563,21 @@ getZoneList() {
 
      
         const projectOptions = items.map((item: any) => ({
-          name: (item.zoneName || '').trim() || 'Unknown',
-          value: item.id
+          text: (item.zoneName || '').trim() || 'Unknown',
+          id: item.id
         }));
 
   
     projectOptions.unshift({
-      name: 'All',
-      value: null
+      text: 'All',
+      id: 0
     });
 
     this.ZoneSelectSettings.options = projectOptions;
+    this.ZoneOptions=projectOptions
 this.form.controls['selectedZone'].setValue({
-  name: 'All',
-  value: null
+  text: 'All',
+  id: 0
 });
 
 // this.form.controls['selectedStatus'].setValue({
@@ -585,20 +605,21 @@ let body = { permissions: null };
 
      
         const projectOptions = items.map((item: any) => ({
-          name: item.displayName || 'Unknown',
-          value: item.id
+          text: item.displayName || 'Unknown',
+          id: item.id
         }));
 
   
     projectOptions.unshift({
-      name: 'All',
-      value: null
+      text: 'All',
+      id:0
     });
 
     this.RoleSelectSettings.options = projectOptions;
+    this.RoleOptions=projectOptions
 this.form.controls['selectedRole'].setValue({
-  name: 'All',
-  value: null
+  text: 'All',
+  id: 0
 });
 
 // this.form.controls['selectedStatus'].setValue({

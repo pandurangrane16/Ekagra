@@ -18,10 +18,10 @@
                         <select #selectElement class="form-control" style="width: 100%;">
                             <option *ngFor="let option of yourOptions" [value]="option.id">{{ option.text }}</option>
                         </select> -->
-                        <mat-form-field appearance="fill" class="w-100">
+                        <mat-form-field   *ngIf="isUserOptionsLoaded"  appearance="fill" class="w-100">
                             <mat-label>Select User</mat-label>
-                            <mat-select multiple>
-                                <mat-option *ngFor="let option of yourOptions" [value]="option.id">
+                            <mat-select multiple formControlName="selectedUser">
+                                <mat-option *ngFor="let option of UserOptions" [value]="option.id">
                                     {{ option.text }}
                                 </mat-option>
                             </mat-select>
@@ -33,10 +33,10 @@
                         <select multiple #selectElement class="form-control" style="width: 100%;" [attr.size]="5">
                             <option *ngFor="let option of yourOptions" [value]="option.id">{{ option.text }}</option>
                         </select> -->
-                        <mat-form-field appearance="fill" class="w-100">
+                        <mat-form-field   *ngIf="isZoneOptionsLoaded" appearance="fill" class="w-100">
                             <mat-label>Select Zone</mat-label>
-                            <mat-select multiple>
-                                <mat-option *ngFor="let option of yourOptions" [value]="option.id">
+                            <mat-select multiple formControlName="selectedZone">
+                                <mat-option *ngFor="let option of ZoneOptions" [value]="option">
                                     {{ option.text }}
                                 </mat-option>
                             </mat-select>
@@ -48,10 +48,10 @@
                         <select multiple #selectElement class="form-select" style="width: 100%;" [attr.size]="5">
                             <option *ngFor="let option of yourOptions" [value]="option.id">{{ option.text }}</option>
                         </select> -->
-                        <mat-form-field appearance="fill" class="w-100">
+                        <mat-form-field    *ngIf="isRoleOptionsLoaded" appearance="fill" class="w-100">
                             <mat-label>Select Role</mat-label>
-                            <mat-select multiple>
-                                <mat-option *ngFor="let option of yourOptions" [value]="option.id">
+                            <mat-select multiple formControlName="selectedRole">
+                                <mat-option *ngFor="let option of RoleOptions" [value]="option.id">
                                     {{ option.text }}
                                 </mat-option>
                             </mat-select>
@@ -67,5 +67,21 @@
                     </div>
                 </div>
             </form>
+
+            <hr>
+
+            <app-cm-table
+  [headArr]="headArr"
+  [gridArr]="items"
+  [pagination]="true"
+  [totalRecords]="totalRecords"
+  [perPage]="perPage"
+  [totalPages]="totalPages"
+  [collectionSize]="collectionSize"
+  (pager)="onPageChange($event)"
+  (recordPerPage)="onPageRecordsChange($event)"
+  (searchWithId)="onRowClicked($event)"
+  (btnAction)="onButtonClicked($event)">
+</app-cm-table>
       
 </div>
