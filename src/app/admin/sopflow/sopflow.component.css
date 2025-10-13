@@ -47,3 +47,4 @@
     user-select: none;
     color: gray; /* Optional: style to indicate it's readonly */
   }
+  .statusDot{width:7px; height:7px; border-radius: 50%; display: inline-block;}

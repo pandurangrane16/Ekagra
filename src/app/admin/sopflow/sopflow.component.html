@@ -1,12 +1,29 @@
-<div class="p-6">
-  <h1 class="text-3xl font-bold text-blue-700 mb-6">🚦 SOP Workflows Dashboard</h1>
 
-  <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+<div class="card mt-1">
+    <div class="card-header d-flex justify-content-between align-items-center">
+  
+        <mat-card-title><h4 class="mt-1 mb-0">SOP Workflows Dashboard</h4></mat-card-title>
+           
+       <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()" style="margin-top: -10px; margin-bottom: -10px;">
+  <mat-icon>reply</mat-icon>
+</button>
+ 
+    </div>
+  
+  <div class="card-body">
+
+  <div class="d-flex flex-column gap-3">
     <mat-card *ngFor="let sop of sops" class="sop-card mat-elevation-z6">
       <mat-card-header>
         <div mat-card-avatar class="sop-avatar">{{ sop.system[0] }}</div>
         <mat-card-title class="text-xl font-semibold">{{ sop.system }} - {{ sop.title }}</mat-card-title>
         <mat-card-subtitle>{{ sop.frsId }}</mat-card-subtitle>
+
+        <div class="ms-auto"> 
+          
+        <span  [ngClass]="sop.status ? 'bg-success text-white rounded px-2 py-1' : 'bg-secondary text-white rounded px-2 py-1'">
+                {{ sop.status ? 'Enable' : 'Disable' }}</span>
+        </div>
       </mat-card-header>
 
       <mat-card-content>
@@ -14,164 +31,169 @@
           <mat-expansion-panel *ngFor="let act of sop.activities" class="sop-panel">
             <mat-expansion-panel-header>
               <mat-panel-title>
-                <span class="font-medium">{{ act.id }}</span> - {{ act.useCase }}
+                <span class="font-medium">{{ act.id }}</span> - {{ act.useCase }}  
+                <div class="ms-auto"> 
+                  <!-- <span class="bg-success-subtle text-success rounded px-2 py-1 badge d-flex align-items-center"> <span class="statusDot bg-success"></span> Enable </span>  -->
+                  <span  [ngClass]="act.status ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary rounded'" class="d-flex align-items-center  rounded px-2 py-1 gap-2">
+              <span class="statusDot"  [ngClass]="act.status ? 'bg-success' : 'bg-secondary'"></span> {{ act.status ? 'Enable' : 'Disable' }}</span>
+                </div>
               </mat-panel-title>
             </mat-expansion-panel-header>
 
             @if(act.action === 'sms') {
-            <mat-panel-description>
+           
               <div class="row">
                 <div class="col-md-12">
                   <app-sms-action></app-sms-action>
                 </div>
               </div>
-            </mat-panel-description>
+            
             }
             @else if(act.action === 'email') {
-            <mat-panel-description>
+           
               <div class="row">
                 <div class="col-md-12">
                   <app-email-action></app-email-action>
                 </div>
               </div>
-            </mat-panel-description>
+           
             }
             @else if(act.action === 'api') {
-            <mat-panel-description>
+           
               <div class="row">
                 <div class="col-md-12">
                   <app-api-action></app-api-action>
                 </div>
               </div>
-            </mat-panel-description>
+           
             }
             @else if(act.action === "pa") {
-            <mat-panel-description>
+          
               <div class="row">
                 <div class="col-md-12">
                   <app-pa-action></app-pa-action>
                 </div>
               </div>
-            </mat-panel-description>
+           
             } @else if (act.action === "vmsdevicefailure") {
             <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
-              <mat-panel-description>
+             
                 <div class="row">
                   <div class="col-md-12">
                     <app-vms-device-failure [task]="act"></app-vms-device-failure>
                   </div>
                 </div>
-              </mat-panel-description>
+              
             </div>
             }
             @else if (act.action === "vmsemergency") {
             <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
-              <mat-panel-description>
+              
                 <div class="row">
                   <div class="col-md-12">
                     <app-vms-emergency-play [task]="act"></app-vms-emergency-play>
                   </div>
                 </div>
-              </mat-panel-description>
+             
             </div>
             }
             @else if (act.action === "atcshealth") {
             <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
-              <mat-panel-description>
+             
                 <div class="row">
                   <div class="col-md-12">
                     <app-atcs-health [task]="act"></app-atcs-health>
                   </div>
                 </div>
-              </mat-panel-description>
+             
             </div>
             }
             @else if (act.action === "atcscongestion") {
             <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
-              <mat-panel-description>
+             
                 <div class="row">
                   <div class="col-md-12">
                     <app-atcs-congestion [task]="act"></app-atcs-congestion>
                   </div>
                 </div>
-              </mat-panel-description>
+             
             </div>
             }
             @else if (act.action === "atcslampfailure") {
             <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
-              <mat-panel-description>
+             
                 <div class="row">
                   <div class="col-md-12">
                     <app-atcs-lamp-failure [task]="act"></app-atcs-lamp-failure>
                   </div>
                 </div>
-              </mat-panel-description>
+             
             </div>
             }
             @else if (act.action === "atcsdetectorfailure") {
             <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
-              <mat-panel-description>
+              
                 <div class="row">
                   <div class="col-md-12">
                     <app-atcs-detector-failure [task]="act"></app-atcs-detector-failure>
                   </div>
                 </div>
-              </mat-panel-description>
+             
             </div>
             }
             @else if (act.action === "itmscamerafailure") {
             <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
-              <mat-panel-description>
+             
                 <div class="row">
                   <div class="col-md-12">
                     <app-itms-camera-failure [task]="act"></app-itms-camera-failure>
                   </div>
                 </div>
-              </mat-panel-description>
+             
             </div>
             }
             @else if (act.action === "itmslpufailure") {
             <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
-              <mat-panel-description>
+              
                 <div class="row">
                   <div class="col-md-12">
                     <app-itms-lpu-failure [task]="act"></app-itms-lpu-failure>
                   </div>
                 </div>
-              </mat-panel-description>
+             
             </div>
             }
             @else if (act.action === "itmschallancollection") {
             <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
-              <mat-panel-description>
+            
                 <div class="row">
                   <div class="col-md-12">
                     <app-itms-challan-collection [task]="act"></app-itms-challan-collection>
                   </div>
                 </div>
-              </mat-panel-description>
+             
             </div>
             }
             @else if (act.action === "envsensorfailure") {
             <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
-              <mat-panel-description>
+             
                 <div class="row">
                   <div class="col-md-12">
                     <app-env-sensor-failure [task]="act"></app-env-sensor-failure>
                   </div>
                 </div>
-              </mat-panel-description>
+              
             </div>
             }
             @else if (act.action === "envsensorpollution") {
             <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
-              <mat-panel-description>
+            
                 <div class="row">
                   <div class="col-md-12">
                     <app-env-sensor-pollution [task]="act"></app-env-sensor-pollution>
                   </div>
                 </div>
-              </mat-panel-description>
+             
             </div>
             }
           </mat-expansion-panel>

@@ -1,13 +1,11 @@
-<div class="pageWrapper">
-  <mat-card class="cardWithShadow theme-card">
-    <hr />
-    <mat-card-content>
+
+    <mat-card-content class="p-0">
       <form [formGroup]="form">
         @if(this.task.sequence == 0) {
         <div [ngClass]="{ 'readonly-div': !this.task.hasAccess }">
           <div class="row">
-            <label>Verification</label>
-            <br />
+            <label class="mb-1">Verification</label>
+            <hr>
             <div class="col-md-6">
               <button mat-flat-button class="btnSubmit" (click)="ViewOnMap(this.task)">
                 View on Camera
@@ -41,9 +39,9 @@
 
         @if(this.task.sequence == 2) {
         <div [ngClass]="{ 'readonly-div': !this.task.hasAccess }">
-          <div class="row">
-            <h3>Broadcasting</h3>
-          </div>
+         
+            <h4 class="mb-1">Broadcasting</h4>
+         
           <hr />
 
           <!-- Wrap whole tab group to avoid mismatches -->
@@ -78,13 +76,13 @@
               </div>
             </div>
           </ng-container>
-
+<hr>
           <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-12 d-flex gap-2">
               <button mat-flat-button class="btnSubmit" (click)="SubmitAction()">
                 Closed
               </button>
-              &nbsp;&nbsp;&nbsp;
+              
               <button mat-flat-button class="btnCancel" (click)="CancelAction()">
                 Reassign
               </button>
@@ -103,9 +101,9 @@
                     Visual Verification
                   </ng-template>
                   <div class="row">
-                    <br />
+                    
                     <div class="col-md-6">
-                      <button mat-flat-button class="btnSubmit" (click)="ViewOnMap(this.task)">
+                      <button mat-flat-button class="btnSubmit  my-4 mx-2" (click)="ViewOnMap(this.task)">
                         View on Camera
                       </button>
                     </div>
@@ -117,16 +115,22 @@
                     API Verification
                   </ng-template>
                   <div class="row">
-                    <br />
+                    
                     <div class="col-md-12">
+                      <div class="card border-0">
+                      <div class="card-body">
                       <app-api-action></app-api-action>
+                      </div>
+                      </div>
+
                     </div>
                   </div>
                 </mat-tab>
               </mat-tab-group>
+              <hr>
               <div class="row">
                 <div class="col-md-12">
-                  <button mat-flat-button class="btnSubmit" (click)="SubmitAction()">
+                  <button mat-flat-button class="btn-primary" (click)="SubmitAction()">
                     Submit
                   </button>
                   &nbsp;&nbsp;&nbsp;
@@ -141,5 +145,3 @@
         }
       </form>
     </mat-card-content>
-  </mat-card>
-</div>
