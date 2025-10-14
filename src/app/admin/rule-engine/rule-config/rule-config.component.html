@@ -1,381 +1,396 @@
-<!-- <div class="pageWrapper">
-    <mat-card class="cardWithShadow theme-card">
-        <div class="row">
-            <mat-card-header>
-                <div class="col-md-11" style="padding-left: 40px;">
-                    <mat-card-title>
-                        <h2 style="margin-top: 10px;">Rule Engine</h2>
-                    </mat-card-title>
-                </div>
-            </mat-card-header>
-        </div>
-        <hr>
-        <div class="row">
-            <mat-card-content>
-                <div class="card">
-
-                    <mat-stepper [linear]="isLinear" #stepper>
-                        <mat-step [stepControl]="firstFormGroup">
-                            <form [formGroup]="firstFormGroup">
-                                <ng-template matStepLabel>Rule Details</ng-template>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-12 text-center">
-                                        <h2>Rule Details</h2>
-                                    </div>
-                                </div>
-                                
-                                <div class="row" style="padding-top: 30px;">
-                                    <div class="col-md-4">
-                                        <app-cm-input [formGroup]="firstFormGroup" [controlName]="'policyName'"
-                                            [_inputData]="inputFields.policyName">
-                                        </app-cm-input>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <app-cm-select2 [formGroup]="firstFormGroup"
-                                            [controlName]="'selectedCategory'" [settings]="categorySettings">
-                                        </app-cm-select2>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <app-cm-select2 [formGroup]="firstFormGroup"
-                                            [controlName]="'selectedUserGroup'" [settings]="userGroupSettings">
-                                        </app-cm-select2>
-                                    </div>
-                                </div>
-                                <br>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <label class="toggle-label">Active</label>
-                                        <app-cm-toggle [formGroup]="firstFormGroup" [settings]="isActiveToggle"></app-cm-toggle>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <app-cm-input [formGroup]="firstFormGroup" [controlName]="'intervalTime'"
-                                            [_inputData]="inputFields.intervalTime">
-                                        </app-cm-input>
-                                    </div>
-                                </div>
-                                <br>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <button mat-flat-button color="primary" matStepperNext>Next</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </mat-step>
-                        <mat-step [stepControl]="secondFormGroup" label="Rule Design">
-                            <form [formGroup]="secondFormGroup">
-                                <mat-form-field>
-                                    <mat-label>Address</mat-label>
-                                    <input matInput formControlName="secondCtrl"
-                                        placeholder="Ex. 1 Main St, New York, NY" required>
-                                </mat-form-field>
-                                <div>
-                                    <button matButton matStepperPrevious>Back</button>
-                                    <button matButton matStepperNext>Next</button>
-                                </div>
-                            </form>
-                        </mat-step>
-                        <mat-step [stepControl]="thirdFormGroup" label="Rule Schedule">
-                            <form [formGroup]="secondFormGroup">
-                                <mat-form-field>
-                                    <mat-label>Address</mat-label>
-                                    <input matInput formControlName="secondCtrl"
-                                        placeholder="Ex. 1 Main St, New York, NY" required>
-                                </mat-form-field>
-                                <div>
-                                    <button matButton matStepperPrevious>Back</button>
-                                    <button matButton matStepperNext>Next</button>
-                                </div>
-                            </form>
-                        </mat-step>
-                        <mat-step>
-                            <ng-template matStepLabel>Done</ng-template>
-                            <p>You are now done.</p>
-                            <div>
-                                <button mat-flat-button color="secondary" matStepperPrevious>Back</button>
-                                <button mat-flat-button color="primary" (click)="stepper.reset()">Reset</button>
-                            </div>
-                        </mat-step>
-                    </mat-stepper>
-                </div>
-            </mat-card-content>
-        </div>
-        <hr>
-    </mat-card>
-</div> -->
 <div class="card mt-1">
-    <div class="card-header d-flex justify-content-between align-items-center">
-  
-        <mat-card-title><h4 class="mt-1 mb-0">Rule Engine</h4></mat-card-title>
-           
-       <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()" style="margin-top: -10px; margin-bottom: -10px;">
-  <mat-icon>reply</mat-icon>
-</button>
- 
-    </div>
-  
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <mat-card-title><h4 class="mt-1 mb-0">Rule Engine</h4></mat-card-title>
+
+    <button
+      mat-icon-button
+      matTooltip="Back to List"
+      aria-label="Back"
+      (click)="close()"
+      style="margin-top: -10px; margin-bottom: -10px"
+    >
+      <mat-icon>reply</mat-icon>
+    </button>
+  </div>
+
   <div class="card-body">
+    <div class="container">
+      <!-- Stepper Sidebar -->
+      <div class="sidebar">
+        <h2>Step {{ currentStep + 1 }}</h2>
+        <p class="subtitle">
+          Enter your personal information to get closer to companies.
+        </p>
+        <div class="steps">
+          <div *ngFor="let step of steps; let i = index" class="step">
+            <div class="circle" [class.active]="i === currentStep">
+              {{ i + 1 }}
+            </div>
+            <div class="label" [class.active]="i === currentStep">
+              {{ step }}
+            </div>
+          </div>
+        </div>
+      </div>
 
-                <div class="container">
-                    <!-- Stepper Sidebar -->
-                    <div class="sidebar">
-                        <h2>Step {{ currentStep + 1 }}</h2>
-                        <p class="subtitle">Enter your personal information to get closer to companies.</p>
-                        <div class="steps">
-                            <div *ngFor="let step of steps; let i = index" class="step">
-                                <div class="circle" [class.active]="i === currentStep">{{ i + 1 }}</div>
-                                <div class="label" [class.active]="i === currentStep">{{ step }}</div>
-                            </div>
-                        </div>
+      <!-- Step Content -->
+      <div class="content">
+        <div *ngIf="currentStep === 0">
+          <h3>Rule Information</h3>
+
+          <hr />
+          <div [formGroup]="firstFormGroup">
+            <form>
+              <div class="row mt-2">
+                <div class="col-md-6">
+                  <div>
+                    <label class="mb-1">Policy Name*</label>
+                    <app-cm-input
+                      [formGroup]="firstFormGroup"
+                      [controlName]="'policyName'"
+                      [_inputData]="inputFields.policyName"
+                    >
+                    </app-cm-input>
+                    <div
+                      *ngIf="f['policyName']?.errors?.['invalidChars']"
+                      class="text-danger mt-1"
+                    >
+                      Special characters are not allowed.
                     </div>
+                    <div *ngIf="policyNameExists" class="text-danger mt-1">
+                      Policy name is already exists.
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <app-cm-select2
+                    [formGroup]="firstFormGroup"
+                    [controlName]="'selectedCategory'"
+                    [settings]="categorySelectSettings"
+                  >
+                  </app-cm-select2>
+                  <div
+                    *ngIf="
+                      f['selectedCategory'].touched &&
+                      f['selectedCategory'].errors
+                    "
+                    class="text-danger mt-1"
+                  >
+                    {{
+                      getErrorMessage(
+                        "selectedCategory",
+                        "Category",
+                        true,
+                        "Enter a valid
+                                                    Category."
+                      )
+                    }}
+                  </div>
+                </div>
+              </div>
 
-                    <!-- Step Content -->
-                    <div class="content">
-                        <div *ngIf="currentStep === 0">
-                            <h3>Rule Information</h3>
+              <div class="row mt-2">
+                <div class="col-md-6">
+                  <label class="mb-1">Ticket Abbreviation</label>
+                  <div>
+                    <app-cm-input
+                      [formGroup]="firstFormGroup"
+                      [controlName]="'ticketabb'"
+                      [_inputData]="inputFields.ticketabb"
+                    >
+                    </app-cm-input>
+                    <div
+                      *ngIf="f['ticketabb']?.errors?.['invalidChars']"
+                      class="text-danger mt-1"
+                    >
+                      Special characters are not allowed.
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <app-cm-select2
+                    *ngIf="userOptionsLoaded"
+                    [formGroup]="firstFormGroup"
+                    [controlName]="'selectedUserGroup'"
+                    [settings]="userGroupSettings"
+                  >
+                  </app-cm-select2>
+                  <div
+                    *ngIf="
+                      f['selectedUserGroup'].touched &&
+                      f['selectedUserGroup'].errors
+                    "
+                    class="text-danger mt-1"
+                  >
+                    {{
+                      getErrorMessage(
+                        "selectedUserGroup",
+                        "User group",
+                        true,
+                        "Enter a valid
+                                                    User Group."
+                      )
+                    }}
+                  </div>
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-md-6">
+                  <label class="mb-1">TAT (Hours)</label>
+                  <div>
+                    <app-cm-input
+                      [formGroup]="firstFormGroup"
+                      [controlName]="'tat'"
+                      [_inputData]="inputFields.tat"
+                    >
+                    </app-cm-input>
+                    <div
+                      *ngIf="f['tat'].touched && f['tat'].errors"
+                      class="text-danger mt-1"
+                    >
+                      {{
+                        getErrorMessage(
+                          "tat",
+                          "TAT",
+                          true,
+                          "Enter a valid
+                                                    TAT."
+                        )
+                      }}
+                    </div>
+                  </div>
+                </div>
 
-                            <hr>
-                            <div [formGroup]="firstFormGroup">
-                                <form>
-                                    <div class="row mt-2">
-                                        <div class="col-md-6">
-                                            
-                                            <div>
-                                                <label class="mb-1">Policy
-                                                Name*</label>
-                                                <app-cm-input [formGroup]="firstFormGroup" [controlName]="'policyName'"
-                                                    [_inputData]="inputFields.policyName">
-                                                </app-cm-input>
-                                                 <div *ngIf="f['policyName']?.errors?.['invalidChars']" class="text-danger mt-1">
-                                                    Special characters are not allowed.
-                                                    </div>
-                                                <div *ngIf="policyNameExists" class="text-danger mt-1">
-                                                    Policy name is already exists.
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <app-cm-select2 [formGroup]="firstFormGroup"
-                                                [controlName]="'selectedCategory'" [settings]="categorySelectSettings">
-                                            </app-cm-select2>
-                                             <div *ngIf="f['selectedCategory'].touched && f['selectedCategory'].errors"
-                                                    class="text-danger mt-1">
-                                                    {{ getErrorMessage('selectedCategory', 'Category', true, 'Enter a valid
-                                                    Category.') }}
-                                                </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="row mt-2">
+                <div class="col-md-6">
+                  <label class="mb-1">Interval (Minutes)</label>
+                  <div>
+                    <app-cm-input
+                      [formGroup]="firstFormGroup"
+                      [controlName]="'intervalTime'"
+                      [_inputData]="inputFields.intervalTime"
+                    >
+                    </app-cm-input>
 
-                                        <div class="col-md-6">
-                                            <label class="mb-1">Ticket
-                                                Abbreviation</label>
-                                            <div>
-                                                <app-cm-input [formGroup]="firstFormGroup" [controlName]="'ticketabb'"
-                                                    [_inputData]="inputFields.ticketabb">
-                                                </app-cm-input>
-                                                <div *ngIf="f['ticketabb']?.errors?.['invalidChars']" class="text-danger mt-1">
-                                                Special characters are not allowed.
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <app-cm-select2 *ngIf="userOptionsLoaded" [formGroup]="firstFormGroup"
-                                                [controlName]="'selectedUserGroup'" [settings]="userGroupSettings">
-                                            </app-cm-select2>
-                                                <div *ngIf="f['selectedUserGroup'].touched && f['selectedUserGroup'].errors"
-                                                    class="text-danger mt-1">
-                                                    {{ getErrorMessage('selectedUserGroup', 'User group', true, 'Enter a valid
-                                                    User Group.') }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <br>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <label class="mb-1">TAT
-                                                (Hours)</label>
-                                            <div>
-                                                <app-cm-input [formGroup]="firstFormGroup" [controlName]="'tat'"
-                                                    [_inputData]="inputFields.tat">
-                                                </app-cm-input>
-                                                <div *ngIf="f['tat'].touched && f['tat'].errors"
-                                                    class="text-danger mt-1">
-                                                    {{ getErrorMessage('tat', 'TAT', true, 'Enter a valid
-                                                    TAT.') }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                 
-                                        <div class="col-md-6">
-                                            <label class="mb-1">Interval
-                                                (Minutes)</label>
-                                            <div>
-                                                <app-cm-input [formGroup]="firstFormGroup"
-                                                    [controlName]="'intervalTime'"
-                                                    [_inputData]="inputFields.intervalTime">
-                                                </app-cm-input>
-
-                                                 <div *ngIf="f['intervalTime'].touched && f['intervalTime'].errors"
-                                                    class="text-danger mt-1">
-                                                    {{ getErrorMessage('intervalTime', 'Interval Time', true, 'Enter a
+                    <div
+                      *ngIf="
+                        f['intervalTime'].touched && f['intervalTime'].errors
+                      "
+                      class="text-danger mt-1"
+                    >
+                      {{ getErrorMessage('intervalTime', 'Interval Time', true, 'Enter a
                                                     {{ getErrorMessage('intervalTime', 'Interval Time', true, 'Enter a
                                                     valid Duration.') }}
-                                                </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                                            </div>
-                                        </div>
+              <div class="row mt-2">
+                <div class="col-md-3">
+                  <label class="toggle-label">Enabled</label>
+                  <app-cm-toggle
+                    [formGroup]="firstFormGroup"
+                    [settings]="isActiveToggle"
+                  ></app-cm-toggle>
+                </div>
+                <div class="col-md-3">
+                  <label class="toggle-label">IsInternal</label>
+                  <app-cm-toggle
+                    [formGroup]="firstFormGroup"
+                    [settings]="isinternal"
+                  ></app-cm-toggle>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
 
-                                    </div>
+        <div *ngIf="currentStep === 1">
+          <h3>Rule Design</h3>
+          <hr />
+          <div [formGroup]="secondFormGroup">
+            <form>
+              <div class="row">
+                <div
+                  class="col d-flex justify-content-start align-items-center gap-2"
+                >
+                  <app-cm-select2
+                    *ngIf="isProjectOptionsLoaded"
+                    [formGroup]="secondFormGroup"
+                    [controlName]="'selectedProject'"
+                    [settings]="projectSettings"
+                  ></app-cm-select2>
 
-                                    <div class="row mt-2">
-                                        <div class="col-md-3">
-                                            <label class="toggle-label">Enabled</label>
-                                            <app-cm-toggle [formGroup]="firstFormGroup" [settings]="isActiveToggle"
-                                               ></app-cm-toggle>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label class="toggle-label">IsInternal</label>
-                                            <app-cm-toggle [formGroup]="firstFormGroup" [settings]="isinternal"
-                                               ></app-cm-toggle>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
+                  <button
+                    color="primary"
+                    class="mt-4 px-3"
+                    return="submit"
+                    (click)="onAddGroup()"
+                  >
+                    + Add
+                  </button>
+                </div>
+              </div>
+
+              <div *ngIf="groupsFormArray.length > 0">
+                <hr />
+                <div
+                  class="row"
+                  *ngFor="let arr of groupsFormArray.controls; let i = index"
+                  [formGroup]="arr"
+                >
+                  <div class="row">
+                    <div class="col">
+                      <h4>{{ arr.get("projName")?.value || "Project2" }}</h4>
+                    </div>
+
+                    <div class="row rmBtn" *ngIf="i !== 0">
+                      <div class="col">
+                        <app-cm-select2
+                          [formGroup]="arr"
+                          [controlName]="'condition2'"
+                          [settings]="conditionSelectSettings"
+                        >
+                        </app-cm-select2>
+                      </div>
+                    </div>
+                    <div class="col text-right">
+                      <span
+                        class="material-icons closeRow"
+                        (click)="removeGroup(i)"
+                        color="warn"
+                      >
+                        close
+                      </span>
+                    </div>
+                  </div>
+                  <div *ngIf="getExpressionGroup(i).value.length > 0">
+                    <div class="bg-light p-3 rounded-4 border-1 mb-3">
+                      <div class="row">
+                        <div class="col d-flex gap-2 justify-content-end">
+                          <app-cm-button
+                            color="primary"
+                            type="stroked"
+                            class="rmBtn"
+                            matTooltip="Add"
+                            return="remove"
+                            (click)="addFormArrayGroup(i)"
+                            ><mat-icon fontset="material-icons-outlined">
+                              add
+                            </mat-icon>
+                          </app-cm-button>
+                          <app-cm-button
+                            mat-icon-button
+                            color="warn"
+                            type="stroked"
+                            matTooltip="Remove"
+                            return="remove"
+                            ><mat-icon fontset="material-icons-outlined"
+                              >delete</mat-icon
+                            ></app-cm-button
+                          >
+                        </div>
+                      </div>
+                      <div class="row mb-2">
+                        <div class="col">
+                          <app-cm-select2
+                            [formGroup]="arr"
+                            [controlName]="'condition'"
+                            [settings]="conditionSelectSettings"
+                          >
+                          </app-cm-select2>
+                        </div>
+                      </div>
+                      <div
+                        class="row mt-2"
+                        *ngFor="
+                          let group of getExpressionGroup(i).controls;
+                          let j = index
+                        "
+                        [formGroup]="group"
+                      >
+                        <div class="col-6" *ngIf="apiOption">
+                          <app-cm-select2
+                            [formGroup]="group"
+                            *ngIf="apiOption"
+                            [controlName]="'apiName'"
+                            [settings]="group.get('apiSettings')?.value"
+                            (returnObject)="onApiChange($event, i, j)"
+                          >
+                          </app-cm-select2>
                         </div>
 
-                        <div *ngIf="currentStep === 1">
-                            <h3>Rule Design</h3>
-                            <hr>
-                            <div [formGroup]="secondFormGroup">
-                                <form>
-                                    <div class="row">
-                                        <div class="col d-flex justify-content-start align-items-center gap-2">
-                                            <app-cm-select2 *ngIf="isProjectOptionsLoaded" [formGroup]="secondFormGroup"
-                                                [controlName]="'selectedProject'"
-                                                [settings]="projectSettings"></app-cm-select2>
-                                                                             
-                                            <button color="primary"  class="mt-4 px-3"  return="submit"
-                                                (click)="onAddGroup()"> + Add</button>
-                                        </div>
-                                    </div>
-                                   
-                                    <div *ngIf="groupsFormArray.length > 0">
-                                         <hr>
-                                        <div class="row" *ngFor="let arr of groupsFormArray.controls; let i = index"
-                                            [formGroup]="arr">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h4>{{ arr.get('projName')?.value || 'Project2' }}</h4>
-
-                                                </div>
-
-                                                <div class="row rmBtn" *ngIf="i !== 0">
-                                                    <div class="col">
-                                                            <app-cm-select2 [formGroup]="arr"
-                                                                [controlName]="'condition2'"
-                                                            [settings]="conditionSelectSettings">
-                                                        </app-cm-select2>
-                                                    </div>
-                                                </div>
-                                                <div class="col text-right">
-
-                                                    <span class="material-icons closeRow" (click)="removeGroup(i)" color="warn">
-                                                        close
-                                                    </span>
-
-                                                </div>
-                                            </div>
-                                            <div *ngIf="getExpressionGroup(i).value.length > 0">
-                                                <div class="bg-light p-3 rounded-4 border-1 mb-3">
-                                                    <div class="row">
-                                                        <div class="col d-flex gap-2 justify-content-end">
-                                                            <app-cm-button color="primary" type="stroked" class="" matTooltip="Add"
-                                                                return="remove"
-                                                                (click)="addFormArrayGroup(i)"><mat-icon fontset="material-icons-outlined"> add </mat-icon> </app-cm-button>
-                                                            <app-cm-button mat-icon-button color="warn" type="stroked"  matTooltip="Remove"
-                                                                return="remove"><mat-icon fontset="material-icons-outlined">delete</mat-icon></app-cm-button>
-                                                                
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mb-2">
-                                                        <div class="col">
-                                                            <app-cm-select2 [formGroup]="arr"
-                                                                [controlName]="'condition'"
-                                                                [settings]="conditionSelectSettings">
-                                                            </app-cm-select2>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row mt-2"
-                                                        *ngFor="let group of getExpressionGroup(i).controls; let j = index"
-                                                        [formGroup]="group">
-                                                        <div class="col-6" *ngIf="apiOption">
-                                                            <app-cm-select2 [formGroup]="group" *ngIf="apiOption"
-                                                                [controlName]="'apiName'"
-                                                                [settings]="group.get('apiSettings')?.value"
-                                                                (returnObject)="onApiChange($event, i, j)">
-                                                            </app-cm-select2>
-                                                        </div>
-
-                                                        <div class="col-6" *ngIf="group.get('fieldOption')?.value">
-
-                                                            <app-cm-select2 [formGroup]="group"
-                                                                *ngIf="group.get('fieldOption')?.value"
-                                                                [controlName]="'fieldName'"
-                                                                [settings]="group.get('fieldSettings')?.value"
-                                                                (returnObject)="onFieldChange($event, i, j)">
-                                                            </app-cm-select2>
-                                                        </div>
-                                                        <div class="col-6" *ngIf="group.get('expOption')?.value">
-                                                            <app-cm-select2  [formGroup]="group"  *ngIf="group.get('expOption')?.value"
-                                                                [controlName]="'expression'"
-                                                                [settings]="group.get('expressionSettings')?.value"></app-cm-select2>
-                                                        </div>
-                                                        <div class="col-5">
-                                                            <label class="mb-1">Field
-                                                                Value*</label>
-                                                            <div>
-                                                                <app-cm-input [formGroup]="group"
-                                                                    [controlName]="'fieldValue'"
-                                                                    [_inputData]="inputFields.fieldValue">
-                                                                </app-cm-input>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col d-flex justify-content-end flex-shrink-1" style="align-items:center">
-
-                                                            <span class="material-icons mt-3 closeRow"    *ngIf="j !== 0"(click)="removeArray(i,j)">
-                                                                close
-                                                            </span>
-
-
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
+                        <div
+                          class="col-6"
+                          *ngIf="group.get('fieldOption')?.value"
+                        >
+                          <app-cm-select2
+                            [formGroup]="group"
+                            *ngIf="group.get('fieldOption')?.value"
+                            [controlName]="'fieldName'"
+                            [settings]="group.get('fieldSettings')?.value"
+                            (returnObject)="onFieldChange($event, i, j)"
+                          >
+                          </app-cm-select2>
                         </div>
+                        <div
+                          class="col-6"
+                          *ngIf="group.get('expOption')?.value"
+                        >
+                          <app-cm-select2
+                            [formGroup]="group"
+                            *ngIf="group.get('expOption')?.value"
+                            [controlName]="'expression'"
+                            [settings]="group.get('expressionSettings')?.value"
+                          ></app-cm-select2>
+                        </div>
+                        <div class="col-5">
+                          <label class="mb-1">Field Value*</label>
+                          <div>
+                            <app-cm-input
+                              [formGroup]="group"
+                              [controlName]="'fieldValue'"
+                              [_inputData]="inputFields.fieldValue"
+                            >
+                            </app-cm-input>
+                          </div>
+                        </div>
+                        <div
+                          class="col d-flex justify-content-end flex-shrink-1 text-center"
+                          
+                        >
+                          <span
+                            class="material-icons mt-3 closeRow"
+                            *ngIf="j !== 0"
+                            (click)="removeArray(i, j)"
+                          >
+                            close
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
 
-                        <div *ngIf="currentStep === 2">
-                            <h3>Rule Schedule</h3>
-                            <p class="info-text">Add your work experience here...</p>
-                            <hr>
-
+        <div *ngIf="currentStep === 2">
+          <h3>Rule Schedule</h3>
+          <p class="info-text">Add your work experience here...</p>
+          <hr />
 
                          <app-cm-cron-expression (cronChange)="getCronFromData($event)"></app-cm-cron-expression>
 
+<<<<<<< HEAD
                             <!--<p>Selected Cron: {{ parentCron }}</p>-->
+=======
+          <p>Selected Cron: {{ parentCron }}</p>
+>>>>>>> cbacbf4d01f08d5841df0147d9b43e51b1bae928
 
-
-
-
-                            <!-- 
+          <!-- 
                             <div [formGroup]="thirdFormGroup">
 
 
@@ -420,29 +435,24 @@
                                 </div>
 
                             </div> -->
-
-
-
-
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col d-flex justify-content-end gap-2">
-                                 @if(currentStep != 0 ){
-                                <button (click)="goBack()" class="d-flex align-items-center"> <mat-icon> arrow_left </mat-icon> Previous </button>
-                                 }
-                                @if(currentStep == 2){
-                                <button (click)="Submit()">Submit</button>
-                                }
-                                @else {
-                                <button (click)="goNext()" class="d-flex align-items-center">Next <mat-icon> arrow_right  </mat-icon> </button>
-                                }
-                            </div>
-
-                        </div>
-
-
-                    </div>
-                </div> 
         </div>
+        <hr />
+        <div class="row">
+          <div class="col d-flex justify-content-end gap-2">
+            @if(currentStep != 0 ){
+            <button (click)="goBack()" class="d-flex align-items-center">
+              <mat-icon> arrow_left </mat-icon> Previous
+            </button>
+            } @if(currentStep == 2){
+            <button (click)="Submit()">Submit</button>
+            } @else {
+            <button (click)="goNext()" class="d-flex align-items-center">
+              Next <mat-icon> arrow_right </mat-icon>
+            </button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

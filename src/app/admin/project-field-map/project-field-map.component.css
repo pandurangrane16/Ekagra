@@ -15,8 +15,16 @@
 }
 
 ::ng-deep .copy-button{
-    margin-left: 3px;
-    border: 1px solid red;
+   margin-left: 3px;
+    border: 1px solid #024ebd;
+    padding: 1px 2px;
+    border-radius: 4px;
+}
+::ng-deep .copy-button:hover{
+   margin-left: 3px;
+    border: 1px solid #f58c02;
+    padding: 1px 2px;
+    border-radius: 4px;
 }
 /* 
 apiResponseSetting 
