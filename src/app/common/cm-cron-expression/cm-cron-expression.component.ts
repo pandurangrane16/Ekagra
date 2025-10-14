@@ -6,14 +6,14 @@ import { MaterialModule } from '../../Material.module';
 
 @Component({
   selector: 'app-cm-cron-expression',
-  imports: [CommonModule,MaterialModule,ReactiveFormsModule],
+  imports: [CommonModule, MaterialModule, ReactiveFormsModule],
   templateUrl: './cm-cron-expression.component.html',
   styleUrl: './cm-cron-expression.component.css',
-  standalone:true
+  standalone: true
 })
 export class CmCronExpressionComponent {
-   @Output() cronChange = new EventEmitter<any>();
-cronForm: FormGroup;
+  @Output() cronChange = new EventEmitter<any>();
+  cronForm: FormGroup;
   cronPreview: string = '';
   humanReadable: string = '';
 
@@ -23,6 +23,8 @@ cronForm: FormGroup;
   months = ['*', ...Array.from({ length: 12 }, (_, i) => (i + 1).toString())];
   daysOfWeek = ['*', '0', '1', '2', '3', '4', '5', '6']; // 0 = Sunday
 
+  minuteSteps: string[] = [...Array.from({ length: 60 }, (_, i) => '*/' + i.toString())];
+  hourSteps: string[] = [...Array.from({ length: 24 }, (_, i) => '*/' + i.toString())];
   dayOfWeekNames: Record<string, string> = {
     '0': 'Sunday',
     '1': 'Monday',
@@ -60,6 +62,6 @@ cronForm: FormGroup;
   }
 
   returnForm() {
-      this.cronChange.emit(this.cronForm.value);
+    this.cronChange.emit(this.cronForm.value);
   }
 }
