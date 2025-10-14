@@ -326,11 +326,7 @@
                             </div> -->
 
 
-                            <app-cm-cron 
-                             *ngIf="parent_true" 
-                              [initialCron]="parentCron" 
-                              (cronChange)="onCronUpdate($event)">
-                             </app-cm-cron>
+                           <app-cm-cron-expression (cronChange)="getCronFromData($event)"></app-cm-cron-expression>
 
                             
 

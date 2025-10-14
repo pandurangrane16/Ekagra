@@ -22,11 +22,12 @@ import { CmCronComponent } from '../../../common/cm-cron/cm-cron.component';
 
 import { CmCheckboxGroupComponent } from '../../../common/cm-checkbox-group/cm-checkbox-group.component';
 import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-select-check.component";
+import { CmCronExpressionComponent } from "../../../common/cm-cron-expression/cm-cron-expression.component";
 
 @Component({
  
-  imports: [MaterialModule,MatIconModule,MatButtonModule,MatTooltipModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,
-    CmToggleComponent,CmCronComponent, CmButtonComponent],
+  imports: [MaterialModule, MatIconModule, MatButtonModule, MatTooltipModule, CommonModule, ReactiveFormsModule, CmInputComponent, CmSelect2Component,
+    CmToggleComponent, CmButtonComponent, CmCronExpressionComponent],
 
     selector: 'app-rule-engine-edit',
 
@@ -2104,5 +2105,9 @@ policyNameExists = false;
   }
 
 
+  getCronFromData(evt: any) {
+    console.log(evt);
+  }
 
 }
+
