@@ -20,8 +20,8 @@
                         </select> -->
                         <mat-form-field   *ngIf="isUserOptionsLoaded"  appearance="fill" class="w-100">
                             <mat-label>Select User</mat-label>
-                            <mat-select multiple formControlName="selectedUser">
-                                <mat-option *ngFor="let option of UserOptions" [value]="option.id">
+                            <mat-select multiple formControlName="selectedUser" [disabled]="isEdit">
+                                <mat-option *ngFor="let option of UserOptions" [value]="option">
                                     {{ option.text }}
                                 </mat-option>
                             </mat-select>
@@ -51,7 +51,7 @@
                         <mat-form-field    *ngIf="isRoleOptionsLoaded" appearance="fill" class="w-100">
                             <mat-label>Select Role</mat-label>
                             <mat-select multiple formControlName="selectedRole">
-                                <mat-option *ngFor="let option of RoleOptions" [value]="option.id">
+                                <mat-option *ngFor="let option of RoleOptions" [value]="option">
                                     {{ option.text }}
                                 </mat-option>
                             </mat-select>

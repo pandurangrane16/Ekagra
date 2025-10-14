@@ -4,7 +4,7 @@ import { CommonModule,isPlatformBrowser } from '@angular/common';
 
 import { CmSelectComponent } from '../../common/cm-select/cm-select.component';
 import { CmSelect2Component } from '../../common/cm-select2/cm-select2.component';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { CmInputComponent } from '../../common/cm-input/cm-input.component';
 import { MatDialog } from '@angular/material/dialog';
 import { InputRequest } from '../../models/request/inputreq.model';
@@ -22,6 +22,7 @@ import { CmTableComponent } from '../../common/cm-table/cm-table.component';
 import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 import _ from 'lodash';
 import { MaterialModule } from "../../Material.module";
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 
 // jQuery declared globally
 declare var $: any;
@@ -66,7 +67,7 @@ router = inject(Router);
       items:any;
       _request: any = new InputRequest();
       totalPages: number = 1;
-      pager: number = 1;
+      pager: number = 0;
         MaxResultCount=10;
   SkipCount=0;
   perPage=10;
@@ -80,6 +81,9 @@ router = inject(Router);
       selectedProject: any;
       selectedStatus: any;
       form!: FormGroup;
+      isEdit=false;
+      selectedRecordId:any;
+      userMappings: UserZoneMapping[] = [];
      
       collectionSize = 2;
       list!:any;
@@ -168,18 +172,28 @@ router = inject(Router);
         @Inject(PLATFORM_ID) private platformId: Object
         ) {}
         
+
+     minArrayLength(min: number) {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    if (Array.isArray(value) && value.length >= min) {
+      return null;
+    }
+    return { minArrayLength: { requiredLength: min, actualLength: value.length } };
+  };
+}
         
       ngOnInit(): void {
-          this.form = this.fb.group({
-            selectedUser: [[]],
-            selectedZone: [[]],
-            selectedRole: [[]]
-          });
+       this.form = this.fb.group({
+  selectedUser: [null, Validators.required],
+  selectedZone: [[], this.minArrayLength(1)],
+  selectedRole: [[], this.minArrayLength(1)]
+});
           this.buildHeader();
-          this.getProjConfigList();
+         // this.getProjConfigList();
           this.getUserList();
           this.getZoneList();
-          // this.getRoleList();
+          this.getRoleList();
 
 
             this.form.get('searchText')?.valueChanges
@@ -219,16 +233,28 @@ router = inject(Router);
         }
   submit() {
 
+
+
+
+
+        if (!this.form.invalid) {
+            this.form.markAllAsTouched();
+    
+
     const zones = this.form.value.selectedZone.map((z: any) => z.id).join(', ');
     const roles = this.form.value.selectedRole.map((z: any) => z.id).join(', ');
     const user = this.form.value.selectedUser.map((z: any) => z.id).join(', ');
 
-    this.toast.success(zones || 'No zones selected', 'Zones');
+    // this.toast.success(zones || 'No zones selected', 'Zones');
+    //  this.toast.success(roles || 'No zones selected', 'Zones');
+    //   this.toast.success(user || 'No zones selected', 'Zones');
 
- 
-    
-
-    if (!this.form.invalid) {
+ if (this.form.value.selectedUser.length > 1) {
+  this.toast.error('Please select only one user at a time', 'Multiple Users Selected');
+  return; // stop execution if multiple users selected
+}
+else{
+     if (!this.form.invalid) {
       this.form.markAllAsTouched();
 
       let _UserZoneMapping = new UserZoneMapping();
@@ -244,16 +270,89 @@ router = inject(Router);
       _UserZoneMapping.userId=user
       _UserZoneMapping.zoneId=zones
 
+        if (this.isEdit && this.selectedRecordId) {
+    _UserZoneMapping.id = this.selectedRecordId;
+  }
+
 
 
    console.log("hi", _UserZoneMapping);
 
-this.service.Create(_UserZoneMapping)
+  const selectedUserId = Number(this.form.value.selectedUser[0].id);
+const existingMapping = this.userMappings?.find((m: any) => m.userId === selectedUserId);
+
+
+if(existingMapping){
+   _UserZoneMapping.id = existingMapping.id;
+  {this.service.Update(_UserZoneMapping)
+  .pipe(withLoader(this.loaderService))
+  .subscribe({
+    next: () => {
+      console.log('Updated successfully');
+      this.toast.success('UserMapping Updated successfully');
+        this.isEdit = false;
+      this.getFilteredList();
+        this.form.reset({
+    selectedUser: [],      
+    selectedZone: [],      
+    selectedRole: []        
+  });
+      // this.router.navigate(['/admin/projfieldconfig']);
+    },
+    error: (err) => {
+      console.error('Save failed:', err);
+           this.form.reset({
+    selectedUser: [],      
+    selectedZone: [],      
+    selectedRole: []        
+  });
+      // Optionally show a toast
+      this.toast.error('Failed to save UserMapping');
+        this.isEdit = false;
+    }
+  });
+}
+
+}
+
+else{  if(this.isEdit)
+  {this.service.Update(_UserZoneMapping)
+  .pipe(withLoader(this.loaderService))
+  .subscribe({
+    next: () => {
+      console.log('Updated successfully');
+      this.toast.success('UserMapping Updated successfully');
+        this.isEdit = false;
+      this.getFilteredList();
+        this.form.reset({
+    selectedUser: [],      
+    selectedZone: [],      
+    selectedRole: []        
+  });
+      // this.router.navigate(['/admin/projfieldconfig']);
+    },
+    error: (err) => {
+      console.error('Save failed:', err);
+           this.form.reset({
+    selectedUser: [],      
+    selectedZone: [],      
+    selectedRole: []        
+  });
+      // Optionally show a toast
+      this.toast.error('Failed to save UserMapping');
+        this.isEdit = false;
+    }
+  });
+}
+
+
+   else{this.service.Create(_UserZoneMapping)
   .pipe(withLoader(this.loaderService))
   .subscribe({
     next: () => {
       console.log('Saved successfully');
       this.toast.success('UserMapping saved successfully');
+      this.getFilteredList();
         this.form.reset({
     selectedUser: [],      
     selectedZone: [],      
@@ -272,6 +371,10 @@ this.service.Create(_UserZoneMapping)
       this.toast.error('Failed to save UserMapping');
     }
   });
+}
+}
+
+
 
 
 
@@ -285,10 +388,36 @@ this.service.Create(_UserZoneMapping)
     }
     else {
       this.form.markAllAsTouched();
-      // this.toast.error('Form is not valid');
+       this.toast.error('Form is not valid');
       return;
 
     }
+}
+    
+
+
+
+
+
+
+
+
+
+
+    }
+    else {
+      this.form.markAllAsTouched();
+       this.toast.error('Form is not valid');
+      return;
+
+    }
+
+
+    
+
+
+
+ 
 
 
   }
@@ -300,9 +429,9 @@ this.service.Create(_UserZoneMapping)
 }
         buildHeader() {  
           this.headArr = [
-            { header: 'UserName', fieldValue: 'name', position: 1 },
-            { header: 'Zone', fieldValue: 'description', position: 2 },
-            { header: 'Role', fieldValue: 'isActive',"type": "boolean", position: 3 },
+            { header: 'UserName', fieldValue: 'userName', position: 1 },
+            { header: 'Zone', fieldValue: 'zoneNames', position: 2 },
+            { header: 'Role', fieldValue: 'roleNames', position: 3 },
            
      
             { header: 'Action', fieldValue: 'button', position: 4 }
@@ -410,13 +539,57 @@ deleteRow(rowData: any): void {
   });
 }
 editRow(rowData: any) {
-  this.router.navigate(['/admin/projform'], {
-    state: {
-      mode: 'edit',
-      record: rowData
-    }
-  });
+  if (!rowData?.id) {
+    this.toast.error('Invalid record', 'Error');
+    return;
+  }
+
+  this.selectedRecordId=rowData.id;
+
+    this.isEdit = true;
+
+  // Call API using your GetById service
+  this.service.GetById(rowData.id)
+    .pipe(withLoader(this.loaderService))
+    .subscribe({
+      next: (response: any) => {
+        const result = response?.result;
+        if (!result) {
+          this.toast.error('No data found', 'Error');
+          return;
+        }
+
+        // Extract IDs and convert comma-separated values to arrays
+        const zoneIds = result.zoneId ? result.zoneId.split(',').map((id: string) => id.trim()) : [];
+        const roleIds = result.roleId ? result.roleId.split(',').map((id: string) => id.trim()) : [];
+        const userId =  String(result.userId);
+
+        // Find matching option objects from your dropdown lists
+        const selectedZones = this.ZoneOptions?.filter((z: any) => zoneIds.includes(String(z.id))) || [];
+        const selectedRoles = this.RoleOptions?.filter((r: any) => roleIds.includes(String(r.id))) || [];
+        const selectedUser = this.UserOptions?.filter((r: any) => userId.includes(String(r.id))) || [];
+
+        // Patch values into the form
+
+        
+        this.form.patchValue({
+          selectedUser:  selectedUser || null,
+          selectedZone: selectedZones,
+          selectedRole: selectedRoles
+        });
+
+        //   this.form.controls['selectedUser'].disable();
+
+      this.toast.success('Record data loaded successfully. You can now edit the record.', 'Edit Mode Activated');
+
+      },
+      error: (err) => {
+        console.error('Error fetching record:', err);
+        this.toast.error('Failed to load record', 'Error');
+      }
+    });
 }
+
         
         getProjConfigList() {
       this._request.currentPage = this.pager;
@@ -470,55 +643,126 @@ editRow(rowData: any) {
         }
       })
     }    
-      getFilteredList() {
-    const selectedProjectId = this.form.controls['selectedProject'].value.value;
-     const selectedStatus = this.form.controls['selectedStatus'].value.value;
-     const search = this.form.controls['searchText'].value
-        this.MaxResultCount=this.perPage;
-      this.SkipCount=this.MaxResultCount*this.pager;
-      this.recordPerPage=this.perPage;
+  //     getFilteredList() {
+  //   // const selectedProjectId = this.form.controls['selectedProject'].value.value;
+  //   //  const selectedStatus = this.form.controls['selectedStatus'].value.value;
+  //   //  const search = this.form.controls['searchText'].value
+  //       this.MaxResultCount=this.perPage;
+  //     this.SkipCount=this.MaxResultCount*this.pager;
+  //     this.recordPerPage=this.perPage;
  
-     this.service.GetFilteredList(selectedProjectId,search,selectedStatus,this.MaxResultCount,this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
-    //  const items = response?.result || [];
+  //    this.service.GetFilteredList(this.MaxResultCount,this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+  //   //  const items = response?.result || [];
          
-    //      this.items=items;
-         const items = response.result?.items;
-         this.items=items;
-           const totalCount=response.result?.totalCount;
+  //   //      this.items=items;
+  //        const items = response.result?.items;
+  //        this.items=items;
+  //          const totalCount=response.result?.totalCount;
 
 
-        if (Array.isArray(items)) {
+  //       if (Array.isArray(items)) {
          
-           items.forEach((element: any) => {
+  //          items.forEach((element: any) => {
            
 
-            //let _data = JSON.parse(element);
-             element.name = element.name;
-            element.description = element.description;
-            element.isActive = !!element.isActive; 
-            element.ruleEngine = !!element.ruleEngine;
-            element.map =!! element.map;
+  //           //let _data = JSON.parse(element);
+  //            element.name = element.userId;
+  //           element.description = element.description;
+  //           element.isActive = !!element.isActive; 
+  //           element.ruleEngine = !!element.ruleEngine;
+  //           element.map =!! element.map;
             
-              element.button = [
-    { label: 'Edit', icon: 'edit', type: 'edit' },
-    { label: 'Delete', icon: 'delete', type: 'delete' }
-  ];
+  //             element.button = [
+  //   { label: 'Edit', icon: 'edit', type: 'edit' },
+  //   { label: 'Delete', icon: 'delete', type: 'delete' }
+  // ];
 
 
 
 
-                  });
-              var _length = totalCount / Number(this.recordPerPage);
-          if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-            this.totalRecords = Number(this.recordPerPage) * (_length);
-          else if (Math.floor(_length) == 0)
-            this.totalRecords = 10;
-          else
-            this.totalRecords = totalCount;
-          this.totalPages = this.totalRecords / this.pager;
-        }
-      })
-    }  
+  //                 });
+  //             var _length = totalCount / Number(this.recordPerPage);
+  //         if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+  //           this.totalRecords = Number(this.recordPerPage) * (_length);
+  //         else if (Math.floor(_length) == 0)
+  //           this.totalRecords = 10;
+  //         else
+  //           this.totalRecords = totalCount;
+  //         this.totalPages = this.totalRecords / this.pager;
+  //       }
+  //     })
+  //   }  
+
+
+    getFilteredList() {
+  this.MaxResultCount = this.perPage;
+  this.SkipCount = this.MaxResultCount * this.pager;
+  this.recordPerPage = this.perPage;
+
+  this.service.GetFilteredList(this.MaxResultCount, this.SkipCount)
+    .pipe(withLoader(this.loaderService))
+    .subscribe((response: any) => {
+      const items = response.result?.items || [];
+     
+this.items = items;
+
+
+this.userMappings = items;
+console.log("userMappings",this.userMappings)
+      const totalCount = response.result?.totalCount || 0;
+
+      if (Array.isArray(items)) {
+        items.forEach((element: any) => {
+          // Convert comma-separated string IDs into arrays
+          const zoneIds = element.zoneId ? element.zoneId.split(',').map((id: string) => id.trim()) : [];
+          const roleIds = element.roleId ? element.roleId.split(',').map((id: string) => id.trim()) : [];
+
+          // Map Zone Names
+       const zoneNames = zoneIds
+  .map((id: string) => this.ZoneOptions.find((z: any) => String(z.id) === id)?.text)
+  .filter(Boolean)
+  .join(', ');
+
+          // Map Role Names
+          const roleNames = roleIds
+            .map((id: string) => this.RoleOptions.find((r: any) => String(r.id) === id)?.text)
+            .filter(Boolean)
+            .join(', ');
+
+          // Map User Name (if you have a user list)
+          const userName = this.UserOptions?.find((u: any) => u.id === element.userId)?.text || element.userId;
+
+          // Assign readable fields
+          element.zoneNames = zoneNames || 'N/A';
+          element.roleNames = roleNames || 'N/A';
+          element.userName = userName || 'N/A';
+
+      
+
+          // Add buttons
+          element.button = [
+            { label: 'Edit', icon: 'edit', type: 'edit' },
+            // { label: 'Delete', icon: 'delete', type: 'delete' }
+          ];
+        });
+
+        // Pagination handling
+        const _length = totalCount / Number(this.recordPerPage);
+        if (_length > Math.floor(_length) && Math.floor(_length) !== 0)
+          this.totalRecords = Number(this.recordPerPage) * (_length);
+        else if (Math.floor(_length) === 0)
+          this.totalRecords = 10;
+        else
+          this.totalRecords = totalCount;
+
+        this.totalPages = this.totalRecords / this.pager;
+      }
+
+      // Assign to component variable
+      this.items = items;
+    });
+}
+
        
 getUserList() {
 
@@ -540,10 +784,10 @@ getUserList() {
 
     this.UserSelectSettings.options = projectOptions;
     this.UserOptions=projectOptions
-this.form.controls['selectedUser'].setValue({
-  text: 'All',
-  id: 0
-});
+// this.form.controls['selectedUser'].setValue({
+//   text: 'All',
+//   id: 0
+// });
 
 // this.form.controls['selectedStatus'].setValue({
 //   name: 'All',
@@ -591,23 +835,26 @@ this.form.controls['selectedZone'].setValue({
 }
 
 close(){
-
+    this.form.reset({
+    selectedUser: [],      
+    selectedZone: [],      
+    selectedRole: []        
+  });
 }
 
 getRoleList() {
 
 let body = { permissions: null };
   
-  this.service.GetRoleList(body).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+  this.service.GetRoleList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
    
       
-        const items = response?.result || [];
+     const items = response?.result?.items || [];
 
-     
-        const projectOptions = items.map((item: any) => ({
-          text: item.displayName || 'Unknown',
-          id: item.id
-        }));
+const projectOptions = items.map((item: any) => ({
+  text: item.displayName || 'Unknown',
+  id: item.id
+}));
 
   
     projectOptions.unshift({
@@ -627,6 +874,7 @@ this.form.controls['selectedRole'].setValue({
 //   value: null
 // });
     this.isRoleOptionsLoaded = true;
+    this.getFilteredList();
   }, error => {
     console.error('Error fetching Role list', error);
   });
