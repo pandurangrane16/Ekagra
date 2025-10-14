@@ -30,9 +30,9 @@ getKeysDataForConfig(key: string): Observable<any> {
     return this._httpService._getMethod('api/services/app/Zone/GetZoneListByUserId');
   }
 
-      GetRoleList(data:any) {
+      GetRoleList() {
          
-    return this._httpService._postMethod(data,'api/services/app/Role/GetRoles');
+    return this._httpService._getMethod('api/services/app/Role/GetAllRoles');
   }
 
 
@@ -47,12 +47,23 @@ ProjectCreate(_data: any) {
   Create(_data: any) {
     return this._httpService._postMethod(_data, 'api/services/app/UserZoneMapping/Create');
   }
+
+
+  
+  Update(_data: any) {
+    return this._httpService._putMethod(_data, 'api/services/app/UserZoneMapping/Update');
+  }
 GetAll() {
-    return this._httpService._getMethod('api/services/app/Project/GetAll');
+    return this._httpService._getMethod('api/services/app/UserZoneMapping/GetAll');
   }
 
 GetProjectList() {
     return this._httpService._getMethod('api/services/app/Project/GetProjectList');
+  }
+
+
+  GetById(id:any) {
+    return this._httpService._getMethod('api/services/app/UserZoneMapping/Get?Id='+id);
   }
 UploadFile(formData: FormData) {
   return this._httpService._postMethod( formData,'api/services/app/FileUpload/UploadIcon');
@@ -62,6 +73,9 @@ UploadFile(formData: FormData) {
     ProjectEdit(_data: any) {
     return this._httpService._putMethod(_data, 'api/services/app/Project/Update');
   }
+
+
+
 
   Delete(id: number) {
     return this._httpService._deleteMethod('api/services/app/Project/Delete?Id='+id);
@@ -90,25 +104,14 @@ CheckProjectName(
 }
 
 GetFilteredList(
-  ProjectId?: number,
-  filter?: string,
-  status?: boolean,
+
   maxResultCount?: number,
   skipCount?: number
 ) {
   let params: string[] = [];
 
-  if (ProjectId !== null && ProjectId !== undefined) {
-    params.push(`ProjectId=${ProjectId}`);
-  }
+ 
 
-  if (filter !== null && filter !== undefined && filter.trim() !== '') {
-    params.push(`Filter=${encodeURIComponent(filter)}`);
-  }
-
-  if (status !== null && status !== undefined) {
-    params.push(`IsActive=${status}`);
-  }
 
   if (maxResultCount !== null && maxResultCount !== undefined) {
     params.push(`MaxResultCount=${maxResultCount}`);
@@ -119,7 +122,7 @@ GetFilteredList(
   }
 
   const queryString = params.length ? '?' + params.join('&') : '';
-  const url = `api/services/app/Project/GetAllProjectPage${queryString}`;
+  const url = `api/services/app/UserZoneMapping/GetAll${queryString}`;
 
   return this._httpService._getMethod(url);
 }
