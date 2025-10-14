@@ -4,7 +4,7 @@ import { CommonModule,isPlatformBrowser } from '@angular/common';
 
 import { CmSelectComponent } from '../../common/cm-select/cm-select.component';
 import { CmSelect2Component } from '../../common/cm-select2/cm-select2.component';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { CmInputComponent } from '../../common/cm-input/cm-input.component';
 import { MatDialog } from '@angular/material/dialog';
 import { InputRequest } from '../../models/request/inputreq.model';
@@ -22,6 +22,7 @@ import { CmTableComponent } from '../../common/cm-table/cm-table.component';
 import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 import _ from 'lodash';
 import { MaterialModule } from "../../Material.module";
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 
 // jQuery declared globally
 declare var $: any;
@@ -82,6 +83,7 @@ router = inject(Router);
       form!: FormGroup;
       isEdit=false;
       selectedRecordId:any;
+      userMappings: UserZoneMapping[] = [];
      
       collectionSize = 2;
       list!:any;
@@ -170,13 +172,23 @@ router = inject(Router);
         @Inject(PLATFORM_ID) private platformId: Object
         ) {}
         
+
+     minArrayLength(min: number) {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    if (Array.isArray(value) && value.length >= min) {
+      return null;
+    }
+    return { minArrayLength: { requiredLength: min, actualLength: value.length } };
+  };
+}
         
       ngOnInit(): void {
-          this.form = this.fb.group({
-            selectedUser: [null],
-            selectedZone: [[]],
-            selectedRole: [[]]
-          });
+       this.form = this.fb.group({
+  selectedUser: [null, Validators.required],
+  selectedZone: [[], this.minArrayLength(1)],
+  selectedRole: [[], this.minArrayLength(1)]
+});
           this.buildHeader();
          // this.getProjConfigList();
           this.getUserList();
@@ -221,6 +233,14 @@ router = inject(Router);
         }
   submit() {
 
+
+
+
+
+        if (!this.form.invalid) {
+            this.form.markAllAsTouched();
+    
+
     const zones = this.form.value.selectedZone.map((z: any) => z.id).join(', ');
     const roles = this.form.value.selectedRole.map((z: any) => z.id).join(', ');
     const user = this.form.value.selectedUser.map((z: any) => z.id).join(', ');
@@ -258,9 +278,44 @@ else{
 
    console.log("hi", _UserZoneMapping);
 
+  const selectedUserId = Number(this.form.value.selectedUser[0].id);
+const existingMapping = this.userMappings?.find((m: any) => m.userId === selectedUserId);
 
-   if(this.isEdit=true)
 
+if(existingMapping){
+   _UserZoneMapping.id = existingMapping.id;
+  {this.service.Update(_UserZoneMapping)
+  .pipe(withLoader(this.loaderService))
+  .subscribe({
+    next: () => {
+      console.log('Updated successfully');
+      this.toast.success('UserMapping Updated successfully');
+        this.isEdit = false;
+      this.getFilteredList();
+        this.form.reset({
+    selectedUser: [],      
+    selectedZone: [],      
+    selectedRole: []        
+  });
+      // this.router.navigate(['/admin/projfieldconfig']);
+    },
+    error: (err) => {
+      console.error('Save failed:', err);
+           this.form.reset({
+    selectedUser: [],      
+    selectedZone: [],      
+    selectedRole: []        
+  });
+      // Optionally show a toast
+      this.toast.error('Failed to save UserMapping');
+        this.isEdit = false;
+    }
+  });
+}
+
+}
+
+else{  if(this.isEdit)
   {this.service.Update(_UserZoneMapping)
   .pipe(withLoader(this.loaderService))
   .subscribe({
@@ -317,6 +372,8 @@ else{
     }
   });
 }
+}
+
 
 
 
@@ -331,12 +388,34 @@ else{
     }
     else {
       this.form.markAllAsTouched();
-      // this.toast.error('Form is not valid');
+       this.toast.error('Form is not valid');
       return;
 
     }
 }
     
+
+
+
+
+
+
+
+
+
+
+    }
+    else {
+      this.form.markAllAsTouched();
+       this.toast.error('Form is not valid');
+      return;
+
+    }
+
+
+    
+
+
 
  
 
@@ -624,6 +703,12 @@ editRow(rowData: any) {
     .pipe(withLoader(this.loaderService))
     .subscribe((response: any) => {
       const items = response.result?.items || [];
+     
+this.items = items;
+
+
+this.userMappings = items;
+console.log("userMappings",this.userMappings)
       const totalCount = response.result?.totalCount || 0;
 
       if (Array.isArray(items)) {
@@ -699,10 +784,10 @@ getUserList() {
 
     this.UserSelectSettings.options = projectOptions;
     this.UserOptions=projectOptions
-this.form.controls['selectedUser'].setValue({
-  text: 'All',
-  id: 0
-});
+// this.form.controls['selectedUser'].setValue({
+//   text: 'All',
+//   id: 0
+// });
 
 // this.form.controls['selectedStatus'].setValue({
 //   name: 'All',
