@@ -106,7 +106,7 @@ export class AtcsCongestionComponent implements OnInit {
   ViewOnMap(task: any) {
     const dialogRef = this.dialog.open(ApiStatusComponent, {
       width: '800px',
-      height: '700px',
+      height: '250px',
       //title : "Resolved By Iteself",
       position: { top: '20px' },
       panelClass: 'custom-confirm-dialog',

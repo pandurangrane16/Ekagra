@@ -104,7 +104,7 @@ button:disabled {
 
 .sidebar {
   width: 25%;
-  background-color: #1a2e49;
+  background-color: #1c2d7b;
   color: white;
   padding: 30px;
   border-radius: 12px 0 0 12px;
@@ -149,7 +149,7 @@ button:disabled {
 
 .active {
   border-color: #0fd81d !important;
-  background-color: #1a2e49;
+  background-color: #1c2d7b;
   color: rgb(11, 239, 7) !important;
 }
 
