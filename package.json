@@ -37,6 +37,8 @@
     "highcharts-angular": "^4.0.1",
     "hls.js": "^1.6.7",
     "jquery": "^3.7.1",
+    "keycloak-angular": "^20.0.0",
+    "keycloak-js": "^26.2.1",
     "leaflet": "^1.9.4",
     "leaflet-draw": "^1.0.4",
     "leaflet.markercluster": "^1.5.3",

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 // Material Form Controls
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -46,6 +46,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { HighchartsChartModule } from 'highcharts-angular';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { KeycloakService } from './services/common/keycloak.service';
+
+function initializeKeycloak(keycloakService: KeycloakService) {
+  return () => keycloakService.init();
+}
 
 @NgModule({
   declarations: [],
@@ -97,6 +102,13 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
     ToastrModule
   ],
   imports:[ToastrModule.forRoot()],
-  providers:[]
+  providers:[
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeKeycloak,
+      multi: true,
+      deps: [KeycloakService]
+    }
+  ]
 })
 export class MaterialModule {}

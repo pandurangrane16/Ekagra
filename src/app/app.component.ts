@@ -14,29 +14,31 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { SignalRService } from './services/common/signal-r.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ToastrService } from 'ngx-toastr';
+import { MaterialModule } from './Material.module';
+import { KeycloakService } from './services/common/keycloak.service';
 
 @Component({
-    selector: 'app-root',
-    imports: [
-        HeaderComponent,
-        MatSidenavModule,
-        SidenavComponent,
-        FooterComponent,
-        CmLoaderComponent,
-        CommonModule,
-        RouterModule,
-    ],
-    providers: [HeaderService,LoaderService,HttpClient  ],
-    templateUrl: './app.component.html',
-    styleUrl: './app.component.css',
+  selector: 'app-root',
+  imports: [
+    HeaderComponent,
+    MaterialModule,
+    SidenavComponent,
+    FooterComponent,
+    CmLoaderComponent,
+    CommonModule,
+    RouterModule,
+  ],
+  providers: [HeaderService, LoaderService, HttpClient],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css',
   standalone: true,
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
   title = 'Ekagra';
   event: any;
   windowWidth: number = 0;
   @Input() isSidebarCollapsed = false;
-  
+
 
   onSidebarToggle() {
     this.isSidebarCollapsed = !this.isSidebarCollapsed;
@@ -46,26 +48,30 @@ export class AppComponent implements OnInit{
     this.event = event;
     this.headerService.shift120 = !this.headerService.shift120;
   }
- onClickEdit(event: Event){
-  this.event = event;
- }
- parentClass: string = '';
+  onClickEdit(event: Event) {
+    this.event = event;
+  }
+  parentClass: string = '';
 
   onAddClass(className: string): void {
     this.parentClass = className;
   }
+  token: any;
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    private renderer: Renderer2, 
-    private toastr : ToastrService,
-    public headerService : HeaderService,public routes: Router, private route: ActivatedRoute,
-    public loaderService : LoaderService,
+    private renderer: Renderer2,
+    private toastr: ToastrService,
+    public headerService: HeaderService, public routes: Router, private route: ActivatedRoute,
+    public loaderService: LoaderService,
     private signalRService: SignalRService,
-    private snackBar: MatSnackBar
-  ) {}
+    private snackBar: MatSnackBar,
+    private keycloakService: KeycloakService
+  ) { }
 
- 
-  ngOnInit()  {
+
+  ngOnInit() {
+    this.token = this.keycloakService.getToken() || 'No token found';
+    console.log(this.token);
     this.signalRService.notifications$.subscribe((message: string) => {
       // this.snackBar.open(message, 'Close', {
       //   duration: 5000,

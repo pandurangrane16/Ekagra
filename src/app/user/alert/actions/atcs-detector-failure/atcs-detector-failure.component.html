@@ -28,18 +28,18 @@
                         </div>
                     
                         <div class="col-md-6 d-flex align-items-center">
-                            <mat-checkbox class="example-margin me-2" formControlName="isVerified"></mat-checkbox> Mark as
+                            <mat-checkbox class="example-margin me-2" formControlName="isVerified" color="primary"></mat-checkbox> Mark as
                                 closed
                         </div>
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col d-flex gap-2">
                             <button mat-flat-button class="btn-primary" (click)="SubmitAction()">
-                                Submit
+                                Close
                             </button>
-                            &nbsp;&nbsp;&nbsp;
-                            <button mat-flat-button class="btnCancel" (click)="CancelAction()">
+                           
+                            <button mat-stroked-button (click)="CancelAction()">
                                 Cancel
                             </button>
                         </div>
@@ -50,13 +50,14 @@
                 @if(this.task.sequence == 2) {
                 <div [ngClass]="{ 'readonly-div': !this.task.hasAccess}">
                     <app-api-action></app-api-action>
+                    <hr>
                     <div class="row">
-                        <div class="col-md-12 d-flex gap-2">
-                            <button mat-flat-button class="btnSubmit" (click)="SubmitAction()">
+                        <div class="col d-flex gap-2">
+                            <button mat-flat-button class="btn-primary" (click)="SubmitAction()">
                                 Close
                             </button>
                            
-                            <button mat-flat-button class="btnCancel" (click)="CancelAction()">
+                            <button mat-stroked-button (click)="CancelAction()">
                                 Cancel
                             </button>
                         </div>

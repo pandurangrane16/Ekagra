@@ -3,7 +3,7 @@
         <div class="col-md-6">
             <app-cm-select-check ngSkipHydration *ngIf="isVmdSelected" [formGroup]="form"
                 [controlName]="'selectedVmdAction'" [settings]="vmdTypeSettings"
-                (returnObject)="onActionTypeSelected($event)">
+                (returnObject)="onActionTypeSelected($event)" color="primary">
             </app-cm-select-check>
         </div>
     </div>
@@ -33,7 +33,7 @@
                 Submit
             </button>
            
-            <button mat-flat-button class="btnCancel" (click)="CancelAction()">
+            <button mat-stroked-button (click)="CancelAction()">
                 Cancel
             </button>
         </div>

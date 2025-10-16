@@ -13,16 +13,19 @@
     "sourceMap": true,
     "declaration": false,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "module": "ES2022",
+    "module": "esnext",
     "useDefineForClassFields": false,
     "lib": [
       "ES2022",
       "dom"
     ],
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "resolveJsonModule": true,
+    "types": ["keycloak-js"],
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

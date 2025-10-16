@@ -386,7 +386,11 @@ export class AlertComponent implements OnInit {
 
     console.log(this.startDate, this.endDate)
 
-    this.service.GetFilteredList(this.startDate, this.endDate, selectedStatus, search, this.MaxResultCount, this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
+    const formattedStart = this.startDate?.toISOString();
+const formattedEnd = this.endDate?.toISOString();
+
+
+    this.service.GetFilteredList(formattedStart, formattedEnd, selectedStatus, search, this.MaxResultCount, this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
       console.log(this.startDate, this.endDate)
         const items = response.result?.items;
         this.items = items;
