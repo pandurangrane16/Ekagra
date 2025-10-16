@@ -27,6 +27,8 @@ import { zoneconfigmodel } from '../../../models/admin/zoneconfig.model';
 import {  PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { MatDialogRef } from '@angular/material/dialog';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-zone-configuration-form',
@@ -134,7 +136,12 @@ isMapVisible: boolean = false;
   }
      ngOnInit(): void {
 
-         
+         this.form.get('zonename')?.valueChanges
+    .pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    )
+    .subscribe(() => this.onZoneNameChange());
         this.state = history.state;
          const state = this.state;
          if (state?.mode === 'edit' && state?.record) {
@@ -401,5 +408,30 @@ draw: {
     close() {
     this.router.navigate(['/admin/zoneconfig']);
   }
+
+
+  onZoneNameChange() {
+  const zoneName = this.form.controls['zonename'].value?.trim();
+  if (!zoneName) return;
+
+  // clear any old error
+  this.form.get('zonename')?.setErrors(null);
+
+  // ✅ Pass only ZoneName and Id (others will be undefined by default)
+  this.service.CheckZoneExists(zoneName, undefined, undefined, this.state?.record?.id)
+    .pipe(withLoader(this.loaderService))
+    .subscribe({
+      next: (response: any) => {
+        if (response.result === 1) {
+          this.toast.error('Zone Name already exists in the system.');
+          this.form.get('zonename')?.setErrors({ duplicate: true });
+        }
+      },
+      error: (err) => {
+        console.error('Error checking Zone Name:', err);
+      }
+    });
+}
+
 
 }

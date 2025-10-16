@@ -23,13 +23,16 @@
               <app-cm-input
                 [formGroup]="form"
                 [controlName]="'zonename'"
-                [_inputData]="inputFields.zonename">
+                [_inputData]="inputFields.zonename"
+                (blur)="onZoneNameChange()">
               </app-cm-input>
 
                   <div *ngIf="f['zonename'].touched && f['zonename'].errors" class="text-danger mt-1">
         {{ getErrorMessage('zonename', 'Zonename', false, '') }}
       </div>
-     
+     <div *ngIf="f['zonename'].hasError('duplicate')" class="text-danger mt-1">
+  Zone name already exists.
+</div>
             </div>
           
            
