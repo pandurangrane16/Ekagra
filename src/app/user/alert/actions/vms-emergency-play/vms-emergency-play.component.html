@@ -22,7 +22,7 @@
                         <div class="col-md-12">
                             <app-cm-select-check *ngIf="isVmdSelected" [formGroup]="form"
                                 [controlName]="'selectedVmdAction'" [settings]="vmdTypeSettings"
-                                (returnObject)="onActionTypeSelected($event)">
+                                (returnObject)="onActionTypeSelected($event)" color="primary">
                             </app-cm-select-check>
                         </div>
                     </div>
@@ -49,12 +49,12 @@
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-md-12">
-                            <button mat-flat-button class="btnSubmit" (click)="SubmitAction()">
+                        <div class="col d-flex gap-2">
+                            <button mat-flat-button class="btn-primary" (click)="SubmitAction()">
                                 Submit
                             </button>
-                            &nbsp;&nbsp;&nbsp;
-                            <button mat-flat-button class="btnCancel" (click)="CancelAction()">
+                           
+                            <button mat-stroked-button (click)="CancelAction()">
                                 Cancel
                             </button>
                         </div>
@@ -72,14 +72,14 @@
                             </button>
                         </div>
                         <div class="col-md-6 text-right d-flex align-items-center">
-                            <mat-checkbox class="example-margin" formControlName="isVerified"></mat-checkbox> <label class="mb-0 ms-2">Mark As Closed</label>
+                            <mat-checkbox class="example-margin" formControlName="isVerified" color="primary"></mat-checkbox> <label class="mb-0 ms-2">Mark As Closed</label>
                         </div>
                     </div>
                     <hr>
                     <div class="row">
                         <div class="col-md-12 d-flex gap-3">
                             <button mat-flat-button class="btn-primary" (click)="SubmitAction()">
-                                Submit
+                                Close
                             </button>
                            
                             <button mat-flat-button class="btnCancel" (click)="CancelAction()">

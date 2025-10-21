@@ -14,12 +14,12 @@
           </div>
           <hr />
           <div class="row">
-            <div class="col-md-12">
-              <button mat-flat-button class="btnSubmit" (click)="SubmitAction()">
+            <div class="col d-flex gap-2">
+              <button mat-flat-button class="btn-primary" (click)="SubmitAction()">
                 Next
               </button>
-              &nbsp;&nbsp;&nbsp;
-              <button mat-flat-button class="btnCancel" (click)="CancelAction()">
+              
+              <button mat-stroked-button  (click)="CancelAction()">
                 Cancel
               </button>
             </div>
@@ -79,11 +79,11 @@
 <hr>
           <div class="row">
             <div class="col-md-12 d-flex gap-2">
-              <button mat-flat-button class="btnSubmit" (click)="SubmitAction()">
+              <button mat-flat-button class="btn-primary" (click)="SubmitAction()">
                 Closed
               </button>
               
-              <button mat-flat-button class="btnCancel" (click)="CancelAction()">
+              <button mat-flat-button class="btnCancel"  (click)="CancelAction()">
                 Reassign
               </button>
             </div>
@@ -129,12 +129,12 @@
               </mat-tab-group>
               <hr>
               <div class="row">
-                <div class="col-md-12">
+                <div class="col d-flex gap-2">
                   <button mat-flat-button class="btn-primary" (click)="SubmitAction()">
                     Submit
                   </button>
-                  &nbsp;&nbsp;&nbsp;
-                  <button mat-flat-button class="btnCancel" (click)="CancelAction()">
+                  
+                  <button mat-stroked-button (click)="CancelAction()">
                     Cancel
                   </button>
                 </div>

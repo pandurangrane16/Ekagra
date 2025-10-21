@@ -104,7 +104,7 @@ unitSettings = {
   ViewOnMap(task: any) {
     const dialogRef = this.dialog.open(ApiStatusComponent, {
       width: '800px',
-      height: '700px',
+      height: 'auto',
       //title : "Resolved By Iteself",
       position: { top: '20px' },
       panelClass: 'custom-confirm-dialog',

@@ -33,18 +33,18 @@
                         </div>
                   
                         <div class="col-md-6 text-right d-flex align-items-center">
-                            <mat-checkbox class="example-margin me-2" formControlName="isVerified"></mat-checkbox>Mark as
+                            <mat-checkbox class="example-margin me-2" formControlName="isVerified" color="primary"></mat-checkbox>Mark as
                                 closed
                         </div>
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col d-flex gap-2">
                             <button mat-flat-button class="btn-primary" (click)="SubmitAction()">
                                 Submit
                             </button>
-                            &nbsp;&nbsp;&nbsp;
-                            <button mat-flat-button class="btnCancel" (click)="CancelAction()">
+                           
+                            <button mat-stroked-button (click)="CancelAction()">
                                 Cancel
                             </button>
                         </div>
@@ -62,7 +62,7 @@
                             </button>
                         </div>
                         <div class="col-md-6 text-right">
-                            <mat-checkbox class="example-margin" formControlName="isVerified">Is Verified</mat-checkbox>
+                            <mat-checkbox class="example-margin" formControlName="isVerified" color="primary">Is Verified</mat-checkbox>
                         </div>
                     </div>
                     <hr>

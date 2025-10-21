@@ -27,17 +27,17 @@
                         </div>
                     
                         <div class="col-md-6  d-flex align-items-center">
-                            <mat-checkbox class="example-margin me-2" formControlName="isVerified"></mat-checkbox> Mark as closed
+                            <mat-checkbox class="example-margin me-2" formControlName="isVerified" color="primary"></mat-checkbox> Mark as closed
                         </div>
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-md-12 d-flex gap-2">
+                        <div class="col d-flex gap-2">
                             <button mat-flat-button class="btn-primary" (click)="SubmitAction()">
                                 Submit
                             </button>
-                            &nbsp;&nbsp;&nbsp;
-                            <button mat-flat-button class="btnCancel" (click)="CancelAction()">
+                           
+                            <button mat-stroked-button (click)="CancelAction()">
                                 Cancel
                             </button>
                         </div>
@@ -50,12 +50,12 @@
                     <app-vms-broadcasting></app-vms-broadcasting>
                     <hr>
                     <div class="row">
-                        <div class="col-md-12 d-flex gap-2">
-                            <button mat-flat-button class="btnSubmit" (click)="SubmitAction()">
-                                Close
+                        <div class="col d-flex gap-2">
+                            <button mat-flat-button class="btn-primary" (click)="SubmitAction()">
+                                Submit
                             </button>
                             
-                            <button mat-flat-button class="btnCancel" (click)="CancelAction()">
+                            <button mat-stroked-button (click)="CancelAction()">
                                 Cancel
                             </button>
                         </div>
