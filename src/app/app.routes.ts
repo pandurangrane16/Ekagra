@@ -28,11 +28,11 @@ import { AlertComponent } from './user/alert/alert/alert.component';
 import { canActivateAuthRole } from './services/common/AuthGuard';
 
 export const routes: Routes = [
-      //{ path: "", component: LoginComponent, },
+      { path: "", component: LoginComponent, },
       { path: "login", component: LoginComponent, },
       {
             path: '',
-            redirectTo: 'dashboard',
+            redirectTo: 'login',
             pathMatch: 'full'
       },
       {

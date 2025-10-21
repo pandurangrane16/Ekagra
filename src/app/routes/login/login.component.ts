@@ -25,7 +25,7 @@ import { KeycloakService, KEYCLOAK_EVENT_SIGNAL, KeycloakEventType, typeEventArg
   styleUrl: './login.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone : true,
-  providers :[KeycloakService]
+  providers : [KeycloakService]
 })
 export class LoginComponent {
   loaderService = inject(LoaderService);
@@ -34,7 +34,7 @@ export class LoginComponent {
 
   authenticated = false;
   keycloakStatus: string | undefined;
-  private readonly keycloak = inject(KeycloakService);
+  private keycloak = inject(KeycloakService);
   private readonly keycloakSignal = inject(KEYCLOAK_EVENT_SIGNAL);
 
   loginForm!: FormGroup;
@@ -122,9 +122,17 @@ export class LoginComponent {
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
+  async onSSOLogin() {
+    try {
+      await this.keycloak.login({
+        redirectUri: window.location.origin + '/dashboard',
+      });
+    } catch (err) {
+      console.error('SSO Login failed:', err);
+    }
+  }
 
-  onLogin(): void {
-    //this.keycloak.login();
+  onLogin() {
     const credentials = this.loginForm.value;
 
     this.service.Login(credentials).pipe(withLoader(this.loaderService)).subscribe({
