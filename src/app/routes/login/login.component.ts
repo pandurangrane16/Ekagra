@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, inject,Component } from '@angular/core';
+import { ChangeDetectionStrategy, inject, Component, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { FooterComponent } from '../footer/footer.component';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatIconModule} from '@angular/material/icon';
-import {MatInputModule} from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -14,19 +14,29 @@ import { MatButtonModule } from '@angular/material/button';
 import { LoaderService } from '../../services/common/loader.service';
 import { withLoader } from '../../services/common/common';
 import { SessionService } from '../../services/common/session.service';
+import { KeycloakService, KEYCLOAK_EVENT_SIGNAL, KeycloakEventType, typeEventArgs, ReadyArgs } from 'keycloak-angular';
 
 
 
 @Component({
-    selector: 'app-login',
-    imports: [CommonModule, SlickCarouselModule, MatButtonModule, ReactiveFormsModule,MatButtonModule,ReactiveFormsModule, FooterComponent, MatFormFieldModule, MatInputModule, MatIconModule, RouterModule],
-    templateUrl: './login.component.html',
-    styleUrl: './login.component.css',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-login',
+  imports: [CommonModule, SlickCarouselModule, MatButtonModule, ReactiveFormsModule, MatButtonModule, ReactiveFormsModule, FooterComponent, MatFormFieldModule, MatInputModule, MatIconModule, RouterModule],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone : true,
+  providers :[KeycloakService]
 })
 export class LoginComponent {
-loaderService=inject(LoaderService);
-sessionService=inject(SessionService);
+  loaderService = inject(LoaderService);
+  sessionService = inject(SessionService);
+
+
+  authenticated = false;
+  keycloakStatus: string | undefined;
+  private readonly keycloak = inject(KeycloakService);
+  private readonly keycloakSignal = inject(KEYCLOAK_EVENT_SIGNAL);
+
   loginForm!: FormGroup;
   version: string = "2.0.9";
   constructor(
@@ -34,7 +44,21 @@ sessionService=inject(SessionService);
     private http: HttpClient,
     private router: Router,
     private service: loginservice,
-  ) { }
+  ) {
+    effect(() => {
+      const keycloakEvent = this.keycloakSignal();
+
+      this.keycloakStatus = keycloakEvent.type;
+
+      if (keycloakEvent.type === KeycloakEventType.Ready) {
+        this.authenticated = typeEventArgs<ReadyArgs>(keycloakEvent.args);
+      }
+
+      if (keycloakEvent.type === KeycloakEventType.AuthLogout) {
+        this.authenticated = false;
+      }
+    });
+  }
 
 
 
@@ -46,8 +70,8 @@ sessionService=inject(SessionService);
     autoplay: true,
     autoplaySpeed: 3000,
     fadeSpeed: 1000,
-    fade:true,
-    arrows:false,
+    fade: true,
+    arrows: false,
     responsive: [
       {
         breakpoint: 1024,
@@ -88,8 +112,8 @@ sessionService=inject(SessionService);
   }
   getConfigDetails() {
     this.service.getConfigDetails().subscribe(res => {
-      if(res != undefined) {
-        this.sessionService._setSessionValue("config",JSON.stringify(res));
+      if (res != undefined) {
+        this.sessionService._setSessionValue("config", JSON.stringify(res));
       }
     })
   }
@@ -100,10 +124,11 @@ sessionService=inject(SessionService);
   }
 
   onLogin(): void {
+    //this.keycloak.login();
     const credentials = this.loginForm.value;
 
     this.service.Login(credentials).pipe(withLoader(this.loaderService)).subscribe({
-      next: (res:any) => {
+      next: (res: any) => {
         const accessToken = res?.result?.accessToken;
         if (accessToken) {
 

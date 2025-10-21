@@ -25,11 +25,20 @@ import { Component } from '@angular/core';
 import { DashRoutesComponent } from './routes/dash-routes/dash-routes.component';
 import { CmCronComponent } from './common/cm-cron/cm-cron.component';
 import { AlertComponent } from './user/alert/alert/alert.component';
+import { canActivateAuthRole } from './services/common/AuthGuard';
 
 export const routes: Routes = [
-      { path: "", component: LoginComponent, },
+      //{ path: "", component: LoginComponent, },
       { path: "login", component: LoginComponent, },
-      { path: 'dashboard', component: DashboardComponent },
+      {
+            path: '',
+            redirectTo: 'dashboard',
+            pathMatch: 'full'
+      },
+      {
+            path: 'dashboard',
+            component: DashboardComponent,
+      },
       { path: 'surveilience', component: SurveiliencePageComponent },
       { path: 'atcs', component: AtcsComponent },
       { path: 'parking', component: ParkingComponent },

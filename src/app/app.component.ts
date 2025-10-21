@@ -10,12 +10,12 @@ import { HeaderService } from './services/header.service';
 import { LoginComponent } from "./routes/login/login.component";
 import { CmLoaderComponent } from './common/cm-loader/cm-loader.component';
 import { LoaderService } from './services/common/loader.service';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, provideHttpClient } from '@angular/common/http';
 import { SignalRService } from './services/common/signal-r.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ToastrService } from 'ngx-toastr';
 import { MaterialModule } from './Material.module';
-import { KeycloakService } from './services/common/keycloak.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -37,6 +37,9 @@ export class AppComponent implements OnInit {
   title = 'Ekagra';
   event: any;
   windowWidth: number = 0;
+  loggedIn = false;
+  userProfile: any = null;
+
   @Input() isSidebarCollapsed = false;
 
 
@@ -65,22 +68,35 @@ export class AppComponent implements OnInit {
     public loaderService: LoaderService,
     private signalRService: SignalRService,
     private snackBar: MatSnackBar,
-    private keycloakService: KeycloakService
-  ) { }
+    //private keycloakService: KeycloakService,
+    private router: Router
+  ) {
+  }
 
+  async getKeyCloakToken() {
+    // keycloakService.init()
+    //   .then(() => {
+    //     let return_data = bootstrapApplication(AppComponent, {
+    //       providers: [provideHttpClient(), { provide: KeycloakService, useValue: keycloakService }]
+    //     });
 
-  ngOnInit() {
-    this.token = this.keycloakService.getToken() || 'No token found';
-    console.log(this.token);
-    this.signalRService.notifications$.subscribe((message: string) => {
-      // this.snackBar.open(message, 'Close', {
-      //   duration: 5000,
-      //   verticalPosition: 'top',
-      //   horizontalPosition: 'right',
-      //   panelClass: ['mat-toolbar', 'mat-primary']
-      // });
-      this.toastr.success(message);
-    });
+    //     return return_data;
+    //   })
+    //   .catch(err => {
+    //     console.error('Keycloak initialization failed', err);
+    //   });
+  }
+
+  async ngOnInit() {
+    // this.signalRService.notifications$.subscribe((message: string) => {
+    //   // this.snackBar.open(message, 'Close', {
+    //   //   duration: 5000,
+    //   //   verticalPosition: 'top',
+    //   //   horizontalPosition: 'right',
+    //   //   panelClass: ['mat-toolbar', 'mat-primary']
+    //   // });
+    //   this.toastr.success(message);
+    // });
   }
 
 }

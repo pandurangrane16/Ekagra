@@ -10,7 +10,7 @@ export class SignalRService {
   public notifications$ = this.notificationSubject.asObservable();
 
   constructor() {
-    this.startConnection();
+    //this.startConnection();
   }
 
   private startConnection(): void {
