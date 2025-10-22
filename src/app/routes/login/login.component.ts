@@ -24,8 +24,6 @@ import { KeycloakService, KEYCLOAK_EVENT_SIGNAL, KeycloakEventType, typeEventArg
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone : true,
-  providers : [KeycloakService]
 })
 export class LoginComponent {
   loaderService = inject(LoaderService);
@@ -34,7 +32,6 @@ export class LoginComponent {
 
   authenticated = false;
   keycloakStatus: string | undefined;
-  private keycloak = inject(KeycloakService);
   private readonly keycloakSignal = inject(KEYCLOAK_EVENT_SIGNAL);
 
   loginForm!: FormGroup;
@@ -44,6 +41,7 @@ export class LoginComponent {
     private http: HttpClient,
     private router: Router,
     private service: loginservice,
+    private keycloakService: KeycloakService,
   ) {
     effect(() => {
       const keycloakEvent = this.keycloakSignal();
@@ -124,11 +122,11 @@ export class LoginComponent {
   }
   async onSSOLogin() {
     try {
-      await this.keycloak.login({
-        redirectUri: window.location.origin + '/dashboard',
+      await this.keycloakService.login({
+        redirectUri: window.location.origin + '/dashboard' // 👈 redirect after login
       });
-    } catch (err) {
-      console.error('SSO Login failed:', err);
+    } catch (error) {
+      console.error('SSO login failed', error);
     }
   }
 
