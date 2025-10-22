@@ -35,7 +35,7 @@ export class ResolvedByItselfComponent implements OnInit {
     }
   }
   fileName: string;
-  constructor(@Inject(MAT_DIALOG_DATA) public data: ResolvedByData, private fb: FormBuilder,private dialog : Dialog) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private fb: FormBuilder,private dialog : Dialog) { }
   ngOnInit(): void {
     this.form = this.fb.group({
       remarks: ['', Validators.required]

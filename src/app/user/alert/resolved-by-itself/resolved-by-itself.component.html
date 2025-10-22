@@ -1,7 +1,7 @@
 <div class="dialog-header">
     <div class="row dialog-title">
         <div class="col-md-9 text-left">
-            <span class="dialog-title">Resolved By Itself - <span style="color:yellow;">{{data.policyName}} </span></span>
+            <span class="dialog-title">Resolved By Itself</span>
         </div>
         <div class="col-md-3 text-right">
             <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()">
@@ -9,56 +9,75 @@
             </button>
         </div>
     </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-3">
+            Policy Name :
+        </div>
+        <div class="col-md-9">
+            <span style="color:yellow;">{{data.policyName}} </span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            Ticket Number : 
+        </div>
+        <div class="col-md-9">
+            <span style="color:yellow;">{{data.allData.ticketNo}} </span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            Site Name : 
+        </div>
+        <div class="col-md-9">
+            <span style="color:yellow;">{{data.allData.siteName}} </span>
+        </div>
+    </div>
 </div>
 <div class="pageWrapper">
     <mat-card class="cardWithShadow theme-card">
-      
-            <mat-card-content>
-                <form [formGroup]="form">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <app-cm-textarea [formGroup]="form" [controlName]="'remarks'"
-                                [_inputData]="inputFields.remarks">
-                            </app-cm-textarea>
-                        </div>
+
+        <mat-card-content>
+            <form [formGroup]="form">
+                <div class="row">
+                    <div class="col-md-12">
+                        <app-cm-textarea [formGroup]="form" [controlName]="'remarks'"
+                            [_inputData]="inputFields.remarks">
+                        </app-cm-textarea>
                     </div>
-                    <hr>
-                    <!-- <div class="row">
+                </div>
+                <hr>
+                <!-- <div class="row">
                         <label>Attach File</label>
                         <div class="col-md-12">
                             <input type="file"/>
                         </div>
                     </div> -->
 
-                    <div class="row">
-                        <label>Attach File</label>
-                        <div class="col-6 d-flex gap-2 flex-row align-items-center">
+                <div class="row">
+                    <label>Attach File</label>
+                    <div class="col-6 d-flex gap-2 flex-row align-items-center">
                         <button mat-raised-button color="primary" class="btn-primary" (click)="fileInput.click()">
-  <mat-icon>attach_file</mat-icon>
-  Choose File
-</button>
-<span [matTooltip]="fileName">{{ fileName || 'No file selected' }}</span>
+                            <mat-icon>attach_file</mat-icon>
+                            Choose File
+                        </button>
+                        <span [matTooltip]="fileName">{{ fileName || 'No file selected' }}</span>
 
-<input
-  type="file"
-  #fileInput
-  hidden
-  (change)="onFileSelected($event)"
-/>
-                    </div></div>
-                   
-                      <div class="dialog-actions mt-2">
- 
-                                <button mat-stroked-button
-                                (click)="close()">Cancel</button> 
-                      
-                      <button mat-flat-button class="btn-primary"
-                                (click)="submitAction()">Submit</button>       
-                           
-          
-          </div>
-                </form>
-            </mat-card-content>
-        
+                        <input type="file" #fileInput hidden (change)="onFileSelected($event)" />
+                    </div>
+                </div>
+
+                <div class="dialog-actions mt-2">
+
+                    <button mat-stroked-button (click)="close()">Cancel</button>
+
+                    <button mat-flat-button class="btn-primary" (click)="submitAction()">Submit</button>
+
+
+                </div>
+            </form>
+        </mat-card-content>
+
     </mat-card>
 </div>

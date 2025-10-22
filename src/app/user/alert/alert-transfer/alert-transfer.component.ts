@@ -58,7 +58,7 @@ export class AlertTransferComponent implements OnInit {
       name :"Pandurang",
       value : 1
     }]
-
+    console.log(this.data);
     this.GetAllUsers();
   }
 

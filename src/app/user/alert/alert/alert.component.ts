@@ -275,7 +275,8 @@ export class AlertComponent implements OnInit {
         position: { top: '20px' },
         panelClass: 'custom-confirm-dialog',
         data: {
-          policyName: data.policyname
+          policyName: data.policyname,
+          allData: data
         }
       })
     } else if (event.type === 'transfer') {
@@ -287,7 +288,8 @@ export class AlertComponent implements OnInit {
         panelClass: 'custom-confirm-dialog',
         data: {
           policyName: data.policyname,
-          id: data.id
+          id: data.id,
+          allData: data
         }
       })
 
@@ -387,76 +389,84 @@ export class AlertComponent implements OnInit {
     console.log(this.startDate, this.endDate)
 
     const formattedStart = this.startDate?.toISOString();
-const formattedEnd = this.endDate?.toISOString();
+    const formattedEnd = this.endDate?.toISOString();
 
 
     this.service.GetFilteredList(formattedStart, formattedEnd, selectedStatus, search, this.MaxResultCount, this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
       console.log(this.startDate, this.endDate)
-        const items = response.result?.items;
-        this.items = items;
-        const totalCount = response.result?.totalCount;
+      const items = response.result?.items;
+      this.items = items;
+      const totalCount = response.result?.totalCount;
 
 
-        if (Array.isArray(items)) {
+      if (Array.isArray(items)) {
 
-          items.forEach((element: any) => {
-
-
-            //let _data = JSON.parse(element);
-            element.ticketid = element.ticketNo;
-            element.policyname = element.policyName;
-            element.category = element.category === 0 ? 'Low' :
-              element.category === 1 ? 'Medium' :
-                element.category === 2 ? 'High' : '';
-            element.alertdate = element.creationTime;
-            element.handledby = element.handledUser;
-            element.devices = element.devices
-
-            // element.button = [
-            //   { label: 'Edit', icon: 'edit', type: 'edit' },
-            //   { label: 'Delete', icon: 'delete', type: 'delete' }
-            // ];
-            element.ticketid = element.ticketNo;
-            element.policyname = element.policyName;
-            element.category = element.category === 0 ? 'Low' :
-              element.category === 1 ? 'Medium' :
-                element.category === 2 ? 'High' : '';
-            element.alertdate = element.creationTime;
-            element.handledby = element.handledUser;
-            element.devices = element.devices
-
-            // element.button = [
-            //   { label: 'Edit', icon: 'edit', type: 'edit' },
-            //   { label: 'Delete', icon: 'delete', type: 'delete' }
-            // ];
-
-            element.buttonlist = [
-              { label: 'Transfer', icon: 'output', type: 'transfer', disabled: false },
-              { label: 'Perform', icon: 'schedule', type: 'perform', disabled: false },
-              { label: 'Resolved By Itself', icon: 'check_circle', type: 'resolved', disabled: false },
-              { label: 'History', icon: 'history', type: 'history', disabled: false },
-              // { label: 'Transfer', icon: 'output', type: 'transfer' },
-            ]
-            element.buttonlist = [
-              { label: 'Transfer', icon: 'output', type: 'transfer', disabled: false },
-              { label: 'Perform', icon: 'schedule', type: 'perform', disabled: false },
-              { label: 'Resolved By Itself', icon: 'check_circle', type: 'resolved', disabled: false },
-              { label: 'History', icon: 'history', type: 'history', disabled: false },
-              // { label: 'Transfer', icon: 'output', type: 'transfer' },
-            ]
+        items.forEach((element: any) => {
 
 
+          //let _data = JSON.parse(element);
+          element.ticketid = element.ticketNo;
+          element.policyname = element.policyName;
+          element.category = element.category === 0 ? 'Low' :
+            element.category === 1 ? 'Medium' :
+              element.category === 2 ? 'High' : '';
+          element.alertdate = element.creationTime;
+          element.handledby = element.handledUser;
+          element.devices = element.devices
 
-          });
-          var _length = totalCount / Number(this.recordPerPage);
-          if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-            this.totalRecords = Number(this.recordPerPage) * (_length);
-          else if (Math.floor(_length) == 0)
-            this.totalRecords = 10;
-          else
-            this.totalRecords = totalCount;
-          this.totalPages = this.totalRecords / this.pager;
-        }
-      });
-    }
+          // element.button = [
+          //   { label: 'Edit', icon: 'edit', type: 'edit' },
+          //   { label: 'Delete', icon: 'delete', type: 'delete' }
+          // ];
+          element.ticketid = element.ticketNo;
+          element.policyname = element.policyName;
+          element.category = element.category === 0 ? 'Low' :
+            element.category === 1 ? 'Medium' :
+              element.category === 2 ? 'High' : '';
+          element.alertdate = element.creationTime;
+          element.handledby = element.handledUser;
+          element.devices = element.devices
+
+          // element.button = [
+          //   { label: 'Edit', icon: 'edit', type: 'edit' },
+          //   { label: 'Delete', icon: 'delete', type: 'delete' }
+          // ];
+
+          element.buttonlist = [
+            { label: 'Transfer', icon: 'output', type: 'transfer', disabled: false },
+            { label: 'Perform', icon: 'schedule', type: 'perform', disabled: false },
+            { label: 'Resolved By Itself', icon: 'check_circle', type: 'resolved', disabled: false },
+            { label: 'History', icon: 'history', type: 'history', disabled: false },
+            // { label: 'Transfer', icon: 'output', type: 'transfer' },
+          ]
+          element.buttonlist = [
+            { label: 'Transfer', icon: 'output', type: 'transfer', disabled: false },
+            { label: 'Perform', icon: 'schedule', type: 'perform', disabled: false },
+            { label: 'Resolved By Itself', icon: 'check_circle', type: 'resolved', disabled: false },
+            { label: 'History', icon: 'history', type: 'history', disabled: false },
+            // { label: 'Transfer', icon: 'output', type: 'transfer' },
+          ]
+
+
+
+        });
+        var _length = totalCount / Number(this.recordPerPage);
+        if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+          this.totalRecords = Number(this.recordPerPage) * (_length);
+        else if (Math.floor(_length) == 0)
+          this.totalRecords = 10;
+        else
+          this.totalRecords = totalCount;
+        this.totalPages = this.totalRecords / this.pager;
+      }
+    });
   }
+
+  updateAlertStatus(data: any) {
+    this.service.updateAlert(data).subscribe(res => {
+      if (res != null && res != undefined) {
+        
+      }
+    })
+  }
+}
