@@ -64,11 +64,15 @@
            [disabled]="!!formGroup.get(controlName)?.disabled" />
 
     <!-- Arrow icon -->
-    <button mat-icon-button matSuffix disableRipple tabIndex="-1" (click)="autocompleteTrigger.openPanel()">
+    <!-- <button mat-icon-button matSuffix disableRipple tabIndex="-1" (click)="autocompleteTrigger.openPanel()">
+      <mat-icon>{{ isPanelOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
+    </button> -->
+
+<button mat-icon-button matSuffix disableRipple tabIndex="-1" (click)="!formGroup.get(controlName)?.disabled && autocompleteTrigger.openPanel()"
+      [disabled]="!!formGroup.get(controlName)?.disabled"
+      [attr.aria-disabled]="formGroup.get(controlName)?.disabled ? 'true' : 'false'">
       <mat-icon>{{ isPanelOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
     </button>
-
-
     
 <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith" (optionSelected)="ChangeSelection($event)">
   

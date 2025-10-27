@@ -23,7 +23,7 @@
   (optionSelected)="onContactTypeSelected($event)" class="d-block">
 </app-cm-select2>
   <div *ngIf="f['name'].touched && f['name'].errors" class="text-danger mt-1">
-    {{ getErrorMessage('ContactType', 'ContactType', true, 'Special characters are not allowed') }}
+    {{ getErrorMessage('ContactType', 'ContactType', true, 'Please select a valid contact type') }}
   </div>
             </div>
              <div class="col-md-6">
