@@ -434,7 +434,7 @@ export class AlertComponent implements OnInit {
 
          
           element.buttonlist = [
-            { label: 'Transfer', icon: 'output', type: 'transfer', disabled: true },
+            { label: 'Transfer', icon: 'output', type: 'transfer', disabled: false },
             { label: 'Perform', icon: 'schedule', type: 'perform', disabled: false },
             { label: 'Resolved By Itself', icon: 'check_circle', type: 'resolved', disabled: false },
             { label: 'History', icon: 'history', type: 'history', disabled: false },

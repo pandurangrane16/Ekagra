@@ -55,7 +55,7 @@
                         </div>
                     </div> -->
 
-                <div class="row">
+                <!-- <div class="row">
                     <label>Attach File</label>
                     <div class="col-6 d-flex gap-2 flex-row align-items-center">
                         <button mat-raised-button color="primary" class="btn-primary" (click)="fileInput.click()">
@@ -66,7 +66,69 @@
 
                         <input type="file" #fileInput hidden (change)="onFileSelected($event)" />
                     </div>
-                </div>
+                </div> -->
+
+
+                <!-- ✅ Multiple File Upload Section -->
+        <div class="row">
+          <label>Attach File(s)</label>
+          <div class="col-md-12 d-flex flex-column gap-2">
+            <div
+              class="d-flex align-items-center gap-2"
+              *ngFor="let slot of fileSlots; let i = index"
+            >
+              <!-- Choose File -->
+              <button
+                mat-raised-button
+                color="primary"
+                class="btn-primary"
+                (click)="triggerFileInput(i)"
+                type="button"
+              >
+                <mat-icon>attach_file</mat-icon>
+                Choose File
+              </button>
+
+              <span class="flex-grow-1" [matTooltip]="slot.names || 'No file selected'">
+                {{ slot.names || 'No file selected' }}
+              </span>
+
+              <!-- Hidden File Input -->
+              <input
+                type="file"
+                hidden
+                #fileInputRef
+                (change)="onFileSelected($event, i)"
+                multiple
+              />
+
+              <!-- Remove Icon -->
+              <button
+                mat-icon-button
+                color="warn"
+                *ngIf="fileSlots.length > 1"
+                (click)="removeFileSlot(i)"
+                aria-label="Remove"
+              >
+                <mat-icon>remove_circle</mat-icon>
+              </button>
+
+              <!-- Add Icon -->
+              <button
+                mat-icon-button
+                color="primary"
+                *ngIf="i === fileSlots.length - 1"
+                (click)="addFileSlot()"
+                aria-label="Add"
+              >
+                <mat-icon>add_circle</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+
+        
 
                 <div class="dialog-actions mt-2">
 

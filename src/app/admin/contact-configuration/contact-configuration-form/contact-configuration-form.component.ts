@@ -244,7 +244,10 @@ submit() {
       this.toast.error('Please enter a valid email address');
       return;
     }
-
+if (selectedType === ''||selectedType === 0 ||selectedType === null) {
+      this.toast.error('Please select contact type');
+      return;
+    }
     const name = this.form.controls['name'].value;
     const contact = this.form.controls['contact'].value;
     const state1 = history.state;
@@ -396,7 +399,7 @@ loadContactTypes(Module: string, unit: string) {
       name: item.rfu1,
       value: item.prmvalue
     }))
-  .filter((opt: { name: string; value: string }) => opt.name !== 'All');
+  .filter((opt: { name: string; value: string }) => opt.name !== 'ALL');
 
     this.ContactTypeSettings.options = contactOptions;
     this.isContactLoaded = true;

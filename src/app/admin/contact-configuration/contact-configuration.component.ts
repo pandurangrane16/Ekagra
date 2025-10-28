@@ -144,7 +144,7 @@ export class ContactConfigurationComponent implements OnInit {
       //      this.items=items;
       const items = response.result?.items;
       this.items = items;
-
+      console.log(response);
       const totalCount = response.result?.totalCount;
       if (Array.isArray(items)) {
 
@@ -152,7 +152,7 @@ export class ContactConfigurationComponent implements OnInit {
 
           debugger;
           //let _data = JSON.parse(element);
-          //  element.type = element.type;
+          //element.type = element.type;
           element.type = this.contactTypeMap[element.type] ?? element.type;
 
           element.name = element.name;
@@ -202,22 +202,24 @@ export class ContactConfigurationComponent implements OnInit {
     this._request.searchItem = this.searchText;
 
     // ✅ Get selected type from form control
-    const selectedType = this.form.get('ContactType')?.value?.value;
+    const selectedType = this.form.get('ContactType')?.value === "" ? 0 : this.form.get('ContactType')?.value;
     this._request.type = selectedType || '';
 
-    this.ContactConfigService.GetAll().subscribe(response => {
+
+    this.ContactConfigService.GetAllContactMasterLists().subscribe(response => {
+    // this.ContactConfigService.GetAll().subscribe(response => {
 
       const items = response.result?.items;
       const totalCount = response.result?.totalCount;
       this.items = items;
-
+      console.log(response);
       if (Array.isArray(items)) {
 
         items.forEach((element: any) => {
 
 
           //let _data = JSON.parse(element);
-          // element.type = element.type;
+          //element.type = element.type;
           element.type = this.contactTypeMap[element.type] ?? element.type;
 
           element.name = element.name;
@@ -437,7 +439,7 @@ export class ContactConfigurationComponent implements OnInit {
 
 
       this.form.controls['ContactType'].setValue({
-        name: 'All',
+        name: 'ALL',
         value: null
       });
       // contactOptions.unshift({

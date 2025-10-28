@@ -70,7 +70,9 @@ GetAllContactMasterPage(Type: number, Filter:string,  maxResultCount?: number,sk
   GetContactMasterEmailList(_data: any) {
     return this._httpService._putMethod(_data, 'api/services/app/contact/GetContactMasterLists');
   }
-
+GetAllContactMasterLists() {
+    return this._httpService._getMethod('api/services/app/contact/GetAllContactMasterPage');
+  } 
   CheckContactNameExists(name: string, type:number, contact :string,id : Number)
   {
      let params: string[] = [];
