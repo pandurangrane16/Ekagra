@@ -39,7 +39,9 @@
               "node_modules/leaflet/dist/leaflet.css",
               "node_modules/ngx-toastr/toastr.css",
               "node_modules/leaflet/dist/leaflet.css",
-              "node_modules/select2/dist/css/select2.min.css"
+              "node_modules/select2/dist/css/select2.min.css",
+              "node_modules/material-icons/iconfont/material-icons.css",
+              "node_modules/material-icons/iconfont/outlined.css"
             ],
        "scripts": [
               "node_modules/jquery/dist/jquery.min.js",

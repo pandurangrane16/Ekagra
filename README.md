@@ -31,3 +31,6 @@ https://stackblitz.com/edit/chat-window?file=src%2Fapp%2Fapp.component.html
 
 ## For photo upload refrence
 https://stackblitz.com/edit/github-6t1o1d?file=src%2Fapp%2Fapp.component.scss
+
+# command used 
+npm install material-icons --force
