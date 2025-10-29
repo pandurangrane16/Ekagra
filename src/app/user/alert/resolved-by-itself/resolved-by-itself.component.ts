@@ -94,6 +94,7 @@ debugger;
     formData.append('ActionType', 'ResolvedByItself');
     formData.append('Operation', 'ResolvedByItselfWithFileUpload');
     formData.append('Status', String(4));
+    formData.append('UserId', sessionStorage.getItem('UserId') || '0');
 
     // append files from slots
     this.fileSlots.forEach((slot) => {
