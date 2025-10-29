@@ -30,6 +30,9 @@ import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 import { ToastrService } from 'ngx-toastr';
+import { trim } from 'jquery';
+import { ChangeDetectorRef } from '@angular/core';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-contact-configuration',
@@ -79,7 +82,8 @@ export class ContactConfigurationComponent implements OnInit {
 
     isDisabled: false
   };
-  ContactTypeSettings: Select2Settings = {
+
+    ContactTypeSettings: Select2Settings = {
     labelHeader: '',
     lableClass: 'form-label',
     formFieldClass: '',
@@ -93,39 +97,57 @@ export class ContactConfigurationComponent implements OnInit {
     private ContactConfigService: ContactConfigService
     , private dialog: MatDialog
     , private toast: ToastrService
+    , private cd: ChangeDetectorRef 
   ) { }
 
   ngOnInit(): void {
-    this.form = this.fb.group({
-      selectedProject: [''],
-      selectedStatus: [''],
-      searchText: [''],
-      ContactType: ['']
+      // wait for contact types to load before fetching list
+    // ✅ Step 1: Initialize your form first
+   // Step 1: Initialize form
+  this.form = this.fb.group({
+    selectedProject: [''],
+    selectedStatus: [''],
+    searchText: [''],
+    ContactType: ['']
+  });
+
+  // Step 2: Load dropdown types
+  this.loadContactTypes('Contact', 'Type').subscribe({
+    next: () => {
+      this.buildHeader();
+      this.getContactConfigList();
+      this.getContactList();
+    },
+    error: (err: any) => {
+      console.error('loadContactTypes error', err);
+      this.buildHeader();
+      this.getContactConfigList();
+      this.getContactList();
+    }
+  });
+
+  // ✅ Step 3: Enable search text listener
+  this.form.get('searchText')?.valueChanges
+    .pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    )
+    .subscribe(value => {
+      // Trigger API after 3+ characters or when cleared
+      if (value && value.trim().length >= 3) {
+        this.pager = 0;
+        this.getFilteredList();
+      } else if (!value || value.trim().length === 0) {
+        this.pager = 0;
+        this.getFilteredList();
+      }
     });
-    this.loadContactTypes('Contact', 'Type');
-    this.buildHeader();
-    this.getContactConfigList();
-    this.getContactList();
-
-
-    this.form.get('searchText')?.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged()
-      )
-      .subscribe(value => {
-        if (value && value.length >= 3) {
-          this.getFilteredList();
-        } else if (!value || value.length === 0) {
-          this.getFilteredList();
-        }
-      });
-
-
 
 
 
   }
+
+
 
   getFilteredList() {
     debugger;
@@ -135,7 +157,12 @@ export class ContactConfigurationComponent implements OnInit {
     const selectedProjectId = this.form.controls['selectedProject'].value.value;
     const selectedStatus = this.form.controls['selectedStatus'].value.value;
 
-    const selectedType = this.form.controls['ContactType'].value.value == null ? "" : this.form.controls['ContactType'].value.value;
+   const selectedType =
+  this.form.controls['ContactType']?.value?.value?.toString().trim() === '' ||
+  this.form.controls['ContactType']?.value?.value == null
+    ? 0
+    : this.form.controls['ContactType'].value.value;
+    
     //  const selectedStatus = this.form.controls['selectedStatus'].value.value;
     const search = this.form.controls['searchText'].value
     this.ContactConfigService.GetAllContactMasterPage(selectedType, search, this.MaxResultCount, this.SkipCount).subscribe(response => {
@@ -154,6 +181,27 @@ export class ContactConfigurationComponent implements OnInit {
           //let _data = JSON.parse(element);
           //element.type = element.type;
           element.type = this.contactTypeMap[element.type] ?? element.type;
+
+
+           //Logic written to convert numeric type to text if contactTypeMap does not have mapping
+            var ContactType1=element.type;
+            console.log("GetAllContactMasterPage COntactType1", ContactType1);
+
+            if(ContactType1=="1" || ContactType1=="2"|| ContactType1=="0")
+            {
+              if(ContactType1=="1")
+              {
+                ContactType1='SMS';
+              }
+              else if(ContactType1=="2")
+              {
+                ContactType1='EMAIL'
+              }   
+              element.type=ContactType1;
+            }
+            console.log("GetAllContactMasterPage COntactType1 after", ContactType1);
+
+
 
           element.name = element.name;
           element.contact = element.contact;
@@ -220,7 +268,26 @@ export class ContactConfigurationComponent implements OnInit {
 
           //let _data = JSON.parse(element);
           //element.type = element.type;
-          element.type = this.contactTypeMap[element.type] ?? element.type;
+           element.type = this.contactTypeMap[element.type] ?? element.type;
+
+           //Logic written to convert numeric type to text if contactTypeMap does not have mapping
+            var ContactType1=element.type;
+            console.log("getContactConfigList COntactType1", ContactType1);
+
+            if(ContactType1=="1" || ContactType1=="2"|| ContactType1=="0")
+            {
+              if(ContactType1=="1")
+              {
+                ContactType1='SMS';
+              }
+              else if(ContactType1=="2")
+              {
+                ContactType1='EMAIL'
+              }   
+              element.type=ContactType1;
+            }
+            console.log("getContactConfigList COntactType1 after", ContactType1);
+
 
           element.name = element.name;
           element.contact = element.contact;
@@ -420,45 +487,42 @@ export class ContactConfigurationComponent implements OnInit {
 
 
   loadContactTypes(Module: string, unit: string) {
-    debugger;
-    this.PramglobalService.GetAllGlobalValues(Module, unit).subscribe(response => {
+  return this.PramglobalService.GetAllGlobalValues(Module, unit).pipe(
+    tap(response => {
       const items = response?.result || [];
 
+      // Map backend data to dropdown-friendly structure
       const contactOptions = items.map((item: any) => ({
-        name: item.rfu1,
-        value: item.prmvalue
+        name: item.rfu1 ?? item.prmvalue ?? item.name,
+        value: item.prmvalue ?? item.rfu1 ?? item.value
       }));
 
-      // Fix: Add type annotations to `map` and `item`
-      this.contactTypeMap = contactOptions.reduce((map: { [key: string]: string }, item: { name: string; value: string }) => {
-        map[item.value] = item.name;
-        return map;
-      }, {} as { [key: string]: string });
-      console.log(this.contactTypeMap);
+      console.log('contactOptions', contactOptions);
 
+      // ✅ Find the "All" option (case-insensitive)
+      const allOption =
+        contactOptions.find(
+          (opt: any) =>
+            (opt.name && opt.name.toLowerCase() === 'all') ||
+            (opt.value && opt.value.toLowerCase() === 'all')
+        ) || null;
 
+      // Assign updated options to settings
+      this.ContactTypeSettings = {
+        ...this.ContactTypeSettings,
+        options: contactOptions
+      };
 
-      this.form.controls['ContactType'].setValue({
-        name: 'ALL',
-        value: null
-      });
-      // contactOptions.unshift({
-      //   name: 'All',
-      //   value: null
-      // });
-      console.log(contactOptions);
+      // ✅ If "All" exists, select it by default; otherwise use first option
+      const defaultOption =
+        allOption ||
+        (contactOptions.length ? contactOptions[0] : { name: '-- select --', value: null });
 
-      this.ContactTypeSettings.options = contactOptions;
-      this.isContactLoaded = true;
-    }, error => {
-      console.error('Error fetching Contact Type list', error);
-    });
-  }
+      this.form.controls['ContactType'].setValue(defaultOption);
 
-
-
-
-
-
-
+      // Trigger Angular change detection (important for OnPush)
+      this.cd.markForCheck();
+    })
+  );
+}
 }
