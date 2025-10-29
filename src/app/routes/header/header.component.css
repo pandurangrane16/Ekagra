@@ -10,7 +10,8 @@ header .mat-mdc-icon-button.mat-mdc-button-base {
     height: var(--mdc-icon-button-state-layer-size);
     padding: 0;
 }
-.logo2{width: 264px;}
+.logo2{max-width: 264px;
+    width: 100%;}
 ::ng-deep .mdc-text-field--no-label .mat-mdc-form-field-infix {
     --mat-form-field-container-vertical-padding:12px;
     padding-top: var(--mat-form-field-container-vertical-padding);
