@@ -12,13 +12,24 @@
  
             <div>
                <label>Select Type</label>
-<app-cm-select2
+<!-- <app-cm-select2
 *ngIf="isContactLoaded"
     [formGroup]="form"
     [controlName]="'ContactType'"
     [settings]="ContactTypeSettings"
     (optionSelected)="onContactTypeSelected($event)" class="mt_20f">
-  </app-cm-select2>
+  </app-cm-select2> -->
+
+  <app-cm-select2
+  *ngIf="ContactTypeSettings?.options?.length"
+  [formGroup]="form"
+  [controlName]="'ContactType'"
+  [settings]="ContactTypeSettings"
+  (optionSelected)="onContactTypeSelected($event)"
+  class="mt_20f">
+</app-cm-select2>
+
+
             </div>
   
 
