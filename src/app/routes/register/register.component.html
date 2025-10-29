@@ -4,23 +4,19 @@
             <div class="login justify-content-center align-items-center">
                 <img src="assets/img/logo.svg" alt="" class="ml-auto mr-auto logo">
                 <form [formGroup]="form">
-                    <div class="row">
-                        <div class="col-md-3">
+                    <div class="row mt-2">
+                        <div class="col-md-6">
                             <mat-label class="align-self-start">First Name</mat-label>
-                        </div>
-                        <div class="col-md-9">
+                        
                             <mat-form-field class="mat-elevation-z16">
                                 <input matInput placeholder="Enter your First Name" class="form-control"
                                     formControlName="firstName">
                             </mat-form-field>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-3">
+                    
+                        <div class="col-md-6">
                             <mat-label class="align-self-start">Last Name</mat-label>
-                        </div>
-                        <div class="col-md-9">
+                       
                             <mat-form-field class="mat-elevation-z16">
                                 <input matInput placeholder="Enter your Last Name" class="form-control"
                                     formControlName="lastName">
@@ -29,24 +25,20 @@
                     </div>
 
 
-                    <div class="row">
-                        <div class="col-md-3">
+                    <div class="row mt-2">
+                        <div class="col-md-6">
                             <mat-label class="align-self-start">userName</mat-label>
-                        </div>
-                        <div class="col-md-9">
+                        
                             <mat-form-field class="mat-elevation-z16">
                                 <input matInput placeholder="Enter your userName" class="form-control"
                                     formControlName="userNameOrEmailAddress">
                                 <mat-hint class="d-none">Hint</mat-hint>
                             </mat-form-field>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-3">
+                   
+                        <div class="col-md-6">
                             <mat-label class="align-self-start">Email</mat-label>
-                        </div>
-                        <div class="col-md-9">
+                       
                             <mat-form-field class="mat-elevation-z16">
                                 <input matInput placeholder="Enter your email" class="form-control"
                                     formControlName="userNameOrEmailAddress">
@@ -55,25 +47,19 @@
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-3">
+                    <div class="row mt-2">
+                        <div class="col-md-6">
                             <mat-label class="align-self-start">Password</mat-label>
-                        </div>
-                        <div class="col-md-9">
+                       
                             <mat-form-field class="mat-elevation-z24" appearance="fill">
                                 <input matInput [type]="showPassword ? 'text' : 'password'" placeholder="**********"
                                     class="form-control" formControlName="password">
                             </mat-form-field>
                         </div>
-                    </div>
-
-
-                    <div class="row">
-                        <div class="col-md-3">
+                    
+                        <div class="col-md-6">
                             <mat-label class="align-self-start">ReType Password</mat-label>
-                        </div>
-                        <div class="col-md-9">
-
+                       
                             <mat-form-field class="mat-elevation-z24" appearance="fill">
                                 <input matInput [type]="showPassword ? 'text' : 'password'" placeholder="**********"
                                     class="form-control" formControlName="retypePassword">
@@ -88,10 +74,12 @@
                         </div>
                     </div>
 
-
-                    <button mat-flat-button class="btn w-100" (click)="OnRegister()">Register</button>
-                    <button mat-flat-button class="btn w-100" (click)="onSSOLogin()">Login</button>
+<div class="d-flex gap-2">
+                    <button mat-flat-button class="btn w-50" (click)="OnRegister()">Register</button>
+                    <button mat-stroked-button color="primary" class="w-50 btnLogin" (click)="onSSOLogin()">Login</button>
+                    </div>
                 </form>
+                
             </div>
 
             <app-footer></app-footer>

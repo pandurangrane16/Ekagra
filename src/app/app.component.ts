@@ -2,7 +2,7 @@ import { Component, importProvidersFrom, Inject, Input, input, OnInit, Renderer2
 import { FooterComponent } from './routes/footer/footer.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { SidenavComponent } from './routes/sidenav/sidenav.component';
-import { ActivatedRoute, Router, RouterModule, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterModule, RouterOutlet } from '@angular/router';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { HeaderComponent } from './routes/header/header.component';
 import { DashboardComponent } from './routes/dashboard/dashboard.component';
@@ -60,16 +60,17 @@ export class AppComponent implements OnInit {
     this.parentClass = className;
   }
   token: any;
+  showElement: boolean = false;
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private renderer: Renderer2,
     private toastr: ToastrService,
-    public headerService: HeaderService, public routes: Router, private route: ActivatedRoute,
+    public headerService: HeaderService, public routes: Router, public route: ActivatedRoute,
     public loaderService: LoaderService,
     private signalRService: SignalRService,
     private snackBar: MatSnackBar,
     //private keycloakService: KeycloakService,
-    private router: Router
+    public router: Router
   ) {
   }
 
@@ -88,6 +89,12 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit() {
+   this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        // Hide element on '/' and '/login', show on all other routes
+        this.showElement = !(event.url === '/' || event.url.includes('login') ||  event.url.includes('register'));
+      }
+    });
     // this.signalRService.notifications$.subscribe((message: string) => {
     //   // this.snackBar.open(message, 'Close', {
     //   //   duration: 5000,
@@ -98,5 +105,7 @@ export class AppComponent implements OnInit {
     //   this.toastr.success(message);
     // });
   }
+
+
 
 }

@@ -1,6 +1,7 @@
-
 /* .container-fluid{overflow: hidden; height: 100vh;} */
-
+::ng-deep .slick-dotted.slick-slider {
+    margin-bottom: 0px;
+}
 ::ng-deep .slick-dots {
   display: flex;
   justify-content: center;
@@ -60,8 +61,8 @@ flex-direction: column;align-items: stretch;}
   display: flex;
   flex-direction: column;
   gap: 12px;
-  width: 332px;
-  margin: auto;
+  width: 90%;
+   margin: auto;
 }
 footer {
   flex-shrink: 0;
@@ -97,7 +98,7 @@ footer {
   display: none
 }
 mat-label{font-weight: 500;}
-.logo{margin-bottom: 20px; width: 200px;}
+.logo{margin-bottom: 10px; width: 150px;}
 button.btn{
   color: var(--White, #FFF);
 text-align: center;
@@ -111,6 +112,25 @@ letter-spacing: 0.15px;
 text-transform: uppercase;
 background-color: var(--primary-color);
 margin-top: 32px;
+}
+button.btnLogin{
+text-align: center;
+/* Title/Medium */
+font-family: Poppins;
+font-size: 16px;
+font-style: normal;
+font-weight: 500;
+line-height: 24px; /* 150% */
+letter-spacing: 0.15px;
+text-transform: uppercase;
+margin-top: 32px;
+--mat-sys-primary:#1c2d7b;
+border-color: var(--mat-sys-primary);
+}
+ .mat-mdc-outlined-button{
+--mat-sys-primary:#1c2d7b;
+border-color: var(--mat-sys-primary);
+color: var(--mat-sys-primary);
 }
 @media only screen and (max-width: 600px) {
 
