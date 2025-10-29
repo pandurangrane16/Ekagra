@@ -6,39 +6,39 @@
                 <form [formGroup]="form">
                     <div class="row mt-2">
                         <div class="col-md-6">
-                            <mat-label class="align-self-start">First Name</mat-label>
-                        
+                            <mat-label class="align-self-start labelFont">First Name</mat-label>
+
                             <mat-form-field class="mat-elevation-z16">
                                 <input matInput placeholder="Enter your First Name" class="form-control"
                                     formControlName="firstName">
                             </mat-form-field>
                         </div>
-                    
+
                         <div class="col-md-6">
-                            <mat-label class="align-self-start">Last Name</mat-label>
-                       
+                            <mat-label class="align-self-start labelFont">Last Name</mat-label>
+
                             <mat-form-field class="mat-elevation-z16">
                                 <input matInput placeholder="Enter your Last Name" class="form-control"
                                     formControlName="lastName">
                             </mat-form-field>
                         </div>
                     </div>
-
+                    <br>
 
                     <div class="row mt-2">
                         <div class="col-md-6">
-                            <mat-label class="align-self-start">userName</mat-label>
-                        
+                            <mat-label class="align-self-start labelFont">User Name</mat-label>
+
                             <mat-form-field class="mat-elevation-z16">
                                 <input matInput placeholder="Enter your userName" class="form-control"
                                     formControlName="userNameOrEmailAddress">
                                 <mat-hint class="d-none">Hint</mat-hint>
                             </mat-form-field>
                         </div>
-                   
+
                         <div class="col-md-6">
-                            <mat-label class="align-self-start">Email</mat-label>
-                       
+                            <mat-label class="align-self-start labelFont">Email</mat-label>
+
                             <mat-form-field class="mat-elevation-z16">
                                 <input matInput placeholder="Enter your email" class="form-control"
                                     formControlName="userNameOrEmailAddress">
@@ -46,20 +46,20 @@
                             </mat-form-field>
                         </div>
                     </div>
-
+                    <br>
                     <div class="row mt-2">
                         <div class="col-md-6">
-                            <mat-label class="align-self-start">Password</mat-label>
-                       
+                            <mat-label class="align-self-start labelFont">Password</mat-label>
+
                             <mat-form-field class="mat-elevation-z24" appearance="fill">
                                 <input matInput [type]="showPassword ? 'text' : 'password'" placeholder="**********"
                                     class="form-control" formControlName="password">
                             </mat-form-field>
                         </div>
-                    
+
                         <div class="col-md-6">
-                            <mat-label class="align-self-start">ReType Password</mat-label>
-                       
+                            <mat-label class="align-self-start labelFont">ReType Password</mat-label>
+
                             <mat-form-field class="mat-elevation-z24" appearance="fill">
                                 <input matInput [type]="showPassword ? 'text' : 'password'" placeholder="**********"
                                     class="form-control" formControlName="retypePassword">
@@ -73,13 +73,14 @@
                             </mat-form-field>
                         </div>
                     </div>
-
-<div class="d-flex gap-2">
-                    <button mat-flat-button class="btn w-50" (click)="OnRegister()">Register</button>
-                    <button mat-stroked-button color="primary" class="w-50 btnLogin" (click)="onSSOLogin()">Login</button>
+                    <br>
+                    <div class="d-flex gap-2">
+                        <button mat-flat-button class="btn w-50" (click)="OnRegister()">Register</button>
+                        <button mat-stroked-button color="primary" class="w-50 btnLogin"
+                            (click)="onSSOLogin()">Login</button>
                     </div>
                 </form>
-                
+
             </div>
 
             <app-footer></app-footer>

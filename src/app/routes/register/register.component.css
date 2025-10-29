@@ -140,3 +140,7 @@ color: var(--mat-sys-primary);
 .toast-custom-width {
   width: 600px !important;
 }
+
+.labelFont {
+  font-weight: bold;
+}
