@@ -188,7 +188,7 @@ export class SopflowComponent implements OnInit {
     this.alertService.getSopActionByAlert(this.policyData.policyId).subscribe(res => {
       if (res != undefined) {
         let sop : Sop;
-        sop.frsId
+        //sop.frsId
       } else {
         this.toastr.error("Something went wrong");
       }
