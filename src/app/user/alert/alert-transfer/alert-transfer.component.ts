@@ -14,7 +14,8 @@ import { projconfigservice } from '../../../services/admin/progconfig.service';
 import { alertservice } from '../../../services/admin/alert.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-
+import { AlertlogService } from '../../../services/admin/alertlog.service';
+  
 
 @Component({
   selector: 'app-alert-transfer',
@@ -45,7 +46,8 @@ export class AlertTransferComponent implements OnInit {
   };
   
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,  private fb: FormBuilder,
-  private dialog : Dialog, private loaderService : LoaderService,private service: alertservice, private toast: ToastrService,) { }
+  private dialog : Dialog, private loaderService : LoaderService,private service: alertservice, private toast: ToastrService,
+  private alertLogService: AlertlogService) { }
   
   
   ngOnInit(): void {
@@ -110,15 +112,41 @@ const projectOptions = items.map((item: any) => ({
         remarks: this.form.controls['remarks'].value
       };
 
-    
+    debugger;
       this.service.TransferSOP(alertModel)
         .pipe(withLoader(this.loaderService))
         .subscribe({
           next: () => {
             this.toast.success('Alert submitted successfully');
             
-             this.dialog.closeAll();
-            this.router.navigate(['/alerts']); 
+            var AlertLogRemark=this.form.controls['remarks'].value;
+            alert(AlertLogRemark);
+                // ✅ Create FormData for AlertLog
+            const logData = {
+                AlertId: this.data?.allData?.alertId || this.data?.allData?.id || 0,
+                alertLogRemarks: AlertLogRemark +' (Transfered to: ' + this.form.controls['selectedUser'].value.name +')'|| '',
+                ActionType: 'Transfer',
+                Operation: 'Transfer',
+                Status: 4,
+                UserId: Number(sessionStorage.getItem('UserId')) || 0
+              };
+
+            // ✅ Call AlertLog create API
+            this.alertLogService.AlertLogCreate(logData)
+              .pipe(withLoader(this.loaderService))
+              .subscribe({
+                next: () => {
+                  this.toast.success('Alert log created successfully');
+                  this.dialog.closeAll();
+                  this.router.navigate(['/alerts']);
+                },
+                error: (err) => {
+                  console.error('Failed to create alert log:', err);
+                  this.toast.error('Alert transferred, but failed to log entry');
+                }
+              });
+
+
           },
           error: (err) => {
             console.error('Save failed:', err);

@@ -99,11 +99,31 @@ constructor(
   }
 onProjectSelected(selectedProject: any) {
 
-try{  debugger;
+try{ 
+  //  debugger;
+  //   console.log('Selected Project:', selectedProject);
+  //   if (selectedProject && selectedProject.value) {
+  //     this.loadApiListByProject(selectedProject.value);
+  //   }
+
+   debugger;
     console.log('Selected Project:', selectedProject);
-    if (selectedProject && selectedProject.value) {
-      this.loadApiListByProject(selectedProject.value);
+
+    // ✅ If no project selected or '--select--', reload page
+    if (
+      !selectedProject || 
+      !selectedProject.value || 
+      selectedProject.value === '' || 
+      selectedProject.value === '--select--'
+    ) {
+      console.warn('Invalid or empty project selected. Reloading page...');
+      window.location.reload();
+      return;
     }
+
+    // ✅ Otherwise, load API list for selected project
+    this.loadApiListByProject(selectedProject.value);
+    
     } catch (ex) {
     console.error('Client-side JS error:', ex);
   }
