@@ -71,9 +71,14 @@ export class alertservice {
   updateAlert(data: any) {
     return this._httpService._putMethod(data, 'api/services/app/Alert/Update');
   }
-ResolvedByItselfWithFileUpload(formData: FormData) {
+  ResolvedByItselfWithFileUpload(formData: FormData) {
     const url = 'api/services/app/Alert/ResolvedByItselfWithFileUpload';
     return this._httpService._postMethod(formData, url);
+  }
+
+  getSopActionByAlert(policyId: number) {
+    const url = 'api/services/app/SOPAction/GetSOPConfActionOnPolicyId?policyId='+policyId;
+    return this._httpService._getMethod(url);
   }
 
 }

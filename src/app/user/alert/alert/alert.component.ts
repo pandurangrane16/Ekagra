@@ -40,6 +40,7 @@ export class AlertComponent implements OnInit {
   router = inject(Router);
   _headerName = 'Project Configuration Table';
   headArr: any[] = [];
+  clickedRow: any;
   items: any;
   _request: any = new InputRequest();
   totalPages: number = 1;
@@ -258,7 +259,8 @@ export class AlertComponent implements OnInit {
 
 
   onRowClicked(row: any) {
-    console.log('Row clicked:', row);
+    this.clickedRow = row;
+    console.log(this.clickedRow);
   }
 
   onButtonClicked({ event, data }: { event: any; data: any }) {
@@ -305,7 +307,9 @@ export class AlertComponent implements OnInit {
         }
       });
     } else if (event.type === 'perform') {
-      this.router.navigate(['user/sopflow']);
+      this.router.navigate(['user/sopflow'], {
+        state: {data: this.clickedRow}
+      });
     } else if (event.type === 'history') {
       const dialogRef = this.dialog.open(AlertHistoryComponent, {
         width: '800px',
@@ -432,7 +436,6 @@ export class AlertComponent implements OnInit {
           //   { label: 'Delete', icon: 'delete', type: 'delete' }
           // ];
 
-         
           element.buttonlist = [
             { label: 'Transfer', icon: 'output', type: 'transfer', disabled: false },
             { label: 'Perform', icon: 'schedule', type: 'perform', disabled: false },
@@ -459,7 +462,7 @@ export class AlertComponent implements OnInit {
   updateAlertStatus(data: any) {
     this.service.updateAlert(data).subscribe(res => {
       if (res != null && res != undefined) {
-        
+
       }
     })
   }

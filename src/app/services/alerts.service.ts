@@ -58,4 +58,6 @@ export class AlertsService {
   getData(): Section[] {
     return this.alerts;
   }
+
+
 }

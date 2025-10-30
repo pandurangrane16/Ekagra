@@ -42,7 +42,9 @@
   transition: opacity 0.6s ease;
   line-height: 16px;
 }
-
+::ng-deep .slick-dotted.slick-slider {
+    margin-bottom: 0px;
+}
 ::ng-deep .slick-slide img{
   height: 100vh;
 }

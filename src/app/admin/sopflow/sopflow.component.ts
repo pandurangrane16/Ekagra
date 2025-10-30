@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MaterialModule } from '../../Material.module';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -18,6 +18,8 @@ import { ItmsChallanCollectionComponent } from "../../user/alert/actions/itms-ch
 import { EnvSensorFailureComponent } from "../../user/alert/actions/env-sensor-failure/env-sensor-failure.component";
 import { EnvSensorPollutionComponent } from "../../user/alert/actions/env-sensor-pollution/env-sensor-pollution.component";
 import { Router } from '@angular/router';
+import { alertservice } from '../../services/admin/alert.service';
+import { ToastrService } from 'ngx-toastr';
 interface SopActivity {
   id: string;
   useCase: string;
@@ -44,8 +46,8 @@ interface Sop {
   templateUrl: './sopflow.component.html',
   styleUrl: './sopflow.component.css'
 })
-export class SopflowComponent {
-   router = inject(Router);
+export class SopflowComponent implements OnInit {
+  router = inject(Router);
   sops: Sop[] = [
     {
       frsId: 'SOP_VMS_001',
@@ -57,8 +59,8 @@ export class SopflowComponent {
         // { id: 'ACT-002', useCase: 'Email Management', activity: 'Incident created automatically', duration: 'Instant', type: 'Auto',action : "email" },
         // { id: 'ACT-003', useCase: 'API Management', activity: 'Operator verifies incident', duration: '1-2 mins', type: 'Auto',action : "api" },
         // { id: 'ACT-004', useCase: 'PA Management', activity: 'Public Announcement', duration: 'Instant', type: 'Auto',action : "pa" },
-        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'VMS Device Failure', duration: 'Instant', type: 'Auto', action: "vmsdevicefailure", sequence: 0, hasAccess: true,  status: false },
-        { id: 'ACT-002', useCase: 'Fixed the problem', activity: 'VMS Device Failure', duration: 'Instant', type: 'Auto', action: "vmsdevicefailure", sequence: 1, hasAccess: true,  status: false },
+        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'VMS Device Failure', duration: 'Instant', type: 'Auto', action: "vmsdevicefailure", sequence: 0, hasAccess: true, status: false },
+        { id: 'ACT-002', useCase: 'Fixed the problem', activity: 'VMS Device Failure', duration: 'Instant', type: 'Auto', action: "vmsdevicefailure", sequence: 1, hasAccess: true, status: false },
         // { id: 'ACT-003', useCase: 'Close the activity', activity: 'VMS Device Failure', duration: 'Instant', type: 'Auto',action : "vmsdevicefailure",sequence : 2,hasAccess : true },
       ]
     },
@@ -68,9 +70,9 @@ export class SopflowComponent {
       system: 'VMS',
       status: true,
       activities: [
-        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'VMD Emergency Message Publish', duration: 'Instant', type: 'Auto', action: "vmsemergency", sequence: 0, hasAccess: true,status: true },
-        { id: 'ACT-002', useCase: 'Publish Emergency Message', activity: 'VMD Emergency Message Publish', duration: 'Instant', type: 'Auto', action: "vmsemergency", sequence: 1, hasAccess: true ,status: true},
-        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'VMD Emergency Message Publish', duration: 'Instant', type: 'Auto', action: "vmsemergency", sequence: 2, hasAccess: true,status: true },
+        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'VMD Emergency Message Publish', duration: 'Instant', type: 'Auto', action: "vmsemergency", sequence: 0, hasAccess: true, status: true },
+        { id: 'ACT-002', useCase: 'Publish Emergency Message', activity: 'VMD Emergency Message Publish', duration: 'Instant', type: 'Auto', action: "vmsemergency", sequence: 1, hasAccess: true, status: true },
+        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'VMD Emergency Message Publish', duration: 'Instant', type: 'Auto', action: "vmsemergency", sequence: 2, hasAccess: true, status: true },
       ]
     },
     {
@@ -79,9 +81,9 @@ export class SopflowComponent {
       system: 'ATCS',
       status: true,
       activities: [
-        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "atcshealth", sequence: 0, hasAccess: true,status: true },
-        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "atcshealth", sequence: 1, hasAccess: true ,status: true},
-        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "atcshealth", sequence: 2, hasAccess: true,status: true },
+        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "atcshealth", sequence: 0, hasAccess: true, status: true },
+        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "atcshealth", sequence: 1, hasAccess: true, status: true },
+        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "atcshealth", sequence: 2, hasAccess: true, status: true },
       ]
     },
     {
@@ -90,10 +92,10 @@ export class SopflowComponent {
       system: 'ATCS',
       status: true,
       activities: [
-        { id: 'ACT-001', useCase: 'Visual Verification', activity: 'Conduct visual verification by opening camera', duration: 'Instant', type: 'Auto', action: "atcscongestion", sequence: 0, hasAccess: true,status: true },
-        { id: 'ACT-002', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "atcscongestion", sequence: 1, hasAccess: true,status: true },
-        { id: 'ACT-003', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "atcscongestion", sequence: 2, hasAccess: true,status: true },
-        { id: 'ACT-004', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "atcscongestion", sequence: 3, hasAccess: true,status: true },
+        { id: 'ACT-001', useCase: 'Visual Verification', activity: 'Conduct visual verification by opening camera', duration: 'Instant', type: 'Auto', action: "atcscongestion", sequence: 0, hasAccess: true, status: true },
+        { id: 'ACT-002', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "atcscongestion", sequence: 1, hasAccess: true, status: true },
+        { id: 'ACT-003', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "atcscongestion", sequence: 2, hasAccess: true, status: true },
+        { id: 'ACT-004', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "atcscongestion", sequence: 3, hasAccess: true, status: true },
       ]
     },
     {
@@ -102,9 +104,9 @@ export class SopflowComponent {
       system: 'ATCS',
       status: true,
       activities: [
-        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "atcslampfailure", sequence: 0, hasAccess: true ,status: true},
-        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "atcslampfailure", sequence: 1, hasAccess: true,status: true },
-        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "atcslampfailure", sequence: 2, hasAccess: true,status: true },
+        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "atcslampfailure", sequence: 0, hasAccess: true, status: true },
+        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "atcslampfailure", sequence: 1, hasAccess: true, status: true },
+        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "atcslampfailure", sequence: 2, hasAccess: true, status: true },
       ]
     },
     {
@@ -113,9 +115,9 @@ export class SopflowComponent {
       system: 'ATCS',
       status: true,
       activities: [
-        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "atcsdetectorfailure", sequence: 0, hasAccess: true,status: true },
-        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "atcsdetectorfailure", sequence: 1, hasAccess: true,status: true },
-        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "atcsdetectorfailure", sequence: 2, hasAccess: true ,status: true},
+        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "atcsdetectorfailure", sequence: 0, hasAccess: true, status: true },
+        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "atcsdetectorfailure", sequence: 1, hasAccess: true, status: true },
+        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "atcsdetectorfailure", sequence: 2, hasAccess: true, status: true },
       ]
     },
     {
@@ -124,9 +126,9 @@ export class SopflowComponent {
       system: 'ITMS',
       status: true,
       activities: [
-        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "itmscamerafailure", sequence: 0, hasAccess: true,status: true },
-        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "itmscamerafailure", sequence: 1, hasAccess: true,status: true },
-        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "itmscamerafailure", sequence: 2, hasAccess: true ,status: true},
+        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "itmscamerafailure", sequence: 0, hasAccess: true, status: true },
+        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "itmscamerafailure", sequence: 1, hasAccess: true, status: true },
+        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "itmscamerafailure", sequence: 2, hasAccess: true, status: true },
       ]
     },
     {
@@ -135,9 +137,9 @@ export class SopflowComponent {
       system: 'ITMS',
       status: true,
       activities: [
-        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "itmslpufailure", sequence: 0, hasAccess: true,status: true },
-        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "itmslpufailure", sequence: 1, hasAccess: true,status: true },
-        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "itmslpufailure", sequence: 2, hasAccess: true ,status: true},
+        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "itmslpufailure", sequence: 0, hasAccess: true, status: true },
+        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "itmslpufailure", sequence: 1, hasAccess: true, status: true },
+        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "itmslpufailure", sequence: 2, hasAccess: true, status: true },
       ]
     },
     {
@@ -146,9 +148,9 @@ export class SopflowComponent {
       system: 'ITMS',
       status: true,
       activities: [
-        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "itmschallancollection", sequence: 0, hasAccess: true,status: true },
-        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "itmschallancollection", sequence: 1, hasAccess: true,status: true },
-        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "itmschallancollection", sequence: 2, hasAccess: true ,status: true},
+        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "itmschallancollection", sequence: 0, hasAccess: true, status: true },
+        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "itmschallancollection", sequence: 1, hasAccess: true, status: true },
+        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "itmschallancollection", sequence: 2, hasAccess: true, status: true },
       ]
     },
     {
@@ -157,9 +159,9 @@ export class SopflowComponent {
       system: 'ENV',
       status: true,
       activities: [
-        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "envsensorfailure", sequence: 0, hasAccess: true,status: true },
-        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "envsensorfailure", sequence: 1, hasAccess: true,status: true },
-        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "envsensorfailure", sequence: 2, hasAccess: true,status: true },
+        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "envsensorfailure", sequence: 0, hasAccess: true, status: true },
+        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "envsensorfailure", sequence: 1, hasAccess: true, status: true },
+        { id: 'ACT-003', useCase: 'Verification and Completion', activity: 'Verify health status and closed ticket', duration: 'Instant', type: 'Auto', action: "envsensorfailure", sequence: 2, hasAccess: true, status: true },
       ]
     },
     {
@@ -168,16 +170,32 @@ export class SopflowComponent {
       system: 'ENV',
       status: true,
       activities: [
-        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "envsensorpollution", sequence: 0, hasAccess: true,status: true },
-        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "envsensorpollution", sequence: 1, hasAccess: true ,status: true},
-        { id: 'ACT-003', useCase: 'Publish Message on VMD\'s', activity: 'Publish environment message on vmd', duration: 'Instant', type: 'Auto', action: "envsensorpollution", sequence: 2, hasAccess: true,status: true },
+        { id: 'ACT-001', useCase: 'Assign to field engineer', activity: 'Assign To Field Personel', duration: 'Instant', type: 'Auto', action: "envsensorpollution", sequence: 0, hasAccess: true, status: true },
+        { id: 'ACT-002', useCase: 'Address the issue', activity: 'Address the issue and fixed', duration: 'Instant', type: 'Auto', action: "envsensorpollution", sequence: 1, hasAccess: true, status: true },
+        { id: 'ACT-003', useCase: 'Publish Message on VMD\'s', activity: 'Publish environment message on vmd', duration: 'Instant', type: 'Auto', action: "envsensorpollution", sequence: 2, hasAccess: true, status: true },
       ]
     }
   ];
 
+  policyData: any;
 
+  constructor(private alertService: alertservice, private toastr: ToastrService) {
+    const navigation = this.router.getCurrentNavigation();
+    this.policyData = navigation?.extras?.state?.['data'];
 
-   close() {
+  }
+  ngOnInit(): void {
+    this.alertService.getSopActionByAlert(this.policyData.policyId).subscribe(res => {
+      if (res != undefined) {
+        let sop : Sop;
+        //sop.frsId
+      } else {
+        this.toastr.error("Something went wrong");
+      }
+    })
+  }
+
+  close() {
     this.router.navigate(['/alerts']);
   }
 }

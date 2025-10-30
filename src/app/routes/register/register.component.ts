@@ -138,7 +138,7 @@ loaderService = inject(LoaderService);
   OnRegister() {
     const formVal = this.form.value;
     this.toastr.success(
-  "Your request has been successfully submitted. You will receive an email notification once your request has been reviewed and approved.",
+  "Your request has been successfully submitted. You will receive an email once your request has been reviewed and approved.",
   '',
   { timeOut: 10000,
     positionClass: 'toast-bottom-center',
