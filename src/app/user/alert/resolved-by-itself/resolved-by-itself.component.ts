@@ -11,6 +11,8 @@ import{alertservice} from '../../../services/admin/alert.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 export interface ResolvedByData {
+  id: number;
+  allData?: any;  
   alertId?: string;
   policyName?: string;
   confirmButtonText?: string;

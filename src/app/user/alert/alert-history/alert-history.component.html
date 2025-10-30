@@ -11,99 +11,30 @@
     </div>
 </div>
 <div class="pageWrapper">
-    <mat-card class="cardWithShadow theme-card">
-        
-            <mat-card-content>
-                <table class="table table-bordered">
-                    <thead class="bg-info-subtle table-secondary fw-bold border-bottom">
-                        <tr>
-                            <td class="text-center">Sr No</td>
-                            <td>Action</td>
-                            <td class="col-md-2">Performed By</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text-center">1</td>
-                            <td>Ticket Acknowledge Completed</td>
-                            <td> Anup Jadhav</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">2</td>
-                            <td>Assigned to site engineer of North Zone</td>
-                            <td> Anup Jadhav</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">3</td>
-                            <td>Ticket resolved and evidence submitted</td>
-                            <td> Sujit Gaikwad</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">4</td>
-                            <td>Verified and Closed</td>
-                            <td>Anup Jadhav</td>
-                        </tr>
-                    </tbody>
-                    </table>
-                <!-- <div class="row">
-                    <div class="col-md-3 font-bold">
-                        Sr No
-                    </div>
-                    <div class="col-md-6">
-                        Action
-                    </div>
-                    <div class="col-md-3">
-                        Performed By
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3">
-                        1
-                    </div>
-                    <div class="col-md-6">
-                        Ticket Acknowledge Completed
-                    </div>
-                    <div class="col-md-3">
-                        Anup Jadhav
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-3">
-                        2
-                    </div>
-                    <div class="col-md-6">
-                        Assigned to site engineer of North Zone
-                    </div>
-                    <div class="col-md-3">
-                        Anup Jadhav
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-3">
-                        3
-                    </div>
-                    <div class="col-md-6">
-                        Ticket resolved and evidence submitted
-                    </div>
-                    <div class="col-md-3">
-                        Sujit Gaikwad
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-3">
-                        4
-                    </div>
-                    <div class="col-md-6">
-                        Verified and Closed
-                    </div>
-                    <div class="col-md-3">
-                        Anup Jadhav
-                    </div>
-                </div> -->
-            </mat-card-content>
-        
-    </mat-card>
+  <mat-card class="cardWithShadow theme-card">
+    <mat-card-content>
+      <table class="table table-bordered" id="AlertHistory">
+        <thead class="bg-info-subtle table-secondary fw-bold border-bottom">
+          <tr>
+            <td class="text-center">Sr No</td>
+            <td>Action</td>
+            <td class="col-md-2">Performed By</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="isLoading">
+            <td colspan="3" class="text-center">Loading...</td>
+          </tr>
+          <tr *ngIf="!isLoading && (!alertHistory || alertHistory.length === 0)">
+            <td colspan="3" class="text-center">No history found.</td>
+          </tr>
+          <tr *ngFor="let row of alertHistory; let i = index">
+            <td class="text-center">{{ i + 1 }}</td>
+            <td>{{row.actionName|| row.alertLogRemarks   ||row.operation|| '-' }}</td>
+            <td>{{ row.userName || row.performedBy || row.creatorName || row.creatorUserId || '-' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </mat-card-content>
+  </mat-card>
 </div>
