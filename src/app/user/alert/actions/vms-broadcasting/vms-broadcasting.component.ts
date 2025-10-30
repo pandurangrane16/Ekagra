@@ -1,21 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MaterialModule } from '../../../../Material.module';
 import { CommonModule } from '@angular/common';
 import { CmInputComponent } from '../../../../common/cm-input/cm-input.component';
 import { CmSelect2Component } from '../../../../common/cm-select2/cm-select2.component';
 import { CmSelectCheckComponent } from '../../../../common/cm-select-check/cm-select-check.component';
 import { FormBuilder, Validators } from '@angular/forms';
+import { alertservice } from '../../../../services/admin/alert.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-vms-broadcasting',
-  imports: [MaterialModule,CommonModule,CmInputComponent,CmSelect2Component,CmSelectCheckComponent],
+  imports: [MaterialModule, CommonModule, CmInputComponent, CmSelect2Component, CmSelectCheckComponent],
   templateUrl: './vms-broadcasting.component.html',
   styleUrl: './vms-broadcasting.component.css'
 })
 export class VmsBroadcastingComponent implements OnInit {
 
-  form:any;
-  isTypeSelected : boolean = false;
+  form: any;
+  isTypeSelected: boolean = false;
   actionTypeSettings = {
     labelHeader: 'Select Type',
     lableClass: 'form-label',
@@ -35,7 +37,7 @@ export class VmsBroadcastingComponent implements OnInit {
       color: 'primary',
       formFieldClass: "w-100"
     },
-    unitValue : {
+    unitValue: {
       labelHeader: 'Unit Value',
       placeholder: 'Unit Value',
       appearance: 'outline',
@@ -56,28 +58,49 @@ export class VmsBroadcastingComponent implements OnInit {
   };
   unitSettings = {
     labelHeader: 'Select Unit',
-      lableClass: 'form-label',
-      formFieldClass: 'w-100',
-      appearance: 'fill',
-      options: [
-        { name: 'Seconds', value: 0 },
-        { name: 'Minutes', value: 1 },
-      ]
+    lableClass: 'form-label',
+    formFieldClass: 'w-100',
+    appearance: 'fill',
+    options: [
+      { name: 'Seconds', value: 0 },
+      { name: 'Minutes', value: 1 },
+    ]
   }
-  isVmdSelected : boolean = true;
-constructor(private fb : FormBuilder){}
+  isVmdSelected: boolean = true;
+  alertService = inject(alertservice);
+  toast = inject(ToastrService);
+  constructor(private fb: FormBuilder) { }
   ngOnInit(): void {
     this.form = this.fb.group({
       selectedAction: ['', Validators.required],
-        selectedVmdAction :[],
-        remarks: ['', Validators.required],
-        isVerified: [false, Validators.required],
-        selectedUnit : [],
-        unitValue : []
+      selectedVmdAction: [],
+      remarks: ['', Validators.required],
+      isVerified: [false, Validators.required],
+      selectedUnit: [],
+      unitValue: []
     })
+    this.getVMSList();
   }
   onActionTypeSelected(evt: any) {
   }
-  SubmitAction() {}
-  CancelAction() {}
+
+  getVMSList() {
+    let data = {
+      "projectId": 2,
+      "type": 0,
+      "inputs": "string",
+      "bodyInputs": "string",
+      "seq": 3
+    }
+    this.alertService.getVMSDetailsForBroadcast(data).subscribe(res => {
+      if(res != undefined) {
+        let deviceData = JSON.parse(res.result);
+        console.log(deviceData);
+      } else {
+        this.toast.error("Something went wrong");
+      }
+    });
+  }
+  SubmitAction() { }
+  CancelAction() { }
 }

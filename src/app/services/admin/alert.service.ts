@@ -81,4 +81,8 @@ export class alertservice {
     return this._httpService._getMethod(url);
   }
 
+  getVMSDetailsForBroadcast(data:any) {
+    const url = 'api/services/app/ProjectAPI/SiteResponse';
+    return this._httpService._postMethod(data,url);
+  }
 }
