@@ -200,12 +200,15 @@ router = inject(Router);
           this.headArr = [
             { header: 'Project Name', fieldValue: 'name', position: 1 },
             { header: 'Api Name', fieldValue: 'apiname', position: 2 },
-            { header: 'Type', fieldValue: 'type2', position: 3 },
+            { header: 'Sequence', fieldValue: 'apiSeq', position: 3 },
+            { header: 'Type', fieldValue: 'type2', position: 4 },
+
+            
            
-            { header: 'Method', fieldValue: 'method', position: 4 },
-            { header: 'Status', fieldValue: 'isActive',"type": "boolean", position: 5 },
-            { header: 'BaseUrl', fieldValue: 'baseurl', position: 6 },
-            { header: 'Action', fieldValue: 'button', position: 7}
+            { header: 'Method', fieldValue: 'method', position: 5 },
+            { header: 'Status', fieldValue: 'isActive',"type": "boolean", position: 6 },
+            { header: 'BaseUrl', fieldValue: 'baseurl', position: 7 },
+            { header: 'Action', fieldValue: 'button', position: 8}
           ];
           ;}
       
@@ -348,6 +351,7 @@ editRow(rowData: any) {
             element.isActive = !!element.isActive; 
               element.method = element.httpMethod;
              element.baseurl = element.baseURL;
+             element.apiSeq=element.apiSeq;
 
 
 const matched2 = (this.projectSelectSettings.options as { name: string; value: any }[])

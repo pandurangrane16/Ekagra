@@ -126,25 +126,127 @@ loaderService = inject(LoaderService);
     this.showPassword = !this.showPassword;
   }
   async onSSOLogin() {
-    try {
-      await this.keycloakService.login({
-        redirectUri: window.location.origin + '/dashboard' // 👈 redirect after login
-      });
-    } catch (error) {
-      console.error('SSO login failed', error);
-    }
+    // try {
+    //   await this.keycloakService.login({
+    //     redirectUri: window.location.origin + '/dashboard' // 👈 redirect after login
+    //   });
+    // } catch (error) {
+    //   console.error('SSO login failed', error);
+    // }
+
+    this.router.navigate(['/login']); 
   }
 
-  OnRegister() {
-    const formVal = this.form.value;
+OnRegister() {
+  try {
+    if (!this.form.invalid) {
+      this.form.markAllAsTouched();
+
+
+
+
+          const password = this.form.controls['password'].value;
+      const retypePassword = this.form.controls['retypePassword'].value;
+
+    
+      if (password !== retypePassword) {
+        this.toastr.error('Password and Confirm Password do not match.', 'Validation Error', {
+          timeOut: 5000,
+          positionClass: 'toast-bottom-center',
+          toastClass: 'ngx-toastr toast-custom-width',
+        });
+        return; 
+      }
+
+      else{
+              const requestBody = {
+        name: this.form.controls['firstName'].value,
+        surname: this.form.controls['lastName'].value,
+        userName: this.form.controls['userNameOrEmailAddress'].value,
+        emailAddress: this.form.controls['email'].value,
+        password: this.form.controls['password'].value,
+      };
+
+      this.service.RegisterWithoutCaptcha(requestBody)
+        .pipe(withLoader(this.loaderService))
+        .subscribe({
+         next: (response: any) => {
+  console.log('Registration API Response:', response);
+
+  if (response && response.success === true) {
     this.toastr.success(
-  "Your request has been successfully submitted. You will receive an email once your request has been reviewed and approved.",
-  '',
-  { timeOut: 10000,
-    positionClass: 'toast-bottom-center',
-    toastClass: 'ngx-toastr toast-custom-width',
-   }
-);
+      "Your request has been successfully submitted. You will receive an email once your request has been reviewed and approved.",
+      '',
+      {
+        timeOut: 10000,
+        positionClass: 'toast-bottom-center',
+        toastClass: 'ngx-toastr toast-custom-width',
+      }
+    );
+
+    this.router.navigate(['/login']); 
+  } else if (response && response.success === false && response.error) {
+    const message = response.error.message || 'Registration failed.';
+    const details = response.error.details || '';
+     
+              let validationMsgs = '';
+              if (response.error.validationErrors && response.error.validationErrors.length > 0) {
+                validationMsgs = response.error.validationErrors
+                  .map((v: any) => `- ${v.message}`)
+                  .join('\n');
+              }
+
+             
+              const fullError = [message, details, validationMsgs]
+                .filter(Boolean) 
+                .join('\n');
+
+    this.toastr.error(fullError, 'Registration Failed', {
+      timeOut: 8000,
+      positionClass: 'toast-bottom-center',
+      toastClass: 'ngx-toastr toast-custom-width',
+    });
+  } else {
+    this.toastr.error('Unexpected response from server. Please try again later.');
   }
+},
+
+          error: (err: any) => {
+    console.error('Registration API Error:', err);
+
+   
+    const message = err?.error?.error?.message || 'Registration failed';
+    const details = err?.error?.error?.details || '';
+
+    this.toastr.error(
+      `${message}\n${details}`,
+      '',
+      {
+        timeOut: 10000,
+        positionClass: 'toast-bottom-center',
+        toastClass: 'ngx-toastr toast-custom-width',
+      }
+    );
+  }
+        });
+      }
+
+
+
+
+    } 
+    
+    
+    else {
+      this.form.markAllAsTouched();
+      this.toastr.error('Form is not valid');
+      return;
+    }
+  } catch (error) {
+    console.error('Unexpected error in OnRegister:', error);
+    this.toastr.error('An unexpected error occurred');
+  }
+}
+
 
 }
