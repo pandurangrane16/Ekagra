@@ -22,22 +22,23 @@
                         <div class="col-md-12">
                             <app-cm-select-check *ngIf="isVmdSelected" [formGroup]="form"
                                 [controlName]="'selectedVmdAction'" [settings]="vmdTypeSettings"
-                                (returnObject)="onActionTypeSelected($event)" color="primary">
+                                (returnObject)="onActionTypeSelected($event,'selectedVmdAction')" color="primary">
                             </app-cm-select-check>
                         </div>
+                        
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-md-12">
-                            <label class="mb-1 me-2">Attachment(Image or Video)</label>
-                            <input type="file">
-                        </div>
+                      <div class="col-md-12">
+  <label class="mb-1 me-2">Attachment (Image)</label>
+  <input type="file"  formControlName="imageFile" (change)="onFileSelected($event)" accept="image/*">
+</div>
                     </div>
                     <hr>
                     <div class="row">
                         <div class="col-md-6">
                             <app-cm-select2 *ngIf="isTypeSelected" [formGroup]="form" [controlName]="'selectedUnit'"
-                                [settings]="unitSettings" (returnObject)="onActionTypeSelected($event)">
+                                [settings]="unitSettings" (returnObject)="onActionTypeSelected($event,'unitSettings')">
                             </app-cm-select2>
                         </div>
                         <div class="col-md-6">
