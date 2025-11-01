@@ -151,7 +151,16 @@ export class LoginComponent {
     });
   }
 
-
-
+async register() {
+  try {
+    const keycloak = await this.keycloakService.getKeycloakInstance(); // ✅ wait for instance
+    const registerUrl = keycloak.createRegisterUrl({
+      redirectUri: window.location.origin + '/dashboard'
+    });
+    window.location.href = (await registerUrl).toString()
+  } catch (error) {
+    console.error('Failed to open register page', error);
+  }
+}
 
 }

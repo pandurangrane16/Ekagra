@@ -333,43 +333,6 @@ export class AlertComponent implements OnInit {
           });
         }
       });
-      // deleteRow(rowData: any): void {
-      //   const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
-      //     width: '400px',
-      //     position: { top: '20px' },
-      //     panelClass: 'custom-confirm-dialog',
-      //     data: {
-      //       title: 'Confirm Delete',
-      //       message: `Are you sure?<div style="margin-top: 8px;">Project: <b>${rowData.name}</b> will be deleted.</div>`,
-
-      //       type: 'delete',
-      //       confirmButtonText: 'Confirm',
-      //       cancelButtonText: 'Cancel'
-      //     }
-      //   });
-
-      //   dialogRef.afterClosed().subscribe(result => {
-      //     if (result) {
-
-      //       this.service.Delete(rowData.id).pipe(withLoader(this.loaderService)).subscribe({
-      //         next: (res: any) => {
-      //           if (res.success) {
-      //             this.getProjConfigList();
-      //             console.log('Deleted successfully');
-
-      //           } else {
-      //             console.error('Delete failed:', res.error);
-      //           }
-      //         },
-      //         error: (err) => {
-      //           console.error('API error:', err);
-      //         }
-      //       });
-      //     } else {
-      //       console.log('User cancelled');
-      //     }
-      //   });
-      // }
     }
   }
 

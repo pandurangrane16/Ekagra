@@ -74,7 +74,7 @@ const keycloakService = new KeycloakService();
 keycloakService
   .init({
     config: {
-      url: 'https://10.100.43.108:8443',
+      url: 'https://172.19.10.43:8443',
       realm: 'cmsrealm',
       clientId: 'Ekgara',
     },

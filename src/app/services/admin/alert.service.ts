@@ -77,7 +77,7 @@ export class alertservice {
   }
 
   getSopActionByAlert(policyId: number) {
-    const url = 'api/services/app/SOPAction/GetSOPConfActionOnPolicyId?policyId='+policyId;
+    const url = 'api/services/app/Alert/GetSOPDetailsbyAlert?id='+policyId;
     return this._httpService._getMethod(url);
   }
 
