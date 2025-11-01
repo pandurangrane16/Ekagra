@@ -185,9 +185,39 @@ export class SopflowComponent implements OnInit {
 
   }
   ngOnInit(): void {
-    this.alertService.getSopActionByAlert(this.policyData.policyId).subscribe(res => {
+    this.alertService.getSopActionByAlert(this.policyData.id).subscribe(res => {
       if (res != undefined) {
-        let sop : Sop;
+        let data = res.result.result;
+        let sop: any = {
+          frsId: data.ticketNo,
+          title: data.description,
+          system: data.policyName,
+          status: true,
+          // activities: data.actions.map((ele: any) => ({
+          //   id: ele.actionId,
+          //   useCase: ele.actionTag,
+          //   activity: ele.actionTag,
+          //   duration: "Instant",
+          //   type: "Auto",
+          //   action: data.policyName.toLowerCase(),
+          //   sequence: ele.sequence,
+          //   hasAccess: true,
+          //   status:true
+          // }))
+          activities: {
+            id: 1,
+            useCase: data.actions[0].actionTag,
+            activity: data.actions[0].actionTag,
+            duration: "Instant",
+            type: "Auto",
+            action: data.policyName.toLowerCase(),
+            sequence: data.actions[0].sequence,
+            hasAccess: true,
+            status: true
+          }
+        };
+        this.sops = [];
+        this.sops.push(sop);
         //sop.frsId
       } else {
         this.toastr.error("Something went wrong");

@@ -28,18 +28,18 @@
 
       <mat-card-content>
         <mat-accordion>
-          <mat-expansion-panel *ngFor="let act of sop.activities" class="sop-panel">
+          <mat-expansion-panel *ngFor="let act of sop.activities" class="sop-panel"  [disabled]="!act.status">
             <mat-expansion-panel-header>
               <mat-panel-title>
                 <span class="font-medium">{{ act.id }}</span> - {{ act.useCase }}  
+                {{act | json}}
                 <div class="ms-auto"> 
                   <!-- <span class="bg-success-subtle text-success rounded px-2 py-1 badge d-flex align-items-center"> <span class="statusDot bg-success"></span> Enable </span>  -->
                   <span  [ngClass]="act.status ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary rounded'" class="d-flex align-items-center  rounded px-2 py-1 gap-2">
-              <span class="statusDot"  [ngClass]="act.status ? 'bg-success' : 'bg-secondary'"></span> {{ act.status ? 'Enable' : 'Disable' }}</span>
+              <span class="statusDot"  [ngClass]="act.status ? 'bg-success' : 'bg-secondary'"></span> {{ act.status ? 'Pending' : 'Completed' }}</span>
                 </div>
               </mat-panel-title>
             </mat-expansion-panel-header>
-
             @if(act.action === 'sms') {
            
               <div class="row">
@@ -75,7 +75,7 @@
                 </div>
               </div>
            
-            } @else if (act.action === "vmsdevicefailure") {
+            } @else if (act.action.toLowerCase() === "vmsdevicefailure") {
             <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
              
                 <div class="row">
