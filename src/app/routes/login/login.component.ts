@@ -130,9 +130,6 @@ export class LoginComponent {
     }
   }
 
-register() {
-  this.router.navigate(['/register']);
-}
 
   onLogin() {
     const credentials = this.loginForm.value;
