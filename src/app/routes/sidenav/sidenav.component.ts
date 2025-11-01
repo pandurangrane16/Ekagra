@@ -118,18 +118,18 @@ debugger;
         label: 'SOPs',
         link: '#',
       },
-      {
-        icon: './assets/img/icon_Chat.svg',
-        activeIcon: './assets/img/icon_Chat1.svg',
-        label: 'Chat',
-        link: 'chat',
-      },
-      {
-        icon: './assets/img/icon_settings.svg',
-        activeIcon: './assets/img/icon_settings1.svg',
-        label: 'Settings',
-        link: 'setting',
-      },
+      // {
+      //   icon: './assets/img/icon_Chat.svg',
+      //   activeIcon: './assets/img/icon_Chat1.svg',
+      //   label: 'Chat',
+      //   link: 'chat',
+      // },
+      // {
+      //   icon: './assets/img/icon_settings.svg',
+      //   activeIcon: './assets/img/icon_settings1.svg',
+      //   label: 'Settings',
+      //   link: 'setting',
+      // },
 
       {
         icon: './assets/img/config.png',

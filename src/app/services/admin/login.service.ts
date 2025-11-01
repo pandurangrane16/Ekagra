@@ -17,6 +17,11 @@ export class loginservice {
 Login(_data: any) {
     return this._httpService._postMethod(_data, 'api/TokenAuth/Authenticate');
   }
+
+
+  RegisterWithoutCaptcha(_data: any) {
+    return this._httpService._postMethod(_data, 'api/services/app/UserConf/RegisterWithoutCaptcha');
+  }
  
 getConfigDetails() {
   return this.http.get(this.jsonurl);
