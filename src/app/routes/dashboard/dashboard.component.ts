@@ -7,6 +7,7 @@ import { MatIcon } from '@angular/material/icon';
 import { wrapGrid } from 'animate-css-grid';
 import {CdkDragDrop, CdkDropList, moveItemInArray, CdkDropListGroup} from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
+import { KeycloakService } from 'keycloak-angular';
 import { SessionService } from '../../services/common/session.service';
 
 
@@ -17,20 +18,42 @@ import { SessionService } from '../../services/common/session.service';
     templateUrl: './dashboard.component.html',
     styleUrl: './dashboard.component.css'
 })
+
+
+
 export class DashboardComponent implements OnInit{
 store = inject(DashboardService);
 session = inject(SessionService);
 editDashboard = true;
 show = false;
 dashboard = viewChild.required<ElementRef>('dashboard');
-ngOnInit(){
+
+
+constructor(private keycloakService: KeycloakService,) {}
+
+async ngOnInit(){
   console.log(this.session._getSessionValue("UserValidation"));
   wrapGrid(this.dashboard().nativeElement,{duration:300});
    // Subscribe to the toggle event
+
+
+     const keycloak = await this.keycloakService.getKeycloakInstance();
+
+  if (keycloak.authenticated) {
+    const tokenParsed = keycloak.tokenParsed;
+    console.log('User Info from Keycloak:', tokenParsed);
+
+ 
+  
+  }
  
   
  
 }
+
+
+
+
 
 drop(event: CdkDragDrop<number, any>){
   const {previousContainer , container} = event;

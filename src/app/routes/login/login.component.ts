@@ -107,6 +107,18 @@ export class LoginComponent {
     });
 
     this.getConfigDetails();
+     const keycloak =  this.keycloakService.getKeycloakInstance();
+
+  if (keycloak.authenticated) {
+    const tokenParsed = keycloak.tokenParsed;
+    console.log('User Info from Keycloak:', tokenParsed);
+
+ 
+  
+  }
+
+
+
   }
   getConfigDetails() {
     this.service.getConfigDetails().subscribe(res => {
