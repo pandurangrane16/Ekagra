@@ -20,6 +20,10 @@ export class alertservice {
     return this._httpService._getMethod('api/services/app/Alert/GetAllUsers');
   }
 
+    SiteResponse(data:any) {
+    return this._httpService._postMethod(data,'api/services/app/ProjectAPI/SiteResponse');
+  }
+
   TransferSOP(data: any) {
     return this._httpService._postMethod(data, 'api/services/app/Alert/TransferSOP');
   }

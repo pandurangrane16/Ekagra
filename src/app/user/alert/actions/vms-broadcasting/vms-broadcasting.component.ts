@@ -8,6 +8,10 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { alertservice } from '../../../../services/admin/alert.service';
 import { ToastrService } from 'ngx-toastr';
 
+
+import { LoaderService } from '../../../../services/common/loader.service';
+import { withLoader } from '../../../../services/common/common';
+
 @Component({
   selector: 'app-vms-broadcasting',
   imports: [MaterialModule, CommonModule, CmInputComponent, CmSelect2Component, CmSelectCheckComponent],
@@ -15,6 +19,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './vms-broadcasting.component.css'
 })
 export class VmsBroadcastingComponent implements OnInit {
+  loaderService = inject(LoaderService);
 
   form: any;
   isTypeSelected: boolean = false;
@@ -51,10 +56,7 @@ export class VmsBroadcastingComponent implements OnInit {
     lableClass: 'form-label',
     formFieldClass: 'w-100',
     appearance: 'fill',
-    options: [
-      { name: 'SMS', value: 0 },
-      { name: 'EMAIL', value: 1 },
-    ]
+    options:{}
   };
   unitSettings = {
     labelHeader: 'Select Unit',
@@ -81,6 +83,57 @@ export class VmsBroadcastingComponent implements OnInit {
     })
     this.getVMSList();
   }
+
+
+
+
+ GetVmdList() {
+  const data = {
+    projectId: 2,
+    type: 0,
+    inputs: "string",
+    bodyInputs: "string",
+    seq: 4
+  };
+
+  this.alertService.SiteResponse(data)
+    .pipe(withLoader(this.loaderService))
+    .subscribe({
+      next: (response: any) => {
+        // Parse result safely
+        let items: any[] = [];
+
+        if (response?.result) {
+          try {
+            items = typeof response.result === 'string'
+              ? JSON.parse(response.result)
+              : response.result;
+          } catch (err) {
+            console.error('Error parsing result JSON:', err);
+          }
+        }
+
+        // Map to dropdown-compatible format
+        const projectOptions = items.map((item: any) => ({
+          name: `${item.vmsId} - ${item.description}` || item.vmsId,
+          value: item.vmsId,
+     
+        }));
+
+        // Optional: sort or filter online devices
+        // const onlineDevices = projectOptions.filter(p => p.networkStatus === 1);
+
+        this.vmdTypeSettings.options = projectOptions;
+
+        console.log('VMD List:', this.vmdTypeSettings.options);
+        // this.isProjectOptionsLoaded = true;
+      },
+      error: (error) => {
+        console.error('Error fetching VMD list:', error);
+      }
+    });
+}
+
   onActionTypeSelected(evt: any) {
   }
 
@@ -90,9 +143,9 @@ export class VmsBroadcastingComponent implements OnInit {
       "type": 0,
       "inputs": "string",
       "bodyInputs": "string",
-      "seq": 3
+      "seq": 4
     }
-    this.alertService.getVMSDetailsForBroadcast(data).subscribe(res => {
+    this.alertService.SiteResponse(data).subscribe(res => {
       if(res != undefined) {
         let deviceData = JSON.parse(res.result);
         console.log(deviceData);

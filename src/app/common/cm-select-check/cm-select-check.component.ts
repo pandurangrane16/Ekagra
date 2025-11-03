@@ -37,6 +37,7 @@ export class CmSelectCheckComponent {
       });
 
       this.controlName = this.searchCtrl;
+      
 
       if(this.selectedEditValue != undefined) {
         this.formGroup.patchValue({
