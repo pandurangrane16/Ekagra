@@ -135,7 +135,7 @@ export class LoginComponent {
   async onSSOLogin() {
     try {
       await this.keycloakService.login({
-        redirectUri: window.location.origin + '/dashboard' // 👈 redirect after login
+        redirectUri: window.location.origin + '/#/dashboard' // 👈 redirect after login
       });
     } catch (error) {
       console.error('SSO login failed', error);
@@ -168,7 +168,7 @@ async register() {
   try {
     const keycloak = await this.keycloakService.getKeycloakInstance(); // ✅ wait for instance
     const registerUrl = keycloak.createRegisterUrl({
-      redirectUri: window.location.origin + '/dashboard'
+      redirectUri: window.location.origin + '/#/dashboard'
     });
     window.location.href = (await registerUrl).toString()
   } catch (error) {

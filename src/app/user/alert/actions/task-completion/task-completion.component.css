@@ -1,0 +1,55 @@
+.btnSubmit {
+    background-color: black;
+    color: white;
+    font-weight: 600;
+    padding: 10px 14px;      
+    border-radius: 8px;
+    font-size: 13px;         
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-transform: none;
+    white-space: nowrap;  
+}
+
+.btnCancel {
+    background-color: orangered;
+    color: white;
+    font-weight: 600;
+    padding: 10px 14px;      
+    border-radius: 8px;
+    font-size: 13px;         
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-transform: none;
+    white-space: nowrap;  
+}
+
+  .readonly-div {
+    pointer-events: none;
+    user-select: none;
+    color: gray; /* Optional: style to indicate it's readonly */
+  }
+
+ .btn-primary{background-color:var(--primary-color);
+    color: var(--White);;
+    font-weight: 600;
+    padding: 10px 14px;      
+    border-radius: 8px;
+    font-size: 13px;         
+    box-shadow: none;
+    text-transform: none;
+    white-space: nowrap; border:none; }
+
+      .mat-mdc-outlined-button{
+--mat-sys-primary:#1c2d7b;
+border-color: var(--mat-sys-primary);
+color: var(--mat-sys-primary);
+}
+.mat-button-toggle-appearance-standard.mat-button-toggle-checked {
+  --mat-sys-primary:#1c2d7b;
+    color: white;
+    background-color: var(--mat-sys-primary);
+}
+.mdc-button--outlined .mdc-button__ripple {
+  --mat-sys-primary:#1c2d7b;
+border-color: var(--mat-sys-primary)!important;
+
+}
