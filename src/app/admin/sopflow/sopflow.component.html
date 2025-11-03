@@ -32,7 +32,6 @@
             <mat-expansion-panel-header>
               <mat-panel-title>
                 <span class="font-medium">{{ act.id }}</span> - {{ act.useCase }}  
-                {{act | json}}
                 <div class="ms-auto"> 
                   <!-- <span class="bg-success-subtle text-success rounded px-2 py-1 badge d-flex align-items-center"> <span class="statusDot bg-success"></span> Enable </span>  -->
                   <span  [ngClass]="act.status ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary rounded'" class="d-flex align-items-center  rounded px-2 py-1 gap-2">
@@ -194,6 +193,61 @@
                   </div>
                 </div>
              
+            </div>
+            }
+            @else if (act.action.toLowerCase() === "iccacknowledgement") {
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+             
+                <div class="row">
+                  <div class="col-md-12">
+                    <app-icc-operator-ack [task]="act"></app-icc-operator-ack>
+                  </div>
+                </div>
+              
+            </div>
+            }
+            @else if (act.action.toLowerCase() === "assigntofieldengineer") {
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+             
+                <div class="row">
+                  <div class="col-md-12">
+                    <app-assign-site-engineer [task]="act"></app-assign-site-engineer>
+                  </div>
+                </div>
+              
+            </div>
+            }
+            @else if (act.action.toLowerCase() === "fieldengineeracknowledgement") {
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+             
+                <div class="row">
+                  <div class="col-md-12">
+                    <app-icc-operator-ack [task]="act"></app-icc-operator-ack>
+                  </div>
+                </div>
+              
+            </div>
+            }
+            @else if (act.action.toLowerCase() === "addressincident") {
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+             
+                <div class="row">
+                  <div class="col-md-12">
+                    <app-address-issue [task]="act"></app-address-issue>
+                  </div>
+                </div>
+              
+            </div>
+            }
+            @else if (act.action.toLowerCase() === "siteengineercompletion") {
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+             
+                <div class="row">
+                  <div class="col-md-12">
+                    <app-task-completion [task]="act" ></app-task-completion>
+                  </div>
+                </div>
+              
             </div>
             }
           </mat-expansion-panel>

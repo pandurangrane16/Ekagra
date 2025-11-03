@@ -20,6 +20,10 @@ import { EnvSensorPollutionComponent } from "../../user/alert/actions/env-sensor
 import { Router } from '@angular/router';
 import { alertservice } from '../../services/admin/alert.service';
 import { ToastrService } from 'ngx-toastr';
+import { IccOperatorAckComponent } from "../../user/alert/actions/icc-operator-ack/icc-operator-ack.component";
+import { AssignSiteEngineerComponent } from '../../user/alert/actions/assign-site-engineer/assign-site-engineer.component';
+import { AddressIssueComponent } from "../../user/alert/actions/address-issue/address-issue.component";
+import { TaskCompletionComponent } from "../../user/alert/actions/task-completion/task-completion.component";
 interface SopActivity {
   id: string;
   useCase: string;
@@ -42,7 +46,9 @@ interface Sop {
 
 @Component({
   selector: 'app-sopflow',
-  imports: [MaterialModule, CommonModule, ReactiveFormsModule, SmsActionComponent, EmailActionComponent, ApiActionComponent, PaActionComponent, VmsDeviceFailureComponent, VmsEmergencyPlayComponent, AtcsHealthComponent, AtcsCongestionComponent, AtcsLampFailureComponent, AtcsDetectorFailureComponent, ItmsCameraFailureComponent, ItmsLpuFailureComponent, ItmsChallanCollectionComponent, EnvSensorFailureComponent, EnvSensorPollutionComponent],
+  imports: [MaterialModule, CommonModule, ReactiveFormsModule, SmsActionComponent, EmailActionComponent, ApiActionComponent, PaActionComponent, VmsDeviceFailureComponent, VmsEmergencyPlayComponent, AtcsHealthComponent, AtcsCongestionComponent, AtcsLampFailureComponent, AtcsDetectorFailureComponent, ItmsCameraFailureComponent, ItmsLpuFailureComponent,
+    ItmsChallanCollectionComponent, EnvSensorFailureComponent, EnvSensorPollutionComponent, IccOperatorAckComponent, AssignSiteEngineerComponent,
+    AddressIssueComponent, TaskCompletionComponent],
   templateUrl: './sopflow.component.html',
   styleUrl: './sopflow.component.css'
 })
@@ -185,6 +191,9 @@ export class SopflowComponent implements OnInit {
 
   }
   ngOnInit(): void {
+    if(this.policyData == undefined) 
+      this.router.navigate(['alerts']);
+
     this.alertService.getSopActionByAlert(this.policyData.id).subscribe(res => {
       if (res != undefined) {
         let data = res.result.result;
@@ -193,28 +202,17 @@ export class SopflowComponent implements OnInit {
           title: data.description,
           system: data.policyName,
           status: true,
-          // activities: data.actions.map((ele: any) => ({
-          //   id: ele.actionId,
-          //   useCase: ele.actionTag,
-          //   activity: ele.actionTag,
-          //   duration: "Instant",
-          //   type: "Auto",
-          //   action: data.policyName.toLowerCase(),
-          //   sequence: ele.sequence,
-          //   hasAccess: true,
-          //   status:true
-          // }))
-          activities: {
-            id: 1,
-            useCase: data.actions[0].actionTag,
-            activity: data.actions[0].actionTag,
+          activities: data.actions.map((ele: any) => ({
+            id: ele.actionId,
+            useCase: ele.actionTag,
+            activity: ele.actionTag,
             duration: "Instant",
             type: "Auto",
-            action: data.policyName.toLowerCase(),
-            sequence: data.actions[0].sequence,
+            action: ele.prmValue.toLowerCase(),
+            sequence: ele.sequence,
             hasAccess: true,
-            status: true
-          }
+            status:true
+          }))
         };
         this.sops = [];
         this.sops.push(sop);
