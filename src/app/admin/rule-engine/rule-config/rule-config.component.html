@@ -19,7 +19,7 @@
       <div class="sidebar">
         <h2>Step {{ currentStep + 1 }}</h2>
         <p class="subtitle">
-          Enter your personal information to get closer to companies.
+          Please enter the rule information and ensure all fields are complete before proceeding to the next step.
         </p>
         <div class="steps">
           <div *ngFor="let step of steps; let i = index" class="step">
@@ -212,9 +212,8 @@
           <div [formGroup]="secondFormGroup">
             <form>
               <div class="row">
-                <div
-                  class="col d-flex justify-content-start align-items-center gap-2"
-                >
+                <div class="col d-flex justify-content-start align-items-center gap-2">
+
                   <app-cm-select2
                     *ngIf="isProjectOptionsLoaded"
                     [formGroup]="secondFormGroup"
@@ -230,6 +229,7 @@
                   >
                     + Add
                   </button>
+                  <label class="text-danger mb-0">Only APIs of <strong>type Policy</strong> will be applicable here.*</label>
                 </div>
               </div>
 
