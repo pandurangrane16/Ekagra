@@ -1157,6 +1157,20 @@ debugger;
     const firstFormValues = this.firstFormGroup.value;
     const secondFormValues = this.secondFormGroup.value;
     const thirdFormValues = this.thirdFormGroup.value;
+    
+     // Loop through nested groups and trim fieldValue strings
+if (secondFormValues.groups && Array.isArray(secondFormValues.groups)) {
+  secondFormValues.groups.forEach((group: any) => {
+    if (group.arrayGroup && Array.isArray(group.arrayGroup)) {
+      group.arrayGroup.forEach((item: any) => {
+        if (typeof item.fieldValue === 'string') {
+          item.fieldValue = item.fieldValue.trim().replace(/\s{2,}/g, ' ');
+        }
+      });
+    }
+  });
+}
+
     console.log(thirdFormValues)
     if (this.thirdFormGroup.invalid) {
 
