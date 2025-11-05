@@ -35,6 +35,9 @@ import { CmCronExpressionComponent } from "../../../common/cm-cron-expression/cm
   styleUrl: './rule-engine-edit.component.css'
 })
 export class RuleEngineEditComponent implements OnInit {
+    firstFormGroup!: FormGroup;
+    thirdFormGroup!: FormGroup;
+  editCronExpression: string | null = null;
   router = inject(Router);
 state: any;
   loaderService = inject(LoaderService)
@@ -321,10 +324,10 @@ state: any;
     ]
   }
 
-  checkBoxSettings: any;
-  firstFormGroup: any;
-  thirdFormGroup: any;
-  ruleData:any;
+ checkBoxSettings: any;
+// firstFormGroup!: FormGroup;
+// thirdFormGroup!: FormGroup;
+ruleData: any;
   
 
   // firstFormGroup = this._formBuilder.group({
@@ -351,7 +354,9 @@ state: any;
   //   { icon: '✅', title: 'Confirm' }
   // ];
   ruleConditions: any;
-  constructor(private toast: ToastrService,    private route: ActivatedRoute, ) {
+  constructor(private toast: ToastrService,    private route: ActivatedRoute,
+      private fb: FormBuilder, // 👈 add this
+   ) {
     this.ruleConditions = this.ruleService.getRuleConditions();
     if (this.ruleConditions == null) {
       this.ruleService.setRulesStorage();
@@ -534,8 +539,27 @@ state: any;
 // }
 
 ngOnInit(): void {
+debugger;
   this.id = this.route.snapshot.paramMap.get('id');
   console.log('Extracted ID:', this.id);
+ this.firstFormGroup = this.fb.group({
+    policyName: [''],
+    ticketabb: [''],
+    tat: [''],
+    selectedCategory: [null],
+    selectedUserGroup: [null],
+    intervalTime: [''],
+    isActive: [false],
+    isinternal: [false]
+  });
+
+  this.thirdFormGroup = this.fb.group({
+    minute: ['*'],
+    hour: ['*'],
+    dayOfMonth: ['*'],
+    month: ['*'],
+    dayOfWeek: ['*']
+  });
 
   this.ruleService.GetDataById(this.id)
     .pipe(withLoader(this.loaderService))
@@ -613,6 +637,9 @@ ngOnInit(): void {
     }
   });
 
+  this.thirdFormGroup.get('cronExpression')?.valueChanges.subscribe((val: string) => {
+    this.onCronUpdate(val);
+  });
 
       },
       (error) => {
@@ -646,6 +673,7 @@ get f() {
 }
 
 patchCronForEdit(cronString: string) {
+  debugger;
   console.log("cronString:",cronString)
   if (!cronString) return;
 
@@ -1117,15 +1145,14 @@ createFormArrayGroup() {
       console.error('Error fetching project list', error);
     });
   }
-  createCronExpression(): string {
-    const { minute, hour, dayOfMonth, month, dayOfWeek } = this.thirdFormGroup.value;
-
-    // Join them with spaces to form the cron
-    return `${minute} ${hour} ${dayOfMonth} ${month} ${dayOfWeek}`;
-  }
+ createCronExpression(): string {
+  if (!this.thirdFormGroup) return '* * * * *';
+  const { minute, hour, dayOfMonth, month, dayOfWeek } = this.thirdFormGroup.value || {};
+  return `${minute ?? '*'} ${hour ?? '*'} ${dayOfMonth ?? '*'} ${month ?? '*'} ${dayOfWeek ?? '*'}`;
+}
 
   Submit() {
-
+debugger;
 
     const firstFormValues = this.firstFormGroup.value;
     const secondFormValues = this.secondFormGroup.value;
@@ -1817,15 +1844,15 @@ getApi(selectedProject: any, groupIndex: number, callback?: () => void) {
     opt => opt.value === String(this.ruleData.priority)
   );
   this.firstFormGroup.patchValue({
-    policyName: this.ruleData.policyName,
-    ticketabb: this.ruleData.ticketAbbrevation,
-    tat: this.ruleData.tat,
-    selectedCategory:selectedCategory,   
-    selectedUserGroup: selectedUserGroup,
-    intervalTime: this.ruleData.intervalTime,
-    isActive: this.ruleData.isActive,
-    isinternal: this.ruleData.isInternal
-  });
+  policyName: this.ruleData.policyName ?? '',
+  ticketabb: this.ruleData.ticketAbbrevation ?? '',
+  tat: String(this.ruleData.tat ?? ''),
+  selectedCategory: selectedCategory,   
+  selectedUserGroup: selectedUserGroup,
+  intervalTime: String(this.ruleData.intervalTime ?? ''),
+  isActive: !!this.ruleData.isActive,
+  isinternal: !!this.ruleData.isInternal
+});
 
   console.log('First Form patched:', this.firstFormGroup.value);
 
@@ -2078,36 +2105,51 @@ getApi(selectedProject: any, groupIndex: number, callback?: () => void) {
 policyNameExists = false;
 
   onPolicyNameChange(value: string) {
-    if (!value || this.firstFormGroup.controls['policyName'].errors?.pattern) {
-      this.policyNameExists = false;
-      return;
-    }
+  const control = this.firstFormGroup.controls['policyName'];
 
-    this.ruleService.CheckPolicyNameExist(value, this.id)
-      .pipe(withLoader(this.loaderService))
-      .subscribe((response: any) => {
-        this.policyNameExists = response.result === true;
-        if (this.policyNameExists) {
-          this.firstFormGroup.controls['policyName'].setErrors({ duplicateName: true });
-        } else {
-          // Remove duplicateName error if exists
-          if (this.firstFormGroup.controls['policyName'].hasError('duplicateName')) {
-            const errors = { ...this.firstFormGroup.controls['policyName'].errors };
-            delete errors['duplicateName'];
-            if (Object.keys(errors).length === 0) {
-              this.firstFormGroup.controls['policyName'].setErrors(null);
-            } else {
-              this.firstFormGroup.controls['policyName'].setErrors(errors);
-            }
-          }
-        }
-      });
+  // ✅ Use ['pattern'] instead of .pattern
+  if (!value || control.errors?.['pattern']) {
+    this.policyNameExists = false;
+    return;
   }
+
+  this.ruleService.CheckPolicyNameExist(value, this.id)
+    .pipe(withLoader(this.loaderService))
+    .subscribe((response: any) => {
+      this.policyNameExists = response.result === true;
+
+      if (this.policyNameExists) {
+        control.setErrors({ duplicateName: true });
+      } else {
+        // Remove duplicateName error if exists
+        if (control.hasError('duplicateName')) {
+          const errors = { ...control.errors };
+          delete errors['duplicateName'];
+          control.setErrors(Object.keys(errors).length ? errors : null);
+        }
+      }
+    });
+}
 
 
   getCronFromData(evt: any) {
-    console.log(evt);
-  }
-
+  if (!evt) return;
+  this.thirdFormGroup.patchValue({
+    minute: evt.minute,
+    hour: evt.hour,
+    dayOfMonth: evt.dayOfMonth,
+    month: evt.month,
+    dayOfWeek: evt.dayOfWeek,
+  });
+  this.parentCron = evt.cronString;
+}
+loadEditData() {
+  this.ruleService.GetDataById(this.id)
+    .pipe(withLoader(this.loaderService))
+    .subscribe(
+      (response: any) => {
+    this.editCronExpression = response.result.cronExpression; // or your property name
+  });
+}
 }
 

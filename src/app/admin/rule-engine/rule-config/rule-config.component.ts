@@ -21,7 +21,7 @@ import { CmCronComponent } from '../../../common/cm-cron/cm-cron.component';
 import { CmCheckboxGroupComponent } from '../../../common/cm-checkbox-group/cm-checkbox-group.component';
 import { CmSelectCheckComponent } from "../../../common/cm-select-check/cm-select-check.component";
 import { CmCronExpressionComponent } from "../../../common/cm-cron-expression/cm-cron-expression.component";
-
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-rule-config',
@@ -364,12 +364,25 @@ export class RuleConfigComponent implements OnInit {
   ngOnInit(): void {
     this.state = history.state;
     this.thirdFormGroup = this._formBuilder.group({
-      minute: [''],
-      hour: [''],
-      dayOfMonth: [''],
-      month: [''],
-      dayOfWeek: [''],
+      minute: ['*'],
+      hour: ['*'],
+      dayOfMonth: ['*'],
+      month: ['*'],
+      dayOfWeek: ['*'],
     });
+
+    this.parentCron = this.createCronExpression();
+
+     // keep parentCron in sync when cron controls change (debounced)
+    this.thirdFormGroup.valueChanges.pipe(debounceTime(150)).subscribe(() => {
+      console.log("cron form changed")
+      const cron = this.createCronExpression();
+      // only set if we get a non-empty cron (createCronExpression returns '*' defaults)
+      if (cron && cron.trim().length > 0) {
+        this.parentCron = cron;
+      }
+    });
+
     this.secondFormGroup = this._formBuilder.group({
       selectedProject: [null, Validators.required],
       groups: this._formBuilder.array([], [this.minFormArrayLength(1)]),
@@ -768,13 +781,23 @@ export class RuleConfigComponent implements OnInit {
     });
   }
   createCronExpression(): string {
-    const { minute, hour, dayOfMonth, month, dayOfWeek } = this.thirdFormGroup.value;
+    // const { minute, hour, dayOfMonth, month, dayOfWeek } = this.thirdFormGroup.value;
 
-    // Join them with spaces to form the cron
-    return `${minute} ${hour} ${dayOfMonth} ${month} ${dayOfWeek}`;
+    // // Join them with spaces to form the cron
+    // return `${minute} ${hour} ${dayOfMonth} ${month} ${dayOfWeek}`;
+
+    const minute = (this.thirdFormGroup.value?.minute ?? '') || '*';
+    const hour = (this.thirdFormGroup.value?.hour ?? '') || '*';
+    const dayOfMonth = (this.thirdFormGroup.value?.dayOfMonth ?? '') || '*';
+    const month = (this.thirdFormGroup.value?.month ?? '') || '*';
+    const dayOfWeek = (this.thirdFormGroup.value?.dayOfWeek ?? '') || '*';
+
+    // normalize to ensure non-empty cron parts
+    return `${minute} ${hour} ${dayOfMonth} ${month} ${dayOfWeek}`.trim();
   }
 
   Submit() {
+    debugger;
     const firstFormValues = this.firstFormGroup.value;
     const secondFormValues = this.secondFormGroup.value;
     const thirdFormValues = this.thirdFormGroup.value;
@@ -1141,6 +1164,8 @@ export class RuleConfigComponent implements OnInit {
   }
 
   setThirdFormValues(evt: any, type: string) {
+debugger;
+    console.log('setThirdFormValues'+evt);
     console.log(evt);
     if (type == "min") {
       this.thirdFormGroup.patchValue({
@@ -1199,5 +1224,12 @@ export class RuleConfigComponent implements OnInit {
 
   getCronFromData(evt: any) {
     console.log(evt);
+    this.thirdFormGroup.patchValue({
+      minute: evt.minute,
+      hour: evt.hour,
+      dayOfMonth: evt.dayOfMonth,
+      month: evt.month,
+      dayOfWeek: evt.dayOfWeek,
+    });
   }
 }

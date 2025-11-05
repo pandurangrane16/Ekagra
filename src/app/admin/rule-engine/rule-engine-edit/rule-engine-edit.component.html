@@ -359,7 +359,10 @@
                             </div> -->
 
 
-                    <app-cm-cron-expression (cronChange)="getCronFromData($event)"></app-cm-cron-expression>
+              <app-cm-cron-expression
+  [selectedCron]="editCronExpression"
+  (cronChange)="getCronFromData($event)">
+</app-cm-cron-expression>
 
 
 
@@ -390,7 +393,8 @@
 
     </div>
     <hr />
-    <div class="row">
+ 
+   <!--  <div class="row">
         <div class="col d-flex justify-content-end gap-2">
             @if(currentStep != 0 ){
             <button (click)="goBack()" class="d-flex align-items-center">
@@ -404,5 +408,5 @@
             </button>
             }
         </div>
-    </div>
+    </div>-->
 </div>

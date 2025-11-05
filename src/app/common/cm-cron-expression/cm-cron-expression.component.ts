@@ -1,21 +1,30 @@
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import * as cronstrue from 'cronstrue';
 import { MaterialModule } from '../../Material.module';
 
 @Component({
   selector: 'app-cm-cron-expression',
-  imports: [CommonModule, MaterialModule, ReactiveFormsModule],
+  standalone: true, // ✅ standalone comes before imports, not after
+  imports: [CommonModule, MaterialModule, ReactiveFormsModule], // ✅ valid modules
   templateUrl: './cm-cron-expression.component.html',
-  styleUrl: './cm-cron-expression.component.css',
-  standalone: true
+  styleUrls: ['./cm-cron-expression.component.css'] // ✅ must be plural: styleUrls
 })
-export class CmCronExpressionComponent {
-  @Output() cronChange = new EventEmitter<any>();
+export class CmCronExpressionComponent implements OnInit {
+  @Input() selectedCron: string | null = null;   // 👈 Added Input for edit mode
+@Output() cronChange = new EventEmitter<{
+  cronString: string;
+  minute: string;
+  hour: string;
+  dayOfMonth: string;
+  month: string;
+  dayOfWeek: string;
+}>();
+
   cronForm: FormGroup;
-  cronPreview: string = '';
-  humanReadable: string = '';
+  cronPreview = '';
+  humanReadable = '';
 
   minutes = ['*', ...Array.from({ length: 60 }, (_, i) => i.toString())];
   hours = ['*', ...Array.from({ length: 24 }, (_, i) => i.toString())];
@@ -25,15 +34,6 @@ export class CmCronExpressionComponent {
 
   minuteSteps: string[] = [...Array.from({ length: 60 }, (_, i) => '*/' + i.toString())];
   hourSteps: string[] = [...Array.from({ length: 24 }, (_, i) => '*/' + i.toString())];
-  dayOfWeekNames: Record<string, string> = {
-    '0': 'Sunday',
-    '1': 'Monday',
-    '2': 'Tuesday',
-    '3': 'Wednesday',
-    '4': 'Thursday',
-    '5': 'Friday',
-    '6': 'Saturday',
-  };
 
   constructor(private fb: FormBuilder) {
     this.cronForm = this.fb.group({
@@ -41,14 +41,35 @@ export class CmCronExpressionComponent {
       hour: ['*'],
       dayOfMonth: ['*'],
       month: ['*'],
-      dayOfWeek: ['*'],
+      dayOfWeek: ['*']
     });
 
-    this.cronForm.valueChanges.subscribe(() => {
-      this.updateCronPreview();
-    });
+    this.cronForm.valueChanges.subscribe(() => this.updateCronPreview());
+    this.updateCronPreview();
+  }
 
-    this.updateCronPreview(); // Initial value
+  ngOnInit() {
+    this.cronForm.valueChanges.subscribe(() => this.returnForm());
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['selectedCron'] && this.selectedCron) {
+      this.setCronValues(this.selectedCron);
+    }
+  }
+
+   setCronValues(cron: string) {
+    const parts = cron.trim().split(' ');
+    if (parts.length >= 6) {
+      this.cronForm.patchValue({
+        minute: parts[1] ?? '*',
+        hour: parts[2] ?? '*',
+        dayOfMonth: parts[3] ?? '*',
+        month: parts[4] ?? '*',
+        dayOfWeek: parts[5] ?? '*'
+      }, { emitEvent: false }); // prevent immediate change emission
+      this.updatePreview();
+    }
   }
 
   updateCronPreview() {
@@ -57,11 +78,28 @@ export class CmCronExpressionComponent {
     this.humanReadable = cronstrue.toString(this.cronPreview);
   }
 
-  getDayOfWeekLabel(value: string) {
-    return this.dayOfWeekNames[value] ?? value;
+  returnForm() {
+  const { minute, hour, dayOfMonth, month, dayOfWeek } = this.cronForm.value;
+  this.cronPreview = `0 ${minute} ${hour} ${dayOfMonth} ${month} ${dayOfWeek}`;
+  this.updatePreview();
+
+  this.cronChange.emit({
+    cronString: this.cronPreview,
+    minute,
+    hour,
+    dayOfMonth,
+    month,
+    dayOfWeek
+  });
+}
+
+  updatePreview() {
+    const { minute, hour, dayOfMonth, month, dayOfWeek } = this.cronForm.value;
+    this.humanReadable = `Runs at ${hour}:${minute} on day ${dayOfMonth}, month ${month}, weekday ${dayOfWeek}`;
   }
 
-  returnForm() {
-    this.cronChange.emit(this.cronForm.value);
+  getDayOfWeekLabel(value: string): string {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return value === '*' ? 'Every Day (*)' : days[parseInt(value, 10)] ?? value;
   }
 }
