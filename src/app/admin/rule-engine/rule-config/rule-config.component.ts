@@ -997,36 +997,85 @@ if (secondFormValues.groups && Array.isArray(secondFormValues.groups)) {
       console.error('Error fetching project list', error);
     });
   }
+  // goNext() {
+
+  //   console.log("2", this.secondFormGroup.value)
+  //   console.log('Third form group value/status:', this.secondFormGroup);
+
+  //   if (this.currentStep === 0 && this.firstFormGroup.invalid) {
+  //     this.toast.error('Please select all the values.');
+  //     this.firstFormGroup.markAllAsTouched();
+
+  //     return;
+  //   }
+  //   else {
+  //     if (this.currentStep === 1 && this.secondFormGroup.invalid) {
+  //       this.toast.error('Please select all the values.');
+  //       this.firstFormGroup.markAllAsTouched();
+
+  //       return;
+  //     }
+  //     else {
+  //       if (this.currentStep < this.steps.length - 1) {
+  //         this.currentStep++;
+  //       }
+  //     }
+
+
+
+
+  //   }
+
+  // }
+
   goNext() {
+  console.log("Second Form Values:", this.secondFormGroup.value);
+  console.log("Form Status:", this.secondFormGroup);
 
-    console.log("2", this.secondFormGroup.value)
-    console.log('Third form group value/status:', this.secondFormGroup);
+  // Step 0 validation
+  if (this.currentStep === 0 && this.firstFormGroup.invalid) {
+    this.toast.error('Please select all the values.');
+    this.firstFormGroup.markAllAsTouched();
+    return;
+  }
 
-    if (this.currentStep === 0 && this.firstFormGroup.invalid) {
-      this.toast.error('Please select all the values.');
-      this.firstFormGroup.markAllAsTouched();
+  // Step 1 validation (Rule Design)
+  if (this.currentStep === 1) {
+    let isInvalid = false;
 
+    // Validate fieldValue for all nested groups
+    this.groupsFormArray.controls.forEach((group, gi) => {
+      const expressions = this.getExpressionGroup(gi).controls;
+
+      expressions.forEach((expr, ei) => {
+        let fieldValue = expr.get('fieldValue')?.value;
+
+        // Trim and clean up value
+        if (typeof fieldValue === 'string') {
+          fieldValue = fieldValue.trim().replace(/\s{2,}/g, ' ');
+          expr.get('fieldValue')?.setValue(fieldValue, { emitEvent: false });
+        }
+
+        // Check if empty or whitespace only
+        if (!fieldValue) {
+          expr.get('fieldValue')?.setErrors({ required: true });
+          isInvalid = true;
+        }
+      });
+    });
+
+    if (isInvalid || this.secondFormGroup.invalid) {
+      this.toast.error('Please enter valid Field Values before proceeding.');
+      this.secondFormGroup.markAllAsTouched();
       return;
     }
-    else {
-      if (this.currentStep === 1 && this.secondFormGroup.invalid) {
-        this.toast.error('Please select all the values.');
-        this.firstFormGroup.markAllAsTouched();
-
-        return;
-      }
-      else {
-        if (this.currentStep < this.steps.length - 1) {
-          this.currentStep++;
-        }
-      }
-
-
-
-
-    }
-
   }
+
+  // Move to next step if validation passed
+  if (this.currentStep < this.steps.length - 1) {
+    this.currentStep++;
+  }
+}
 
   goBack() {
     if (this.currentStep > 0) {
