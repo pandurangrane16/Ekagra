@@ -33,8 +33,10 @@
 
                  
 <button mat-flat-button class="btn w-100" (click)="onLogin()">Sign In</button>
-<button mat-flat-button class="btn w-100" (click)="onSSOLogin()">SSO</button>
-<button mat-flat-button class="btn w-100" (click)="register()">Register</button>
+<div class="d-flex gap-2">
+<button mat-stroked-button color="primary" class="w-50 btnLogin" (click)="onSSOLogin()">SSO</button>
+<button mat-stroked-button    class="w-50 btnLogin"  (click)="register()">Register</button>
+</div>
  </form>
             </div>
             

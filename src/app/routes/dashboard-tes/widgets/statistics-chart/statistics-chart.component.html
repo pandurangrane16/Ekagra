@@ -1,0 +1,29 @@
+<highcharts-chart 
+  [Highcharts]="Highcharts"
+  [options]="chartOptions"
+
+  style="width: 100%; min-height: 180px; display: block;"
+></highcharts-chart>
+
+<div class="d-flex justify-content-between">
+ <ng-container *ngFor="let serie of jsonData.data; index as i" >
+  <!-- Start a new UL every 5 items -->
+  <ul *ngIf="i % 7 === 0" style="list-style: none; font-size: 10px; padding-left: 0; margin-bottom: 0; padding-bottom: 0;">
+    <li *ngFor="let subSerie of jsonData.data.slice(i, i + 7)" class="d-flex justify-content-between">
+      <label class="d-flex align-items-center">
+        <span [ngStyle]="{
+          'width': '8px', 
+          'height': '8px',
+          'border-radius': '25px', 
+          'background-color': subSerie.color, 
+          'display':'block'
+        }"></span>
+        &nbsp;{{ subSerie.name }}
+      </label>
+      <span class="ms-3">{{ subSerie.y }}</span>
+    </li>
+  </ul>
+</ng-container>
+
+</div>
+

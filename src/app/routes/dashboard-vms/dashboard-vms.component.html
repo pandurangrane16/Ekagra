@@ -1,0 +1,22 @@
+
+ <div class="row mb-2 mt-2 d-flex">
+        <div class="col-md-3">
+<div class="card">
+    <div class="card-body text-center" >
+        <h4>Device Status</h4>
+      <app-device-status></app-device-status>
+ 
+</div>
+</div>
+</div>
+
+<div class="col-md-9">
+  <app-cm-table [headArr]="headArr" [gridArr]="userList" [pagination]="true" [totalRecords]="totalRecords"
+                    [perPage]="perPage" [totalPages]="totalPages" [collectionSize]="collectionSize"
+                    (pager)="onPageChange($event)" (recordPerPage)="onPageRecordsChange($event)"
+                    (searchWithId)="onRowClicked($event)" (btnAction)="onButtonClicked($event)">
+                </app-cm-table>
+
+               
+</div>
+</div>
