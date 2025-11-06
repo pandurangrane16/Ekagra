@@ -1,0 +1,29 @@
+.card{border-radius: 16px;}
+.card-body{ overflow: hidden; padding: 15px;}
+.todays span{ line-height: 13px; font-size: 12px;}
+.todays .progress{--bs-progress-height: 4px;}
+.todays .count{
+    font-size: 48px;
+    font-weight: medium;
+    color: black;
+}
+.flex-col{flex-direction: column;}
+.material-icons {font-size: 18px}
+/* .action{
+    display: inline-flex;
+  height: 36px;
+  padding: 4px 6px 4px 8px;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  border: 1px solid #E0E0E0;
+  background:  #FFF;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+  } */
+  .action { font-size: 12px;}
+  .mat-button-toggle {--mat-standard-button-toggle-height: 24px;--mat-standard-button-toggle-selected-state-background-color: var(--primary-color);--mat-standard-button-toggle-selected-state-text-color: #fff;}
+
+
+
+ 

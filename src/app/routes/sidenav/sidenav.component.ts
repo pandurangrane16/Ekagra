@@ -73,12 +73,26 @@ debugger;
         icon: './assets/img/icon_dashboard1.svg',
         label: 'Dashboard',
         link: 'dashboard',
-        activeIcon: './assets/img/icon_dashboard2.svg'
-        // isOpen: false,
-        // children: [
-        //   { icon: 'fas fa-chart-pie', label: 'Analytics' },
-        //   { icon: 'fas fa-tasks', label: 'Projects' },
-        // ]
+        activeIcon: './assets/img/icon_dashboard2.svg',
+         isOpen: false,
+        children: [{
+          icon: './assets/img/icon_settings.svg',
+          activeIcon: './assets/img/icon_settings1.svg',
+          label: 'Ekagra Dashboard',
+          link: 'dashboard',
+        }, {
+          icon: './assets/img/icon_settings.svg',
+          activeIcon: './assets/img/icon_settings1.svg',
+          label: 'VMS Dashboard',
+          link: 'vms',
+        }, 
+        {
+          icon: './assets/img/icon_settings.svg',
+          activeIcon: './assets/img/icon_settings1.svg',
+          label: 'TES Dashboard',
+          link: 'tes',
+        }, 
+        ]
       },
       {
         icon: './assets/img/icon_surveillance.svg',

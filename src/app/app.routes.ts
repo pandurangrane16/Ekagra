@@ -27,7 +27,12 @@ import { CmCronComponent } from './common/cm-cron/cm-cron.component';
 import { AlertComponent } from './user/alert/alert/alert.component';
 import { canActivateAuthRole } from './services/common/AuthGuard';
 import { RegisterComponent } from './routes/register/register.component';
+<<<<<<< HEAD
 import { RegisterRedirectComponent } from './pages/register-redirect/register-redirect.component';
+=======
+import { DashboardVMSComponent } from './routes/dashboard-vms/dashboard-vms.component';
+import { DashboardTESComponent } from './routes/dashboard-tes/dashboard-tes.component';
+>>>>>>> 0228cc3b1c6e1d924736d2414122cdbf29c80181
 
 export const routes: Routes = [
       // { path: "", component: DashboardComponent, },
@@ -59,6 +64,8 @@ export const routes: Routes = [
       { path: 'siteconf', component: SiteConfigurationComponent },
       { path: 'projfieldconfig', component: ProjectFieldConfigurationComponent },
       { path: 'dashroute', component: DashRoutesComponent },
+      { path: 'vms', component: DashboardVMSComponent },
+      { path: 'tes', component: DashboardTESComponent },
       { path: 'cron', component: CmCronComponent },
       {
             path: 'admin',

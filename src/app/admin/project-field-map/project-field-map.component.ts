@@ -322,6 +322,58 @@ debugger;
 //     console.error('Client-side JS error:', ex);
 //   }
 // }
+
+
+
+// onJsonPathSelected(jsonPath: string) {
+//   debugger;
+
+//   if (this.selectedRowIndex !== null) {
+//     console.log('Selected JSON Path:', jsonPath);
+
+//     // Assign JSON path to the row's apiField
+//     this.projectFieldMapData[this.selectedRowIndex].apiField = jsonPath;
+
+//     // Get the value from API response at this path
+//     const value = this.getValueByPath(this.apiJsonData, jsonPath);
+
+//     // Detect type
+//     let detectedType = 'Unknown';
+//     if (Array.isArray(value)) {
+//       if (value.length > 0) {
+//         const firstType = typeof value[0];
+//         detectedType = `List of ${this.mapType(firstType)}`;
+//       } else {
+//         detectedType = 'List (Empty)';
+//       }
+//     } else {
+//       detectedType = this.mapType(typeof value);
+//     }
+
+//     // Assign type
+//     this.projectFieldMapData[this.selectedRowIndex].fieldType = detectedType;
+//     // this.filepath = detectedType;
+
+//     console.log('Value:', value);
+//     console.log('Detected Type:', this.projectFieldMapData[this.selectedRowIndex].fieldType);
+
+//     this.selectedRowIndex = null; // Reset after setting
+//   }
+// }
+
+// private mapType(type: string): string {
+//   const typeMap: Record<string, string> = {
+//     string: 'string',
+//     number: 'integer',
+//     boolean: 'boolean',
+//     object: 'object',
+//     undefined: 'undefined',
+//     integer: 'integer',
+//   };
+//   return typeMap[type] || 'Unknown';
+// }
+
+
 onJsonPathSelected(jsonPath: string) {
   debugger;
 
@@ -334,41 +386,53 @@ onJsonPathSelected(jsonPath: string) {
     // Get the value from API response at this path
     const value = this.getValueByPath(this.apiJsonData, jsonPath);
 
-    // Detect type
-    let detectedType = 'Unknown';
-    if (Array.isArray(value)) {
-      if (value.length > 0) {
-        const firstType = typeof value[0];
-        detectedType = `List of ${this.mapType(firstType)}`;
-      } else {
-        detectedType = 'List (Empty)';
-      }
-    } else {
-      detectedType = this.mapType(typeof value);
-    }
+    // Detect and normalize type
+    const detectedType = this.detectValueType(value);
 
     // Assign type
     this.projectFieldMapData[this.selectedRowIndex].fieldType = detectedType;
-    // this.filepath = detectedType;
 
     console.log('Value:', value);
-    console.log('Detected Type:', this.projectFieldMapData[this.selectedRowIndex].fieldType);
+    console.log('Detected Type:', detectedType);
 
     this.selectedRowIndex = null; // Reset after setting
   }
 }
 
-private mapType(type: string): string {
+private detectValueType(value: any): string {
+  if (value === null || value === undefined) return 'undefined';
+
+  // Handle arrays
+  if (Array.isArray(value)) {
+    if (value.length === 0) return 'List (Empty)';
+    return `List of ${this.mapType(typeof value[0])}`;
+  }
+
+  // Handle primitives and objects
+  return this.mapType(typeof value, value);
+}
+
+private mapType(type: string, value?: any): string {
+  // Normalize PostgreSQL-style or mixed type cases
   const typeMap: Record<string, string> = {
     string: 'string',
     number: 'integer',
     boolean: 'boolean',
     object: 'object',
-    undefined: 'undefined',
-    integer: 'integer'
+    text: 'string',        // normalize "text" to string
+    integer: 'integer',
+    undefined: 'undefined'
   };
+
+  // Special handling for IDs that look numeric but are strings
+  if (type === 'string' && value && /^\d+$/.test(value)) {
+    return 'integer';
+  }
+
   return typeMap[type] || 'Unknown';
 }
+
+
 
 /**
  * Utility: Extract value from object using dot-separated path
