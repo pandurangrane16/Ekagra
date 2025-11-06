@@ -6,13 +6,13 @@
             [matAutocomplete]="auto" [value]="selectedValues.join(', ')" (click)="openAutocomplete = true">
         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>
             <mat-checkbox [checked]="isAllSelected()" [indeterminate]="isIndeterminate()"
-                (change)="toggleSelectAll($event.checked)">
+                (change)="toggleSelectAll($event.checked)" color="primary">
                 Select All
             </mat-checkbox>
             <mat-option *ngFor="let option of settings.options" [value]="option.value"
                 (onSelectionChange)="toggleSelection(option.value)">
                 <mat-checkbox [checked]="selectedValues.includes(option.value)" (click)="$event.stopPropagation()"
-                    (change)="toggleSelection(option.value)" style="width: 100%;" >
+                    (change)="toggleSelection(option.value)" style="width: 100%;" color="primary">
                     {{ option.name }}
                 </mat-checkbox>
             </mat-option>

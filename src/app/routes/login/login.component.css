@@ -114,6 +114,27 @@ text-transform: uppercase;
 background-color: var(--primary-color);
 margin-top: 32px;
 }
+
+button.btnLogin{
+text-align: center;
+/* Title/Medium */
+font-family: Poppins;
+font-size: 16px;
+font-style: normal;
+font-weight: 500;
+line-height: 24px; /* 150% */
+letter-spacing: 0.15px;
+text-transform: uppercase;
+margin-top: 32px;
+--mat-sys-primary:#1c2d7b;
+border-color: var(--mat-sys-primary);
+}
+ .mat-mdc-outlined-button{
+--mat-sys-primary:#1c2d7b;
+border-color: var(--mat-sys-primary);
+color: var(--mat-sys-primary);
+}
+button.btnLogin:hover{background-color: var(--primary-color); color: var(--White, #FFF);}
 @media only screen and (max-width: 600px) {
 
   .login{width: 100%;}

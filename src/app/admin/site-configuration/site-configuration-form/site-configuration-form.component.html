@@ -3,7 +3,7 @@
   
         <mat-card-title><h4 class="mt-1 mb-0">Site Configuration</h4></mat-card-title>
            
-       <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()" style="margin-top: -10px; margin-bottom: -10px;">
+<button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()" style="margin-top: -10px; margin-bottom: -10px;">
   <mat-icon>reply</mat-icon>
 </button>
  
@@ -13,9 +13,10 @@
       <form [formGroup]="form" class="form-container">
         <div class="row">
           <div class="col-md-6">
-            <label>Project Name</label>
+
 
             <div>
+              <label>Project Name</label>
               <app-cm-select2 [formGroup]="form" [controlName]="'selectedStatus'" [settings]="projectSelectSettings"
                 (optionSelected)="onProjectSelected($event)" class="full-width-select">
               </app-cm-select2>
@@ -24,7 +25,7 @@
 
 
           <div class="col-md-6">
-            <label>Site Id</label>
+            <label class="mb-2">Site Id</label>
             <app-cm-input [formGroup]="form" [controlName]="'name'" [_inputData]="inputFields.name">
             </app-cm-input>
           </div>
@@ -87,7 +88,6 @@
           </div>
 
 
-
         </div>
         <div class="row">
           <div class="col-md-6">
@@ -119,11 +119,6 @@
             </app-cm-input>
           </div>
         </div>
-
-
-
-
-
 
 
         <div class="row">

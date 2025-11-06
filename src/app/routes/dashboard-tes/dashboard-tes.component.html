@@ -1,0 +1,105 @@
+<div class="row d-flex justify-content-evenly">
+            <div class="col-md-2 d-flex flex-col justify-content-evenly">
+                
+                    <div class="col-md-12">
+ <div class="card todays">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center"><img src="assets/img/violations.png" alt="" class="me-2"><span>TOTAL <br/> VIOLATION
+ </span></div>
+                        <div class="count mt-4 mb-4">
+                            36
+                        </div>
+                       
+                       
+                    </div>
+                </div>
+            
+            
+            </div>
+                <div class="col-md-12">
+                <div class="card todays">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center"><img src="assets/img/revenue.png" alt="" class="me-2"><span>TOTAL <br/> REVENUE</span></div>
+                        <div class="count mt-4 mb-4">
+                            36
+                        </div>
+                        
+                    </div>
+                </div>
+              
+            </div>
+                <div class="col-md-12">
+                <div class="card todays">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center"><img src="assets/img/challan.png" alt="" class="me-2"><span>PROCESSED <br/> CHALLAN</span></div>
+                        <div class="count mt-4 mb-4">
+                            36
+                        </div>
+                       
+                    </div>
+                </div>
+                  
+</div>
+                </div>
+                 <div class="col-md-10">
+                    <div class="action d-flex justify-content-center mb-1">
+                        <mat-button-toggle-group name="fontStyle" aria-label="Font Style" color="primary">
+    <mat-button-toggle value="bold">Day</mat-button-toggle>
+    <mat-button-toggle value="italic">Week</mat-button-toggle>
+    <mat-button-toggle value="underline">Month</mat-button-toggle>
+  </mat-button-toggle-group></div>
+                    <div class="row d-flex justify-content-evenly">
+<div class="col-md-4"> <div class="card"> <div class="card-body">
+ 
+                     
+                    <h6 class="ms-2 mb-0">Violations</h6> 
+                    
+              
+                   
+                       <app-statistics-chart></app-statistics-chart>
+                    
+                    </div></div>
+               
+</div> 
+<div class="col-md-4"><div class="card"> <div class="card-body">
+ 
+                     <h6 class="ms-2 mb-0">Revenue Statistics</h6>
+                       <app-statistics-chart></app-statistics-chart></div></div>
+                
+</div> <div class="col-md-4"><div class="card"> <div class="card-body">
+
+                     <h6 class="ms-2 mb-0">Challan Statistics</h6>
+                       <app-statistics-chart></app-statistics-chart></div></div>
+              
+</div>
+                </div>
+               
+            </div>
+<div class="col-md-7 mt-2">
+    <div class="card" [ngClass]="{ fullscreen: isCardExpanded }">
+        <div class="card-body">
+             <div class="d-flex justify-content-between my-1" style="align-items: center;">
+                    <h6 class="ms-2 mb-0">LPR Statistics</h6>
+                    <div class="action mb-1">
+                        <span (click)="expand()"><img src="assets/img/ci_expand.svg" alt=""></span>
+                        <span><img src="assets/img/more-horiz.svg" alt=""></span>
+                    </div>
+                </div>
+            
+        </div>
+    </div>
+    
+</div>
+<div class="col-md-5 mt-2">
+    <div class="card">
+        <div class="card-body">
+            LPR Statistics
+        </div>
+    </div>
+    
+</div>
+              
+            </div>
+
+           
+
