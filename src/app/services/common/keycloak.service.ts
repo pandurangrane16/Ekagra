@@ -16,23 +16,51 @@ export class KeycloakService {
     });
   }
 
-  init(): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      this.keycloak
-        .init({
-          onLoad: 'login-required', // or 'check-sso' if you don't want auto-login
-          checkLoginIframe: false, // Disable if using load balancing or iframe issues
-          pkceMethod: 'S256', // recommended for security
-          enableLogging: true,
-        })
-        .then((authenticated) => {
-          resolve(authenticated);
-        })
-        .catch(() => {
-          reject(false);
-        });
-    });
-  }
+  // init(): Promise<boolean> {
+  //   return new Promise((resolve, reject) => {
+  //     this.keycloak
+  //       .init({
+  //         onLoad: 'login-required', // or 'check-sso' if you don't want auto-login
+  //         checkLoginIframe: false, // Disable if using load balancing or iframe issues
+  //         pkceMethod: 'S256', // recommended for security
+  //         enableLogging: true,
+  //       })
+  //       .then((authenticated) => {
+  //         resolve(authenticated);
+  //       })
+  //       .catch(() => {
+  //         reject(false);
+  //       });
+  //   });
+  // }
+
+ init(): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    this.keycloak
+      .init({
+        onLoad: 'check-sso', // ✅ check if user already has an active session
+        silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html', // ✅ helps Keycloak restore session silently
+        checkLoginIframe: false, // Disable for simpler setups
+        pkceMethod: 'S256', // recommended for security
+        enableLogging: true,
+      })
+      .then((authenticated) => {
+        if (!authenticated) {
+          console.warn('User not logged in, redirecting to login...');
+          this.keycloak.login(); // redirect if not logged in
+        }
+        resolve(authenticated);
+      })
+      .catch((error) => {
+        console.error('Keycloak initialization failed:', error);
+        reject(false);
+      });
+  });
+}
+
+
+
+
 
   login() {
     this.keycloak.login();

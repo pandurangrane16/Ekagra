@@ -135,7 +135,13 @@ export class LoginComponent {
   async onSSOLogin() {
     try {
       await this.keycloakService.login({
+
+        
         redirectUri: window.location.origin + '/#/dashboard' // 👈 redirect after login
+
+         
+
+
       });
     } catch (error) {
       console.error('SSO login failed', error);
@@ -164,16 +170,38 @@ export class LoginComponent {
     });
   }
 
+// async register() {
+//   try {
+//     const keycloak = await this.keycloakService.getKeycloakInstance();
+//       await keycloak.logout({
+//       redirectUri: window.location.origin, // redirect to app home after logout
+//     }); 
+
+//         const isLoggedIn = await this.keycloakService.isLoggedIn();
+//     console.log('👤 Is user currently logged in?', isLoggedIn);
+
+//     const registerUrl = keycloak.createRegisterUrl({
+//       redirectUri: window.location.origin + '/#/dashboard'
+//     });
+//     window.location.href = (await registerUrl).toString()
+//   } catch (error) {
+//     console.error('Failed to open register page', error);
+//   }
+// }
+
 async register() {
-  try {
-    const keycloak = await this.keycloakService.getKeycloakInstance(); // ✅ wait for instance
-    const registerUrl = keycloak.createRegisterUrl({
-      redirectUri: window.location.origin + '/#/dashboard'
-    });
-    window.location.href = (await registerUrl).toString()
-  } catch (error) {
-    console.error('Failed to open register page', error);
-  }
+  const keycloak = await this.keycloakService.getKeycloakInstance();
+  console.log('🚪 Logging out current user before registration...');
+  
+  const logoutUrl = keycloak.createLogoutUrl({
+    redirectUri: window.location.origin + '/#/register-redirect'
+  });
+debugger;
+  window.location.href = logoutUrl;
 }
+
+
+
+
 
 }

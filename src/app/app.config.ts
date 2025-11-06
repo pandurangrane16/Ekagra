@@ -1,113 +1,61 @@
-// import { ApplicationConfig, importProvidersFrom } from '@angular/core';
-// import { provideRouter, RouterModule } from '@angular/router';
-// import { bootstrapApplication, provideClientHydration } from '@angular/platform-browser';
-// import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-// import { provideHttpClient, withInterceptors } from '@angular/common/http';
-// import { routes } from './app.routes';
-// import { LoaderInterceptor } from './services/interceptors/loader.interceptor';
-// import { provideToastr } from 'ngx-toastr';
-// //import { KeycloakService } from './services/common/keycloak.service';
-// import { AppComponent } from './app.component';
-// import { provideKeycloakAngular } from './services/common/keycloak.config';
-// import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-// import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
-
-
-// const keycloakService = new KeycloakService();
-
-// keycloakService
-//   .init({
-//     config: {
-//       url: 'https://10.100.43.108:8443',
-//       realm: 'cmsrealm',
-//       clientId: 'Ekgara',
-//     },
-//     initOptions: {
-//       onLoad: 'login-required',
-//       checkLoginIframe: false,
-//       silentCheckSsoRedirectUri: window.location.origin + '/assets/check-sso.html',
-//       redirectUri: window.location.origin + '/dashboard'
-//     },
-//     enableBearerInterceptor: true,
-//     bearerExcludedUrls: ['/assets'],
-//   })
-//   .then(() => {
-//     bootstrapApplication(AppComponent, {
-//       providers: [
-//         importProvidersFrom(KeycloakAngularModule),
-//         { provide: KeycloakService, useValue: keycloakService },
-//       ],
-//     }).catch(err => console.error(err));
-//   });
-
-// export const appConfig: ApplicationConfig = {
-//   providers: [
-//     provideKeycloakAngular(),
-//     provideClientHydration(),
-//     provideAnimationsAsync(),
-//     provideRouter(routes),
-//     provideToastr(),
-//     // provideHttpClient(
-//     //   withInterceptors([
-//     //     LoaderInterceptor
-//     //   ])
-//     // )
-//     provideHttpClient(),
-//   ]
-// };
-
-
-// app.config.ts
-import { ApplicationConfig, importProvidersFrom } from '@angular/core';
+import { ApplicationConfig, APP_INITIALIZER, importProvidersFrom } from '@angular/core';
 import { provideRouter, withHashLocation } from '@angular/router';
-import { bootstrapApplication, provideClientHydration } from '@angular/platform-browser';
+import { provideClientHydration } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient } from '@angular/common/http';
 import { routes } from './app.routes';
-import { AppComponent } from './app.component';
 import { provideToastr } from 'ngx-toastr';
-import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { provideKeycloakAngular } from './services/common/keycloak.config';
+import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 
-const keycloakService = new KeycloakService();
+export function initializeKeycloak(kc: KeycloakService) {
+  return () => {
+    const isBrowser = typeof window !== 'undefined';
 
-keycloakService
-  .init({
-    config: {
-      url: 'https://172.19.10.43:8443',
-      realm: 'cmsrealm',
-      clientId: 'Ekgara',
-    },
-    initOptions: {
-      onLoad: 'check-sso',  // 👈 Changed from login-required to allow manual SSO login
-      silentCheckSsoRedirectUri: window.location.origin + '/assets/check-sso.html',
-    },
-    enableBearerInterceptor: true,
-    bearerExcludedUrls: ['/assets'],
-  })
-  .then(() => {
-    bootstrapApplication(AppComponent, {
-      providers: [
-        provideKeycloakAngular(), // ✅ crucial: registers signals and events
-        { provide: KeycloakService, useValue: keycloakService },
-        provideRouter(routes),
-        provideHttpClient(),
-        provideToastr(),
-        provideAnimationsAsync(),
-        provideClientHydration(),
-      ],
-    }).catch(err => console.error(err));
-  });
+    return kc
+      .init({
+        config: {
+          // ✅ Use your Keycloak base URL
+          url: 'https://172.19.10.43:8443',
+          realm: 'cmsrealm',
+          clientId: 'Ekgara',
+        },
+        initOptions: {
+          // 🔄 Use 'login-required' if all routes need auth, or 'check-sso' for optional login
+         onLoad: 'login-required',
+          checkLoginIframe: false,
+          pkceMethod: 'S256',
+          silentCheckSsoRedirectUri: window.location.origin + '/assets/check-sso.html',
+        },
+        enableBearerInterceptor: true,
+        bearerExcludedUrls: ['/assets', '/public'],
+      })
+      .then(() => {
+        console.info('✅ Keycloak initialized successfully');
+      })
+      .catch(err => {
+        console.error('❌ Keycloak init failed:', err);
+        // Return a resolved promise to prevent Angular bootstrap failure during debugging
+        return Promise.resolve();
+      });
+  };
+}
 
-export const appConfig = {
+export const appConfig: ApplicationConfig = {
   providers: [
-    provideKeycloakAngular(), // ✅ crucial: registers signals and events
-        { provide: KeycloakService, useValue: keycloakService },
-    provideRouter(routes),
+
+    provideKeycloakAngular(),
+    importProvidersFrom(KeycloakAngularModule),
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeKeycloak,
+      deps: [KeycloakService],
+      multi: true,
+    },
+    provideRouter(routes, withHashLocation()), // Use hash-based routing if desired
     provideHttpClient(),
     provideToastr(),
     provideAnimationsAsync(),
     provideClientHydration(),
-    provideRouter(routes, withHashLocation())
-  ]
+  ],
 };

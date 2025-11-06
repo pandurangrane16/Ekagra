@@ -18,6 +18,9 @@ import { ThemeManagerService } from '../../services/theme-manager.service';
 import { ApplicationRef } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
+import { LoaderService } from '../../services/common/loader.service';
+import { Router } from '@angular/router';
+import { KeycloakService } from 'keycloak-angular';
 
 @Component({
     selector: 'app-header',
@@ -67,7 +70,9 @@ export class HeaderComponent implements OnInit {
  
   constructor(private sanitizer: DomSanitizer, @Inject(DOCUMENT) private document: Document,
     private readonly themingService: ThemingService, private themeService: ThemeManagerService,
-    public headerService : HeaderService, private appRef: ApplicationRef, private cdRef: ChangeDetectorRef) {
+    public headerService : HeaderService, private appRef: ApplicationRef, private cdRef: ChangeDetectorRef,  
+    private loaderService: LoaderService,    private keycloakService: KeycloakService,
+    private router: Router) {
   }
  
   // toggleTheme() {
@@ -133,6 +138,34 @@ export class HeaderComponent implements OnInit {
   simulateAsyncOperation(): Observable<any> {
     // Simulate an async operation (e.g., HTTP request)
     return of(true).pipe(delay(2000)); // Simulate a delay of 2 seconds
+  }
+
+  async logout() {
+    try {
+      console.log('🚪 Logging out user...');
+      this.loaderService.showLoader();
+
+      // Get the Keycloak instance
+      const keycloak = this.keycloakService.getKeycloakInstance();
+
+      // Build logout URL (Keycloak handles session cleanup)
+      const logoutUrl = keycloak.createLogoutUrl({
+        redirectUri: window.location.origin + '/#/dashboard' // redirect back to login after logout
+      });
+
+      console.log('➡️ Redirecting to logout URL:', logoutUrl);
+
+      // Redirect the user
+      window.location.href = logoutUrl;
+
+    } catch (error) {
+      console.error('❌ Logout failed:', error);
+      this.loaderService.hideLoader();
+      this.router.navigate(['/dashboard']);
+    } finally {
+      // Hide loader if redirect doesn’t occur
+      setTimeout(() => this.loaderService.hideLoader(), 1500);
+    }
   }
  
 }

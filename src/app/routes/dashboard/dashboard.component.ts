@@ -37,7 +37,15 @@ async ngOnInit(){
    // Subscribe to the toggle event
 
 
-     const keycloak = await this.keycloakService.getKeycloakInstance();
+  const keycloak = await this.keycloakService.getKeycloakInstance();
+
+
+     const registerUrl = keycloak.createRegisterUrl({
+       redirectUri: window.location.origin + '/#/dashboard'
+     });
+   window.location.href = (await registerUrl).toString()
+
+
 
   if (keycloak.authenticated) {
     const tokenParsed = keycloak.tokenParsed;
@@ -46,6 +54,15 @@ async ngOnInit(){
  
   
   }
+
+const isLoggedIn = await this.keycloakService.isLoggedIn();
+
+if (isLoggedIn) {
+  const profile = await this.keycloakService.loadUserProfile();
+  console.log('User Profile:', profile);
+} else {
+  console.warn('User not logged in yet!');
+}
  
   
  

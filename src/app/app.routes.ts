@@ -27,13 +27,14 @@ import { CmCronComponent } from './common/cm-cron/cm-cron.component';
 import { AlertComponent } from './user/alert/alert/alert.component';
 import { canActivateAuthRole } from './services/common/AuthGuard';
 import { RegisterComponent } from './routes/register/register.component';
+import { RegisterRedirectComponent } from './pages/register-redirect/register-redirect.component';
 
 export const routes: Routes = [
-      { path: "", component: LoginComponent, },
+      // { path: "", component: DashboardComponent, },
       { path: "login", component: LoginComponent, },
       {
             path: '',
-            redirectTo: 'login',
+            redirectTo: 'dashboard',
             pathMatch: 'full'
       },
       {
@@ -76,6 +77,9 @@ export const routes: Routes = [
       {
             path: 'user',
             children: UserRoutes
-      }
+      },{
+  path: 'register-redirect',
+  component: RegisterRedirectComponent
+}
 
 ];
