@@ -80,7 +80,8 @@ export class CmCronExpressionComponent implements OnInit {
 
   returnForm() {
   const { minute, hour, dayOfMonth, month, dayOfWeek } = this.cronForm.value;
-  this.cronPreview = `0 ${minute} ${hour} ${dayOfMonth} ${month} ${dayOfWeek}`;
+  // this.cronPreview = `0 ${minute} ${hour} ${dayOfMonth} ${month} ${dayOfWeek}`;
+  this.cronPreview = `${minute} ${hour} ${dayOfMonth} ${month} ${dayOfWeek}`;
   this.updatePreview();
 
   this.cronChange.emit({

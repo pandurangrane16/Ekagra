@@ -2,21 +2,39 @@
     <div class="row">
         <div class="col-md-6 cron-field">
             <label for="minute">Minute:</label>
-            <select class="form-control" formControlName="minute" id="minute" (change)="returnForm()">
+            <!-- <select class="form-control" formControlName="minute" id="minute" (change)="returnForm()">
                 <option value="*">Every Minute (*)</option>
                 <option *ngFor="let min of minutes" [value]="min">{{ min }}</option>
                 <option *ngFor="let step of minuteSteps" [value]="step">Every {{ step.replace('*/', '') }} Minutes ({{
                     step }})</option>
+            </select> -->
+            <!-- Minute Dropdown -->
+            <select class="form-control" formControlName="minute" id="minute" (change)="returnForm()">
+            <option *ngFor="let min of minutes" [value]="min">
+                {{ min === '*' ? 'Every Minute (*)' : min }}
+            </option>
+            <option *ngFor="let step of minuteSteps" [value]="step">
+                Every {{ step.replace('*/', '') }} Minutes ({{ step }})
+            </option>
             </select>
         </div>
 
         <div class="col-md-6 cron-field">
             <label for="hour">Hour:</label>
-            <select class="form-control" formControlName="hour" id="hour" (change)="returnForm()">
+            <!-- <select class="form-control" formControlName="hour" id="hour" (change)="returnForm()">
                 <option value="*">Every Hour (*)</option>
                 <option *ngFor="let hr of hours" [value]="hr">{{ hr }}</option>
                 <option *ngFor="let step of hourSteps" [value]="step">Every {{ step.replace('*/', '') }} Hours ({{ step
                     }})</option>
+            </select> -->
+            <!-- Hour Dropdown -->
+            <select class="form-control" formControlName="hour" id="hour" (change)="returnForm()">
+            <option *ngFor="let hr of hours" [value]="hr">
+                {{ hr === '*' ? 'Every Hour (*)' : hr }}
+            </option>
+            <option *ngFor="let step of hourSteps" [value]="step">
+                Every {{ step.replace('*/', '') }} Hours ({{ step }})
+            </option>
             </select>
         </div>
     </div>
