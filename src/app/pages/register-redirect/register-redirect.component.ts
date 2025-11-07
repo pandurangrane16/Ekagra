@@ -18,7 +18,7 @@ export class RegisterRedirectComponent implements OnInit {
       this.loaderService.showLoader();
 
       await new Promise(resolve => setTimeout(resolve, 500));
-
+       debugger;
       const keycloak = await this.keycloakService.getKeycloakInstance();
 
       // 🔹 createRegisterUrl returns a STRING, not a Promise
