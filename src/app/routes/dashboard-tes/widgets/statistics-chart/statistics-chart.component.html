@@ -5,22 +5,22 @@
   style="width: 100%; min-height: 180px; display: block;"
 ></highcharts-chart>
 
-<div class="d-flex justify-content-between">
- <ng-container *ngFor="let serie of jsonData.data; index as i" >
+<div class="d-flex justify-content-between" *ngIf="chartType === 'pie'">
+ <ng-container *ngFor="let serie of chartData; index as i" >
   <!-- Start a new UL every 5 items -->
   <ul *ngIf="i % 7 === 0" style="list-style: none; font-size: 10px; padding-left: 0; margin-bottom: 0; padding-bottom: 0;">
-    <li *ngFor="let subSerie of jsonData.data.slice(i, i + 7)" class="d-flex justify-content-between">
+    <li *ngFor="let subSerie of chartData.slice(i, i + 7); let j = index" class="d-flex justify-content-between">
       <label class="d-flex align-items-center">
         <span [ngStyle]="{
           'width': '8px', 
           'height': '8px',
           'border-radius': '25px', 
-          'background-color': subSerie.color, 
+          'background-color':  chartDataColors[i + j],
           'display':'block'
         }"></span>
-        &nbsp;{{ subSerie.name }}
+        &nbsp;{{ subSerie[0] }}
       </label>
-      <span class="ms-3">{{ subSerie.y }}</span>
+      <span class="ms-3">{{ subSerie[1] }}</span>
     </li>
   </ul>
 </ng-container>
