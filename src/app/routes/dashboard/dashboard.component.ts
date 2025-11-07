@@ -9,6 +9,12 @@ import {CdkDragDrop, CdkDropList, moveItemInArray, CdkDropListGroup} from '@angu
 import { CommonModule } from '@angular/common';
 import { KeycloakService } from 'keycloak-angular';
 import { SessionService } from '../../services/common/session.service';
+import { ToastrService } from 'ngx-toastr';
+import { withLoader } from '../../services/common/common';
+import { LoaderService } from '../../services/common/loader.service';
+import { DashboardService2 } from '../../services/admin/dashboard.service';
+import { Router } from '@angular/router';
+
 
 
 @Component({
@@ -24,12 +30,17 @@ import { SessionService } from '../../services/common/session.service';
 export class DashboardComponent implements OnInit{
 store = inject(DashboardService);
 session = inject(SessionService);
+loaderService = inject(LoaderService);
 editDashboard = true;
 show = false;
+userInfo: any; 
 dashboard = viewChild.required<ElementRef>('dashboard');
 
 
-constructor(private keycloakService: KeycloakService,) {}
+constructor(private keycloakService: KeycloakService,
+   private toastr : ToastrService , 
+   private router: Router,
+   private service :DashboardService2) {}
 
 async ngOnInit(){
   console.log(this.session._getSessionValue("UserValidation"));
@@ -49,8 +60,10 @@ async ngOnInit(){
 
   if (keycloak.authenticated) {
     const tokenParsed = keycloak.tokenParsed;
+    const subId = tokenParsed?.sub
     console.log('User Info from Keycloak:', tokenParsed);
 
+ 
  
   
   }
@@ -59,11 +72,23 @@ const isLoggedIn = await this.keycloakService.isLoggedIn();
 
 if (isLoggedIn) {
   const profile = await this.keycloakService.loadUserProfile();
+     const tokenParsed = keycloak.tokenParsed;
   console.log('User Profile:', profile);
+      this.userInfo = {
+      ...this.userInfo,
+      name: profile?.firstName || this.userInfo?.name,
+      surname: profile?.lastName || this.userInfo?.surname,
+      email: profile?.email || this.userInfo?.email,
+      username: profile?.username || this.userInfo?.username,
+       subId: tokenParsed?.sub
+    };
+    console.log('userinfo',this.userInfo);
 } else {
   console.warn('User not logged in yet!');
 }
- 
+
+ this.OnRegister();
+
   
  
 }
@@ -76,6 +101,80 @@ drop(event: CdkDragDrop<number, any>){
   const {previousContainer , container} = event;
   this.store.updateWidgetPosition(previousContainer.data, container.data)
 }
+
+
+OnRegister() {
+  try {
+    if (!this.userInfo || !this.userInfo.email) {
+      this.toastr.warning('User information is missing. Please log in via Keycloak first.');
+      return;
+    }
+
+    const emailOrUsername = this.userInfo.email || this.userInfo.username;
+
+    // 1️⃣ Check if user already exists
+    this.service.CheckUserOrEmailExists(emailOrUsername)
+      .pipe(withLoader(this.loaderService))
+      .subscribe({
+        next: (checkResponse: any) => {
+          console.log('User Check Response:', checkResponse);
+
+          if (checkResponse?.result === true) {
+            // ✅ User already exists
+        
+            return;
+          }
+
+          else{
+                      // 2️⃣ User does not exist → Register via ABP API
+          const requestBody = {
+            name: this.userInfo.name,
+            surname: this.userInfo.surname,
+            userName: this.userInfo.username,
+            emailAddress: this.userInfo.email,
+            password: this.userInfo.username, // same as username
+            captchaResponse: ''
+          };
+
+          const signInToken = this.userInfo.subId; // 👈 sub from Keycloak token
+
+          this.service.RegisterWithoutCaptcha(signInToken, requestBody)
+            .pipe(withLoader(this.loaderService))
+            .subscribe({
+              next: (response: any) => {
+                console.log('Registration API Response:', response);
+
+                if (response?.success === true) {
+                  this.router.navigate(['/dashboard']);
+                } else {
+                  const message = response?.error?.message || 'Registration failed.';
+                  const details = response?.error?.details || '';
+                  console.log('Registration API Response:',message,details)
+             
+                }
+              },
+              error: (err: any) => {
+                console.error('Registration API Error:', err);
+                const message = err?.error?.error?.message || 'Registration failed';
+                const details = err?.error?.error?.details || '';
+              console.log('Registration API Error:',message,details)
+              }
+            });
+          }
+
+
+        },
+        error: (err: any) => {
+          console.error('User Check API Error:', err);
+          //this.toastr.error('Failed to verify user existence. Please try again.');
+        }
+      });
+  } catch (error) {
+    console.error('Unexpected error during registration:', error);
+    //this.toastr.error('An unexpected error occurred during registration.');
+  }
+}
+
 
 
 
