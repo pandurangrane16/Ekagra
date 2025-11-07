@@ -4,7 +4,7 @@
                     <div class="col-md-12">
  <div class="card todays">
                     <div class="card-body">
-                        <div class="d-flex align-items-center"><img src="assets/img/violations.png" alt="" class="me-2"><span>TOTAL <br/> VIOLATION
+                        <div class="d-flex align-items-center"><img src="assets/img/violations.png" alt="" class="me-2"><span class="text-uppercase">Today's <br/> TOTAL VIOLATION
  </span></div>
                         <div class="count mt-4 mb-4">
                             36
@@ -19,7 +19,7 @@
                 <div class="col-md-12">
                 <div class="card todays">
                     <div class="card-body">
-                        <div class="d-flex align-items-center"><img src="assets/img/revenue.png" alt="" class="me-2"><span>TOTAL <br/> REVENUE</span></div>
+                        <div class="d-flex align-items-center"><img src="assets/img/revenue.png" alt="" class="me-2"><span class="text-uppercase">Today's <br/> TOTAL REVENUE</span></div>
                         <div class="count mt-4 mb-4">
                             36
                         </div>
@@ -31,7 +31,7 @@
                 <div class="col-md-12">
                 <div class="card todays">
                     <div class="card-body">
-                        <div class="d-flex align-items-center"><img src="assets/img/challan.png" alt="" class="me-2"><span>PROCESSED <br/> CHALLAN</span></div>
+                        <div class="d-flex align-items-center"><img src="assets/img/challan.png" alt="" class="me-2"><span class="text-uppercase">Today's <br/>PROCESSED CHALLAN</span></div>
                         <div class="count mt-4 mb-4">
                             36
                         </div>
@@ -42,58 +42,88 @@
 </div>
                 </div>
                  <div class="col-md-10">
-                    <div class="action d-flex justify-content-center mb-1">
+                    <div class="d-flex justify-content-end mb-1">
                         <mat-button-toggle-group name="fontStyle" aria-label="Font Style" color="primary">
     <mat-button-toggle value="bold">Day</mat-button-toggle>
-    <mat-button-toggle value="italic">Week</mat-button-toggle>
+    <mat-button-toggle value="italic" selected>Week</mat-button-toggle>
     <mat-button-toggle value="underline">Month</mat-button-toggle>
   </mat-button-toggle-group></div>
                     <div class="row d-flex justify-content-evenly">
-<div class="col-md-4"> <div class="card"> <div class="card-body">
- 
+<div class="col-md-4"> <div class="card" #cardRefV> <div class="card-body">
+  <div class="d-flex justify-content-between my-1" style="align-items: center;">
+                    <h6 class="ms-2 mb-0">Violations</h6>
+                    <div class="action mb-1">
+                        <span (click)="expand('violationH', $event,cardRefV)"><img src="assets/img/ci_expand.svg" alt=""></span>
+                        <span><img src="assets/img/more-horiz.svg" alt=""></span>
+                    </div>
+                </div>
                      
-                    <h6 class="ms-2 mb-0">Violations</h6> 
+                    
                     
               
                    
-                       <app-statistics-chart></app-statistics-chart>
+                       <app-statistics-chart [chartType]="'pie'"
+  [chartData]="violationsData" [chartDataColors]="violationsDataColors" [chartHeight]="expandedIndex === 'violationH' ? 400 : 180"></app-statistics-chart>
                     
                     </div></div>
                
 </div> 
-<div class="col-md-4"><div class="card"> <div class="card-body">
- 
-                     <h6 class="ms-2 mb-0">Revenue Statistics</h6>
-                       <app-statistics-chart></app-statistics-chart></div></div>
+<div class="col-md-4"><div class="card" #cardRefR> <div class="card-body">
+  <div class="d-flex justify-content-between my-1" style="align-items: center;">
+                    <h6 class="ms-2 mb-0">Revenue Statistics</h6>
+                    <div class="action mb-1">
+                        <span (click)="expand('revenueH', $event,cardRefR)"><img src="assets/img/ci_expand.svg" alt=""></span>
+                        <span><img src="assets/img/more-horiz.svg" alt=""></span>
+                    </div>
+                </div>
+                    
+                       <app-statistics-chart [chartType]="'pie'"
+  [chartData]="revenueData" [chartDataColors]="violationsDataColors" [chartHeight]="expandedIndex === 'revenueH' ? 400 : 180"></app-statistics-chart></div></div>
                 
-</div> <div class="col-md-4"><div class="card"> <div class="card-body">
-
-                     <h6 class="ms-2 mb-0">Challan Statistics</h6>
-                       <app-statistics-chart></app-statistics-chart></div></div>
+</div> <div class="col-md-4"><div class="card" #cardRefC> <div class="card-body">
+ <div class="d-flex justify-content-between my-1" style="align-items: center;">
+                    <h6 class="ms-2 mb-0">Challan Statistics</h6>
+                    <div class="action mb-1">
+                        <span (click)="expand('challanH', $event,cardRefC)"><img src="assets/img/ci_expand.svg" alt=""></span>
+                        <span><img src="assets/img/more-horiz.svg" alt=""></span>
+                    </div>
+                </div>
+                    
+                       <app-statistics-chart [chartType]="'pie'"
+  [chartData]="challanData" [chartDataColors]="violationsDataColors"  [chartHeight]="expandedIndex === 'challanH' ? 400 : 180"></app-statistics-chart></div></div>
               
 </div>
                 </div>
                
             </div>
 <div class="col-md-7 mt-2">
-    <div class="card" [ngClass]="{ fullscreen: isCardExpanded }">
+    <div class="card" #cardRefS>
         <div class="card-body">
              <div class="d-flex justify-content-between my-1" style="align-items: center;">
-                    <h6 class="ms-2 mb-0">LPR Statistics</h6>
+                    <h6 class="ms-2 mb-0">Top 10 Sitewise Violations</h6>
                     <div class="action mb-1">
-                        <span (click)="expand()"><img src="assets/img/ci_expand.svg" alt=""></span>
+                        <span (click)="expand('tenSiteH', $event, cardRefS)"><img src="assets/img/ci_expand.svg" alt=""></span>
                         <span><img src="assets/img/more-horiz.svg" alt=""></span>
                     </div>
                 </div>
-            
+             <app-statistics-chart [chartType]="'column'"
+  [chartData]="siteWiseVoilationData" [chartHeight]="expandedIndex === 'tenSiteH' ? 500 : 220" [chartDataColors]="siteWiseVoilationDataColors"></app-statistics-chart>
         </div>
     </div>
     
 </div>
 <div class="col-md-5 mt-2">
-    <div class="card">
+    <div class="card"  #cardRef2>
         <div class="card-body">
-            LPR Statistics
+             <div class="d-flex justify-content-between my-1" style="align-items: center;">
+                    <h6 class="ms-2 mb-0">LPR Statistics</h6>
+                    <div class="action mb-1">
+                        <span (click)="expand( 'lprH', $event, cardRef2)"><img src="assets/img/ci_expand.svg" alt=""></span>
+                        <span><img src="assets/img/more-horiz.svg" alt=""></span>
+                    </div>
+                </div>
+             <app-statistics-chart [chartType]="'bar'"
+  [chartData]="lprData" [chartHeight]="expandedIndex === 'lprH' ? 500 : 220" [chartDataColors]="lprDataColors"></app-statistics-chart>
         </div>
     </div>
     

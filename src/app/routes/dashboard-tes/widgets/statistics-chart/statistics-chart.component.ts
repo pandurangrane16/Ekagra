@@ -1,4 +1,5 @@
-import { OnInit, Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
+import { OnInit, Component, ElementRef, Renderer2, ViewChild, Input,  OnChanges,
+  SimpleChanges } from '@angular/core';
 import { HighchartsChartModule } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
 import { CommonModule } from '@angular/common';
@@ -10,49 +11,53 @@ import { CommonModule } from '@angular/common';
   styleUrl: './statistics-chart.component.css'
 })
 
-export class StatisticsChartComponent implements OnInit {
-  @ViewChild('customLegend')
-  customLegend!: ElementRef;
-  constructor(private renderer: Renderer2, private el: ElementRef) {}
+export class StatisticsChartComponent implements OnInit, OnChanges  {
+  @Input() chartTitle: string = '';
+  @Input() chartHeight: number = 180;
+  @Input() chartType: 'pie' | 'column' | 'bar' | 'line' = 'column';
+  @Input() chartData: any[] = [];
+  @Input() chartDataColors: any[] = [];
+ @ViewChild('customLegend', { static: false }) customLegend!: ElementRef;
+ 
   public element: any;
-  jsonData = {
-    "data": [
-        { "name": "DOUBLEPARK", "y": 30, "color": "#ff6347"},
-        { "name": "FOOTPATHDRIVE", "y": 40, "color": "#4682b4"},
-        { "name": "FREELEFT", "y": 25, "color": "#32cd32"},
-        { "name": "MOBILEUSE", "y": 50, "color": "#ffd700"},
-        { "name": "NOHELMET", "y": 30, "color": "#ff98f6ff"},
-        { "name": "NOPARK", "y": 20, "color": "#004f4f"},
-        { "name": "NOSEATBELT", "y": 10, "color": "#ff1493"},
-        { "name": "OVERSPEED", "y": 10, "color": "#8a2be2"},
-        { "name": "RASHDRIVE", "y": 30, "color": "#20b2aa"},
-        { "name": "REDLIGHT", "y": 10, "color": "#dc143c"},
-        { "name": "STOPLINE", "y": 10, "color": "#999966"},
-        { "name": "TRIPLERIDE", "y": 5, "color": "#00006e"},
-        { "name": "WRONGDIRECTION", "y": 3, "color": "#ff8c00"},
-        { "name": "WRONGLANE", "y": 2, "color": "#ff6347"},
-    ]
-};
-Highcharts: typeof Highcharts = Highcharts;
-  chartOptions: Highcharts.Options = {
-    chart: {
-      type: 'pie',
+  Highcharts: typeof Highcharts = Highcharts;
+  chartOptions: Highcharts.Options = {};
+  constructor(private renderer: Renderer2, private el: ElementRef) {}
+ 
+ ngOnInit(): void {
+    this.initializeChart();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['chartData'] || changes['chartType'] || changes['chartTitle'] || changes['chartHeight']) {
+      this.initializeChart();
+    }
+  }
+
+   initializeChart() {
+    this.chartOptions = {
+      chart: {
+      type: this.chartType as any,
       backgroundColor: 'transparent',  // Transparent background
-      height:180,
-      spacingBottom:0,
-      marginBottom:0,
-      spacingTop:0,
-      marginTop:0,
+      height:this.chartHeight,
       events: {
         render: function () {
           const chart = this as Highcharts.Chart & { customLabel?: Highcharts.SVGElement };
+
+          if (chart.options.chart?.type !== 'pie') {
+             if (chart.customLabel) {
+              chart.customLabel.destroy();
+              chart.customLabel = undefined;
+            }
+            return;
+          }
 
           // Calculate total
          const total = chart.series[0].data.reduce(
             (sum, point) => sum + (point.y ?? 0),
             0
           );
-          const text = `Total <br/><b style="font-size: 40px;">${total}</b>`;
+          const text = `<span  *ngIf="chartType !== 'column'">Total <br/><b style="font-size: 40px;">${total}</b></span>`;
 
           // Remove existing label before re-rendering
           if (chart.customLabel) {
@@ -92,6 +97,22 @@ Highcharts: typeof Highcharts = Highcharts;
       text: '',
       align: 'left'
   },
+  xAxis: {
+     title: {
+      text: ''},
+        type: 'category',
+        labels: {
+            autoRotation: [-45, -90],
+            style: {
+                fontSize: '13px',
+                fontFamily: 'Verdana, sans-serif'
+            }
+        }
+    },
+    yAxis:{
+       title: {
+      text: ''},
+    },
   tooltip: {
       useHTML: true,
     backgroundColor:'transparent',
@@ -138,6 +159,7 @@ Highcharts: typeof Highcharts = Highcharts;
   plotOptions: {
     pie: {
       allowPointSelect: true,
+      innerSize: '80%',
       cursor: 'pointer',
       dataLabels: [{
           enabled: false,
@@ -173,9 +195,17 @@ Highcharts: typeof Highcharts = Highcharts;
     enabled: false
   },
   series: [{
-    innerSize: '80%',
+     type: this.chartType as any,
+     colors: this.chartDataColors,
+        colorByPoint: true,
+  //  innerSize: '80%',
+     dataLabels: [{
+          enabled: this.chartType !== 'pie',
+            color: '#FFFFFF',
+            inside: true,
+            verticalAlign: 'top',}],
     borderRadius: 0,
-    data:this.jsonData.data,
+    data:this.chartData,
 }] as Highcharts.SeriesOptionsType[] // Casting to SeriesOptionsType[]
  ,
   responsive: {
@@ -193,10 +223,9 @@ Highcharts: typeof Highcharts = Highcharts;
           }
       }]
   }
-  };
-
-  ngOnInit(): void {
-   
-  } 
-
+    }
+  }
 }
+
+
+
