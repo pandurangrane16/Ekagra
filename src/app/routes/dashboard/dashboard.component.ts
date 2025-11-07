@@ -40,10 +40,10 @@ async ngOnInit(){
   const keycloak = await this.keycloakService.getKeycloakInstance();
 
 
-     const registerUrl = keycloak.createRegisterUrl({
-       redirectUri: window.location.origin + '/#/dashboard'
-     });
-   window.location.href = (await registerUrl).toString()
+  //    const registerUrl = keycloak.createRegisterUrl({
+  //      redirectUri: window.location.origin + '/#/dashboard'
+  //    });
+  //  window.location.href = (await registerUrl).toString()
 
 
 

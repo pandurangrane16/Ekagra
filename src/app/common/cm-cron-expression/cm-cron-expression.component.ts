@@ -58,19 +58,45 @@ export class CmCronExpressionComponent implements OnInit {
     }
   }
 
-   setCronValues(cron: string) {
-    const parts = cron.trim().split(' ');
-    if (parts.length >= 6) {
-      this.cronForm.patchValue({
-        minute: parts[1] ?? '*',
-        hour: parts[2] ?? '*',
-        dayOfMonth: parts[3] ?? '*',
-        month: parts[4] ?? '*',
-        dayOfWeek: parts[5] ?? '*'
-      }, { emitEvent: false }); // prevent immediate change emission
-      this.updatePreview();
-    }
+  //  setCronValues(cron: string) {
+  //   const parts = cron.trim().split(' ');
+  //   if (parts.length >= 6) {
+  //     this.cronForm.patchValue({
+  //       minute: parts[1] ?? '*',
+  //       hour: parts[2] ?? '*',
+  //       dayOfMonth: parts[3] ?? '*',
+  //       month: parts[4] ?? '*',
+  //       dayOfWeek: parts[5] ?? '*'
+  //     }, { emitEvent: false }); // prevent immediate change emission
+  //     this.updatePreview();
+  //   }
+  // }
+
+  setCronValues(cron: string) {
+  const parts = cron.trim().split(' ');
+  
+  if (parts.length === 5) {
+    // Standard 5-field cron: minute hour dayOfMonth month dayOfWeek
+    this.cronForm.patchValue({
+      minute: parts[0] ?? '*',
+      hour: parts[1] ?? '*',
+      dayOfMonth: parts[2] ?? '*',
+      month: parts[3] ?? '*',
+      dayOfWeek: parts[4] ?? '*'
+    }, { emitEvent: false });
+  } else if (parts.length === 6) {
+    // Optional Quartz-like 6-field cron
+    this.cronForm.patchValue({
+      minute: parts[1] ?? '*',
+      hour: parts[2] ?? '*',
+      dayOfMonth: parts[3] ?? '*',
+      month: parts[4] ?? '*',
+      dayOfWeek: parts[5] ?? '*'
+    }, { emitEvent: false });
   }
+
+  this.updatePreview();
+}
 
   updateCronPreview() {
     const { minute, hour, dayOfMonth, month, dayOfWeek } = this.cronForm.value;

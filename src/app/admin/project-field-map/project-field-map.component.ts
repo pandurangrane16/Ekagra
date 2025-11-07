@@ -420,8 +420,13 @@ onJsonPathSelected(jsonPath: string) {
     // 🔹 Step 3: Assign normalized path to the selected row
     this.projectFieldMapData[this.selectedRowIndex].apiField = jsonPath;
 
+    // 🔹 Step 3: Extract the final property name (e.g., sopName)
+    const lastPropertyMatch = jsonPath.match(/\.?([a-zA-Z0-9_]+)\]?$/);
+    const lastProperty = lastPropertyMatch ? lastPropertyMatch[1] : '';
+
     // 🔹 Step 4: Extract value using the normalized path
-    const value = this.getValueByPath(this.apiJsonData, jsonPath);
+    // const value = this.getValueByPath(this.apiJsonData, jsonPath);
+        const value = this.getValueByPath(this.apiJsonData, lastProperty);
 
     // 🔹 Step 5: Detect and assign type
     const detectedType = this.detectValueType(value);
@@ -472,8 +477,41 @@ private mapType(type: string, value?: any): string {
 /**
  * Utility: Extract value from object using dot-separated path
  */
+// private getValueByPath(obj: any, path: string): any {
+//   return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+// }
+
 private getValueByPath(obj: any, path: string): any {
-  return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+  const parts = path.split('.');
+  let acc = obj;
+
+  // ✅ Step 1: if obj has `result` or `data`, go inside it first
+  if (acc && (acc.result || acc.data)) {
+    acc = acc.result || acc.data;
+  }
+
+  // ✅ Step 2: if it's an array, pick the last element
+  if (Array.isArray(acc)) {
+    acc = acc[acc.length - 1];
+  }
+
+  // ✅ Step 3: traverse down using dot notation
+  for (const part of parts) {
+    if (acc === null || acc === undefined) return undefined;
+
+    if (Array.isArray(acc)) {
+      acc = acc[acc.length - 1]; // pick last array element if found
+    }
+
+    acc = acc[part];
+  }
+
+  // ✅ Step 4: final check if result is array → take last element
+  if (Array.isArray(acc)) {
+    acc = acc[acc.length - 1];
+  }
+
+  return acc;
 }
 
 loadProjectFieldMap(projectId: number, apiId: number) {

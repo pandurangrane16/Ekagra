@@ -672,21 +672,34 @@ get f() {
   return this.firstFormGroup.controls;
 }
 
+// patchCronForEdit(cronString: string) {
+//   debugger;
+//   console.log("cronString:",cronString)
+//   if (!cronString) return;
+//   this.parentCron=cronString;
+//   this.parent_true= true;
+// }
+
 patchCronForEdit(cronString: string) {
-  debugger;
-  console.log("cronString:",cronString)
   if (!cronString) return;
 
-  // const [minute, hour, dayOfMonth, month, dayOfWeek] = cronString.split(" ");
+  console.log("patchCronForEdit:", cronString);
 
-  // // Call setThirdFormValues for each field
-  // this.setThirdFormValues(minute, 'min');
-  // this.setThirdFormValues(hour, 'hour');
-  // this.setThirdFormValues(dayOfMonth, 'daymon');
-  // this.setThirdFormValues(month, 'mon');
-  // this.setThirdFormValues(dayOfWeek.split(','), 'day');
-  this.parentCron=cronString;
-  this.parent_true= true;
+  // Save full string
+  this.parentCron = cronString;
+  this.parent_true = true;
+ console.log("parentCron - patchCronForEdit:",this.parentCron);
+  // Split and patch form values (minute hour dayOfMonth month dayOfWeek)
+  const parts = cronString.trim().split(" ");
+  if (parts.length === 5) {
+    this.thirdFormGroup.patchValue({
+      minute: parts[0],
+      hour: parts[1],
+      dayOfMonth: parts[2],
+      month: parts[3],
+      dayOfWeek: parts[4],
+    });
+  }
 }
 
 
@@ -743,6 +756,7 @@ patchCronForEdit(cronString: string) {
   } else {
     this.parentCron = event;
   }
+  console.log("parentCron:",this.parentCron);
 }
   getErrorMessage(_controlName: any, _controlLable: any, _isPattern: boolean = false, _msg: string) {
     return getErrorMsg(this.firstFormGroup, _controlName, _controlLable, _isPattern, _msg);
@@ -2205,6 +2219,7 @@ policyNameExists = false;
     dayOfWeek: evt.dayOfWeek,
   });
   this.parentCron = evt.cronString;
+  console.log("parentCron - getCronFromData:",this.parentCron);
 }
 loadEditData() {
   this.ruleService.GetDataById(this.id)

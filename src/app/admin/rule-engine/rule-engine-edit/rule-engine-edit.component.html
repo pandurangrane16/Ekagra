@@ -249,9 +249,9 @@
                                                             fontset="material-icons-outlined">
                                                             add
                                                         </mat-icon></app-cm-button>
-                                                    <app-cm-button color="primary" type="stroked" class="rmBtn"
+                                              <!--    <app-cm-button color="primary" type="stroked" class="rmBtn"
                                                         matTooltip="Remove" return="remove"><mat-icon
-                                                            fontset="material-icons-outlined">delete</mat-icon></app-cm-button>
+                                                            fontset="material-icons-outlined">delete</mat-icon></app-cm-button> -->  
                                                 </div>
                                             </div>
                                             <div class="row mb-2">
@@ -359,8 +359,13 @@
                             </div> -->
 
 
-              <app-cm-cron-expression
+  <!--                <app-cm-cron-expression
   [selectedCron]="editCronExpression"
+  (cronChange)="getCronFromData($event)">
+</app-cm-cron-expression> -->
+
+   <app-cm-cron-expression
+  [selectedCron]="parentCron"
   (cronChange)="getCronFromData($event)">
 </app-cm-cron-expression>
 
