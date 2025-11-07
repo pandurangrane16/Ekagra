@@ -374,22 +374,57 @@ debugger;
 // }
 
 
+// onJsonPathSelected(jsonPath: string) {
+//   debugger;
+
+//   if (this.selectedRowIndex !== null) {
+//     console.log('Selected JSON Path:', jsonPath);
+
+//     // Assign JSON path to the row's apiField
+//     this.projectFieldMapData[this.selectedRowIndex].apiField = jsonPath;
+
+//     // Get the value from API response at this path
+//     const value = this.getValueByPath(this.apiJsonData, jsonPath);
+
+//     // Detect and normalize type
+//     const detectedType = this.detectValueType(value);
+
+//     // Assign type
+//     this.projectFieldMapData[this.selectedRowIndex].fieldType = detectedType;
+
+//     console.log('Value:', value);
+//     console.log('Detected Type:', detectedType);
+
+//     this.selectedRowIndex = null; // Reset after setting
+//   }
+// }
+
+
 onJsonPathSelected(jsonPath: string) {
   debugger;
 
   if (this.selectedRowIndex !== null) {
-    console.log('Selected JSON Path:', jsonPath);
+    console.log('Original Selected JSON Path:', jsonPath);
 
-    // Assign JSON path to the row's apiField
+    // 🔹 Step 1: Ensure it starts with 'data.' prefix
+    if (!jsonPath.startsWith('data.')) {
+      jsonPath = 'data.' + jsonPath;
+    }
+
+    // 🔹 Step 2: Replace numeric indices with [index]
+    // e.g., result.0.id → result.[0].id
+    jsonPath = jsonPath.replace(/\.([0-9]+)(\.|$)/g, '.[$1]$2');
+
+    console.log('Normalized JSON Path:', jsonPath);
+
+    // 🔹 Step 3: Assign normalized path to the selected row
     this.projectFieldMapData[this.selectedRowIndex].apiField = jsonPath;
 
-    // Get the value from API response at this path
+    // 🔹 Step 4: Extract value using the normalized path
     const value = this.getValueByPath(this.apiJsonData, jsonPath);
 
-    // Detect and normalize type
+    // 🔹 Step 5: Detect and assign type
     const detectedType = this.detectValueType(value);
-
-    // Assign type
     this.projectFieldMapData[this.selectedRowIndex].fieldType = detectedType;
 
     console.log('Value:', value);
