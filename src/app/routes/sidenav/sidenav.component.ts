@@ -98,7 +98,7 @@ debugger;
         icon: './assets/img/icon_surveillance.svg',
         activeIcon: './assets/img/icon_surveillance1.svg',
         label: 'Surveillance',
-        link: 'surveilience',
+        link: 'camera',
         apiLable: "surveilience"
       },
       {
@@ -226,7 +226,7 @@ debugger;
           icon: './assets/img/icon_settings.svg',
           activeIcon: './assets/img/icon_settings1.svg',
           label: 'Role Configuration',
-          link: 'admin/roleconfiguration',
+          link: 'admin/roleconfigList',
         },
         {
           icon: './assets/img/icon_settings.svg',

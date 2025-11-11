@@ -320,14 +320,25 @@ export const AdminRoutes: Routes = [
   },
   {
     path: 'roleconfiguration',
-    component: RoleConfigListComponent,
+    component: RoleConfigurationComponent,
     data: {
       title: 'Role Configuration',
       urls: [
-        { title: 'SOP Process', url: '/admin/sopflow' },
-        { title: 'SOP Process' }
+        { title: 'Role Configuration', url: '/admin/RoleConfigurationComponent' },
+        { title: 'Role Configuration' }
       ]
     }
+  },
+    {
+    path: 'roleconfigList',
+    component: RoleConfigListComponent,
+    data: {
+      title: 'Role Configuration list',
+      urls: [
+        { title: 'Admin Dashboard', url: '/admin/RoleConfigListComponent' },
+        { title: 'Role Configuration' },
+      ],
+    },
   },
   {
     path: 'roleCreation',

@@ -1,1 +1,73 @@
 <p>role-config-list works!</p>
+ <div class="row mt-1">
+    <div class="col-md-12">
+<div class="card">
+  <div class="card-header">
+     <mat-card-title><h4 class="mt-1 mb-0">Role Configuration</h4></mat-card-title>   
+  </div>
+      <div class="card-body"  id="editForm">
+
+<div class="filter-row d-flex justify-content-between align-items-start">
+ <div class="d-flex justify-content-start align-items-center gap-2">
+  <!-- Left Filters -->
+  <!-- <app-cm-select2
+   *ngIf="isProjectOptionsLoaded"
+    [formGroup]="form"
+    [controlName]="'selectedProject'"
+    [settings]="projectSelectSettings"
+    (optionSelected)="onProjectSelected($event)">
+  </app-cm-select2>
+
+  <app-cm-select2
+    [formGroup]="form"
+    [controlName]="'selectedStatus'"
+    [settings]="statusSelectSettings"
+    (optionSelected)="onProjectSelected($event)">
+  </app-cm-select2>
+
+  <button mat-flat-button
+        class="btn-primary mt-4" (click)="submit() 
+       ">
+        Submit
+        </button> -->
+
+   </div>     
+
+  <!-- Right Side Container for Button + Search -->
+  <div class="d-flex justify-content-start flex-column gap-1">
+
+      <!-- Create Button -->
+      <button mat-flat-button
+      class="btn-primary w-100" (click)="openDialog()">
+      + Create Role Configuration
+    </button>
+
+    <!-- Search Input -->
+    <div class="w-100">
+      <app-cm-input
+        [formGroup]="form"
+        [controlName]="'searchText'"
+        [_inputData]="squareSettings">
+      </app-cm-input>
+    </div>
+  </div>
+</div>
+<div style="width: 100%; overflow-x: auto;">
+<app-cm-table
+  [headArr]="headArr"
+  [gridArr]="items"
+  [pagination]="true"
+  [totalRecords]="totalRecords"
+  [perPage]="perPage"
+  [totalPages]="totalPages"
+  [collectionSize]="collectionSize"
+  (pager)="onPageChange($event)"
+  (recordPerPage)="onPageRecordsChange($event)"
+  (searchWithId)="onRowClicked($event)"
+  (btnAction)="onButtonClicked($event)">
+</app-cm-table>
+</div>
+</div>
+</div>
+</div>
+</div>

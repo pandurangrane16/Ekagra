@@ -95,7 +95,8 @@ export class CmCronExpressionComponent implements OnInit {
     }, { emitEvent: false });
   }
 
-  this.updatePreview();
+  // this.updatePreview();
+  this.updateCronPreview();
 }
 
   updateCronPreview() {

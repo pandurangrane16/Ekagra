@@ -1,11 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit ,inject} from '@angular/core';
 import { MaterialModule } from '../../../Material.module';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, Validators } from '@angular/forms';
 import { CmInputComponent } from '../../../common/cm-input/cm-input.component';
 import { getErrorMsg } from '../../../utils/utils';
 import { CmToggleComponent } from '../../../common/cm-toggle/cm-toggle.component';
-
+import { Router } from '@angular/router';
+import { RoleConfigurationService } from '../../../services/admin/role-configuration.service';
+import{RoleconfigModule} from '../../../models/admin/roleconfig.module';
+import { dateTimeFormat } from 'highcharts'; 
+import { ToastrService } from 'ngx-toastr';
+import { AbstractControl, ValidatorFn } from '@angular/forms';
 @Component({
   selector: 'app-role-configuration',
   imports: [MaterialModule, CommonModule, CmInputComponent,CmToggleComponent],
@@ -13,7 +18,9 @@ import { CmToggleComponent } from '../../../common/cm-toggle/cm-toggle.component
   styleUrl: './role-configuration.component.css'
 })
 export class RoleConfigurationComponent implements OnInit {
+   RoleConfigurationService = inject(RoleConfigurationService);
   form: any;
+    router = inject(Router);
   inputFields = {
     roleName: {
       // labelHeader: 'Description',
@@ -47,8 +54,35 @@ export class RoleConfigurationComponent implements OnInit {
   get f() {
     return this.form.controls;
   }
-  constructor(private fb: FormBuilder) {
+  
+constructor(
+    private fb: FormBuilder,
+   // private dialogRef: MatDialogRef<MapConfigurationFormComponent>,
+    private service :RoleConfigurationService,
+     private toast: ToastrService,
+   // @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.form = this.fb.group({
+      name: ['', [Validators.required,this.noWhitespaceValidator()]],
+      description: ['', [Validators.required,this.noWhitespaceValidator()]],
+      displayname: ['', [Validators.required,this.noWhitespaceValidator()]],
+      minzoom: ['', Validators.required],
+      maxzoom: ['', Validators.required],
+      sourceurl: ['', [Validators.required,Validators.pattern(/^(https?:\/\/)[^\s]+$/)]],
+      lat: ['', Validators.required],
+      long: ['', Validators.required],
+      wmslayer :['', [Validators.required,Validators.pattern(/^(https?:\/\/)[^\s]+$/)]],
+      isActive: [Validators.required],
 
+      
+      
+    });
+  }
+  noWhitespaceValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      return isWhitespace ? { whitespace: true } : null;
+    };
   }
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -60,12 +94,90 @@ export class RoleConfigurationComponent implements OnInit {
   }
 
   close() {
-
+     this.router.navigate(['/admin/roleconfigList']);
   }
 
   getErrorMessage(_controlName: any, _controlLable: any, _isPattern: boolean = false, _msg: string) {
     return getErrorMsg(this.form, _controlName, _controlLable, _isPattern, _msg);
   }
 
-  submit(){}
+  
+  submit() {
+  try {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.toast.error('Form is not valid');
+      return;
+    }
+
+    let _Roleconfigmodel = new RoleconfigModule();
+
+    _Roleconfigmodel.id = this.form.controls['id']?.value || 0;
+    _Roleconfigmodel.creationTime = new Date().toISOString();
+    _Roleconfigmodel.creatorUserId = Number(sessionStorage.getItem('UserId')) || 0;
+    _Roleconfigmodel.lastModificationTime = new Date().toISOString();
+    _Roleconfigmodel.lastModifierUserId = Number(sessionStorage.getItem('UserId')) || 0;
+    _Roleconfigmodel.isDeleted = false;
+    _Roleconfigmodel.deleterUserId = 0;
+    _Roleconfigmodel.deletionTime = new Date().toISOString();
+    _Roleconfigmodel.tenantId = 1;
+    _Roleconfigmodel.name = this.form.controls['roleName'].value;
+    _Roleconfigmodel.displayName = this.form.controls['roleDesc'].value;
+    _Roleconfigmodel.IsStatic = true;
+    _Roleconfigmodel.IsDefault = false;
+    _Roleconfigmodel.NormalizedName = '';
+    _Roleconfigmodel.ConcurrencyStamp = '';
+
+
+    const payload = {
+  role: {
+    id: _Roleconfigmodel.id,
+    displayName: _Roleconfigmodel.displayName,
+    isDefault: _Roleconfigmodel.IsDefault,
+    name: _Roleconfigmodel.name,
+    isStatic: _Roleconfigmodel.IsStatic,
+    normalizedName: _Roleconfigmodel.NormalizedName,
+    concurrencyStamp: _Roleconfigmodel.ConcurrencyStamp,
+    tenantId: _Roleconfigmodel.tenantId
+  },
+  grantedPermissionNames: ['User'] // or dynamically fill this
+};
+
+this.service.CreateOrUpdateRole(payload).subscribe({
+  next: (res: any) => {
+    if (res.success) {
+      this.toast.success('Role configuration saved successfully');
+      this.router.navigate(['/admin/roleconfigList']);
+    } else {
+      this.toast.error('Failed to save role configuration');
+    }
+  },
+  error: (err: any) => {
+    console.error('API error:', err);
+    this.toast.error('Something went wrong while saving role');
+  }
+});
+
+    // this.service.CreateOrUpdateRole(_Roleconfigmodel).subscribe({
+    //   next: (res: any) => {
+    //     if (res.success) {
+    //       this.toast.success('Role configuration saved successfully');
+    //       this.router.navigate(['/admin/roleconfigList']);
+    //     } else {
+    //       this.toast.error('Failed to save role configuration');
+    //     }
+    //   },
+    //   error: (err: any) => {
+    //     console.error('API error:', err);
+    //     this.toast.error('Something went wrong while saving role');
+    //   }
+    // });
+
+  } catch (error) {
+    console.error('Unexpected error in submit:', error);
+    this.toast.error('An unexpected error occurred');
+  }
 }
+
+}
+
