@@ -92,6 +92,12 @@ debugger;
           label: 'TES Dashboard',
           link: 'tes',
         }, 
+        {
+          icon: './assets/img/icon_settings.svg',
+          activeIcon: './assets/img/icon_settings1.svg',
+          label: 'PA Dashboard',
+          link: 'pa',
+        }
         ]
       },
       {
