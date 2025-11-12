@@ -91,10 +91,10 @@
 
 
 
-        <div class="col-2 text-center">
+        <!-- <div class="col-2 text-center">
           <label>Is Required Auth.</label>
           <app-cm-toggle [formGroup]="form" [settings]="isrequireauth"></app-cm-toggle>
-        </div>
+        </div> -->
 
         <div class="col-md-6">
           <label>Enter URL</label>
@@ -106,13 +106,13 @@
             </div>
           </div>
         </div>
-        <div class="col">
+        <!-- <div class="col">
           <label>Api Seq</label>
           <div>
             <app-cm-input [formGroup]="form" [controlName]="'apiseq'" [_inputData]="inputFields.apiSeq">
             </app-cm-input>
           </div>
-        </div>
+        </div> -->
 
         <div class="col">
           <app-cm-select2 *ngIf="authRequiredFlag" [formGroup]="form" [controlName]="'selectedapi'"
