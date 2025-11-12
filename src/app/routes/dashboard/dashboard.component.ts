@@ -25,8 +25,6 @@ import { Router } from '@angular/router';
     styleUrl: './dashboard.component.css'
 })
 
-
-
 export class DashboardComponent implements OnInit{
 store = inject(DashboardService);
 session = inject(SessionService);

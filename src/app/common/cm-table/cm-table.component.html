@@ -34,10 +34,13 @@
               }
               @else if(head.fieldValue === 'button') {
               <span *ngFor="let btn of item.button" class="me-2">
-                <button mat-icon-button  [color]="getButtonColor(btn)" (click)="GoToBtnAction(btn, item)" [matTooltip]="btn.label">
-                  <mat-icon fontSet="material-icons-outlined">{{ btn.icon || 'add' }}</mat-icon>
+                <button mat-icon-button  [color]="getButtonColor(btn) || btn.color" (click)="GoToBtnAction(btn, item)" [matTooltip]="btn.label" [disabled]="btn.disabled">
+                  <mat-icon fontSet="material-icons-outlined" [color]="btn.color">{{ btn.icon || 'add' }}</mat-icon>
                 </button>
               </span>
+              }
+              @else if(head.fieldValue === 'image') {
+<img [src]="item[head.fieldValue]"/>
               }
               @else if(head.type === 'boolean') {
               <badge

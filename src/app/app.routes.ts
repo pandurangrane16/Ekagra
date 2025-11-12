@@ -30,6 +30,7 @@ import { RegisterComponent } from './routes/register/register.component';
 import { RegisterRedirectComponent } from './pages/register-redirect/register-redirect.component';
 import { DashboardVMSComponent } from './routes/dashboard-vms/dashboard-vms.component';
 import { DashboardTESComponent } from './routes/dashboard-tes/dashboard-tes.component';
+import { DashboardPaComponent } from './routes/dashboard-pa/dashboard-pa.component';
 
 export const routes: Routes = [
       // { path: "", component: DashboardComponent, },
@@ -63,6 +64,7 @@ export const routes: Routes = [
       { path: 'dashroute', component: DashRoutesComponent },
       { path: 'vms', component: DashboardVMSComponent },
       { path: 'tes', component: DashboardTESComponent},
+      { path: 'pa', component: DashboardPaComponent},
       { path: 'cron', component: CmCronComponent },
       {
             path: 'admin',

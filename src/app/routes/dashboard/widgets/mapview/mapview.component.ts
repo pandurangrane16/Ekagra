@@ -1,4 +1,4 @@
-import { Component,Inject, PLATFORM_ID,AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Component,Inject, PLATFORM_ID,AfterViewInit, ElementRef, ViewChild, Input, Renderer2, SimpleChanges } from '@angular/core';
 // import Map from 'ol/Map';
 // import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
@@ -16,13 +16,13 @@ import { useGeographic } from 'ol/proj'; // Import useGeographic
     styleUrl: './mapview.component.css'
 })
 export class MapviewComponent implements AfterViewInit {
-
+  @Input() mapHeight?: string;
   private map: any;
   private lat: any;
   private lng: any;
 
   @ViewChild('map', { static: false }) mapElement!: ElementRef;
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private el: ElementRef, private renderer: Renderer2) {}
  
   // Set the coordinate system to geographic (longitude, latitude)
 
@@ -51,5 +51,9 @@ export class MapviewComponent implements AfterViewInit {
     }
    
   }
-
+ ngOnChanges(changes: SimpleChanges) {
+    if (changes['mapHeight'] && this.mapHeight) {
+      this.renderer.setStyle(this.el.nativeElement.querySelector('.map-container'), 'height', this.mapHeight);
+    }
+  }
 }
