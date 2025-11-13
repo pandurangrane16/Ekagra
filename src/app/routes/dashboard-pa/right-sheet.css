@@ -1,0 +1,23 @@
+.sheet-content {
+      padding: 16px;
+      width: 400px;
+    }
+    .mat-mdc-outlined-button{
+--mat-sys-primary:#1c2d7b;
+border-color: var(--mat-sys-primary);
+color: var(--mat-sys-primary);
+}
+.mat-button-toggle-appearance-standard.mat-button-toggle-checked {
+  --mat-sys-primary:#1c2d7b;
+    color: white;
+    background-color: var(--mat-sys-primary);
+}
+.mat-mdc-tab-header {
+    --mdc-secondary-navigation-tab-container-height: 38px;
+}
+.text-light {line-height: 16px!important; color: white!important;}
+.mat-mdc-outlined-button.mat-warn{
+--mat-sys-primary:#f51b0c;
+border-color: var(--mat-sys-primary);
+color: var(--mat-sys-primary);
+}
