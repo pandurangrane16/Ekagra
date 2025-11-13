@@ -1,0 +1,127 @@
+.dialog-container {
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;               
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);  
+    overflow-x: hidden;   
+
+  }
+  
+  .form-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-right: 10px;          /* So scroll doesn’t cover content */
+  }
+  
+  app-cm-input {
+    width: 100%;
+    display: block;
+  }
+  .toggle-row {
+    display: flex;
+    gap: 10px; /* Space between the two toggles */
+    margin-bottom: 16px;
+  }
+  
+  .toggle-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1; /* Make them equal width */
+  }
+  
+  .toggle-label {
+    font-weight: 500;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  :host {
+    display: block;
+    width: 100%;
+  }
+  
+  select, ng-select, mat-select, .your-inner-wrapper-class {
+    width: 100% !important;
+  }
+
+  .full-width-select {
+    display: block;
+    width: 100%;
+  }
+  
+  .full-width-select ::ng-deep mat-form-field {
+    width: 100% !important;
+  }
+  
+  .full-width-select ::ng-deep input {
+    width: 100% !important;
+  }
+
+  .dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  /* .dialog-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 500;
+  } */
+  
+
+  
+  
+  .toggle-column {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+  }
+
+  
+ 
+  
+  .file-upload {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .file-upload label {
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  /* Fixed footer buttons */
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+    background-color: #fff;
+    position: sticky;
+    bottom: 0;
+  }
+  .mat-mdc-outlined-button{
+--mat-sys-primary:#1c2d7b;
+border-color: var(--mat-sys-primary);
+color: var(--mat-sys-primary);
+}
+.mat-button-toggle-appearance-standard.mat-button-toggle-checked {
+  --mat-sys-primary:#1c2d7b;
+    color: white;
+    background-color: var(--mat-sys-primary);
+}

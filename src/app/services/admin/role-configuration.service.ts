@@ -20,11 +20,13 @@ GetRoles(_data: any) {
   }
 
   CreateOrUpdateRole(_data: any) {
-    return this._httpService._postMethod(_data, 'api/services/app/Role/CreateOrUpdateRole');
+    return this._httpService._postMethod(_data, 'api/services/app/Role/RoleCreate');
   }
-  DeleteRole(Id: number) {
-      return this._httpService._getMethod('api/services/app/Role/DeleteRole?Id='+Id);
+  DeleteRole(userid:any,Id: number) {
+      return this._httpService._deleteMethod('api/services/app/Role/RoleSoftDelete?id='+Id+'&DeleterUsrId='+userid);
     }
+
+
   GetAllRoles() {
     return this._httpService._getMethod('api/services/app/Role/GetAllRoles');
   }

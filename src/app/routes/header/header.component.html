@@ -5,6 +5,16 @@
       <img src="assets/img/logo2.svg" alt="" class="logo2" (click)="onClick($event)" *ngIf="headerService.showLogo">
     </div>
     <div class="col-6 text-right justify-content-end align-content-end d-flex">
+
+
+
+       <div class="me-3 text-end" *ngIf="userInfo">
+        <div class="fw-bold">{{ userInfo.name || userInfo.userName }}</div>
+        <small class="text-muted">{{ userInfo.emailAddress }}</small>
+      </div>
+
+
+
        <!-- <mat-form-field>
         <mat-icon matPrefix>search</mat-icon>
         <input matInput placeholder="Placeholder"> </mat-form-field> -->

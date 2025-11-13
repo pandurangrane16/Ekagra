@@ -192,8 +192,9 @@ export class SopflowComponent implements OnInit {
   }
   ngOnInit(): void {
     if(this.policyData == undefined) 
+     
       this.router.navigate(['alerts']);
-
+    
     this.alertService.getSopActionByAlert(this.policyData.id).subscribe(res => {
       if (res != undefined) {
         let data = res.result.result;

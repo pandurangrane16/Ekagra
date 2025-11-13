@@ -29,7 +29,7 @@
                         </div>
                     </div>
                     <div class="col-md-8">
-                        <label>Description</label>
+                        <label>Display Name</label>
                         <app-cm-input [formGroup]="form" [controlName]="'roleDesc'" [_inputData]="inputFields.roleDesc">
                         </app-cm-input>
                         <div *ngIf="f['roleDesc'].touched && f['roleDesc'].errors" class="text-danger mt-1">
@@ -39,7 +39,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-4">
-                        <label class="toggle-label margin-top:4px">Active</label><br />
+                        <label class="toggle-label margin-top:4px">IsStatic</label><br />
                         <app-cm-toggle [formGroup]="form" [settings]="isActiveSettings">
                         </app-cm-toggle>
                     </div>

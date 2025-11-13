@@ -1,0 +1,87 @@
+<div class="card mt-1">
+    <div class="card-header d-flex justify-content-between align-items-center">
+  
+        <mat-card-title><h4 class="mt-1 mb-0">Role-Action Mapping</h4></mat-card-title>
+           
+       <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()" style="margin-top: -10px; margin-bottom: -10px;">
+  <mat-icon>reply</mat-icon>
+</button>
+ 
+    </div>
+  
+  <div class="card-body">
+  
+            <form [formGroup]="form">
+                <div class="row d-flex gap-3">
+                    <div class="col">
+                        <!-- <label>Select User</label>
+                        <select #selectElement class="form-control" style="width: 100%;">
+                            <option *ngFor="let option of yourOptions" [value]="option.id">{{ option.text }}</option>
+                        </select> -->
+                 <mat-form-field    *ngIf="isRoleOptionsLoaded" appearance="fill" class="w-100">
+                            <mat-label>Select Role</mat-label>
+                            <mat-select multiple formControlName="selectedRole">
+                                <mat-option *ngFor="let option of RoleOptions" [value]="option">
+                                    {{ option.text }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                    </div>
+                    <div class="col">
+                        <!-- <label>Select Zone</label>
+                        <select multiple #selectElement class="form-control" style="width: 100%;" [attr.size]="5">
+                            <option *ngFor="let option of yourOptions" [value]="option.id">{{ option.text }}</option>
+                        </select> -->
+                        <mat-form-field   *ngIf="isZoneOptionsLoaded" appearance="fill" class="w-100">
+                            <mat-label>Select Zone</mat-label>
+                            <mat-select multiple formControlName="selectedZone">
+                                <mat-option *ngFor="let option of ZoneOptions" [value]="option">
+                                    {{ option.text }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                    </div>
+                    <div class="col">
+                        <!-- <label>Select Role</label>
+                        <select multiple #selectElement class="form-select" style="width: 100%;" [attr.size]="5">
+                            <option *ngFor="let option of yourOptions" [value]="option.id">{{ option.text }}</option>
+                        </select> -->
+                        <mat-form-field    *ngIf="isRoleOptionsLoaded" appearance="fill" class="w-100">
+                            <mat-label>Select Role</mat-label>
+                            <mat-select multiple formControlName="selectedRole">
+                                <mat-option *ngFor="let option of RoleOptions" [value]="option">
+                                    {{ option.text }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button mat-stroked-button (click)="close()">Cancel</button>&nbsp;&nbsp;&nbsp;
+                        <button mat-flat-button color="primary" (click)="submit()">Save</button>
+                    </div>
+                </div>
+            </form>
+
+            <hr>
+
+            <app-cm-table
+  [headArr]="headArr"
+  [gridArr]="items"
+  [pagination]="true"
+  [totalRecords]="totalRecords"
+  [perPage]="perPage"
+  [totalPages]="totalPages"
+  [collectionSize]="collectionSize"
+  (pager)="onPageChange($event)"
+  (recordPerPage)="onPageRecordsChange($event)"
+  (searchWithId)="onRowClicked($event)"
+  (btnAction)="onButtonClicked($event)">
+</app-cm-table>
+      
+</div>

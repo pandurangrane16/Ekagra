@@ -130,17 +130,23 @@ constructor(
 
 
     const payload = {
-  role: {
-    id: _Roleconfigmodel.id,
-    displayName: _Roleconfigmodel.displayName,
-    isDefault: _Roleconfigmodel.IsDefault,
-    name: _Roleconfigmodel.name,
-    isStatic: _Roleconfigmodel.IsStatic,
-    normalizedName: _Roleconfigmodel.NormalizedName,
-    concurrencyStamp: _Roleconfigmodel.ConcurrencyStamp,
-    tenantId: _Roleconfigmodel.tenantId
-  },
-  grantedPermissionNames: ['User'] // or dynamically fill this
+  
+   creationTime : _Roleconfigmodel.creationTime,
+   concurrencyStamp: _Roleconfigmodel.ConcurrencyStamp,
+   deleterUserId :  _Roleconfigmodel.deleterUserId,
+   deletionTime : _Roleconfigmodel.deletionTime,
+   creatorUserId :  _Roleconfigmodel.creatorUserId,
+   displayName: _Roleconfigmodel.displayName,
+   isDeleted :false,
+   isDefault: _Roleconfigmodel.IsDefault,
+   isStatic: _Roleconfigmodel.IsStatic,
+   lastModificationTime :_Roleconfigmodel.lastModificationTime,
+   lastModifierUserId : _Roleconfigmodel.lastModifierUserId ,
+   name: _Roleconfigmodel.name,
+   normalizedName: _Roleconfigmodel.NormalizedName,
+   tenantId: _Roleconfigmodel.tenantId
+
+
 };
 
 this.service.CreateOrUpdateRole(payload).subscribe({

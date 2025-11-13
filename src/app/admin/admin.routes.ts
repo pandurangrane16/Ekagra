@@ -30,6 +30,7 @@ import { SopConfigurationComponent } from "./sop-configuration/sop-configuration
 import { RoleConfigListComponent } from "./role-config-list/role-config-list.component";
 import { RoleConfigurationComponent } from "./role-config-list/role-configuration/role-configuration.component";
 import { UserMappingsComponent } from "./user-mappings/user-mappings.component";
+import { RoleActionMappingComponent } from "./role-action-mapping/role-action-mapping.component";
 export const AdminRoutes: Routes = [
   {
     path: '',
@@ -60,6 +61,17 @@ export const AdminRoutes: Routes = [
       title: 'Project Configuration',
       urls: [
         { title: 'Admin Dashboard', url: '/admin/projconfig' },
+        { title: 'Project Configuration' },
+      ],
+    },
+  },
+    {
+    path: 'role-action',
+    component: RoleActionMappingComponent,
+    data: {
+      title: 'Role Action Configuration',
+      urls: [
+        { title: 'Admin Dashboard', url: '/admin/role-action' },
         { title: 'Project Configuration' },
       ],
     },

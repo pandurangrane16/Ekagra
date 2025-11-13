@@ -228,6 +228,12 @@ debugger;
           label: 'Role Configuration',
           link: 'admin/roleconfigList',
         },
+          {
+          icon: './assets/img/icon_settings.svg',
+          activeIcon: './assets/img/icon_settings1.svg',
+          label: 'Role Action Mapping',
+          link: 'admin/role-action',
+        },
         {
           icon: './assets/img/icon_settings.svg',
           activeIcon: './assets/img/icon_settings1.svg',

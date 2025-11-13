@@ -120,12 +120,28 @@ OnRegister() {
           console.log('User Check Response:', checkResponse);
 
           if (checkResponse?.result === true) {
+
+
+                 sessionStorage.setItem('userInfo', JSON.stringify(checkResponse.result));
+                 debugger;
             // ✅ User already exists
         
             return;
           }
 
-          else{
+     
+
+         
+
+
+        },
+        error: (err: any) => {
+          console.error('User Check API Error:', err);
+                const errorMessage = err?.error?.error?.details || err?.message;
+
+                    if (errorMessage && errorMessage.toLowerCase().includes('user not found'))
+          {
+              
                       // 2️⃣ User does not exist → Register via ABP API
           const requestBody = {
             name: this.userInfo.name,
@@ -145,6 +161,8 @@ OnRegister() {
                 console.log('Registration API Response:', response);
 
                 if (response?.success === true) {
+
+                  sessionStorage.setItem('userInfo', JSON.stringify(response.result));
                   this.router.navigate(['/dashboard']);
                 } else {
                   const message = response?.error?.message || 'Registration failed.';
@@ -160,12 +178,16 @@ OnRegister() {
               console.log('Registration API Error:',message,details)
               }
             });
+          
           }
 
+           else {
+        // ❌ Handle genuine server errors
+        console.error('Unexpected error while checking user:', err);
+        this.toastr.error('Something went wrong while checking the user.');
+      }
 
-        },
-        error: (err: any) => {
-          console.error('User Check API Error:', err);
+
           //this.toastr.error('Failed to verify user existence. Please try again.');
         }
       });

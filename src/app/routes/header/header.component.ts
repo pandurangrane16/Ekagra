@@ -17,9 +17,11 @@ import { HeaderService } from './../../services/header.service';
 import { ThemeManagerService } from '../../services/theme-manager.service';
 import { ApplicationRef } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+
+import { Router, NavigationEnd } from '@angular/router';
+import { filter, delay } from 'rxjs/operators';
 import { LoaderService } from '../../services/common/loader.service';
-import { Router } from '@angular/router';
+
 import { KeycloakService } from 'keycloak-angular';
 
 @Component({
@@ -52,6 +54,8 @@ import { KeycloakService } from 'keycloak-angular';
 
 export class HeaderComponent implements OnInit {
   isDarkMode = false;
+  userInfo: any = null;
+  userName: string = ''
   
   online: boolean = true;
   isSidebarCollapsed:boolean =true;
@@ -108,6 +112,26 @@ export class HeaderComponent implements OnInit {
 
 
   ngOnInit(): void {
+
+      this.loadUserInfo();
+
+  // 🟢 STEP 2: Recheck user info whenever route changes (like after login/registration)
+  this.router.events
+    .pipe(filter(event => event instanceof NavigationEnd))
+    .subscribe(() => {
+      debugger;
+      this.loadUserInfo();
+    });
+
+      const storedUser = sessionStorage.getItem('userInfo');
+debugger;
+    if (storedUser) {
+      this.userInfo = JSON.parse(storedUser);
+      this.userName = this.userInfo?.name || this.userInfo?.userName || '';
+      console.log('User info loaded in header:', this.userInfo);
+    }
+
+
     this.document.documentElement.className = 'dark_theme';
 
 
@@ -126,6 +150,19 @@ export class HeaderComponent implements OnInit {
     });
     this.headerService.modify.subscribe((value) => (this.editDashboard = value));
   }
+
+  private loadUserInfo(): void {
+  const storedUser = sessionStorage.getItem('userInfo');
+  if (storedUser) {
+    this.userInfo = JSON.parse(storedUser);
+    this.userName = this.userInfo?.name || this.userInfo?.userName || '';
+    console.log('User info loaded in header:', this.userInfo);
+  } else {
+    this.userInfo = null;
+    this.userName = '';
+  }
+}
+
   showEdit() {
      this.headerService.sendValue(!this.editDashboard);
     // this.headerService.changeEdit();
@@ -141,6 +178,7 @@ export class HeaderComponent implements OnInit {
   }
 
   async logout() {
+    sessionStorage.removeItem('userInfo');
     try {
       console.log('🚪 Logging out user...');
       this.loaderService.showLoader();

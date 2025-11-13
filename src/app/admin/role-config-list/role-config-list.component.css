@@ -1,0 +1,27 @@
+.filter-row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1rem;
+    align-items: flex-end; 
+    margin-bottom: 1rem;
+  }
+  
+  app-cm-select2 {
+    flex: 0 0 auto;
+    width: 250px;
+  }
+
+  app-cm-input {
+    flex: 0 0 auto;
+    width: 250px;
+  }
+  .btn-primary{background-color:var(--primary-color);
+    color: var(--White);;
+    font-weight: 600;
+    padding: 10px 14px;      
+    border-radius: 8px;
+    font-size: 13px;         
+    box-shadow: none;
+    text-transform: none;
+    white-space: nowrap; border:none; }
+  
