@@ -187,14 +187,14 @@ router = inject(Router);
       ngOnInit(): void {
        this.form = this.fb.group({
   selectedUser: [null, Validators.required],
-  selectedZone: [[], this.minArrayLength(1)],
+  selectedAction: [[], this.minArrayLength(1)],
   selectedRole: [[], this.minArrayLength(1)]
 });
           this.buildHeader();
          // this.getProjConfigList();
          // this.getUserList();
         //this.GetRoleList();
-          this.getZoneList();
+          this.GetActionList();
           this.getRoleList();
 
 
@@ -243,7 +243,7 @@ router = inject(Router);
             this.form.markAllAsTouched();
     
 
-    const zones = this.form.value.selectedZone.map((z: any) => z.id).join(', ');
+    const zones = this.form.value.selectedAction.map((z: any) => z.id).join(', ');
     const roles = this.form.value.selectedRole.map((z: any) => z.id).join(', ');
     const user = this.form.value.selectedUser.map((z: any) => z.id).join(', ');
 
@@ -296,7 +296,7 @@ if(existingMapping){
       this.getFilteredList();
         this.form.reset({
     selectedUser: [],      
-    selectedZone: [],      
+    selectedAction: [],      
     selectedRole: []        
   });
       // this.router.navigate(['/admin/projfieldconfig']);
@@ -305,7 +305,7 @@ if(existingMapping){
       console.error('Save failed:', err);
            this.form.reset({
     selectedUser: [],      
-    selectedZone: [],      
+    selectedAction: [],      
     selectedRole: []        
   });
       // Optionally show a toast
@@ -328,7 +328,7 @@ else{  if(this.isEdit)
       this.getFilteredList();
         this.form.reset({
     selectedUser: [],      
-    selectedZone: [],      
+    selectedAction: [],      
     selectedRole: []        
   });
       // this.router.navigate(['/admin/projfieldconfig']);
@@ -337,7 +337,7 @@ else{  if(this.isEdit)
       console.error('Save failed:', err);
            this.form.reset({
     selectedUser: [],      
-    selectedZone: [],      
+    selectedAction: [],      
     selectedRole: []        
   });
       // Optionally show a toast
@@ -357,7 +357,7 @@ else{  if(this.isEdit)
       this.getFilteredList();
         this.form.reset({
     selectedUser: [],      
-    selectedZone: [],      
+    selectedAction: [],      
     selectedRole: []        
   });
       // this.router.navigate(['/admin/projfieldconfig']);
@@ -366,7 +366,7 @@ else{  if(this.isEdit)
       console.error('Save failed:', err);
            this.form.reset({
     selectedUser: [],      
-    selectedZone: [],      
+    selectedAction: [],      
     selectedRole: []        
   });
       // Optionally show a toast
@@ -567,7 +567,7 @@ editRow(rowData: any) {
         const userId =  String(result.userId);
 
         // Find matching option objects from your dropdown lists
-        const selectedZones = this.ZoneOptions?.filter((z: any) => zoneIds.includes(String(z.id))) || [];
+        const selectedActions = this.ZoneOptions?.filter((z: any) => zoneIds.includes(String(z.id))) || [];
         const selectedRoles = this.RoleOptions?.filter((r: any) => roleIds.includes(String(r.id))) || [];
         const selectedUser = this.UserOptions?.filter((r: any) => userId.includes(String(r.id))) || [];
 
@@ -576,7 +576,7 @@ editRow(rowData: any) {
         
         this.form.patchValue({
           selectedUser:  selectedUser || null,
-          selectedZone: selectedZones,
+          selectedAction: selectedActions,
           selectedRole: selectedRoles
         });
 
@@ -801,16 +801,17 @@ GetRoleList() {
   });
 }
 
-getZoneList() {
-  this.service.GetZoneList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+GetActionList() {
+  this.service.GetActionList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
    
       
         const items = response?.result || [];
 
      
         const projectOptions = items.map((item: any) => ({
-          text: (item.zoneName || '').trim() || 'Unknown',
-          id: item.id
+          text: item.rfu1,
+          id: item.prmidentifier
+       
         }));
 
   
@@ -821,7 +822,7 @@ getZoneList() {
 
     this.ZoneSelectSettings.options = projectOptions;
     this.ZoneOptions=projectOptions
-this.form.controls['selectedZone'].setValue({
+this.form.controls['selectedAction'].setValue({
   text: 'All',
   id: 0
 });
@@ -839,7 +840,7 @@ this.form.controls['selectedZone'].setValue({
 close(){
     this.form.reset({
     selectedUser: [],      
-    selectedZone: [],      
+    selectedAction: [],      
     selectedRole: []        
   });
 }

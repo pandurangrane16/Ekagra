@@ -1,0 +1,29 @@
+/* 🔹 Scroll container around CmTableComponent */
+.vms-table-scroll {
+  max-height: 450px;        /* Adjust height as per your dashboard */
+  overflow-y: auto;
+  display: block;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+/* 🔹 Make table headers sticky */
+.vms-table-scroll table thead th {
+  position: sticky !important;
+  top: 0;
+  background: #f9f9f9 !important;
+  z-index: 2;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Optional: nicer scrollbar styling */
+.vms-table-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.vms-table-scroll::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+.vms-table-scroll::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}

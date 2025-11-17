@@ -17,6 +17,7 @@ import { HeaderService } from './../../services/header.service';
 import { ThemeManagerService } from '../../services/theme-manager.service';
 import { ApplicationRef } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { Globals } from '../../utils/global';
 
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, delay } from 'rxjs/operators';
@@ -76,7 +77,7 @@ export class HeaderComponent implements OnInit {
     private readonly themingService: ThemingService, private themeService: ThemeManagerService,
     public headerService : HeaderService, private appRef: ApplicationRef, private cdRef: ChangeDetectorRef,  
     private loaderService: LoaderService,    private keycloakService: KeycloakService,
-    private router: Router) {
+    private router: Router,private globals:Globals) {
   }
  
   // toggleTheme() {
@@ -113,23 +114,22 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
 
-      this.loadUserInfo();
 
-  // 🟢 STEP 2: Recheck user info whenever route changes (like after login/registration)
-  this.router.events
-    .pipe(filter(event => event instanceof NavigationEnd))
-    .subscribe(() => {
-      debugger;
-      this.loadUserInfo();
-    });
-
-      const storedUser = sessionStorage.getItem('userInfo');
-debugger;
+  // 🟢 STEP 1: Restore from sessionStorage if Globals is empty
+  if (!this.globals.user) {
+    const storedUser = sessionStorage.getItem('userInfo');
     if (storedUser) {
-      this.userInfo = JSON.parse(storedUser);
-      this.userName = this.userInfo?.name || this.userInfo?.userName || '';
-      console.log('User info loaded in header:', this.userInfo);
+      this.globals.user = JSON.parse(storedUser);
+      console.log('✅ User restored from sessionStorage:', this.globals.user);
     }
+  }
+
+  // 🟢 STEP 2: Subscribe reactively to user updates
+  this.globals.user$.subscribe(user => {
+    this.userInfo = user;
+    this.userName = user?.name || user?.userName || '';
+    console.log('👤 User info updated in header:', this.userInfo);
+  });
 
 
     this.document.documentElement.className = 'dark_theme';
@@ -151,17 +151,35 @@ debugger;
     this.headerService.modify.subscribe((value) => (this.editDashboard = value));
   }
 
-  private loadUserInfo(): void {
+private loadUserInfo(): void {
+  // 🟢 First, check if user already exists in Globals
+  const globalUser = this.globals.user;
+
+  if (globalUser) {
+    this.userInfo = globalUser;
+    this.userName = globalUser?.name || globalUser?.userName || '';
+    console.log('User info loaded from Globals:', this.userInfo);
+    return;
+  }
+
+  // 🟢 If not found, fallback to sessionStorage
   const storedUser = sessionStorage.getItem('userInfo');
   if (storedUser) {
-    this.userInfo = JSON.parse(storedUser);
-    this.userName = this.userInfo?.name || this.userInfo?.userName || '';
-    console.log('User info loaded in header:', this.userInfo);
+    const parsedUser = JSON.parse(storedUser);
+    this.userInfo = parsedUser;
+    this.userName = parsedUser?.name || parsedUser?.userName || '';
+    console.log('User info restored from sessionStorage:', this.userInfo);
+
+    // 🔄 Sync it back to Globals so other components get updated too
+    this.globals.user = parsedUser;
   } else {
+    // ❌ No user found → clear local state
     this.userInfo = null;
     this.userName = '';
+    console.log('No user info found — cleared header state.');
   }
 }
+
 
   showEdit() {
      this.headerService.sendValue(!this.editDashboard);

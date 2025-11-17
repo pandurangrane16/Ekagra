@@ -8,6 +8,9 @@ import { LoaderService } from '../../services/common/loader.service';
 import { Action } from 'rxjs/internal/scheduler/Action';
 import { MatDialog } from '@angular/material/dialog';
 import { CmDialogComponent } from '../../common/cm-dialog/cm-dialog.component';
+import { vmsdashboardService } from '../../services/dashboard/vmsDashboard.service';
+import { SessionService } from '../../services/common/session.service';
+
 
 @Component({
   selector: 'app-dashboard-vms',
@@ -16,7 +19,7 @@ import { CmDialogComponent } from '../../common/cm-dialog/cm-dialog.component';
   styleUrl: './dashboard-vms.component.css'
 })
 export class DashboardVMSComponent implements OnInit {
-
+     loaderService = inject(LoaderService);
   headerArr: any;
      totalPages: number = 1;
       pager: number =0;
@@ -32,22 +35,90 @@ processedItems: any[] = [];
   totalRecords: any = 0;
  
 
- viewDevice(rowData: any): void {
-   const dialogRef = this.dialog.open(CmDialogComponent, {
-     width: '600px',
-       position: { top: '80px' },
-   panelClass: 'custom-dialog',
-     data: {
-       title: `${rowData.location}`,
-      src: `${rowData.img}`,
+//  viewDevice(rowData: any): void {
+//    const dialogRef = this.dialog.open(CmDialogComponent, {
+//      width: '600px',
+//        position: { top: '80px' },
+//    panelClass: 'custom-dialog',
+//      data: {
+//        title: `${rowData.location}`,
+//       src: `${rowData.img}`,
  
-      // type: 'info',
+//       // type: 'info',
      
-     }
-   });
+//      }
+//    });
  
   
- }
+//  }
+
+
+ userList: any[] = [];
+
+getList() {
+  // ✅ Step 1: Get project codes from session
+  const projectCodesStr = this.session._getSessionValue("projectCodes");
+  if (!projectCodesStr) {
+    console.warn("⚠️ projectCodes not found in session, retrying...");
+    setTimeout(() => this.getList(), 500);
+    return;
+  }
+
+  const projectCodes = JSON.parse(projectCodesStr);
+  const currentProject = "vms"; // change dynamically later if needed
+
+  const project = projectCodes.find(
+    (p: any) => p.name.toLowerCase() === currentProject.toLowerCase()
+  );
+
+  if (!project) {
+    console.error(`⚠️ Project "${currentProject}" not found in config.`);
+    return;
+  }
+
+  const projectId = Number(project.value);
+
+  // ✅ Step 2: Prepare API payload
+  const requestPayload = {
+    projectId,
+    type: 0,
+    inputs: "string",
+    bodyInputs: "string",
+    seq: 7
+  };
+debugger;
+  // ✅ Step 3: Call API via service + loader
+  this.service
+    .PostSiteResponse(requestPayload)
+    .pipe(withLoader(this.loaderService))
+    .subscribe({
+      next: (response: any) => {
+        const result = response?.result ? JSON.parse(response.result) : null;
+
+        if (result?.deviceData || Array.isArray(result)) {
+          // If API returns an array directly (your sample case)
+          const data = Array.isArray(result) ? result : result.deviceData;
+
+          // ✅ Step 4: Transform API data for your table
+          this.userList = data.map((item: any) => ({
+            location: item.vmsDescription,
+            vmsId:item.vmsId,
+            button: [{ label: "View", icon: "visibility", type: "view" }],
+            img: "../assets/img/cam1.jpg"
+          }));
+
+          this.totalRecords = this.userList.length;
+          console.log("✅ Loaded VMS list:", this.userList);
+        } else {
+          console.warn("⚠️ No VMS data found in API response");
+        }
+      },
+      error: (err) => {
+        console.error("❌ Error fetching VMS list:", err);
+      }
+    });
+}
+
  
   onRowClicked(evt: any) { }
 
@@ -56,17 +127,18 @@ processedItems: any[] = [];
   headArr: any;
   collectionSize: any;
 
-userList = [
-   { location: 'Akshar Chawk', button:[{ label: 'View', icon: 'visibility', type: 'view' }], img:'../assets/img/cam1.jpg' },
-      { location: 'Natubai Circle', button:[{ label: 'View', icon: 'visibility', type: 'view' }], img:'../assets/img/cam1.jpg'},
-      { location: 'Yash Complex',button:[{ label: 'View', icon: 'visibility', type: 'view' }], img:'../assets/img/cam1.jpg' },
-      { location: 'Akshar Chawk', button:[{label: 'View', icon: 'visibility', type: 'view'}], img:'../assets/img/cam1.jpg' },
-      { location: 'Natubai Circle', button:[{label: 'View', icon: 'visibility', type: 'view' }], img:'../assets/img/cam1.jpg'},
-      { location: 'Yash Complex',button:[{ label: 'View', icon: 'visibility', type: 'view' }], img:'../assets/img/cam1.jpg' }
+// userList = [
+//    { location: 'Akshar Chawk', button:[{ label: 'View', icon: 'visibility', type: 'view' }], img:'../assets/img/cam1.jpg' },
+//       { location: 'Natubai Circle', button:[{ label: 'View', icon: 'visibility', type: 'view' }], img:'../assets/img/cam1.jpg'},
+//       { location: 'Yash Complex',button:[{ label: 'View', icon: 'visibility', type: 'view' }], img:'../assets/img/cam1.jpg' },
+//       { location: 'Akshar Chawk', button:[{label: 'View', icon: 'visibility', type: 'view'}], img:'../assets/img/cam1.jpg' },
+//       { location: 'Natubai Circle', button:[{label: 'View', icon: 'visibility', type: 'view' }], img:'../assets/img/cam1.jpg'},
+//       { location: 'Yash Complex',button:[{ label: 'View', icon: 'visibility', type: 'view' }], img:'../assets/img/cam1.jpg' }
       
-];
+// ];
     constructor(
 private dialog: MatDialog,
+private service:vmsdashboardService,private session: SessionService
 
     ){}
 
@@ -87,6 +159,64 @@ private dialog: MatDialog,
           
           ];
           ;}
+
+
+viewDevice(rowData: any): void {
+  const projectCodesStr = this.session._getSessionValue("projectCodes");
+  const projectCodes = projectCodesStr ? JSON.parse(projectCodesStr) : [];
+  const currentProject = "vms";
+
+  const project = projectCodes.find(
+    (p: any) => p.name.toLowerCase() === currentProject.toLowerCase()
+  );
+
+  if (!project) {
+    console.error(`⚠️ Project "${currentProject}" not found in config.`);
+    return;
+  }
+
+  const projectId = Number(project.value);
+
+    const requestPayload = {
+    projectId,
+    type: 0,
+    inputs: rowData.vmsId,
+    bodyInputs: "string",
+    seq: 8
+  };
+debugger;
+  // ✅ Call GetVMSSnapshot using same payload structure
+  this.service
+    .PostSiteResponse(requestPayload)
+    .pipe(withLoader(this.loaderService))
+    .subscribe({
+      next: (response: any) => {
+        const result = response?.result ? JSON.parse(response.result) : null;
+
+        if (result?.snapshot) {
+          const imageSrc = 'data:image/jpeg;base64,' + result.snapshot;
+
+          this.dialog.open(CmDialogComponent, {
+            width: '600px',
+            position: { top: '80px' },
+            panelClass: 'custom-dialog',
+            data: {
+              title: `${rowData.location}`,
+              src: imageSrc
+            }
+          });
+        } else {
+          console.warn('⚠️ No snapshot found for this VMS.');
+        }
+      },
+      error: (err) => {
+        console.error('❌ Error fetching snapshot:', err);
+      }
+    });
+}
+
+
+
 
         onButtonClicked({ event, data }: { event: any; data: any }) {
   if (event.type === 'view') {
@@ -122,17 +252,17 @@ deleteRow(data: any) {
   };
 
 }
- getList() {
-    //const selectedProjectId = this.form.controls['selectedProject'].value.value;
+//  getList() {
+//     //const selectedProjectId = this.form.controls['selectedProject'].value.value;
     
-    // const search = this.form.controls['searchText'].value
-        this.MaxResultCount=this.perPage;
-      this.SkipCount=this.MaxResultCount*this.pager;
-      this.recordPerPage=this.perPage;
+//     // const search = this.form.controls['searchText'].value
+//         this.MaxResultCount=this.perPage;
+//       this.SkipCount=this.MaxResultCount*this.pager;
+//       this.recordPerPage=this.perPage;
  
    
 
-    }  
+//     }  
 
 
     

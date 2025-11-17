@@ -20,6 +20,11 @@ export class alertservice {
     return this._httpService._getMethod('api/services/app/Alert/GetAllUsers');
   }
 
+    GetAlertTransferUserlist(id:any) {
+    return this._httpService._getMethod('api/services/app/Alert/GetAlertTransferUserlist?userId='+id);
+  }
+
+
     SiteResponse(data:any) {
     return this._httpService._postMethod(data,'api/services/app/ProjectAPI/SiteResponse');
   }

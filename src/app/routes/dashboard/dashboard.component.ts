@@ -14,6 +14,7 @@ import { withLoader } from '../../services/common/common';
 import { LoaderService } from '../../services/common/loader.service';
 import { DashboardService2 } from '../../services/admin/dashboard.service';
 import { Router } from '@angular/router';
+import { Globals } from '../../utils/global';
 
 
 
@@ -38,7 +39,8 @@ dashboard = viewChild.required<ElementRef>('dashboard');
 constructor(private keycloakService: KeycloakService,
    private toastr : ToastrService , 
    private router: Router,
-   private service :DashboardService2) {}
+   private service :DashboardService2,
+   private globals:Globals ) {}
 
 async ngOnInit(){
   console.log(this.session._getSessionValue("UserValidation"));
@@ -117,10 +119,12 @@ OnRegister() {
         next: (checkResponse: any) => {
           console.log('User Check Response:', checkResponse);
 
-          if (checkResponse?.result === true) {
+         if (checkResponse?.success === true && checkResponse?.result){
+debugger;
+  const existingUser = checkResponse.result;
 
-
-                 sessionStorage.setItem('userInfo', JSON.stringify(checkResponse.result));
+                            sessionStorage.setItem('userInfo', JSON.stringify(existingUser));
+            this.globals.user = existingUser;
                  debugger;
             // ✅ User already exists
         
@@ -160,7 +164,11 @@ OnRegister() {
 
                 if (response?.success === true) {
 
-                  sessionStorage.setItem('userInfo', JSON.stringify(response.result));
+                        const newUser = response.result;
+
+                    // ✅ Save user in session & globals
+                    sessionStorage.setItem('userInfo', JSON.stringify(newUser));
+                    this.globals.user = newUser;
                   this.router.navigate(['/dashboard']);
                 } else {
                   const message = response?.error?.message || 'Registration failed.';

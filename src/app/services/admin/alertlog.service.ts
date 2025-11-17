@@ -29,4 +29,12 @@ export class AlertlogService {
   AlertLogCreate(_data: any) {
     return this._httpService._postMethod(_data, 'api/services/app/AlertLog/Create');
   }
+  AlertUpdate(_data: any) {
+    return this._httpService._putMethod(_data, 'api/services/app/Alert/Update');
+  }
+
+
+
+
+
 }

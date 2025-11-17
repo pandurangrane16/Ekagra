@@ -10,7 +10,8 @@
 </div>
 </div>
 
-<div class="col-md-9">
+<div class="col-md-9 vms-table-scroll">
+
   <app-cm-table [headArr]="headArr" [gridArr]="userList" [pagination]="true" [totalRecords]="totalRecords"
                     [perPage]="perPage" [totalPages]="totalPages" [collectionSize]="collectionSize"
                     (pager)="onPageChange($event)" (recordPerPage)="onPageRecordsChange($event)"

@@ -61,11 +61,13 @@ export class AlertTransferComponent implements OnInit {
       value : 1
     }]
     console.log(this.data);
-    this.GetAllUsers();
+    this.GetAlertTransferUserlist();
   }
 
-    GetAllUsers() {
-      this.service.GetAllUsers().pipe(withLoader(this.loaderService)).subscribe((response: any) => {
+    GetAlertTransferUserlist() {
+          const storedUser = sessionStorage.getItem('userInfo');
+    const currentUserId = storedUser ? JSON.parse(storedUser).id : 0;
+      this.service.GetAlertTransferUserlist(currentUserId).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
       const items = response?.result?.items || [];
 
 const projectOptions = items.map((item: any) => ({
@@ -100,70 +102,159 @@ const projectOptions = items.map((item: any) => ({
 
 
 
-  submitAction() {
-  try {
-    if (this.form.valid) {
-      this.form.markAllAsTouched();
+//   submitAction() {
+//   try {
+//     if (this.form.valid) {
+//       this.form.markAllAsTouched();
 
 
-      let alertModel = {
-        alertId: this.data.id,
-        userId: this.form.controls['selectedUser'].value.value,
-        remarks: this.form.controls['remarks'].value
-      };
+//       let alertModel = {
+//         alertId: this.data.id,
+//         userId: this.form.controls['selectedUser'].value.value,
+//         remarks: this.form.controls['remarks'].value
+//       };
 
-    debugger;
-      this.service.TransferSOP(alertModel)
-        .pipe(withLoader(this.loaderService))
-        .subscribe({
-          next: () => {
-            this.toast.success('Alert submitted successfully');
+//     debugger;
+//       this.service.TransferSOP(alertModel)
+//         .pipe(withLoader(this.loaderService))
+//         .subscribe({
+//           next: () => {
+//             this.toast.success('Alert submitted successfully');
             
-            var AlertLogRemark=this.form.controls['remarks'].value;
-            alert(AlertLogRemark);
-                // ✅ Create FormData for AlertLog
-            const logData = {
-                AlertId: this.data?.allData?.alertId || this.data?.allData?.id || 0,
-                alertLogRemarks: AlertLogRemark +' (Transfered to: ' + this.form.controls['selectedUser'].value.name +')'|| '',
-                ActionType: 'Transfer',
-                Operation: 'Transfer',
-                Status: 4,
-                UserId: Number(sessionStorage.getItem('UserId')) || 0
-              };
+//             var AlertLogRemark=this.form.controls['remarks'].value;
+//             alert(AlertLogRemark);
+//                 // ✅ Create FormData for AlertLog
+//             const logData = {
+//                 AlertId: this.data?.allData?.alertId || this.data?.allData?.id || 0,
+//                 alertLogRemarks: AlertLogRemark +' (Transfered to: ' + this.form.controls['selectedUser'].value.name +')'|| '',
+//                 ActionType: 'Transfer',
+//                 Operation: 'Transfer',
+//                 Status: 4,
+//                 UserId: Number(sessionStorage.getItem('UserId')) || 0
+//               };
 
-            // ✅ Call AlertLog create API
-            this.alertLogService.AlertLogCreate(logData)
-              .pipe(withLoader(this.loaderService))
-              .subscribe({
-                next: () => {
-                  this.toast.success('Alert log created successfully');
-                  this.dialog.closeAll();
-                  this.router.navigate(['/alerts']);
-                },
-                error: (err) => {
-                  console.error('Failed to create alert log:', err);
-                  this.toast.error('Alert transferred, but failed to log entry');
-                }
-              });
+//             // ✅ Call AlertLog create API
+//             this.alertLogService.AlertLogCreate(logData)
+//               .pipe(withLoader(this.loaderService))
+//               .subscribe({
+//                 next: () => {
+//                   this.toast.success('Alert log created successfully');
+//                   this.dialog.closeAll();
+//                   this.router.navigate(['/alerts']);
+//                 },
+//                 error: (err) => {
+//                   console.error('Failed to create alert log:', err);
+//                   this.toast.error('Alert transferred, but failed to log entry');
+//                 }
+//               });
 
 
-          },
-          error: (err) => {
-            console.error('Save failed:', err);
-            this.toast.error('Failed to submit alert');
-          }
-        });
+//           },
+//           error: (err) => {
+//             console.error('Save failed:', err);
+//             this.toast.error('Failed to submit alert');
+//           }
+//         });
 
-    } else {
+//     } else {
+//       this.form.markAllAsTouched();
+//       this.toast.error('Form is not valid');
+//     }
+
+//   } catch (error) {
+//     console.error('Unexpected error in submit:', error);
+//     this.toast.error('An unexpected error occurred');
+//   }
+// }
+
+submitAction() {
+
+  debugger;
+  try {
+    if (!this.form.valid) {
       this.form.markAllAsTouched();
       this.toast.error('Form is not valid');
+      return;
     }
+
+else{
+      // 🟢 Extract remarks and selected user info
+    const AlertLogRemark = this.form.controls['remarks'].value;
+    const selectedUser = this.form.controls['selectedUser'].value;
+    const storedUser = sessionStorage.getItem('userInfo');
+    const currentUserId = storedUser ? JSON.parse(storedUser).id : 0;
+    const currentUserRole = storedUser ? JSON.parse(storedUser).id : 0;
+
+    let actionType = '';
+    let currentStatus = '';
+
+    if (currentUserRole.toLowerCase().includes('iccc')) {
+      actionType = 'TransferByICCC';
+      currentStatus = 'TransferByICCC';
+    } else if (currentUserRole.toLowerCase().includes('site')) {
+      actionType = 'TransferBySiteEngineer';
+      currentStatus = 'TransferBySiteEngineer';
+    } else {
+      actionType = 'Transfer';
+      currentStatus = 'Transferred';
+    }
+
+
+
+
+    // 🧾 Step 1: Create logData for AlertLogCreate API
+    const logData = {
+      AlertId: this.data?.allData?.alertId || this.data?.allData?.id || 0,
+      alertLogRemarks: `${AlertLogRemark} (Transferred to: ${selectedUser.value})` || '',
+      ActionType: actionType,
+      Operation:  actionType,
+      Status: 0,
+      UserId: currentUserId
+    };
+
+    // 🟢 Step 2: Call AlertLogCreate API
+    this.alertLogService.AlertLogCreate(logData)
+      .pipe(withLoader(this.loaderService))
+      .subscribe({
+        next: (response) => {
+          this.toast.success('Alert log created successfully');
+
+          // 🧾 Step 3: Prepare update request for AlertUpdate API
+          const updateData = {
+            id: this.data?.allData?.alertId || this.data?.allData?.id || 0,
+            lastModifierUserId: currentUserId,
+            currentStatus: currentStatus
+            
+          };
+
+          // 🟢 Step 4: Call Alert Update API
+          this.alertLogService.AlertUpdate(updateData)
+            .pipe(withLoader(this.loaderService))
+            .subscribe({
+              next: () => {
+                this.toast.success('Alert updated successfully');
+                this.dialog.closeAll();
+                this.router.navigate(['/alerts']);
+              },
+              error: (err) => {
+                console.error('Failed to update alert:', err);
+                this.toast.error('Alert log created, but failed to update alert');
+              }
+            });
+        },
+        error: (err) => {
+          console.error('Failed to create alert log:', err);
+          this.toast.error('Failed to create alert log');
+        }
+      });
+}
 
   } catch (error) {
     console.error('Unexpected error in submit:', error);
     this.toast.error('An unexpected error occurred');
   }
 }
+
 
   cancelAction() {
 

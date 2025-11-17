@@ -26,6 +26,10 @@ getKeysDataForConfig(key: string): Observable<any> {
     return this._httpService._getMethod('api/services/app/Alert/GetAllUsers');
   }
 
+   GetActionList() {
+    return this._httpService._getMethod('api/services/app/PrmGlobal/GetAllGlobalValues?Module=Global&unit=SOPAction');
+  }
+
      GetZoneList() {
     return this._httpService._getMethod('api/services/app/Zone/GetZoneListByUserId');
   }

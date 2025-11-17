@@ -1,9 +1,17 @@
-<highcharts-chart 
+<!-- <highcharts-chart 
   [Highcharts]="Highcharts"
   [options]="chartOptions"
 
   style="width: 100%; min-height: 250px; display: block;"
-></highcharts-chart>
+></highcharts-chart> -->
+
+<div *ngIf="chartOptions">
+  <highcharts-chart
+    [Highcharts]="Highcharts"
+    [options]="chartOptions"
+    style="width: 100%; min-height: 250px; display: block;">
+  </highcharts-chart>
+</div>
 
 
 <div >

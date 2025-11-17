@@ -3,9 +3,9 @@
   
         <mat-card-title><h4 class="mt-1 mb-0">Role-Action Mapping</h4></mat-card-title>
            
-       <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()" style="margin-top: -10px; margin-bottom: -10px;">
+       <!-- <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()" style="margin-top: -10px; margin-bottom: -10px;">
   <mat-icon>reply</mat-icon>
-</button>
+</button> -->
  
     </div>
   
@@ -34,7 +34,7 @@
                             <option *ngFor="let option of yourOptions" [value]="option.id">{{ option.text }}</option>
                         </select> -->
                         <mat-form-field   *ngIf="isZoneOptionsLoaded" appearance="fill" class="w-100">
-                            <mat-label>Select Zone</mat-label>
+                            <mat-label>Select Action</mat-label>
                             <mat-select multiple formControlName="selectedZone">
                                 <mat-option *ngFor="let option of ZoneOptions" [value]="option">
                                     {{ option.text }}
@@ -48,14 +48,14 @@
                         <select multiple #selectElement class="form-select" style="width: 100%;" [attr.size]="5">
                             <option *ngFor="let option of yourOptions" [value]="option.id">{{ option.text }}</option>
                         </select> -->
-                        <mat-form-field    *ngIf="isRoleOptionsLoaded" appearance="fill" class="w-100">
+                        <!-- <mat-form-field    *ngIf="isRoleOptionsLoaded" appearance="fill" class="w-100">
                             <mat-label>Select Role</mat-label>
                             <mat-select multiple formControlName="selectedRole">
                                 <mat-option *ngFor="let option of RoleOptions" [value]="option">
                                     {{ option.text }}
                                 </mat-option>
                             </mat-select>
-                        </mat-form-field>
+                        </mat-form-field> -->
 
                     </div>
                 </div>
