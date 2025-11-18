@@ -10,10 +10,11 @@ import { CmInputComponent } from '../../../common/cm-input/cm-input.component';
 import { CmCheckboxGroupComponent } from '../../../common/cm-checkbox-group/cm-checkbox-group.component';
 import { CmSelectCheckComponent } from '../../../common/cm-select-check/cm-select-check.component';
 import { CmSelect2Component } from '../../../common/cm-select2/cm-select2.component';
+import { VmsBroadcastingComponent } from "../../../user/alert/actions/vms-broadcasting/vms-broadcasting.component";
 
 @Component({
   selector: 'app-vms-emergency',
-  imports: [CommonModule, MaterialModule, CmInputComponent,CmSelectCheckComponent, CmSelect2Component],
+  imports: [CommonModule, MaterialModule, CmInputComponent, CmSelectCheckComponent, CmSelect2Component],
   templateUrl: './vms-emergency.component.html',
   styleUrl: './vms-emergency.component.css'
 })
@@ -80,7 +81,7 @@ export class VmsEmergencyComponent implements OnInit {
       selectedUnit: [],
       unitValue: []
     })
-    this.getVMSList();
+    this.GetVmdList();
   }
 
 
