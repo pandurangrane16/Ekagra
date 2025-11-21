@@ -13,6 +13,8 @@ import { SessionService } from '../../services/common/session.service';
 import { CmButtonComponent } from "../../common/cm-button/cm-button.component";
 import { MaterialModule } from '../../Material.module';
 import { VmsEmergencyComponent } from './vms-emergency/vms-emergency.component';
+import { CommonService } from '../../services/common/common.service';
+import { alertservice } from '../../services/admin/alert.service';
 
 
 @Component({
@@ -23,6 +25,8 @@ import { VmsEmergencyComponent } from './vms-emergency/vms-emergency.component';
 })
 export class DashboardVMSComponent implements OnInit {
   loaderService = inject(LoaderService);
+  _common = inject(CommonService);
+  alertService = inject(alertservice);
   headerArr: any;
   totalPages: number = 1;
   pager: number = 0;
@@ -32,7 +36,13 @@ export class DashboardVMSComponent implements OnInit {
   pageNo = 0;
   recordPerPage: number = 10;
   processedItems: any[] = [];
-
+  vmdTypeSettings = {
+    labelHeader: 'Select VMD(Controller)',
+    lableClass: 'form-label',
+    formFieldClass: 'w-100',
+    appearance: 'fill',
+    options: {}
+  };
 
 
   totalRecords: any = 0;
@@ -122,6 +132,52 @@ export class DashboardVMSComponent implements OnInit {
       });
   }
 
+  GetVmdList() {
+    this._common._sessionAPITags().subscribe(res => {
+      console.log(res);
+      let _inputTag = res.find((x: any) => x.tag == "GetVMSDetails");
+      const data = _inputTag.inputRequest;
+
+      this.alertService.SiteResponse(JSON.parse(data))
+        .pipe(withLoader(this.loaderService))
+        .subscribe({
+          next: (response: any) => {
+            this.loaderService.showLoader();
+            // Parse result safely
+            let items: any[] = [];
+
+            if (response?.result) {
+              try {
+                items = typeof response.result === 'string'
+                  ? JSON.parse(response.result)
+                  : response.result;
+              } catch (err) {
+                console.error('Error parsing result JSON:', err);
+              }
+              this.loaderService.hideLoader();
+            }
+
+            // Map to dropdown-compatible format
+            const projectOptions = items.map((item: any) => ({
+              name: `${item.vmsId} - ${item.description}` || item.vmsId,
+              value: item.vmsId,
+
+            }));
+
+            // Optional: sort or filter online devices
+            // const onlineDevices = projectOptions.filter(p => p.networkStatus === 1);
+            console.log(this.vmdTypeSettings);
+            this.vmdTypeSettings.options = projectOptions;
+            // this.isProjectOptionsLoaded = true;
+            this.loaderService.hideLoader();
+          },
+          error: (error) => {
+            console.error('Error fetching VMD list:', error);
+          }
+        });
+    });
+  }
+
 
   onRowClicked(evt: any) { }
 
@@ -151,7 +207,7 @@ export class DashboardVMSComponent implements OnInit {
 
     this.buildHeader();
 
-
+    this.GetVmdList();
 
   }
   buildHeader() {
@@ -273,6 +329,9 @@ export class DashboardVMSComponent implements OnInit {
       width: '600px',
       position: { top: '20px' },
       panelClass: 'custom-confirm-dialog',
+      data: {
+        data: this.vmdTypeSettings
+      }
     });
   }
 

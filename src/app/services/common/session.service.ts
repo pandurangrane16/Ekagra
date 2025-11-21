@@ -1,5 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { HttpService } from './http.service';
 
 @Injectable({
   providedIn: 'root'
@@ -27,8 +28,4 @@ export class SessionService {
       sessionStorage.removeItem(_key);
     }
   }
-
-
-
-
 }

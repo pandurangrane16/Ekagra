@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, Inject, inject, OnInit } from '@angular/core';
 import { LoaderService } from '../../../services/common/loader.service';
 import { alertservice } from '../../../services/admin/alert.service';
 import { ToastrService } from 'ngx-toastr';
@@ -11,6 +11,9 @@ import { CmCheckboxGroupComponent } from '../../../common/cm-checkbox-group/cm-c
 import { CmSelectCheckComponent } from '../../../common/cm-select-check/cm-select-check.component';
 import { CmSelect2Component } from '../../../common/cm-select2/cm-select2.component';
 import { VmsBroadcastingComponent } from "../../../user/alert/actions/vms-broadcasting/vms-broadcasting.component";
+import { SessionService } from '../../../services/common/session.service';
+import { CommonService } from '../../../services/common/common.service';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-vms-emergency',
@@ -20,7 +23,7 @@ import { VmsBroadcastingComponent } from "../../../user/alert/actions/vms-broadc
 })
 export class VmsEmergencyComponent implements OnInit {
   loaderService = inject(LoaderService);
-
+  _common = inject(CommonService);
   form: any;
   isTypeSelected: boolean = false;
   actionTypeSettings = {
@@ -56,7 +59,7 @@ export class VmsEmergencyComponent implements OnInit {
     lableClass: 'form-label',
     formFieldClass: 'w-100',
     appearance: 'fill',
-    options:{}
+    options: {}
   };
   unitSettings = {
     labelHeader: 'Select Unit',
@@ -71,8 +74,11 @@ export class VmsEmergencyComponent implements OnInit {
   isVmdSelected: boolean = true;
   alertService = inject(alertservice);
   toast = inject(ToastrService);
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+  ) { }
   ngOnInit(): void {
+    console.log(this.data);
     this.form = this.fb.group({
       selectedAction: ['', Validators.required],
       selectedVmdAction: [],
@@ -81,58 +87,11 @@ export class VmsEmergencyComponent implements OnInit {
       selectedUnit: [],
       unitValue: []
     })
-    this.GetVmdList();
+    //this.GetVmdList();
   }
 
 
 
-
- GetVmdList() {
-  const data = {
-    projectId: 2,
-    type: 0,
-    inputs: "string",
-    bodyInputs: "string",
-    seq: 4
-  };
-
-  this.alertService.SiteResponse(data)
-    .pipe(withLoader(this.loaderService))
-    .subscribe({
-      next: (response: any) => {
-        // Parse result safely
-        let items: any[] = [];
-
-        if (response?.result) {
-          try {
-            items = typeof response.result === 'string'
-              ? JSON.parse(response.result)
-              : response.result;
-          } catch (err) {
-            console.error('Error parsing result JSON:', err);
-          }
-        }
-
-        // Map to dropdown-compatible format
-        const projectOptions = items.map((item: any) => ({
-          name: `${item.vmsId} - ${item.description}` || item.vmsId,
-          value: item.vmsId,
-     
-        }));
-
-        // Optional: sort or filter online devices
-        // const onlineDevices = projectOptions.filter(p => p.networkStatus === 1);
-
-        this.vmdTypeSettings.options = projectOptions;
-
-        console.log('VMD List:', this.vmdTypeSettings.options);
-        // this.isProjectOptionsLoaded = true;
-      },
-      error: (error) => {
-        console.error('Error fetching VMD list:', error);
-      }
-    });
-}
 
   onActionTypeSelected(evt: any) {
   }
@@ -146,7 +105,7 @@ export class VmsEmergencyComponent implements OnInit {
       "seq": 4
     }
     this.alertService.SiteResponse(data).subscribe(res => {
-      if(res != undefined) {
+      if (res != undefined) {
         let deviceData = JSON.parse(res.result);
         console.log(deviceData);
       } else {

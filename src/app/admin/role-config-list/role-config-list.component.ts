@@ -30,7 +30,6 @@ import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dial
       CommonModule,
       CmTableComponent,
       CmInputComponent,
-      CmSelect2Component,
       MatCardModule
       
     ],
