@@ -30,6 +30,57 @@ GetRoles(_data: any) {
   GetAllRoles() {
     return this._httpService._getMethod('api/services/app/Role/GetAllRoles');
   }
+
+GetFilteredList(
+  filter?: string,
+  maxResultCount?: number,
+  skipCount?: number
+) {
+  let params: string[] = [];
+
+  if (filter !== null && filter !== undefined && filter.trim() !== '') {
+    params.push(`Filter=${encodeURIComponent(filter)}`);
+  }
+
+  if (maxResultCount !== null && maxResultCount !== undefined) {
+    params.push(`MaxResultCount=${maxResultCount}`);
+  }
+
+  if (skipCount !== null && skipCount !== undefined) {
+    params.push(`SkipCount=${skipCount}`);
+  }
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/Role/GetAllRolesPage${queryString}`;
+
+  return this._httpService._getMethod(url);
+}
+
+
+
+CheckRoleNameExists(
+  Name?: string,
+  Id?: number
+) {
+  let params: string[] = [];
+
+  if (Name !== null && Name !== undefined) {
+    params.push(`Name=${Name}`);
+  }
+
+  if (Id !== null && Id !== undefined) {
+    params.push(`Id=${Id}`);
+  }
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/Role/GetAllRolesPage${queryString}`;
+
+  // return this._httpService._getMethod(url);
+  return this._httpService._postMethod({}, url);
+}
+
+
+
 //   GetFilteredList(
 //   ProjectId?: number,
 //   filter?: string,
@@ -72,37 +123,7 @@ GetRoles(_data: any) {
 
 
 
-// CheckMapExists(
-//   SourceURL?: string,
-//   Lat?: string,
-//   Long?: string,
-//   Id?: number
-// ) {
-//   let params: string[] = [];
 
-//   if (SourceURL !== null && SourceURL !== undefined) {
-//     params.push(`SourceURL=${SourceURL}`);
-//   }
-
-//   if (Lat !== null && Lat !== undefined && Lat.trim() !== '') {
-//     params.push(`Lat=${encodeURIComponent(Lat)}`);
-//   }
-
-//   if (Long !== null && Long !== undefined) {
-//     params.push(`Long=${Long}`);
-//   }
-
-//   if (Id !== null && Id !== undefined) {
-//     params.push(`Id=${Id}`);
-//   }
-
- 
-//   const queryString = params.length ? '?' + params.join('&') : '';
-//   const url = `api/services/app/Map/CheckMapExists${queryString}`;
-
-//   // return this._httpService._getMethod(url);
-//   return this._httpService._postMethod({}, url);
-// }
 
 
 
