@@ -11,6 +11,9 @@ import{RoleconfigModule} from '../../../models/admin/roleconfig.module';
 import { dateTimeFormat } from 'highcharts'; 
 import { ToastrService } from 'ngx-toastr';
 import { AbstractControl, ValidatorFn } from '@angular/forms';
+import { ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'app-role-configuration',
   imports: [MaterialModule, CommonModule, CmInputComponent,CmToggleComponent],
@@ -18,6 +21,8 @@ import { AbstractControl, ValidatorFn } from '@angular/forms';
   styleUrl: './role-configuration.component.css'
 })
 export class RoleConfigurationComponent implements OnInit {
+   private destroy$ = new Subject<void>();
+  isCheckingRole = false;
    RoleConfigurationService = inject(RoleConfigurationService);
   form: any;
     router = inject(Router);
@@ -56,27 +61,31 @@ export class RoleConfigurationComponent implements OnInit {
   }
   
 constructor(
-    private fb: FormBuilder,
+   private cd: ChangeDetectorRef,
+     private fb: FormBuilder,
    // private dialogRef: MatDialogRef<MapConfigurationFormComponent>,
     private service :RoleConfigurationService,
      private toast: ToastrService,
    // @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    this.form = this.fb.group({
-      name: ['', [Validators.required,this.noWhitespaceValidator()]],
-      description: ['', [Validators.required,this.noWhitespaceValidator()]],
-      displayname: ['', [Validators.required,this.noWhitespaceValidator()]],
-      minzoom: ['', Validators.required],
-      maxzoom: ['', Validators.required],
-      sourceurl: ['', [Validators.required,Validators.pattern(/^(https?:\/\/)[^\s]+$/)]],
-      lat: ['', Validators.required],
-      long: ['', Validators.required],
-      wmslayer :['', [Validators.required,Validators.pattern(/^(https?:\/\/)[^\s]+$/)]],
-      isActive: [Validators.required],
+    // this.form = this.fb.group({
+    //   roleName: [ [Validators.required, this.noWhitespaceValidator(), this.noSpecialCharValidator()]],
+    //   roleDesc: [ [Validators.required, this.noWhitespaceValidator(), this.noSpecialCharValidator()]],
+    //   // name: ['', [Validators.required,this.noWhitespaceValidator()]],
+    //   // description: ['', [Validators.required,this.noWhitespaceValidator()]],
+    //   // displayname: ['', [Validators.required,this.noWhitespaceValidator()]],
+    //   // minzoom: ['', Validators.required],
+    //   // maxzoom: ['', Validators.required],
+    //   // sourceurl: ['', [Validators.required,Validators.pattern(/^(https?:\/\/)[^\s]+$/)]],
+    //   // lat: ['', Validators.required],
+    //   // long: ['', Validators.required],
+    //   // wmslayer :['', [Validators.required,Validators.pattern(/^(https?:\/\/)[^\s]+$/)]],
+    //   isActive: [Validators.required],
 
       
       
-    });
+    // });
+    this.form = this.fb.group({});
   }
   noWhitespaceValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
@@ -84,13 +93,83 @@ constructor(
       return isWhitespace ? { whitespace: true } : null;
     };
   }
+noSpecialCharValidator(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const value = control.value;
+    if (typeof value !== 'string') return null;
+
+    // Allow only alphabets, numbers, space, hyphen, underscore
+    const valid = /^[a-zA-Z0-9_\- ]*$/.test(value);
+    return valid ? null : { specialChars: true };
+  };
+}
   ngOnInit(): void {
+    debugger;
     this.form = this.fb.group({
       roleId: [],
-      roleName: ['', Validators.required],
-      roleDesc: ['', Validators.required],
+     roleName: ['', [Validators.required, this.noWhitespaceValidator(), this.noSpecialCharValidator()]],
+    roleDesc: ['', [Validators.required, this.noWhitespaceValidator(), this.noSpecialCharValidator()]],
       isActive: [true, Validators.required]
     })
+
+
+    // Subscribe to roleName changes and check uniqueness
+    const roleCtrl = this.form.get('roleName');
+  
+    if (roleCtrl) {
+      // roleCtrl.valueChanges
+      //   .pipe(
+      //    debounceTime(400),
+      //    debounceTime(400),
+      //   distinctUntilChanged(),          
+      //   takeUntil(this.destroy$)
+      //   )
+      
+      roleCtrl.valueChanges
+        .pipe(
+          debounceTime(400),
+         distinctUntilChanged(),
+          takeUntil(this.destroy$)
+        )
+        .subscribe((value: string) => {
+          const trimmed = (value || '').trim();
+
+          // clear whitespace-only or empty -> clear exists error
+          if (!trimmed) {
+            this.clearControlError(roleCtrl, 'exists');
+            return;
+          }
+
+          // don't call if other validation errors exist (optional)
+          if (roleCtrl.invalid && !(roleCtrl.errors && roleCtrl.errors['exists'])) {
+            // there's another validation error (e.g. pattern) — skip existence check
+            return;
+          }
+
+          this.isCheckingRole = true;
+          this.service.CheckRoleNameExists(trimmed).pipe(takeUntil(this.destroy$)).subscribe({
+            next: (res: any) => {
+              const exists = !!(res?.result === true || res === true);
+              if (exists) {
+                // add or merge 'exists' error
+                roleCtrl.setErrors(Object.assign({}, roleCtrl.errors || {}, { exists: true }));
+              } else {
+                // remove only 'exists' error, preserve other errors
+                this.clearControlError(roleCtrl, 'exists');
+              }
+              this.isCheckingRole = false;
+              this.cd.markForCheck();
+            },
+            error: () => {
+              // on error, assume not existing (or handle as needed)
+              this.clearControlError(roleCtrl, 'exists');
+              this.isCheckingRole = false;
+              this.cd.markForCheck();
+            }
+          });
+        });
+    }
+    
   }
 
   close() {
@@ -184,6 +263,23 @@ this.service.CreateOrUpdateRole(payload).subscribe({
     this.toast.error('An unexpected error occurred');
   }
 }
+
+
+ private clearControlError(control: any, key: string) {
+    if (!control) return;
+    const errs = control.errors ? { ...control.errors } : null;
+    if (!errs) return;
+    if (errs[key]) {
+      delete errs[key];
+      const hasOther = Object.keys(errs).length > 0;
+      control.setErrors(hasOther ? errs : null);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
 }
 

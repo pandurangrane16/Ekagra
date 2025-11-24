@@ -240,33 +240,87 @@ export class RuleConfigComponent implements OnInit {
     options: [] as { name: string; value: string }[]
   };
 
-  minuteSettings = {
-    labelHeader: 'Minute (Numeric)',
-    lableClass: 'form-label',
-    formFieldClass: '',
-    appearance: 'outline',
-    options: [
-      { name: 'Every Minute', value: '*' },
-      ...Array.from({ length: 60 }, (_, i) => ({
-        name: i.toString().padStart(2, '0'),
-        value: i.toString()
-      }))
-    ]
-  }
+  // minuteSettings = {
+  //   labelHeader: 'Minute (Numeric)',
+  //   lableClass: 'form-label',
+  //   formFieldClass: '',
+  //   appearance: 'outline',
+  //   options: [
+  //     { name: 'Every Minute', value: '*' },
+  //     ...Array.from({ length: 60 }, (_, i) => ({
+  //       name: i.toString().padStart(2, '0'),
+  //       value: i.toString()
+  //     }))
+  //   ]
+  // }
 
-  hourSettings = {
-    labelHeader: 'Hour (Numeric)',
-    lableClass: 'form-label',
-    formFieldClass: '',
-    appearance: 'outline',
-    options: [
-      { name: 'Every Hour', value: '*' },
-      ...Array.from({ length: 24 }, (_, i) => ({
-        name: i.toString().padStart(2, '0'),
-        value: i.toString()
-      }))
-    ]
-  }
+  // hourSettings = {
+  //   labelHeader: 'Hour (Numeric)',
+  //   lableClass: 'form-label',
+  //   formFieldClass: '',
+  //   appearance: 'outline',
+  //   options: [
+  //     { name: 'Every Hour', value: '*' },
+  //     ...Array.from({ length: 24 }, (_, i) => ({
+  //       name: i.toString().padStart(2, '0'),
+  //       value: i.toString()
+  //     }))
+  //   ]
+  // }
+
+  // ...existing code...
+minuteSettings = { 
+  labelHeader: 'Minute (Numeric)',
+  lableClass: 'form-label',
+  formFieldClass: '',
+  appearance: 'outline',
+  options: (() => {
+    const opts: any[] = [];
+
+    // Every minute
+    opts.push({ name: 'Every Minute (*)', value: '*' });
+
+    // minutes 0-59
+    for (let i = 0; i < 60; i++) {
+      opts.push({ name: i.toString().padStart(2, '0'), value: i.toString() });
+    }
+
+    // step options */1 .. */59 (do not generate */0)
+    for (let i = 1; i < 60; i++) {
+      opts.push({ name: `Every ${i} Minute${i > 1 ? 's' : ''} (*/${i})`, value: `*/${i}` });
+    }
+
+    // defensive: make sure no '*/0' remains
+    return opts.filter(o => o.value !== '*/0');
+  })()
+};
+
+hourSettings = {
+  labelHeader: 'Hour (Numeric)',
+  lableClass: 'form-label',
+  formFieldClass: '',
+  appearance: 'outline',
+  options: (() => {
+    const opts: any[] = [];
+
+    // Every hour
+    opts.push({ name: 'Every Hour (*)', value: '*' });
+
+    // hours 0-23
+    for (let i = 0; i < 24; i++) {
+      opts.push({ name: i.toString().padStart(2, '0'), value: i.toString() });
+    }
+
+    // step options */1 .. */23 (do not generate */0)
+    for (let i = 1; i < 24; i++) {
+      opts.push({ name: `Every ${i} Hour${i > 1 ? 's' : ''} (*/${i})`, value: `*/${i}` });
+    }
+
+    // defensive: remove any '*/0' just in case
+    return opts.filter(o => o.value !== '*/0');
+  })()
+};
+
 
 
   dayMonthSettings = {

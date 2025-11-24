@@ -48,11 +48,11 @@ router = inject(Router);
       items:any;
       _request: any = new InputRequest();
       totalPages: number = 1;
-      pager: number = 1;
-        MaxResultCount=10;
-  SkipCount=0;
-  perPage=10;
-  pageNo=0;
+      pager = 1;
+      MaxResultCount=10;
+      SkipCount=0;
+      perPage=10;
+      pageNo=0;
       totalRecords!: number;
       recordPerPage: number = 10;
       startId!: number;
@@ -139,7 +139,7 @@ router = inject(Router);
             searchText: ['']
           });
           this.buildHeader();
-          this.getProjConfigList();
+          this.getRoleConfigList();
          // this.getProjList();
 
 
@@ -149,15 +149,16 @@ router = inject(Router);
                 distinctUntilChanged() 
               )
               .subscribe(value => {
+                debugger;
                    if (value && value.length >= 3) {
                        this.perPage=10;
                  this.pager=0;
-                //this.getFilteredList();
+                this.getRoleConfigList();
               } else if (!value || value.length === 0) {
 
                  this.perPage=10;
                  this.pager=0;
-                // this.getFilteredList();
+                this.getRoleConfigList();
               }
               });
        
@@ -225,7 +226,7 @@ router = inject(Router);
     console.log(event);
   if (event.type === 'pageChange') {
     this.pager = event.pageNo;
-//  this.getFilteredList();
+  this.getRoleConfigList();
   }
 }
 
@@ -235,7 +236,7 @@ onPageRecordsChange(event:any ) {
   if (event.type === 'perPageChange') {
     this.perPage = event.perPage;
     this.pager = 0;
-   // this.getFilteredList();
+   this.getRoleConfigList();
   }
 }
 
@@ -248,7 +249,7 @@ onPaginationChanged(event: { pageNo: number; perPage: number }) {
     this.pager = event.pageNo;
   }
 
-  //this.getFilteredList(); 
+  this.getRoleConfigList(); 
 }
         
       
@@ -286,7 +287,7 @@ deleteRow(rowData: any): void {
         next: (res:any) => {
           if (res.success) {
             debugger;
-            this.getProjConfigList();
+            this.getRoleConfigList();
             console.log('Deleted successfully');
            
           } else {
@@ -311,77 +312,22 @@ editRow(rowData: any) {
   });
 }
         
-        getProjConfigList() {
-      this._request.currentPage = this.pager;
-      this._request.pageSize = Number(this.recordPerPage);
-      this._request.startId = this.startId;
-      this._request.searchItem = this.searchText;
-      this.service.GetAllRoles().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+  //       getProjConfigList() {
+  //     this._request.currentPage = this.pager;
+  //     this._request.pageSize = Number(this.recordPerPage);
+  //     this._request.startId = this.startId;
+  //     this._request.searchItem = this.searchText;
+  //     this.service.GetAllRoles().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
 
-         const items = response.result?.items;
-         
-         this.items=items;
-            const totalCount=response.result?.totalCount;
-
-
-
-
-
-
-
-        if (Array.isArray(items)) {
-         
-           items.forEach((element: any) => {
-           
-
-            //let _data = JSON.parse(element);
-            element.name = element.name;
-            element.displayname = element.displayName;
-            element.roleid=element.id,
-           element.button = [
-    // { label: 'Edit', icon: 'edit', type: 'edit' },
-    { label: 'Delete', icon: 'delete', type: 'delete' }
-  ];
-
-          
-
-  //                      element.button = [
-  //   { label: 'Edit', icon: 'edit', type: 'edit' },
-  //   { label: 'Delete', icon: 'delete', type: 'delete' }
-  // ];
-            
-
-
-
-
-         
-          });
-          var _length = totalCount / Number(this.recordPerPage);
-          if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-            this.totalRecords = Number(this.recordPerPage) * (_length);
-          else if (Math.floor(_length) == 0)
-            this.totalRecords = 10;
-          else
-            this.totalRecords = totalCount;
-          this.totalPages = this.totalRecords / this.pager;
-        }
-      })
-    }    
-  //     getFilteredList() {
-  //   const selectedProjectId = this.form.controls['selectedProject'].value.value;
-  //    const selectedStatus = this.form.controls['selectedStatus'].value.value;
-  //    const search = this.form.controls['searchText'].value
-  //       this.MaxResultCount=this.perPage;
-  //     this.SkipCount=this.MaxResultCount*this.pager;
-  //     this.recordPerPage=this.perPage;
- 
-  //    this.service.GetFilteredList(selectedProjectId,search,selectedStatus,this.MaxResultCount,this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
-  //   //  const items = response?.result || [];
-         
-  //   //      this.items=items;
   //        const items = response.result?.items;
+         
   //        this.items=items;
-  //          const totalCount=response.result?.totalCount;
+  //           const totalCount=response.result?.totalCount;
+
+
+
+
+
 
 
   //       if (Array.isArray(items)) {
@@ -390,22 +336,28 @@ editRow(rowData: any) {
            
 
   //           //let _data = JSON.parse(element);
-  //            element.name = element.name;
-  //           element.description = element.description;
-  //           element.isActive = !!element.isActive; 
-  //           element.ruleEngine = !!element.ruleEngine;
-  //           element.map =!! element.map;
-            
-  //             element.button = [
-  //   { label: 'Edit', icon: 'edit', type: 'edit' },
+  //           element.name = element.name;
+  //           element.displayname = element.displayName;
+  //           element.roleid=element.id,
+  //          element.button = [
+  //   // { label: 'Edit', icon: 'edit', type: 'edit' },
   //   { label: 'Delete', icon: 'delete', type: 'delete' }
   // ];
 
+          
+
+  // //                      element.button = [
+  // //   { label: 'Edit', icon: 'edit', type: 'edit' },
+  // //   { label: 'Delete', icon: 'delete', type: 'delete' }
+  // // ];
+            
 
 
 
-  //                 });
-  //             var _length = totalCount / Number(this.recordPerPage);
+
+         
+  //         });
+  //         var _length = totalCount / Number(this.recordPerPage);
   //         if (_length > Math.floor(_length) && Math.floor(_length) != 0)
   //           this.totalRecords = Number(this.recordPerPage) * (_length);
   //         else if (Math.floor(_length) == 0)
@@ -415,7 +367,77 @@ editRow(rowData: any) {
   //         this.totalPages = this.totalRecords / this.pager;
   //       }
   //     })
-  //   }  
+  //   }    
+
+//   getRoleConfigList() {
+//   this.SkipCount = (this.pager - 1) * this.perPage;
+//   this.MaxResultCount = this.perPage;
+//  const search = this.form.controls['searchText'].value
+//       this.recordPerPage=this.perPage;
+
+//   this.service.GetFilteredList(search,this.MaxResultCount,this.SkipCount)
+//     .pipe(withLoader(this.loaderService))
+//     .subscribe((response: any) => {
+
+//       const items = response.result?.items || [];
+//       this.items = items;
+//       this.totalRecords = response.result?.totalCount || 0;
+
+//       // correct calculation
+//       this.totalPages = Math.ceil(this.totalRecords / this.perPage);
+
+//     });
+// }
+
+
+      getRoleConfigList() {
+        debugger;
+    // const selectedProjectId = this.form.controls['selectedProject'].value.value;
+    //  const selectedStatus = this.form.controls['selectedStatus'].value.value;
+     const search = this.form.controls['searchText'].value
+        this.MaxResultCount=this.perPage;
+      this.SkipCount=this.MaxResultCount*this.pager;
+      this.recordPerPage=this.perPage;
+ 
+     this.service.GetFilteredList(search,this.MaxResultCount,this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+    //  const items = response?.result || [];
+         
+    //      this.items=items;
+         const items = response.result?.items;
+         this.items=items;
+           const totalCount=response.result?.totalCount;
+
+
+        if (Array.isArray(items)) {
+         
+           items.forEach((element: any) => {
+           
+
+                    //let _data = JSON.parse(element);
+            element.name = element.name;
+            element.displayname = element.displayName;
+            element.roleid=element.id,
+           element.button = [
+    // { label: 'Edit', icon: 'edit', type: 'edit' },
+    { label: 'Delete', icon: 'delete', type: 'delete' }
+  ];
+
+
+
+
+
+                  });
+              var _length = totalCount / Number(this.recordPerPage);
+          if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+            this.totalRecords = Number(this.recordPerPage) * (_length);
+          else if (Math.floor(_length) == 0)
+            this.totalRecords = 10;
+          else
+            this.totalRecords = totalCount;
+          this.totalPages = this.totalRecords / this.pager;
+        }
+      })
+    }  
        
 // getProjList() {
 //   this.service.GetProjectList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
