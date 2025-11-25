@@ -32,31 +32,10 @@ export class alertservice {
   TransferSOP(data: any) {
     return this._httpService._postMethod(data, 'api/services/app/Alert/TransferSOP');
   }
-  AlertLogCreate(_data: any) {
-    return this._httpService._postMethod(_data, 'api/services/app/AlertLog/Create');
-  }
-  AlertUpdate(_data: any) {
-    return this._httpService._putMethod(_data, 'api/services/app/Alert/Update');
-  }
-
-    GetAlertsByid(id: any) {
-    return this._httpService._getMethod( 'api/services/app/Alert/Get?Id='+id);
-  }
-
-
-      GetAlerthistory(id: any) {
-    return this._httpService._getMethod( 'api/services/app/AlertLog/GetAlerthistory?alertId='+id);
-  }
-
-        GetRoleActionMappingById(id: any) {
-    return this._httpService._getMethod( 'api/services/app/RoleActionMapping/GetRoleActionMappingById?userId='+id);
-  }
-
 
 
 
   GetFilteredList(
-    UserId?:any,
     FromTime?: any,
     ToTime?: any,
     Type?: any,
@@ -65,9 +44,6 @@ export class alertservice {
     skipCount?: number
   ) {
     let params: string[] = [];
-      if (UserId !== null && UserId !== undefined) {
-      params.push(`UserId=${UserId}`);
-    }
 
     if (FromTime !== null && FromTime !== undefined) {
       params.push(`FromTime=${FromTime}`);

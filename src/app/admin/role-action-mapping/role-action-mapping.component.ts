@@ -186,7 +186,7 @@ router = inject(Router);
         
       ngOnInit(): void {
        this.form = this.fb.group({
-  // selectedUser: [null, Validators.required],
+  selectedUser: [null, Validators.required],
   selectedAction: [[], this.minArrayLength(1)],
   selectedRole: [[], this.minArrayLength(1)]
 });
@@ -196,7 +196,6 @@ router = inject(Router);
         //this.GetRoleList();
           this.GetActionList();
           this.getRoleList();
-          this.getFilteredList();
 
 
             this.form.get('searchText')?.valueChanges
@@ -234,53 +233,196 @@ router = inject(Router);
       onProjectSelected(event: any) {
           console.log('Selected Project:', event);
         }
-submit() {
-  if (this.form.invalid) {
-    this.form.markAllAsTouched();
-    this.toast.error('Form is not valid');
-    return;
-  }
+  submit() {
+
+
+
+
+
+        if (!this.form.invalid) {
+            this.form.markAllAsTouched();
+    
+
+    const zones = this.form.value.selectedAction.map((z: any) => z.id).join(', ');
+    const roles = this.form.value.selectedRole.map((z: any) => z.id).join(', ');
+    const user = this.form.value.selectedUser.map((z: any) => z.id).join(', ');
+
+    // this.toast.success(zones || 'No zones selected', 'Zones');
+    //  this.toast.success(roles || 'No zones selected', 'Zones');
+    //   this.toast.success(user || 'No zones selected', 'Zones');
+
+ if (this.form.value.selectedUser.length > 1) {
+  this.toast.error('Please select only one user at a time', 'Multiple Users Selected');
+  return; // stop execution if multiple users selected
+}
 else{
-    const roleId = Number(this.form.value.selectedRole[0].id);
-  const actionId = this.form.value.selectedAction.map((x: any) => x.id).join(',');
+     if (!this.form.invalid) {
+      this.form.markAllAsTouched();
 
-  let payload = {
-    roleId: roleId,
-    actionId: actionId,
-    id: 0
-  };
+      let _UserZoneMapping = new UserZoneMapping();
 
-  console.log("Final Payload:", payload);
+      _UserZoneMapping.creationTime="2025-06-16 12:45:23.982"
+      _UserZoneMapping.creatorUserId=0
+      _UserZoneMapping.deleterUserId=0
+      _UserZoneMapping.deletionTime="2025-06-16 12:45:23.982"
+      _UserZoneMapping.isDeleted=false
+      _UserZoneMapping.lastModificationTime="2025-06-16 12:45:23.982"
+      _UserZoneMapping.lastModifierUserId=0
+      _UserZoneMapping.roleId=roles
+      _UserZoneMapping.userId=user
+      _UserZoneMapping.zoneId=zones
 
-  // --- ALWAYS CREATE ---
-  this.service.Create2(payload)
-    .pipe(withLoader(this.loaderService))
-    .subscribe({
-      next: () => {
-        this.toast.success('RoleActionMapping created successfully');
-        this.getFilteredList();
+        if (this.isEdit && this.selectedRecordId) {
+    _UserZoneMapping.id = this.selectedRecordId;
+  }
 
+
+
+   console.log("hi", _UserZoneMapping);
+
+  const selectedUserId = Number(this.form.value.selectedUser[0].id);
+const existingMapping = this.userMappings?.find((m: any) => m.userId === selectedUserId);
+
+
+if(existingMapping){
+   _UserZoneMapping.id = existingMapping.id;
+  {this.service.Update(_UserZoneMapping)
+  .pipe(withLoader(this.loaderService))
+  .subscribe({
+    next: () => {
+      console.log('Updated successfully');
+      this.toast.success('UserMapping Updated successfully');
+        this.isEdit = false;
+      this.getFilteredList();
         this.form.reset({
-          selectedUser: [],
-          selectedAction: [],
-          selectedRole: []
-        });
-      },
-      error: (err) => {
-        console.error('Save failed:', err);
-        this.toast.error('Failed to save RoleActionMapping');
-
-        this.form.reset({
-          selectedUser: [],
-          selectedAction: [],
-          selectedRole: []
-        });
-      }
-    });
+    selectedUser: [],      
+    selectedAction: [],      
+    selectedRole: []        
+  });
+      // this.router.navigate(['/admin/projfieldconfig']);
+    },
+    error: (err) => {
+      console.error('Save failed:', err);
+           this.form.reset({
+    selectedUser: [],      
+    selectedAction: [],      
+    selectedRole: []        
+  });
+      // Optionally show a toast
+      this.toast.error('Failed to save UserMapping');
+        this.isEdit = false;
+    }
+  });
 }
 
 }
 
+else{  if(this.isEdit)
+  {this.service.Update(_UserZoneMapping)
+  .pipe(withLoader(this.loaderService))
+  .subscribe({
+    next: () => {
+      console.log('Updated successfully');
+      this.toast.success('UserMapping Updated successfully');
+        this.isEdit = false;
+      this.getFilteredList();
+        this.form.reset({
+    selectedUser: [],      
+    selectedAction: [],      
+    selectedRole: []        
+  });
+      // this.router.navigate(['/admin/projfieldconfig']);
+    },
+    error: (err) => {
+      console.error('Save failed:', err);
+           this.form.reset({
+    selectedUser: [],      
+    selectedAction: [],      
+    selectedRole: []        
+  });
+      // Optionally show a toast
+      this.toast.error('Failed to save UserMapping');
+        this.isEdit = false;
+    }
+  });
+}
+
+
+   else{this.service.Create(_UserZoneMapping)
+  .pipe(withLoader(this.loaderService))
+  .subscribe({
+    next: () => {
+      console.log('Saved successfully');
+      this.toast.success('UserMapping saved successfully');
+      this.getFilteredList();
+        this.form.reset({
+    selectedUser: [],      
+    selectedAction: [],      
+    selectedRole: []        
+  });
+      // this.router.navigate(['/admin/projfieldconfig']);
+    },
+    error: (err) => {
+      console.error('Save failed:', err);
+           this.form.reset({
+    selectedUser: [],      
+    selectedAction: [],      
+    selectedRole: []        
+  });
+      // Optionally show a toast
+      this.toast.error('Failed to save UserMapping');
+    }
+  });
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+    else {
+      this.form.markAllAsTouched();
+       this.toast.error('Form is not valid');
+      return;
+
+    }
+}
+    
+
+
+
+
+
+
+
+
+
+
+    }
+    else {
+      this.form.markAllAsTouched();
+       this.toast.error('Form is not valid');
+      return;
+
+    }
+
+
+    
+
+
+
+ 
+
+
+  }
     
 
         openDialog() {
@@ -289,13 +431,12 @@ else{
 }
         buildHeader() {  
           this.headArr = [
-            // { header: 'UserName', fieldValue: 'userName', position: 1 },
-            // { header: 'Zone', fieldValue: 'zoneNames', position: 2 },
-            { header: 'Role', fieldValue: 'roleNames', position: 1 },
-             { header: 'Actions', fieldValue: 'actions', position: 2 },
+            { header: 'UserName', fieldValue: 'userName', position: 1 },
+            { header: 'Zone', fieldValue: 'zoneNames', position: 2 },
+            { header: 'Role', fieldValue: 'roleNames', position: 3 },
            
      
-            { header: 'Action', fieldValue: 'button', position: 3 }
+            { header: 'Action', fieldValue: 'button', position: 4 }
           ];
           ;}
       
@@ -555,134 +696,59 @@ editRow(rowData: any) {
   //   }  
 
 
-//     getFilteredList() {
-//   this.MaxResultCount = this.perPage;
-//   this.SkipCount = this.MaxResultCount * this.pager;
-//   this.recordPerPage = this.perPage;
-
-//   this.service.GetFilteredList2(this.MaxResultCount, this.SkipCount)
-//     .pipe(withLoader(this.loaderService))
-//     .subscribe((response: any) => {
-//       const items = response.result?.items || [];
-     
-// this.items = items;
-
-
-// this.userMappings = items;
-// console.log("userMappings",this.userMappings)
-//       const totalCount = response.result?.totalCount || 0;
-
-//       if (Array.isArray(items)) {
-//         items.forEach((element: any) => {
-//           // Convert comma-separated string IDs into arrays
-//           const zoneIds = element.zoneId ? element.zoneId.split(',').map((id: string) => id.trim()) : [];
-//           const roleIds = element.roleId ? element.roleId.split(',').map((id: string) => id.trim()) : [];
-
-//           // Map Zone Names
-//        const zoneNames = zoneIds
-//   .map((id: string) => this.ZoneOptions.find((z: any) => String(z.id) === id)?.text)
-//   .filter(Boolean)
-//   .join(', ');
-
-//           // Map Role Names
-//           const roleNames = roleIds
-//             .map((id: string) => this.RoleOptions.find((r: any) => String(r.id) === id)?.text)
-//             .filter(Boolean)
-//             .join(', ');
-
-//           // Map User Name (if you have a user list)
-//           const userName = this.UserOptions?.find((u: any) => u.id === element.userId)?.text || element.userId;
-
-//           // Assign readable fields
-//           element.zoneNames = zoneNames || 'N/A';
-//           element.roleNames = roleNames || 'N/A';
-//           element.userName = userName || 'N/A';
-
-      
-
-//           // Add buttons
-//           element.button = [
-//             { label: 'Edit', icon: 'edit', type: 'edit' },
-//             // { label: 'Delete', icon: 'delete', type: 'delete' }
-//           ];
-//         });
-
-//         // Pagination handling
-//         const _length = totalCount / Number(this.recordPerPage);
-//         if (_length > Math.floor(_length) && Math.floor(_length) !== 0)
-//           this.totalRecords = Number(this.recordPerPage) * (_length);
-//         else if (Math.floor(_length) === 0)
-//           this.totalRecords = 10;
-//         else
-//           this.totalRecords = totalCount;
-
-//         this.totalPages = this.totalRecords / this.pager;
-//       }
-
-//       // Assign to component variable
-//       this.items = items;
-//     });
-// }
-getFilteredList() {
+    getFilteredList() {
   this.MaxResultCount = this.perPage;
   this.SkipCount = this.MaxResultCount * this.pager;
   this.recordPerPage = this.perPage;
 
-  this.service.GetFilteredList2(this.MaxResultCount, this.SkipCount)
+  this.service.GetFilteredList(this.MaxResultCount, this.SkipCount)
     .pipe(withLoader(this.loaderService))
     .subscribe((response: any) => {
-
       const items = response.result?.items || [];
+     
+this.items = items;
+
+
+this.userMappings = items;
+console.log("userMappings",this.userMappings)
       const totalCount = response.result?.totalCount || 0;
 
-      this.userMappings = items;
-      console.log("userMappings", this.userMappings);
-
       if (Array.isArray(items)) {
-
         items.forEach((element: any) => {
+          // Convert comma-separated string IDs into arrays
+          const zoneIds = element.zoneId ? element.zoneId.split(',').map((id: string) => id.trim()) : [];
+          const roleIds = element.roleId ? element.roleId.split(',').map((id: string) => id.trim()) : [];
 
-          // -----------------------------
-          // ✔ Convert comma-separated Action IDs
-          // -----------------------------
-          const actionIds = element.actionId
-            ? element.actionId.split(',').map((id: string) => id.trim())
-            : [];
+          // Map Zone Names
+       const zoneNames = zoneIds
+  .map((id: string) => this.ZoneOptions.find((z: any) => String(z.id) === id)?.text)
+  .filter(Boolean)
+  .join(', ');
 
-          // -----------------------------
-          // ✔ Convert comma-separated Role ID (single ID but we keep the format)
-          // -----------------------------
-          const roleIds = element.roleId
-            ? element.roleId.toString().split(',').map((id: string) => id.trim())
-            : [];
-
-          // -----------------------------
-          // ✔ Map Action Names from ActionOptions
-          // -----------------------------
-          const actionNames = actionIds
-            .map((id: string) => this.ZoneOptions.find((a: any) => String(a.id) === id)?.text)
-            .filter(Boolean)
-            .join(', ');
-
-          // -----------------------------
-          // ✔ Map Role Name from RoleOptions
-          // -----------------------------
+          // Map Role Names
           const roleNames = roleIds
             .map((id: string) => this.RoleOptions.find((r: any) => String(r.id) === id)?.text)
             .filter(Boolean)
             .join(', ');
 
-          // Assign readable names
-          element.actions = actionNames || 'N/A';
-          element.roleNames = roleNames || 'N/A';
+          // Map User Name (if you have a user list)
+          const userName = this.UserOptions?.find((u: any) => u.id === element.userId)?.text || element.userId;
 
-          // Add Edit button
+          // Assign readable fields
+          element.zoneNames = zoneNames || 'N/A';
+          element.roleNames = roleNames || 'N/A';
+          element.userName = userName || 'N/A';
+
+      
+
+          // Add buttons
           element.button = [
             { label: 'Edit', icon: 'edit', type: 'edit' },
+            // { label: 'Delete', icon: 'delete', type: 'delete' }
           ];
         });
 
-        // Pagination
+        // Pagination handling
         const _length = totalCount / Number(this.recordPerPage);
         if (_length > Math.floor(_length) && Math.floor(_length) !== 0)
           this.totalRecords = Number(this.recordPerPage) * (_length);
@@ -694,10 +760,10 @@ getFilteredList() {
         this.totalPages = this.totalRecords / this.pager;
       }
 
+      // Assign to component variable
       this.items = items;
     });
 }
-
 
        
 GetRoleList() {
@@ -743,7 +809,7 @@ GetActionList() {
 
      
         const projectOptions = items.map((item: any) => ({
-          text: item.prmvalue,
+          text: item.rfu1,
           id: item.prmidentifier
        
         }));
@@ -756,10 +822,10 @@ GetActionList() {
 
     this.ZoneSelectSettings.options = projectOptions;
     this.ZoneOptions=projectOptions
-// this.form.controls['selectedAction'].setValue({
-//   text: 'All',
-//   id: 0
-// });
+this.form.controls['selectedAction'].setValue({
+  text: 'All',
+  id: 0
+});
 
 // this.form.controls['selectedStatus'].setValue({
 //   name: 'All',

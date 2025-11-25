@@ -276,16 +276,16 @@ this.service.CreateOrUpdateRole(payload).subscribe({
 }
 
 
- private clearControlError(control: any, key: string) {
-    if (!control) return;
-    const errs = control.errors ? { ...control.errors } : null;
-    if (!errs) return;
-    if (errs[key]) {
-      delete errs[key];
-      const hasOther = Object.keys(errs).length > 0;
-      control.setErrors(hasOther ? errs : null);
-    }
+private clearControlError(control: any, key: string) {
+  if (!control) return;
+  const errs = control.errors ? { ...control.errors } : null;
+  if (!errs) return;
+  if (errs[key]) {
+    delete errs[key];
+    const hasOther = Object.keys(errs).length > 0;
+    control.setErrors(hasOther ? errs : null);
   }
+}
 
   ngOnDestroy(): void {
     this.destroy$.next();
