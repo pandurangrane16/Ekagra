@@ -26,6 +26,10 @@ GetRoles(_data: any) {
       return this._httpService._deleteMethod('api/services/app/Role/RoleSoftDelete?id='+Id+'&DeleterUsrId='+userid);
     }
 
+   GetCategoryList() {
+    return this._httpService._getMethod('api/services/app/PrmGlobal/GetAllGlobalValues?Module=Global&unit=RoleCategory');
+  }
+
 
   GetAllRoles() {
     return this._httpService._getMethod('api/services/app/Role/GetAllRoles');

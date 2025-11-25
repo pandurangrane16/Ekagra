@@ -20,6 +20,16 @@
 
             <form [formGroup]="form" class="form-container">
                 <div class="row">
+                      <div class="col-md-4">
+                         <app-cm-select2
+              *ngIf="isProjectOptionsLoaded"
+              [formGroup]="form"
+              [controlName]="'roleType'"
+              [settings]="projectSelectSettings"
+              (optionSelected)="onProjectSelected($event)"
+            >
+            </app-cm-select2>
+                    </div>
                     <div class="col-md-4">
                         <label>Role Name</label>
                         <app-cm-input [formGroup]="form" [controlName]="'roleName'" [_inputData]="inputFields.roleName">
@@ -28,7 +38,7 @@
                             {{ getErrorMessage('roleName', 'Role Name', false, '') }}
                         </div>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-4">
                         <label>Display Name</label>
                         <app-cm-input [formGroup]="form" [controlName]="'roleDesc'" [_inputData]="inputFields.roleDesc">
                         </app-cm-input>

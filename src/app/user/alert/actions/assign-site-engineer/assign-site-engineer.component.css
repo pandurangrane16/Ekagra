@@ -23,7 +23,7 @@
 }
 
   .readonly-div {
-    pointer-events: none;
+     pointer-events: auto !important;
     user-select: none;
     color: gray; /* Optional: style to indicate it's readonly */
   }

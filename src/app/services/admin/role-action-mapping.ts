@@ -52,6 +52,11 @@ ProjectCreate(_data: any) {
     return this._httpService._postMethod(_data, 'api/services/app/UserZoneMapping/Create');
   }
 
+    Create2(_data: any) {
+    return this._httpService._postMethod(_data, 'api/services/app/RoleActionMapping/Create');
+  }
+
+
 
   
   Update(_data: any) {
@@ -127,6 +132,31 @@ GetFilteredList(
 
   const queryString = params.length ? '?' + params.join('&') : '';
   const url = `api/services/app/UserZoneMapping/GetAll${queryString}`;
+
+  return this._httpService._getMethod(url);
+}
+
+
+GetFilteredList2(
+
+  maxResultCount?: number,
+  skipCount?: number
+) {
+  let params: string[] = [];
+
+ 
+
+
+  if (maxResultCount !== null && maxResultCount !== undefined) {
+    params.push(`MaxResultCount=${maxResultCount}`);
+  }
+
+  if (skipCount !== null && skipCount !== undefined) {
+    params.push(`SkipCount=${skipCount}`);
+  }
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/RoleActionMapping/GetAll${queryString}`;
 
   return this._httpService._getMethod(url);
 }

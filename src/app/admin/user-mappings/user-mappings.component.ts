@@ -21,6 +21,7 @@ import { ToastrService } from 'ngx-toastr';
 import { CmTableComponent } from '../../common/cm-table/cm-table.component';
 import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 import _ from 'lodash';
+
 import { MaterialModule } from "../../Material.module";
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 
@@ -33,6 +34,7 @@ declare var $: any;
     imports: [
     CommonModule,
    CmTableComponent,
+   CmSelect2Component,
     
    
     MatCardModule, MatButtonModule,
@@ -57,7 +59,19 @@ ZoneOptions = [
 RoleOptions = [
   { id: 0, text: 'All' },
  
+
 ];
+RoleOptions2 = [
+  { id: 0, text: 'All' },
+ 
+];
+  projectSelectSettings = {
+    labelHeader: 'Select Role Category',
+    lableClass: 'form-label',
+    formFieldClass: '', 
+    appearance: 'fill',
+    options: [ ]
+  };
   selectedValue: number | null = null;
      
       loaderService = inject(LoaderService);
@@ -90,6 +104,7 @@ router = inject(Router);
       isUserOptionsLoaded = false;
       isZoneOptionsLoaded = false;
       isRoleOptionsLoaded = false;
+      isProjectOptionsLoaded=false;
       gridArr = [
            {
             name: 'Alpha Project',
@@ -184,16 +199,21 @@ router = inject(Router);
 }
         
       ngOnInit(): void {
+
+
        this.form = this.fb.group({
   selectedUser: [null, Validators.required],
   selectedZone: [[], this.minArrayLength(1)],
   selectedRole: [[], this.minArrayLength(1)]
 });
           this.buildHeader();
-         // this.getProjConfigList();
+        //  this.getProjConfigList();
+        this.getRoleList_All();
+          this.getFilteredList();
           this.getUserList();
           this.getZoneList();
-          this.getRoleList();
+        
+          this.getRoleCategoryList();
 
 
             this.form.get('searchText')?.valueChanges
@@ -229,8 +249,45 @@ router = inject(Router);
         }
 
       onProjectSelected(event: any) {
-          console.log('Selected Project:', event);
+        this.isRoleOptionsLoaded=false;
+          console.log('Selected Role:', event);
+          debugger;
+          this.getRoleList(event.name);
         }
+
+
+          getRoleCategoryList() {
+    this.service.GetCategoryList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+      const items = response?.result || [];
+  
+      const projectOptions = items.map((item: any) => ({
+        name: item.prmvalue
+        
+        
+      }));
+  
+    
+      // projectOptions.unshift({
+      //   name: 'All',
+      //   value: null
+      // });
+  
+      this.projectSelectSettings.options = projectOptions;
+          this.projectSelectSettings.options = projectOptions;
+  // this.form.controls['selectedProject'].setValue({
+  //   name: 'All',
+  //   value: null
+  // });
+  
+  // this.form.controls['selectedStatus'].setValue({
+  //   name: 'All',
+  //   value: null
+  // });
+      this.isProjectOptionsLoaded = true;
+    }, error => {
+      console.error('Error fetching project list', error);
+    });
+  }
   submit() {
 
 
@@ -241,9 +298,9 @@ router = inject(Router);
             this.form.markAllAsTouched();
     
 
-    const zones = this.form.value.selectedZone.map((z: any) => z.id).join(', ');
-    const roles = this.form.value.selectedRole.map((z: any) => z.id).join(', ');
-    const user = this.form.value.selectedUser.map((z: any) => z.id).join(', ');
+    const zones = this.form.value.selectedZone.map((z: any) => z.id).join(',');
+    const roles = this.form.value.selectedRole.map((z: any) => z.id).join(',');
+    const user = this.form.value.selectedUser.map((z: any) => z.id).join(',');
 
     // this.toast.success(zones || 'No zones selected', 'Zones');
     //  this.toast.success(roles || 'No zones selected', 'Zones');
@@ -725,7 +782,7 @@ console.log("userMappings",this.userMappings)
 
           // Map Role Names
           const roleNames = roleIds
-            .map((id: string) => this.RoleOptions.find((r: any) => String(r.id) === id)?.text)
+            .map((id: string) => this.RoleOptions2.find((r: any) => String(r.id) === id)?.text)
             .filter(Boolean)
             .join(', ');
 
@@ -842,11 +899,12 @@ close(){
   });
 }
 
-getRoleList() {
+getRoleList(type:any) {
+  debugger;
 
 let body = { permissions: null };
   
-  this.service.GetRoleList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+  this.service.GetRoleByCategory(type).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
    
       
      const items = response?.result?.items || [];
@@ -874,7 +932,46 @@ this.form.controls['selectedRole'].setValue({
 //   value: null
 // });
     this.isRoleOptionsLoaded = true;
-    this.getFilteredList();
+    //this.getFilteredList();
+  }, error => {
+    console.error('Error fetching Role list', error);
+  });
+}
+
+getRoleList_All() {
+  debugger;
+
+let body = { permissions: null };
+  
+  this.service.GetRoleList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+   
+      
+     const items = response?.result?.items || [];
+
+const projectOptions = items.map((item: any) => ({
+  text: item.displayName || 'Unknown',
+  id: item.id
+}));
+
+  
+    projectOptions.unshift({
+      text: 'All',
+      id:0
+    });
+
+   // this.RoleSelectSettings.options = projectOptions;
+    this.RoleOptions2=projectOptions
+// this.form.controls['selectedRole'].setValue({
+//   text: 'All',
+//   id: 0
+// });
+
+// this.form.controls['selectedStatus'].setValue({
+//   name: 'All',
+//   value: null
+// });
+  //  this.isRoleOptionsLoaded = true;
+    //this.getFilteredList();
   }, error => {
     console.error('Error fetching Role list', error);
   });

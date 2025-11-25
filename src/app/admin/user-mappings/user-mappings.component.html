@@ -43,6 +43,21 @@
                         </mat-form-field>
 
                     </div>
+                        <div class="col">
+                        <!-- <label>Select Zone</label>
+                        <select multiple #selectElement class="form-control" style="width: 100%;" [attr.size]="5">
+                            <option *ngFor="let option of yourOptions" [value]="option.id">{{ option.text }}</option>
+                        </select> -->
+             <app-cm-select2
+              *ngIf="isProjectOptionsLoaded"
+              [formGroup]="form"
+              [controlName]="'selectedRole'"
+              [settings]="projectSelectSettings"
+              (returnObject)="onProjectSelected($event)"
+            >
+            </app-cm-select2>
+
+                    </div>
                     <div class="col">
                         <!-- <label>Select Role</label>
                         <select multiple #selectElement class="form-select" style="width: 100%;" [attr.size]="5">

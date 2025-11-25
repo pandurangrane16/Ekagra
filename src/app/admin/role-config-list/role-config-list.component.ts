@@ -192,13 +192,14 @@ router = inject(Router);
 }
         buildHeader() {  
           this.headArr = [
-            { header: 'Name', fieldValue: 'name', position: 1 },
-            { header: 'Display Name', fieldValue: 'displayname', position: 2 },
-            { header: 'Role Id', fieldValue: 'roleid', position: 3 },
+             { header: 'Category', fieldValue: 'category', position: 1 },
+            { header: 'Name', fieldValue: 'name', position: 2 },
+            { header: 'Display Name', fieldValue: 'displayname', position: 3 },
+            { header: 'Role Id', fieldValue: 'roleid', position: 4 },
            
             // { header: 'Rule Engine', fieldValue: 'ruleEngine',"type": "boolean", position: 4 },
             // { header: 'Map', fieldValue: 'map',"type": "boolean", position: 5 },
-            { header: 'Action', fieldValue: 'button', position: 4 }
+            { header: 'Action', fieldValue: 'button', position: 5 }
           ];
           ;}
       
@@ -327,7 +328,7 @@ editRow(rowData: any) {
 
 
 
-
+debugger;
 
 
         if (Array.isArray(items)) {
@@ -339,6 +340,7 @@ editRow(rowData: any) {
             element.name = element.name;
             element.displayname = element.displayName;
             element.roleid=element.id,
+            element.category=element.category
            element.button = [
     // { label: 'Edit', icon: 'edit', type: 'edit' },
     { label: 'Delete', icon: 'delete', type: 'delete' }

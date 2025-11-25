@@ -25,4 +25,5 @@ export class RoleconfigModule {
     IsDefault!: boolean;
     NormalizedName!: string;
     ConcurrencyStamp!: string; 
+    category!:any;
 }

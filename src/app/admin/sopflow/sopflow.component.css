@@ -43,7 +43,7 @@
   
 
     .readonly-div {
-    pointer-events: none;
+    /* pointer-events: none; */
     user-select: none;
     color: gray; /* Optional: style to indicate it's readonly */
   }
