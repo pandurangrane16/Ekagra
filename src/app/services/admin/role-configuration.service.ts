@@ -59,13 +59,13 @@ GetFilteredList(
 
 
 CheckRoleNameExists(
-  Name?: string,
+  RoleName?: string,
   Id?: number
 ) {
   let params: string[] = [];
 
-  if (Name !== null && Name !== undefined) {
-    params.push(`Name=${Name}`);
+  if (RoleName !== null && RoleName !== undefined) {
+    params.push(`RoleName=${RoleName}`);
   }
 
   if (Id !== null && Id !== undefined) {
@@ -73,7 +73,7 @@ CheckRoleNameExists(
   }
 
   const queryString = params.length ? '?' + params.join('&') : '';
-  const url = `api/services/app/Role/GetAllRolesPage${queryString}`;
+  const url = `api/services/app/Role/CheckRoleNameExists${queryString}`;
 
   // return this._httpService._getMethod(url);
   return this._httpService._postMethod({}, url);

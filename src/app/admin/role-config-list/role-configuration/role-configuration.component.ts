@@ -116,59 +116,44 @@ noSpecialCharValidator(): ValidatorFn {
     // Subscribe to roleName changes and check uniqueness
     const roleCtrl = this.form.get('roleName');
   
-    if (roleCtrl) {
-      // roleCtrl.valueChanges
-      //   .pipe(
-      //    debounceTime(400),
-      //    debounceTime(400),
-      //   distinctUntilChanged(),          
-      //   takeUntil(this.destroy$)
-      //   )
-      
-      roleCtrl.valueChanges
-        .pipe(
-          debounceTime(400),
-         distinctUntilChanged(),
-          takeUntil(this.destroy$)
-        )
-        .subscribe((value: string) => {
-          const trimmed = (value || '').trim();
+   if (roleCtrl) {
+    roleCtrl.valueChanges
+      .pipe(
+        debounceTime(400),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((value: string) => {
+        const trimmed = (value || '').trim();
 
-          // clear whitespace-only or empty -> clear exists error
-          if (!trimmed) {
-            this.clearControlError(roleCtrl, 'exists');
-            return;
-          }
+        // skip if empty or only whitespace
+        if (!trimmed) {
+          this.clearControlError(roleCtrl, 'exists');
+          return;
+        }
 
-          // don't call if other validation errors exist (optional)
-          if (roleCtrl.invalid && !(roleCtrl.errors && roleCtrl.errors['exists'])) {
-            // there's another validation error (e.g. pattern) — skip existence check
-            return;
-          }
-
-          this.isCheckingRole = true;
-          this.service.CheckRoleNameExists(trimmed).pipe(takeUntil(this.destroy$)).subscribe({
-            next: (res: any) => {
-              const exists = !!(res?.result === true || res === true);
-              if (exists) {
-                // add or merge 'exists' error
-                roleCtrl.setErrors(Object.assign({}, roleCtrl.errors || {}, { exists: true }));
-              } else {
-                // remove only 'exists' error, preserve other errors
-                this.clearControlError(roleCtrl, 'exists');
-              }
-              this.isCheckingRole = false;
-              this.cd.markForCheck();
-            },
-            error: () => {
-              // on error, assume not existing (or handle as needed)
+        // call API
+        this.isCheckingRole = true;
+        this.service.CheckRoleNameExists(trimmed).pipe(takeUntil(this.destroy$)).subscribe({
+          next: (res: any) => {
+            const exists = !!(res?.result === true || res === true);
+            if (exists) {
+              roleCtrl.setErrors(Object.assign({}, roleCtrl.errors || {}, { exists: true }));
+            } else {
               this.clearControlError(roleCtrl, 'exists');
-              this.isCheckingRole = false;
-              this.cd.markForCheck();
             }
-          });
+            this.isCheckingRole = false;
+            this.cd.markForCheck();
+          },
+          error: (err) => {
+            console.error('CheckRoleNameExists error', err);
+            this.clearControlError(roleCtrl, 'exists');
+            this.isCheckingRole = false;
+            this.cd.markForCheck();
+          }
         });
-    }
+      });
+  }
     
   }
 
@@ -265,16 +250,16 @@ this.service.CreateOrUpdateRole(payload).subscribe({
 }
 
 
- private clearControlError(control: any, key: string) {
-    if (!control) return;
-    const errs = control.errors ? { ...control.errors } : null;
-    if (!errs) return;
-    if (errs[key]) {
-      delete errs[key];
-      const hasOther = Object.keys(errs).length > 0;
-      control.setErrors(hasOther ? errs : null);
-    }
+private clearControlError(control: any, key: string) {
+  if (!control) return;
+  const errs = control.errors ? { ...control.errors } : null;
+  if (!errs) return;
+  if (errs[key]) {
+    delete errs[key];
+    const hasOther = Object.keys(errs).length > 0;
+    control.setErrors(hasOther ? errs : null);
   }
+}
 
   ngOnDestroy(): void {
     this.destroy$.next();
