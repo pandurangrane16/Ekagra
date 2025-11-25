@@ -14,6 +14,9 @@ import { withLoader } from '../../../services/common/common';
 import { LoaderService } from '../../../services/common/loader.service';
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 import { CmSelect2Component } from '../../../common/cm-select2/cm-select2.component';
+import { Subject } from 'rxjs';
+import { ChangeDetectorRef } from '@angular/core';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators'; 
 @Component({
   selector: 'app-role-configuration',
   imports: [MaterialModule, CommonModule,CmSelect2Component, CmInputComponent,CmToggleComponent],
@@ -21,6 +24,8 @@ import { CmSelect2Component } from '../../../common/cm-select2/cm-select2.compon
   styleUrl: './role-configuration.component.css'
 })
 export class RoleConfigurationComponent implements OnInit {
+  private destroy$ = new Subject<void>();
+isCheckingRole = false;
   loaderService=inject(LoaderService)
    RoleConfigurationService = inject(RoleConfigurationService);
   form: any;
@@ -130,6 +135,51 @@ noSpecialCharValidator(): ValidatorFn {
     })
 
     this.getRoleCategoryList();
+
+
+     // Subscribe to roleName changes and check uniqueness
+    const roleCtrl = this.form.get('roleName');
+  
+   if (roleCtrl) {
+    roleCtrl.valueChanges
+      .pipe(
+        debounceTime(400),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((value: string) => {
+        const trimmed = (value || '').trim();
+
+        // skip if empty or only whitespace
+        if (!trimmed) {
+          this.clearControlError(roleCtrl, 'exists');
+          return;
+        }
+
+        // call API
+        this.isCheckingRole = true;
+        this.service.CheckRoleNameExists(trimmed).pipe(takeUntil(this.destroy$)).subscribe({
+          next: (res: any) => {
+            const exists = !!(res?.result === true || res === true);
+            if (exists) {
+              roleCtrl.setErrors(Object.assign({}, roleCtrl.errors || {}, { exists: true }));
+            } else {
+              this.clearControlError(roleCtrl, 'exists');
+            }
+            this.isCheckingRole = false;
+            this.cd.markForCheck();
+          },
+          error: (err) => {
+            console.error('CheckRoleNameExists error', err);
+            this.clearControlError(roleCtrl, 'exists');
+            this.isCheckingRole = false;
+            this.cd.markForCheck();
+          }
+        });
+      });
+  }
+
+
   }
 
     onProjectSelected(event: any) {
