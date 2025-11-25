@@ -128,9 +128,10 @@ noSpecialCharValidator(): ValidatorFn {
     debugger;
     this.form = this.fb.group({
       // roleId: [],
-      roleName: ['', Validators.required],
+      roleName: ['', [Validators.required, this.noWhitespaceValidator(), this.noSpecialCharValidator()]],
+    roleDesc: ['', [Validators.required, this.noWhitespaceValidator(), this.noSpecialCharValidator()]],
       roleType: ['', Validators.required],
-      roleDesc: ['', Validators.required],
+      // roleDesc: ['', Validators.required],
       isActive: [true, Validators.required]
     })
 
