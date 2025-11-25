@@ -20,6 +20,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { AlertHistoryComponent } from '../alert-history/alert-history.component';
+import { Globals } from '../../../utils/global';
 
 @Component({
   selector: 'app-alert',
@@ -119,6 +120,7 @@ export class AlertComponent implements OnInit {
   constructor(private fb: FormBuilder,
     private dialog: MatDialog,
     private service: alertservice,
+    private globals:Globals
   ) { }
 
 
@@ -346,6 +348,7 @@ export class AlertComponent implements OnInit {
   }
 
   getFilteredList() {
+    const currentUserId = this.globals.user?.id || 0;
     const selectedProjectId = this.form.controls['selectedProject'].value.value;
     const selectedStatus = this.form.controls['selectedStatus'].value.value;
     const search = this.form.controls['searchText'].value
@@ -359,7 +362,7 @@ export class AlertComponent implements OnInit {
     const formattedEnd = this.endDate?.toISOString();
 
 
-    this.service.GetFilteredList(formattedStart, formattedEnd, selectedStatus, search, this.MaxResultCount, this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
+    this.service.GetFilteredList(currentUserId,formattedStart, formattedEnd, selectedStatus, search, this.MaxResultCount, this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
       console.log(this.startDate, this.endDate)
       const items = response.result?.items;
       this.items = items;
@@ -392,7 +395,8 @@ export class AlertComponent implements OnInit {
               element.category === 2 ? 'High' : '';
           element.alertdate = element.creationTime;
           element.handledby = element.handledUser;
-          element.devices = element.devices
+          element.devices = element.devices;
+          element.createruserid=element.userId;
 
           // element.button = [
           //   { label: 'Edit', icon: 'edit', type: 'edit' },

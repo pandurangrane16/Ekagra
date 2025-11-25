@@ -29,13 +29,37 @@ export class Globals {
       this.user = JSON.parse(storedUser);
     }
   }
+    private _userMappingSource = new BehaviorSubject<UserMapping | null>(null);
+  userMapping$ = this._userMappingSource.asObservable();
+
+  get userMapping(): UserMapping | null {
+    return this._userMappingSource.value;
+  }
+
+  set userMapping(value: UserMapping | null) {
+    this._userMappingSource.next(value);
+  }
 
   // ✅ Clear user info on logout
   clearUser() {
     sessionStorage.removeItem('userInfo');
     this.user = null;
   }
+    saveUserMapping(mapping: UserMapping) {
+    sessionStorage.setItem('userMapping', JSON.stringify(mapping));
+    this.userMapping = mapping;
+  }
+
+  restoreUserMappingFromSession() {
+    const stored = sessionStorage.getItem('userMapping');
+    if (stored) {
+      this.userMapping = JSON.parse(stored);
+    }
+  }
+  
 }
+
+
 
 // 🧠 Define your User model directly here
 export interface User {
@@ -46,4 +70,11 @@ export interface User {
   emailAddress: string;
   isActive: boolean;
   signInToken?: string; // optional field
+}
+
+export interface UserMapping {
+  userId: number;
+  roleId: string;
+  zoneId: string;
+  category: string;
 }

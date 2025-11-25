@@ -27,13 +27,19 @@ getKeysDataForConfig(key: string): Observable<any> {
   }
 
      GetZoneList() {
-    return this._httpService._getMethod('api/services/app/Zone/GetZoneListByUserId');
+    return this._httpService._getMethod('api/services/app/Zone/GetZoneListOnProjectId');
   }
 
       GetRoleList() {
          
     return this._httpService._getMethod('api/services/app/Role/GetAllRoles');
   }
+
+       GetRoleByCategory(type:any) {
+         
+    return this._httpService._getMethod('api/services/app/Role/GetRolesOnCategory?Category='+type);
+  }
+
 
 
 
@@ -59,6 +65,9 @@ GetAll() {
 
 GetProjectList() {
     return this._httpService._getMethod('api/services/app/Project/GetProjectList');
+  }
+     GetCategoryList() {
+    return this._httpService._getMethod('api/services/app/PrmGlobal/GetAllGlobalValues?Module=Global&unit=RoleCategory');
   }
 
 

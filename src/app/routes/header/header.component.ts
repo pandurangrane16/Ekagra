@@ -18,6 +18,8 @@ import { ThemeManagerService } from '../../services/theme-manager.service';
 import { ApplicationRef } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Globals } from '../../utils/global';
+import { headerservice2 } from '../../services/admin/header.service';
+
 
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, delay } from 'rxjs/operators';
@@ -75,7 +77,7 @@ export class HeaderComponent implements OnInit {
  
   constructor(private sanitizer: DomSanitizer, @Inject(DOCUMENT) private document: Document,
     private readonly themingService: ThemingService, private themeService: ThemeManagerService,
-    public headerService : HeaderService, private appRef: ApplicationRef, private cdRef: ChangeDetectorRef,  
+    public headerService : HeaderService,private service:headerservice2, private appRef: ApplicationRef, private cdRef: ChangeDetectorRef,  
     private loaderService: LoaderService,    private keycloakService: KeycloakService,
     private router: Router,private globals:Globals) {
   }
@@ -124,6 +126,10 @@ export class HeaderComponent implements OnInit {
     }
   }
 
+    if (this.globals.user?.id) {
+    this.fetchUserRoleDetails(this.globals.user.id);
+  }
+
   // 🟢 STEP 2: Subscribe reactively to user updates
   this.globals.user$.subscribe(user => {
     this.userInfo = user;
@@ -150,6 +156,31 @@ export class HeaderComponent implements OnInit {
     });
     this.headerService.modify.subscribe((value) => (this.editDashboard = value));
   }
+fetchUserRoleDetails(userId: number) {
+  debugger;
+  this.service.GetRoleCategeoryOnUserId(userId).subscribe({
+    next: (res: any) => {
+      debugger;
+      const items = res?.result?.items;
+
+      if (Array.isArray(items) && items.length > 0) {
+        const mapping = items[0];   // { userId, roleId, zoneId, category }
+
+        // Save in Globals + SessionStorage
+        this.globals.saveUserMapping(mapping);
+
+        console.log('🔐 User Mapping saved in globals:', mapping);
+      } else {
+        console.warn('⚠ No user role mapping found');
+      }
+    },
+    error: (err) => {
+      console.error('❌ Failed to load user role mapping', err);
+    }
+  });
+}
+
+
 
 private loadUserInfo(): void {
   // 🟢 First, check if user already exists in Globals

@@ -192,13 +192,14 @@ router = inject(Router);
 }
         buildHeader() {  
           this.headArr = [
-            { header: 'Name', fieldValue: 'name', position: 1 },
-            { header: 'Display Name', fieldValue: 'displayname', position: 2 },
-            { header: 'Role Id', fieldValue: 'roleid', position: 3 },
+             { header: 'Category', fieldValue: 'category', position: 1 },
+            { header: 'Name', fieldValue: 'name', position: 2 },
+            { header: 'Display Name', fieldValue: 'displayname', position: 3 },
+            { header: 'Role Id', fieldValue: 'roleid', position: 4 },
            
             // { header: 'Rule Engine', fieldValue: 'ruleEngine',"type": "boolean", position: 4 },
             // { header: 'Map', fieldValue: 'map',"type": "boolean", position: 5 },
-            { header: 'Action', fieldValue: 'button', position: 4 }
+            { header: 'Action', fieldValue: 'button', position: 5 }
           ];
           ;}
       
@@ -327,85 +328,7 @@ editRow(rowData: any) {
 
 
 
-
-
-
-  //       if (Array.isArray(items)) {
-         
-  //          items.forEach((element: any) => {
-           
-
-  //           //let _data = JSON.parse(element);
-  //           element.name = element.name;
-  //           element.displayname = element.displayName;
-  //           element.roleid=element.id,
-  //          element.button = [
-  //   // { label: 'Edit', icon: 'edit', type: 'edit' },
-  //   { label: 'Delete', icon: 'delete', type: 'delete' }
-  // ];
-
-          
-
-  // //                      element.button = [
-  // //   { label: 'Edit', icon: 'edit', type: 'edit' },
-  // //   { label: 'Delete', icon: 'delete', type: 'delete' }
-  // // ];
-            
-
-
-
-
-         
-  //         });
-  //         var _length = totalCount / Number(this.recordPerPage);
-  //         if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-  //           this.totalRecords = Number(this.recordPerPage) * (_length);
-  //         else if (Math.floor(_length) == 0)
-  //           this.totalRecords = 10;
-  //         else
-  //           this.totalRecords = totalCount;
-  //         this.totalPages = this.totalRecords / this.pager;
-  //       }
-  //     })
-  //   }    
-
-//   getRoleConfigList() {
-//   this.SkipCount = (this.pager - 1) * this.perPage;
-//   this.MaxResultCount = this.perPage;
-//  const search = this.form.controls['searchText'].value
-//       this.recordPerPage=this.perPage;
-
-//   this.service.GetFilteredList(search,this.MaxResultCount,this.SkipCount)
-//     .pipe(withLoader(this.loaderService))
-//     .subscribe((response: any) => {
-
-//       const items = response.result?.items || [];
-//       this.items = items;
-//       this.totalRecords = response.result?.totalCount || 0;
-
-//       // correct calculation
-//       this.totalPages = Math.ceil(this.totalRecords / this.perPage);
-
-//     });
-// }
-
-
-      getRoleConfigList() {
-        debugger;
-    // const selectedProjectId = this.form.controls['selectedProject'].value.value;
-    //  const selectedStatus = this.form.controls['selectedStatus'].value.value;
-     const search = this.form.controls['searchText'].value
-        this.MaxResultCount=this.perPage;
-      this.SkipCount=this.MaxResultCount*this.pager;
-      this.recordPerPage=this.perPage;
- 
-     this.service.GetFilteredList(search,this.MaxResultCount,this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
-    //  const items = response?.result || [];
-         
-    //      this.items=items;
-         const items = response.result?.items;
-         this.items=items;
-           const totalCount=response.result?.totalCount;
+debugger;
 
 
         if (Array.isArray(items)) {
@@ -417,6 +340,7 @@ editRow(rowData: any) {
             element.name = element.name;
             element.displayname = element.displayName;
             element.roleid=element.id,
+            element.category=element.category
            element.button = [
     // { label: 'Edit', icon: 'edit', type: 'edit' },
     { label: 'Delete', icon: 'delete', type: 'delete' }

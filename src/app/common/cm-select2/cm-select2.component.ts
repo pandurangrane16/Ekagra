@@ -97,7 +97,10 @@ ngOnChanges(): void {
   }
 
   ChangeSelection(event: any) {
-    this.returnObject.emit(event.option.value);
+     this.returnObject.emit(event.option.value);
+
+ 
+    
   }
 
 

@@ -20,6 +20,9 @@ import { EnvSensorPollutionComponent } from "../../user/alert/actions/env-sensor
 import { Router } from '@angular/router';
 import { alertservice } from '../../services/admin/alert.service';
 import { ToastrService } from 'ngx-toastr';
+import { Globals } from '../../utils/global';
+import { LoaderService } from '../../services/common/loader.service';
+import { withLoader } from '../../services/common/common';
 import { IccOperatorAckComponent } from "../../user/alert/actions/icc-operator-ack/icc-operator-ack.component";
 import { AssignSiteEngineerComponent } from '../../user/alert/actions/assign-site-engineer/assign-site-engineer.component';
 import { AddressIssueComponent } from "../../user/alert/actions/address-issue/address-issue.component";
@@ -54,6 +57,8 @@ interface Sop {
 })
 export class SopflowComponent implements OnInit {
   router = inject(Router);
+   loaderService = inject(LoaderService);
+   currentAlertStatus: string = '';
   sops: Sop[] = [
     {
       frsId: 'SOP_VMS_001',
@@ -184,13 +189,97 @@ export class SopflowComponent implements OnInit {
   ];
 
   policyData: any;
+  creatorUserId:any;
+  creatorUserName:any;
+  Acknowledgedname:any;
+  roleActions:any;
+  Acknowledgedname_Field:any;
 
-  constructor(private alertService: alertservice, private toastr: ToastrService) {
+   
+
+  constructor(private alertService: alertservice, private toastr: ToastrService,public globals: Globals) {
     const navigation = this.router.getCurrentNavigation();
     this.policyData = navigation?.extras?.state?.['data'];
 
   }
   ngOnInit(): void {
+
+debugger;
+    const storedUser = sessionStorage.getItem('userInfo');
+  const currentUserId = storedUser ? JSON.parse(storedUser).id : 0;
+
+this.loadAlertCurrentStatus(this.policyData.id);
+this.loadSopActions(this.policyData.id);
+   this.loadRoleActions(currentUserId);
+
+        if (!this.globals.user) {
+      const storedUser = sessionStorage.getItem('userInfo');
+      if (storedUser) {
+        this.globals.user = JSON.parse(storedUser);
+     
+        
+        console.log('✅ User restored from sessionStorage:', this.globals.user);
+      } else {
+        console.warn('⚠️ No user info found in sessionStorage.');
+      }
+    }
+
+
+this.globals.restoreUserMappingFromSession();
+debugger;
+const mapping = this.globals.userMapping;
+
+if (!mapping) {
+  this.toastr.error("User category not found. Please re-login.");
+  return;
+}
+  
+
+  if (!this.policyData) {
+    this.router.navigate(['/alerts']);
+    return;
+  }
+
+  // ⬇️ FETCH creator user ID FROM CLICKED ROW
+
+
+
+const userCategory = mapping.category?.toLowerCase() || '';
+ 
+  const creatorUserId = this.policyData.createruserid;
+const creatorUserName = this.policyData.userName || "N/A";
+
+this.creatorUserId = creatorUserId;
+this.creatorUserName = creatorUserName;
+
+  console.log("Creator User ID:", creatorUserId);
+   console.log("User Category:", userCategory);
+debugger;
+if (
+  userCategory === 'iccc' && 
+  (creatorUserId === null || creatorUserId === undefined || creatorUserId === 0)
+) {
+  console.warn("CASE 1 triggered → creatorUserId is null/undefined/0");
+  this.insertInitialAlertEntries();
+}
+
+if (
+  userCategory === 'iccc' &&
+  creatorUserId !== null &&
+  creatorUserId !== undefined &&
+  creatorUserId !== 0
+) {
+  console.warn("CASE 2 triggered → creatorUserId has some ID");
+  this.insertEntriesForExistingCreator();   // METHOD B
+}
+
+
+
+if (userCategory === 'field') {
+  console.warn("CASE 2 triggered → creatorUserId will alwaays have some value.");
+  this.Case_RoleCategory_Field();
+}
+
     if(this.policyData == undefined) 
      
       this.router.navigate(['alerts']);
@@ -224,8 +313,592 @@ export class SopflowComponent implements OnInit {
     })
   }
 
+loadAlertCurrentStatus(alertId: number): void {
+  this.alertService.GetAlertsByid(alertId)
+    .pipe(withLoader(this.loaderService))
+    .subscribe({
+      next: (res: any) => {
+
+        this.currentAlertStatus = res?.result?.currentStatus || '';
+
+        console.log("Current Alert Status Loaded:", this.currentAlertStatus);
+      },
+      error: (err: any) => {
+        console.error("Failed to fetch current alert status", err);
+        this.currentAlertStatus = '';
+      }
+    });
+}
+
+
+sopActions: any[] = [];  // store SOP action flow
+
+loadSopActions(policyId: number) {
+  this.alertService.getSopActionByAlert(policyId)
+    .pipe(withLoader(this.loaderService))
+    .subscribe({
+      next: (res: any) => {
+        this.sopActions = res?.result?.result?.actions || [];
+        console.log("SOP Actions Loaded:", this.sopActions);
+      },
+      error: (err: any) => {
+        console.error("Failed to load SOP actions", err);
+        this.sopActions = [];
+      }
+    });
+}
+
+
+
   close() {
     this.router.navigate(['/alerts']);
   }
+insertInitialAlertEntries() {
+
+    const storedUser = sessionStorage.getItem('userInfo');
+  const currentUserId = storedUser ? JSON.parse(storedUser).id : 0;
+   const currentUserName = storedUser ? JSON.parse(storedUser).name :0 ;
+   this.Acknowledgedname=currentUserName;
+  debugger;
+  const alertUpdateModel = {
+  
+
+
+                id: this.policyData.id,
+                lastModifierUserId: currentUserId,
+                currentStatus: "ICCAcknowledgement",
+                creatorUserId:currentUserId,
+                isStatus: 1,
+
+
+                remarks: this.policyData.remarks,
+                creationTime: "2025-11-20T05:08:45.499Z",
+                lastModificationTime: "2025-11-20T05:08:45.499Z",
+                isDeleted:false,
+                deleterUserId: 0,
+                deletionTime: "2025-11-20T05:08:45.499Z",
+                policyName: this.policyData.policyName,
+                siteId: 0,
+                policyId: this.policyData.policyId,
+                response: this.policyData.response,
+                
+                filePath: this.policyData.filePath,
+                devices:  this.policyData.devices,
+                alertSource: 0,
+                ticketNo: this.policyData.ticketNo,
+                zoneId: this.policyData.zoneID,
+  };
+
+  // 1️⃣ First API → UPDATE ALERT TABLE
+  this.alertService.AlertUpdate(alertUpdateModel)
+    .pipe(withLoader(this.loaderService))
+    .subscribe({
+      next: (res: any) => {
+        console.log("Alert table updated:", res);
+
+        // 2️⃣ Now call ALERT LOG API
+        const alertLogModel = {
+    AlertId: this.policyData.id,
+    ActionType: "ICCAcknowledgement",
+    Operation: "ICCAcknowledgement",
+    alertLogRemarks: `ICCAcknowledgement By ${currentUserName}`,
+    Status: 0,
+    UserId: currentUserId
+        };
+
+        this.alertService.AlertLogCreate(alertLogModel)
+          .pipe(withLoader(this.loaderService))
+          .subscribe({
+            next: (logRes: any) => {
+              console.log("Alert log inserted:", logRes);
+              this.toastr.success("Alert initialized successfully");
+            },
+            error: (logErr: any) => {
+              console.error("Failed to insert alert log entry", logErr);
+              this.toastr.error("Failed to insert alert log");
+            }
+          });
+
+      },
+      error: (err: any) => {
+        console.error("Failed to update alert table", err);
+        this.toastr.error("Failed to initialize alert");
+      }
+    });
+}
+async insertEntriesForExistingCreator() {
+  // No entry in DB
+
+  const name = await this.getIcccAcknowledgedUser(this.policyData.id);
+
+  this.Acknowledgedname = name || '';   // assign returned name
+
+  console.log("Assigned Name from ICCC Acknowledgement:", this.Acknowledgedname);
+}
+async getIcccAcknowledgedUser(alertId: number): Promise<string | null> {
+  return new Promise(resolve => {
+
+    this.alertService.GetAlerthistory(alertId).subscribe({
+      next: (res: any) => {
+
+        const history = res?.result || [];
+
+        if (!history.length) {
+          resolve(null);
+          return;
+        }
+
+        // Find the entry with actionName = ICCAcknowledgement
+        const icccEntry = history.find((x: any) =>
+          x.actionName?.toLowerCase() === 'iccacknowledgement'
+        );
+
+        if (!icccEntry) {
+          resolve(null);
+          return;
+        }
+
+        const remark = icccEntry.alertLogRemarks || '';
+
+        // Expected format: "ICCAcknowledgement By USERNAME"
+        // Extract the name after "By "
+        const parts = remark.split('By ');
+
+        if (parts.length > 1) {
+          const extractedName = parts[1].trim();
+          resolve(extractedName);
+        } else {
+          resolve(null);
+        }
+      },
+
+      error: () => resolve(null)
+    });
+
+  });
+}
+
+async getSiteAcknowledgedUser(alertId: number): Promise<string | null> {
+  return new Promise(resolve => {
+
+    this.alertService.GetAlerthistory(alertId).subscribe({
+      next: (res: any) => {
+
+        const history = res?.result || [];
+
+        if (!history.length) {
+          resolve(null);
+          return;
+        }
+
+        // Find the entry with actionName = fieldengineeracknowledgement
+        const icccEntry = history.find((x: any) =>
+          x.actionName?.toLowerCase() === 'fieldengineeracknowledgement'
+        );
+
+        if (!icccEntry) {
+          resolve(null);
+          return;
+        }
+
+        const remark = icccEntry.alertLogRemarks || '';
+
+        // Expected format: "ICCAcknowledgement By USERNAME"
+        // Extract the name after "By "
+        const parts = remark.split('By ');
+
+        if (parts.length > 1) {
+          const extractedName = parts[1].trim();
+          resolve(extractedName);
+        } else {
+          resolve(null);
+        }
+      },
+
+      error: () => resolve(null)
+    });
+
+  });
+}
+
+
+// Case_RoleCategory_Field() {
+
+//   const storedUser = sessionStorage.getItem('userInfo');
+//   const currentUserId = storedUser ? JSON.parse(storedUser).id : 0;
+//   const currentUserName = storedUser ? JSON.parse(storedUser).name : 0;
+
+//   this.Acknowledgedname = this.creatorUserName;
+
+//   const alertId = this.policyData.id;
+
+//   // 🟢 STEP 1: First call API to fetch the current status of the alert
+//   this.alertService.GetAlertsByid(alertId)
+//     .pipe(withLoader(this.loaderService))
+//     .subscribe({
+//       next: (res: any) => {
+
+//         const currentStatus =  res?.result?.currentStatus || '';
+        
+
+//         // ❌ If status is NOT "AssignToSiteEngineer", stop everything
+//         if (currentStatus == "AssignToFieldEngineer") {
+
+//           this.Acknowledgedname_Field=currentUserName;
+//              // 🟢 STEP 2: Safe to proceed → Build update model
+//         const alertUpdateModel = {
+//           id: alertId,
+//           lastModifierUserId: currentUserId,
+//           currentStatus: "FieldEngineerAcknowledgement",
+//           creatorUserId:  this.creatorUserId,
+//           remarks: this.policyData.remarks,
+//           creationTime: new Date().toISOString(),
+//           lastModificationTime: new Date().toISOString(),
+//           isDeleted: false,
+//           deleterUserId: 0,
+//           deletionTime: new Date().toISOString(),
+//           policyName: this.policyData.policyName,
+//           siteId: 0,
+//           policyId: this.policyData.policyId,
+//           response: this.policyData.response,
+//           isStatus: 0,
+//           filePath: this.policyData.filePath,
+//           devices: this.policyData.devices,
+//           alertSource: 0,
+//           ticketNo: this.policyData.ticketNo,
+//           zoneId: this.policyData.zoneId,
+//         };
+
+//         // 🟢 STEP 3: Insert Alert Log FIRST
+//         const alertLogModel = {
+//           AlertId: alertId,
+//           ActionType: "FieldEngineerAcknowledgement",
+//           Operation: "FieldEngineerAcknowledgement",
+//           Status: 0,
+//           UserId: currentUserId
+//         };
+
+//         this.alertService.AlertLogCreate(alertLogModel)
+//           .pipe(withLoader(this.loaderService))
+//           .subscribe({
+//             next: (logRes: any) => {
+
+//               console.log("Alert log inserted:", logRes);
+
+//               // 🟢 STEP 4: Now update Alert Table
+//               this.alertService.AlertUpdate(alertUpdateModel)
+//                 .pipe(withLoader(this.loaderService))
+//                 .subscribe({
+//                   next: (updateRes: any) => {
+//                     console.log("Alert table updated:", updateRes);
+//                     this.toastr.success("Alert acknowledged successfully");
+//                   },
+//                   error: (updateErr: any) => {
+//                     console.error("Failed to update alert table", updateErr);
+//                     this.toastr.error("Failed to update alert status");
+//                   }
+//                 });
+
+//             },
+//             error: (logErr: any) => {
+//               console.error("Failed to insert alert log entry", logErr);
+//               this.toastr.error("Failed to insert alert log");
+//             }
+//           });
+//         }
+
+//         else{
+
+
+//           return;
+//         }
+
+   
+
+//       },
+//       error: (err: any) => {
+//         console.error("Failed to fetch alert status", err);
+//         this.toastr.error("Unable to verify alert status");
+//       }
+//     });
+// }
+
+
+loadRoleActions(userId: number) {
+
+  this.alertService.GetRoleActionMappingById(userId)
+    .pipe(withLoader(this.loaderService))
+    .subscribe({
+      next: (res: any) => {
+
+        const items = res?.result || [];
+
+        if (Array.isArray(items) && items.length > 0) {
+
+          // ✔ Combine all actionNames (in case multiple roleIds appear)
+          let allActions: string[] = [];
+
+          items.forEach(item => {
+            if (item.actionNames) {
+              let actions = item.actionNames
+                .split(',')
+                .map((a:any) => a.trim().toLowerCase());   // normalize
+              
+              allActions.push(...actions);
+            }
+          });
+
+          // ✔ Remove duplicates
+          this.roleActions = [...new Set(allActions)];
+
+          console.log("🔵 Role Actions Loaded:", this.roleActions);
+        } 
+        else {
+          this.roleActions = [];
+          console.warn("⚠ No role actions found for user");
+        }
+      },
+
+      error: (err: any) => {
+        console.error("❌ Failed to load role action mapping:", err);
+        this.roleActions = [];
+      }
+    });
+}
+
+Case_RoleCategory_Field() {
+
+  const storedUser = sessionStorage.getItem('userInfo');
+  const currentUserId = storedUser ? JSON.parse(storedUser).id : 0;
+  const currentUserName = storedUser ? JSON.parse(storedUser).name : 0;
+
+  const alertId = this.policyData.id;
+  const status = this.currentAlertStatus?.toLowerCase() || '';
+
+  // ============================================================
+  // CASE 1 → currentStatus = TransferToICCC
+  // ============================================================
+  if (status === 'transfertositeengineer') {
+
+    // ICCC Name
+    this.getIcccAcknowledgedUser(alertId).then((icccName) => {
+      this.Acknowledgedname = icccName || '';
+    });
+
+    // Field Name
+    this.getSiteAcknowledgedUser(alertId).then((fieldName) => {
+      this.Acknowledgedname_Field = fieldName || '';
+    });
+
+    return; // STOP HERE → Do not insert anything
+  }
+
+
+  // ============================================================
+  // CASE 2 → NOT TransferToICCC
+  // ============================================================
+
+  this.getAlertHistory(alertId).then((history) => {
+
+    const hasFieldAck = history.some(
+      h => h.actionName?.toLowerCase() === 'fieldengineeracknowledgement'
+    );
+
+    // ---------------------------------------------------------
+    // CASE 2A → FieldEngineerAcknowledgement already exists
+    // ---------------------------------------------------------
+    if (hasFieldAck) {
+
+      this.getIcccAcknowledgedUser(alertId).then((icccName) => {
+        this.Acknowledgedname = icccName || '';
+      });
+
+      this.getSiteAcknowledgedUser(alertId).then((fieldName) => {
+        this.Acknowledgedname_Field = fieldName || '';
+      });
+
+      return; // STOP → no new DB insert needed
+    }
+
+
+    // ---------------------------------------------------------
+    // CASE 2B → NO FieldEngineerAcknowledgement → INSERT NOW
+    // ---------------------------------------------------------
+
+    this.Acknowledgedname = this.creatorUserName;   // ICCC
+    this.Acknowledgedname_Field = currentUserName;  // FIELD
+
+    // 🟢 STEP 1 — Insert into Log table
+    const alertLogModel = {
+      AlertId: alertId,
+      ActionType: "FieldEngineerAcknowledgement",
+      Operation: "FieldEngineerAcknowledgement",
+      alertLogRemarks: `FieldEngineerAcknowledgement By ${currentUserName}`,
+      Status: 0,
+      UserId: currentUserId
+    };
+
+    this.alertService.AlertLogCreate(alertLogModel)
+      .pipe(withLoader(this.loaderService))
+      .subscribe({
+        next: (logRes: any) => {
+          console.log("Log inserted (FieldEngineerAcknowledgement):", logRes);
+
+          // 🟢 STEP 2 — Update alert table
+          const alertUpdateModel = {
+            id: alertId,
+            lastModifierUserId: currentUserId,
+            currentStatus: "FieldEngineerAcknowledgement",
+            creatorUserId: this.creatorUserId,
+            remarks: this.policyData.remarks,
+            creationTime: new Date().toISOString(),
+            lastModificationTime: new Date().toISOString(),
+            isDeleted: false,
+            deleterUserId: 0,
+            deletionTime: new Date().toISOString(),
+            policyName: this.policyData.policyName,
+            siteId: 0,
+            policyId: this.policyData.policyId,
+            response: this.policyData.response,
+            isStatus: this.policyData.isStatus,
+            filePath: this.policyData.filePath,
+            devices: this.policyData.devices,
+            alertSource: 0,
+            ticketNo: this.policyData.ticketNo,
+            zoneId: this.policyData.zoneID,
+          };
+
+          this.alertService.AlertUpdate(alertUpdateModel)
+            .pipe(withLoader(this.loaderService))
+            .subscribe({
+              next: (updateRes: any) => {
+                console.log("Alert table updated:", updateRes);
+                this.toastr.success("Alert acknowledged successfully");
+              },
+              error: (updateErr: any) => {
+                console.error("Failed to update alert", updateErr);
+                this.toastr.error("Failed to update alert status");
+              }
+            });
+
+        },
+        error: (err) => {
+          console.error("Failed to insert log", err);
+          this.toastr.error("Failed to insert alert log");
+        }
+      });
+
+  }); // END of getAlertHistory()
+
+}
+
+
+
+
+
+getFallbackSequenceFromHistory(alertId: number): Promise<number | null> {
+  return new Promise((resolve) => {
+    this.alertService.getSopActionByAlert(alertId).subscribe({
+      next: (res: any) => {
+        const history = res?.result || [];
+
+        if (!history.length) {
+          resolve(null);
+          return;
+        }
+
+        // Sort DESC (latest first)
+        const sorted = history.sort((a: any, b: any) => b.id - a.id);
+
+        // Start from second entry because last entry is "current"
+        for (let i = 1; i < sorted.length; i++) {
+          const actionName = sorted[i].actionName?.toLowerCase();
+
+          // Try to match actionName with SOP prmValue
+          const sopMatch = this.sopActions.find(a =>
+            a.prmValue?.toLowerCase() === actionName
+          );
+
+          if (sopMatch) {
+            resolve(Number(sopMatch.sequence));  // FOUND MATCH
+            return;
+          }
+        }
+
+        resolve(null);  // No match found even after checking entire history
+      },
+
+      error: () => resolve(null)
+    });
+  });
+}
+
+async getAlertHistory(alertId: number): Promise<any[]> {
+  return new Promise(resolve => {
+    this.alertService.GetAlerthistory(alertId).subscribe({
+      next: (res) => resolve(res?.result || []),
+      error: () => resolve([])
+    });
+  });
+}
+
+
+canAccessAction(act: any, currentStatus: string): boolean {
+
+  debugger;
+  const action = act.action?.toLowerCase() || '';
+  const current = currentStatus?.toLowerCase() || '';
+
+  // 1️⃣ Check if role actions are loaded
+  if (!this.roleActions || this.roleActions.length === 0) {
+    return false;
+  }
+
+  // 2️⃣ Check if action exists in role-action mapping
+  if (!this.roleActions.includes(action)) {
+    return false;
+  }
+
+  // 3️⃣ If currentStatus is null/undefined/empty → allow the action 
+  //    as long as it exists in SOP and in roleActions
+  if (!current || current.trim() === '') {
+    const targetSop = this.sopActions.find(
+      x => x.prmValue?.toLowerCase() === action
+    );
+
+    return !!targetSop;   // true if SOP contains this action
+  }
+
+  // 4️⃣ Find current SOP
+  const currentSop = this.sopActions.find(
+    x => x.prmValue?.toLowerCase() === current
+  );
+  if (!currentSop) return false;
+
+  const currentSeq = Number(currentSop.sequence);
+
+  // 5️⃣ Find target action SOP
+  const targetSop = this.sopActions.find(
+    x => x.prmValue?.toLowerCase() === action
+  );
+  if (!targetSop) return false;
+
+  const targetSeq = Number(targetSop.sequence);
+
+  // 6️⃣ Normal sequence rule (target must be ahead)
+  return targetSeq > currentSeq;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 }
 

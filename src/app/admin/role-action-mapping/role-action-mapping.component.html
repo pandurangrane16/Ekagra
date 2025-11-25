@@ -35,7 +35,7 @@
                         </select> -->
                         <mat-form-field   *ngIf="isZoneOptionsLoaded" appearance="fill" class="w-100">
                             <mat-label>Select Action</mat-label>
-                            <mat-select multiple formControlName="selectedZone">
+                            <mat-select multiple formControlName="selectedAction">
                                 <mat-option *ngFor="let option of ZoneOptions" [value]="option">
                                     {{ option.text }}
                                 </mat-option>

@@ -28,14 +28,61 @@
 
       <mat-card-content>
         <mat-accordion>
-          <mat-expansion-panel *ngFor="let act of sop.activities" class="sop-panel"  [disabled]="!act.status">
+          <mat-expansion-panel *ngFor="let act of sop.activities" class="sop-panel"   [disabled]="!canAccessAction(act,currentAlertStatus)">
             <mat-expansion-panel-header>
               <mat-panel-title>
                 <span class="font-medium">{{ act.id }}</span> - {{ act.useCase }}  
                 <div class="ms-auto"> 
+
+
+                     <ng-container *ngIf="act.action?.toLowerCase() === 'iccacknowledgement'">
+          <span class="text-muted small fst-italic">
+            Acknowledged by:
+           <strong>{{ Acknowledgedname }}</strong>
+          </span>
+        </ng-container>
+
+        <ng-container *ngIf="act.action?.toLowerCase() === 'fieldengineeracknowledgement'">
+  <span class="text-muted small fst-italic">
+    Acknowledged by:
+    <strong>{{ Acknowledgedname_Field }}</strong>
+  </span>
+</ng-container>
+
+     
+
+
+
+
+<ng-container *ngIf="act.action?.toLowerCase() !== 'iccacknowledgement'">
+  <span
+    [ngClass]="
+      canAccessAction(act,currentAlertStatus)
+        ? 'bg-success-subtle text-success'
+        : 'bg-light text-muted border rounded'
+    "
+    class="d-flex align-items-center rounded px-2 py-1 gap-2"
+  >
+    <span
+      class="statusDot"
+      [ngClass]="canAccessAction(act,currentAlertStatus) ? 'bg-success' : 'bg-secondary'"
+    ></span>
+    {{ canAccessAction(act,currentAlertStatus) ? 'Enabled' : 'Disabled' }}
+  </span>
+</ng-container>
+
+
+
+
+
+        
                   <!-- <span class="bg-success-subtle text-success rounded px-2 py-1 badge d-flex align-items-center"> <span class="statusDot bg-success"></span> Enable </span>  -->
-                  <span  [ngClass]="act.status ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary rounded'" class="d-flex align-items-center  rounded px-2 py-1 gap-2">
-              <span class="statusDot"  [ngClass]="act.status ? 'bg-success' : 'bg-secondary'"></span> {{ act.status ? 'Pending' : 'Completed' }}</span>
+
+
+
+                  
+                  <!-- <span  [ngClass]="act.status ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-secondary rounded'" class="d-flex align-items-center  rounded px-2 py-1 gap-2">
+              <span class="statusDot"  [ngClass]="act.status ? 'bg-success' : 'bg-secondary'"></span> {{ act.status ? 'Pending' : 'Completed' }}</span> -->
                 </div>
               </mat-panel-title>
             </mat-expansion-panel-header>
@@ -207,11 +254,11 @@
             </div>
             }
             @else if (act.action.toLowerCase() === "assigntofieldengineer") {
-            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+            <div>
              
                 <div class="row">
                   <div class="col-md-12">
-                    <app-assign-site-engineer [task]="act"></app-assign-site-engineer>
+                    <app-assign-site-engineer [task]="this.policyData"></app-assign-site-engineer>
                   </div>
                 </div>
               
@@ -251,6 +298,10 @@
             </div>
             }
           </mat-expansion-panel>
+
+
+
+
         </mat-accordion>
       </mat-card-content>
     </mat-card>
