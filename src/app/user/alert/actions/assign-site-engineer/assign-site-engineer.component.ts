@@ -52,7 +52,7 @@ SubmitAction() {
   const updateAlertData = {
     id: alertId,
     lastModifierUserId: currentUserId,
-    currentStatus: "AssignToSiteEngineer",
+    currentStatus: "AssignToFieldEngineer",
 
     // keep all other fields same as original alert
     remarks: this.task?.remarks,
@@ -80,8 +80,8 @@ SubmitAction() {
   // --------------------------
   const logEntry = {
     AlertId: alertId,
-    ActionType: "AssignToSiteEngineer",
-    Operation: "AssignToSiteEngineer",
+    ActionType: "AssignToFieldEngineer",
+    Operation: "AssignToFieldEngineer",
     UserId: currentUserId,
   };
 
