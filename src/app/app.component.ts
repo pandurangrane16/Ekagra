@@ -1,4 +1,4 @@
-import { Component, importProvidersFrom, Inject, Input, input, OnInit, Renderer2 } from '@angular/core';
+import { Component, importProvidersFrom, inject, Inject, Input, input, OnInit, Renderer2 } from '@angular/core';
 import { FooterComponent } from './routes/footer/footer.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { SidenavComponent } from './routes/sidenav/sidenav.component';
@@ -16,6 +16,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ToastrService } from 'ngx-toastr';
 import { MaterialModule } from './Material.module';
 import { Subscription } from 'rxjs';
+import { SessionService } from './services/common/session.service';
 
 @Component({
   selector: 'app-root',
@@ -39,6 +40,7 @@ export class AppComponent implements OnInit {
   windowWidth: number = 0;
   loggedIn = false;
   userProfile: any = null;
+  _session = inject(SessionService);
 
   @Input() isSidebarCollapsed = false;
 
@@ -65,7 +67,9 @@ export class AppComponent implements OnInit {
     @Inject(DOCUMENT) private document: Document,
     private renderer: Renderer2,
     private toastr: ToastrService,
-    public headerService: HeaderService, public routes: Router, public route: ActivatedRoute,
+    public headerService: HeaderService, 
+    public routes: Router, 
+    public route: ActivatedRoute,
     public loaderService: LoaderService,
     private signalRService: SignalRService,
     private snackBar: MatSnackBar,
@@ -104,6 +108,11 @@ export class AppComponent implements OnInit {
     //   // });
     //   this.toastr.success(message);
     // });
+    let _tags = this._session._getSessionValue("APITags");
+    if(_tags == undefined) {
+      //this._session._setSessionValue("APITags",)
+    }
+
   }
 
 }

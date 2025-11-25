@@ -32,8 +32,12 @@ export class CmCronExpressionComponent implements OnInit {
   months = ['*', ...Array.from({ length: 12 }, (_, i) => (i + 1).toString())];
   daysOfWeek = ['*', '0', '1', '2', '3', '4', '5', '6']; // 0 = Sunday
 
-  minuteSteps: string[] = [...Array.from({ length: 60 }, (_, i) => '*/' + i.toString())];
-  hourSteps: string[] = [...Array.from({ length: 24 }, (_, i) => '*/' + i.toString())];
+  // minuteSteps: string[] = [...Array.from({ length: 60 }, (_, i) => '*/' + i.toString())];
+  minuteSteps: string[] = Array.from({ length: 59 }, (_, i) => '*/' + (i + 1));
+
+  // hourSteps: string[] = [...Array.from({ length: 24 }, (_, i) => '*/' + i.toString())];
+  hourSteps: string[] = Array.from({ length: 23 }, (_, i) => '*/' + (i + 1));
+
 
   constructor(private fb: FormBuilder) {
     this.cronForm = this.fb.group({

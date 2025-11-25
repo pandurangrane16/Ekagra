@@ -1,0 +1,48 @@
+<form [formGroup]="form" style="padding: 10px;">
+    <div class="row">
+        <div class="col-md-12">
+            <h2> Emergency Publish</h2>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-6">
+            <app-cm-select-check ngSkipHydration *ngIf="isTypeSelected || vmdTypeSettings.options != undefined" [formGroup]="form"
+                [controlName]="'selectedVmdAction'" [settings]="vmdTypeSettings"
+                (returnObject)="onVMSSelected($event)" color="primary">
+            </app-cm-select-check>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-6 d-flex align-items-center gap-2">
+            <label class="mb-0">Attachment(Image or Video)</label>
+            <input type="file" (change)="onFileSelected($event)">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6" *ngIf="isTypeSelected">
+            <app-cm-select2 ngSkipHydration *ngIf="isTypeSelected" [formGroup]="form" [controlName]="'selectedUnit'"
+                [settings]="unitSettings" (returnObject)="onUnitSelected($event)">
+            </app-cm-select2>
+        </div>
+    
+        <div class="col-md-6" *ngIf="isTypeSelected">
+            <app-cm-input ngSkipHydration [formGroup]="form" [controlName]="'unitValue'"
+                [_inputData]="inputFields.unitValue">
+            </app-cm-input>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-12 d-flex gap-2">
+            <button mat-flat-button class="btn-primary ms-auto" (click)="SubmitAction()">
+                Submit
+            </button>
+           
+            <button mat-stroked-button (click)="CancelAction()">
+                Cancel
+            </button>
+        </div>
+    </div>
+</form>

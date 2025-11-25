@@ -35,19 +35,26 @@
                         <app-cm-input [formGroup]="form" [controlName]="'roleName'" [_inputData]="inputFields.roleName">
                         </app-cm-input>
                         <div *ngIf="f['roleName'].touched && f['roleName'].errors" class="text-danger mt-1">
-                            {{ getErrorMessage('roleName', 'Role Name', false, '') }}
+                        <div *ngIf="f['roleName'].errors['specialChars']">Special characters are not allowed.</div>
+                        <div *ngIf="f['roleName'].errors['whitespace']">Whitespace not allowed at start/end.</div>
+                        <div *ngIf="f['roleName'].errors['required']">Role Name is required.</div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <label>Display Name</label>
                         <app-cm-input [formGroup]="form" [controlName]="'roleDesc'" [_inputData]="inputFields.roleDesc">
                         </app-cm-input>
-                        <div *ngIf="f['roleDesc'].touched && f['roleDesc'].errors" class="text-danger mt-1">
+                        <!-- <div *ngIf="f['roleDesc'].touched && f['roleDesc'].errors" class="text-danger mt-1">
                             {{ getErrorMessage('roleDesc', 'Description', false, '') }}
+                        </div> -->
+                        <div *ngIf="f['roleDesc'].touched && f['roleDesc'].errors" class="text-danger mt-1">
+                        <div *ngIf="f['roleDesc'].errors['specialChars']">Special characters are not allowed.</div>
+                        <div *ngIf="f['roleDesc'].errors['whitespace']">Whitespace not allowed at start/end.</div>
+                        <div *ngIf="f['roleDesc'].errors['required']">Description is required.</div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" style="display: none;">
                     <div class="col-md-4">
                         <label class="toggle-label margin-top:4px">IsStatic</label><br />
                         <app-cm-toggle [formGroup]="form" [settings]="isActiveSettings">
@@ -56,9 +63,10 @@
                 </div>
                 <hr>
                 <div class="row">
+                    <!-- disable Save when form invalid or while existence check in progress -->
                     <div class="dialog-actions">
-                        <button mat-button (click)="close()">Cancel</button>
-                        <button mat-flat-button color="primary" (click)="submit()">Save</button>
+                    <button mat-button (click)="close()">Cancel</button>
+                    <button mat-flat-button color="primary" (click)="submit()" [disabled]="form.invalid || isCheckingRole">Save</button>
                     </div>
                 </div>
             </form>

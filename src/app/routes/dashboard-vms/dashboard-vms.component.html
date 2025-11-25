@@ -1,23 +1,28 @@
-
- <div class="row mb-2 mt-2 d-flex">
-        <div class="col-md-3">
-<div class="card">
-    <div class="card-body text-center" >
+<div class="row">
+  <div class="col-md-9"></div>
+  <div class="col-md-3">
+    <button mat-flat-button color="primary" class="btn w-50 text-right" (click)="OpenEmergencyPublish()">Emergency Publish</button>
+  </div>
+</div>
+<div class="row mb-2 mt-2 d-flex">
+  <div class="col-md-3">
+    <div class="card">
+      <div class="card-body text-center">
         <h4>Device Status</h4>
-      <app-device-status></app-device-status>
- 
-</div>
-</div>
-</div>
+        <app-device-status></app-device-status>
 
-<div class="col-md-9 vms-table-scroll">
+      </div>
+    </div>
+  </div>
 
-  <app-cm-table [headArr]="headArr" [gridArr]="userList" [pagination]="true" [totalRecords]="totalRecords"
-                    [perPage]="perPage" [totalPages]="totalPages" [collectionSize]="collectionSize"
-                    (pager)="onPageChange($event)" (recordPerPage)="onPageRecordsChange($event)"
-                    (searchWithId)="onRowClicked($event)" (btnAction)="onButtonClicked($event)">
-                </app-cm-table>
+  <div class="col-md-9 vms-table-scroll">
 
-               
-</div>
+    <app-cm-table [headArr]="headArr" [gridArr]="userList" [pagination]="true" [totalRecords]="totalRecords"
+      [perPage]="perPage" [totalPages]="totalPages" [collectionSize]="collectionSize" (pager)="onPageChange($event)"
+      (recordPerPage)="onPageRecordsChange($event)" (searchWithId)="onRowClicked($event)"
+      (btnAction)="onButtonClicked($event)">
+    </app-cm-table>
+
+
+  </div>
 </div>

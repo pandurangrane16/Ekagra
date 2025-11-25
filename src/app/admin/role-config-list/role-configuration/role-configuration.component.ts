@@ -77,27 +77,31 @@ export class RoleConfigurationComponent implements OnInit {
   }
   
 constructor(
-    private fb: FormBuilder,
+   private cd: ChangeDetectorRef,
+     private fb: FormBuilder,
    // private dialogRef: MatDialogRef<MapConfigurationFormComponent>,
     private service :RoleConfigurationService,
      private toast: ToastrService,
    // @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    this.form = this.fb.group({
-      name: ['', [Validators.required,this.noWhitespaceValidator()]],
-      description: ['', [Validators.required,this.noWhitespaceValidator()]],
-      displayname: ['', [Validators.required,this.noWhitespaceValidator()]],
-      minzoom: ['', Validators.required],
-      maxzoom: ['', Validators.required],
-      sourceurl: ['', [Validators.required,Validators.pattern(/^(https?:\/\/)[^\s]+$/)]],
-      lat: ['', Validators.required],
-      long: ['', Validators.required],
-      wmslayer :['', [Validators.required,Validators.pattern(/^(https?:\/\/)[^\s]+$/)]],
-      isActive: [Validators.required],
+    // this.form = this.fb.group({
+    //   roleName: [ [Validators.required, this.noWhitespaceValidator(), this.noSpecialCharValidator()]],
+    //   roleDesc: [ [Validators.required, this.noWhitespaceValidator(), this.noSpecialCharValidator()]],
+    //   // name: ['', [Validators.required,this.noWhitespaceValidator()]],
+    //   // description: ['', [Validators.required,this.noWhitespaceValidator()]],
+    //   // displayname: ['', [Validators.required,this.noWhitespaceValidator()]],
+    //   // minzoom: ['', Validators.required],
+    //   // maxzoom: ['', Validators.required],
+    //   // sourceurl: ['', [Validators.required,Validators.pattern(/^(https?:\/\/)[^\s]+$/)]],
+    //   // lat: ['', Validators.required],
+    //   // long: ['', Validators.required],
+    //   // wmslayer :['', [Validators.required,Validators.pattern(/^(https?:\/\/)[^\s]+$/)]],
+    //   isActive: [Validators.required],
 
       
       
-    });
+    // });
+    this.form = this.fb.group({});
   }
   noWhitespaceValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
@@ -105,7 +109,18 @@ constructor(
       return isWhitespace ? { whitespace: true } : null;
     };
   }
+noSpecialCharValidator(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const value = control.value;
+    if (typeof value !== 'string') return null;
+
+    // Allow only alphabets, numbers, space, hyphen, underscore
+    const valid = /^[a-zA-Z0-9_\- ]*$/.test(value);
+    return valid ? null : { specialChars: true };
+  };
+}
   ngOnInit(): void {
+    debugger;
     this.form = this.fb.group({
       // roleId: [],
       roleName: ['', Validators.required],
@@ -259,6 +274,23 @@ this.service.CreateOrUpdateRole(payload).subscribe({
     this.toast.error('An unexpected error occurred');
   }
 }
+
+
+ private clearControlError(control: any, key: string) {
+    if (!control) return;
+    const errs = control.errors ? { ...control.errors } : null;
+    if (!errs) return;
+    if (errs[key]) {
+      delete errs[key];
+      const hasOther = Object.keys(errs).length > 0;
+      control.setErrors(hasOther ? errs : null);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
 }
 

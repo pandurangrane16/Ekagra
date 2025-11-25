@@ -268,31 +268,83 @@ state: any;
   //   ]
   // }
 
+// minuteSettings = { 
+//   labelHeader: 'Minute (Numeric)',
+//   lableClass: 'form-label',
+//   formFieldClass: '',
+//   appearance: 'outline',
+//   options: [
+//     { name: 'Every Minute (*)', value: '*' },
+
+//     // ✅ Generate minutes 0–59
+//     ...Array.from({ length: 60 }, (_, i) => ({
+//       name: i.toString().padStart(2, '0'),
+//       value: i.toString()
+//     })),
+
+//     // ✅ Step options: */1 to */59 (skip */0 safely)
+//     ...Array.from({ length: 60 }, (_, i) => i)
+//       .map(i => {
+//         if (i === 0) return null; // ⛔ skip i = 0
+//         return {
+//           name: `Every ${i} Minute${i > 1 ? 's' : ''} (*/${i})`,
+//           value: `*/${i}`
+//         };
+//       })
+//       .filter(Boolean) // ✅ remove nulls from array
+//   ]
+// };
+
+// hourSettings = {
+//   labelHeader: 'Hour (Numeric)',
+//   lableClass: 'form-label',
+//   formFieldClass: '',
+//   appearance: 'outline',
+//   options: [
+//     { name: 'Every Hour (*)', value: '*' },
+
+//     // ✅ Generate hours 0–23 (no */0)
+//     ...Array.from({ length: 24 }, (_, i) => ({
+//       name: i.toString().padStart(2, '0'),
+//       value: i.toString()
+//     })),
+
+//     // ✅ Step options: */1 to */23 only (filter out */0)
+//     ...Array.from({ length: 24 }, (_, i) => i)
+//       .filter(i => i > 1) // 👈 remove 0
+//       .map(i => ({
+//         name: `Every ${i} Hour${i > 1 ? 's' : ''} (*/${i})`,
+//         value: `*/${i}`
+//       }))
+//   ]
+// };
+
+
+// ...existing code...
 minuteSettings = { 
   labelHeader: 'Minute (Numeric)',
   lableClass: 'form-label',
   formFieldClass: '',
   appearance: 'outline',
-  options: [
-    { name: 'Every Minute (*)', value: '*' },
+  options: (() => {
+    const opts: any[] = [];
 
-    // ✅ Generate minutes 0–59
-    ...Array.from({ length: 60 }, (_, i) => ({
-      name: i.toString().padStart(2, '0'),
-      value: i.toString()
-    })),
+    // Every minute
+    opts.push({ name: 'Every Minute (*)', value: '*' });
 
-    // ✅ Step options: */1 to */59 (skip */0 safely)
-    ...Array.from({ length: 60 }, (_, i) => i)
-      .map(i => {
-        if (i === 0) return null; // ⛔ skip i = 0
-        return {
-          name: `Every ${i} Minute${i > 1 ? 's' : ''} (*/${i})`,
-          value: `*/${i}`
-        };
-      })
-      .filter(Boolean) // ✅ remove nulls from array
-  ]
+    // minutes 0-59
+    for (let i = 0; i < 60; i++) {
+      opts.push({ name: i.toString().padStart(2, '0'), value: i.toString() });
+    }
+
+    // step options */1 .. */59 (do not generate */0)
+    for (let i = 1; i < 60; i++) {
+      opts.push({ name: `Every ${i} Minute${i > 1 ? 's' : ''} (*/${i})`, value: `*/${i}` });
+    }
+
+    // defensive: make sure no '*/0' remains
+    return opts.filter(o => o.value !== '*/0');
+  })()
 };
 
 hourSettings = {
@@ -300,23 +352,25 @@ hourSettings = {
   lableClass: 'form-label',
   formFieldClass: '',
   appearance: 'outline',
-  options: [
-    { name: 'Every Hour (*)', value: '*' },
+  options: (() => {
+    const opts: any[] = [];
 
-    // ✅ Generate hours 0–23 (no */0)
-    ...Array.from({ length: 24 }, (_, i) => ({
-      name: i.toString().padStart(2, '0'),
-      value: i.toString()
-    })),
+    // Every hour
+    opts.push({ name: 'Every Hour (*)', value: '*' });
 
-    // ✅ Step options: */1 to */23 only (filter out */0)
-    ...Array.from({ length: 24 }, (_, i) => i)
-      .filter(i => i > 1) // 👈 remove 0
-      .map(i => ({
-        name: `Every ${i} Hour${i > 1 ? 's' : ''} (*/${i})`,
-        value: `*/${i}`
-      }))
-  ]
+    // hours 0-23
+    for (let i = 0; i < 24; i++) {
+      opts.push({ name: i.toString().padStart(2, '0'), value: i.toString() });
+    }
+
+    // step options */1 .. */23 (do not generate */0)
+    for (let i = 1; i < 24; i++) {
+      opts.push({ name: `Every ${i} Hour${i > 1 ? 's' : ''} (*/${i})`, value: `*/${i}` });
+    }
+
+    // defensive: remove any '*/0' just in case
+    return opts.filter(o => o.value !== '*/0');
+  })()
 };
 
 
