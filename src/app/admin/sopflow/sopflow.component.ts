@@ -426,6 +426,13 @@ insertInitialAlertEntries() {
       }
     });
 }
+
+alertHistory: any[] = [];
+loadAlertHistory(alertId: number) {
+  this.alertService.GetAlerthistory(alertId).subscribe(res => {
+    this.alertHistory = res?.result || [];
+  });
+}
 async insertEntriesForExistingCreator() {
   // No entry in DB
 
@@ -845,49 +852,70 @@ async getAlertHistory(alertId: number): Promise<any[]> {
 
 canAccessAction(act: any, currentStatus: string): boolean {
 
-  debugger;
-  const action = act.action?.toLowerCase() || '';
+  const action = act.prmValue?.toLowerCase() || '';
   const current = currentStatus?.toLowerCase() || '';
 
-  // 1️⃣ Check if role actions are loaded
-  if (!this.roleActions || this.roleActions.length === 0) {
-    return false;
-  }
+  // ---------------------------------------------
+  // 1️⃣ CHECK ROLE ACTION MAPPING
+  // ---------------------------------------------
+  if (!this.roleActions || this.roleActions.length === 0) return false;
 
-  // 2️⃣ Check if action exists in role-action mapping
-  if (!this.roleActions.includes(action)) {
-    return false;
-  }
+  if (!this.roleActions.includes(action)) return false;
 
-  // 3️⃣ If currentStatus is null/undefined/empty → allow the action 
-  //    as long as it exists in SOP and in roleActions
-  if (!current || current.trim() === '') {
-    const targetSop = this.sopActions.find(
-      x => x.prmValue?.toLowerCase() === action
-    );
-
-    return !!targetSop;   // true if SOP contains this action
-  }
-
-  // 4️⃣ Find current SOP
+  // ---------------------------------------------
+  // 2️⃣ TRY NORMAL SOP MATCH FIRST
+  // ---------------------------------------------
   const currentSop = this.sopActions.find(
     x => x.prmValue?.toLowerCase() === current
   );
-  if (!currentSop) return false;
 
-  const currentSeq = Number(currentSop.sequence);
+  // If found → normal sequence rule
+  if (currentSop) {
+    const currentSeq = Number(currentSop.sequence);
 
-  // 5️⃣ Find target action SOP
+    const targetSop = this.sopActions.find(
+      x => x.prmValue?.toLowerCase() === action
+    );
+    if (!targetSop) return false;
+
+    return Number(targetSop.sequence) > currentSeq;
+  }
+
+  // ---------------------------------------------
+  // 3️⃣ FALLBACK → currentStatus NOT IN SOP  
+  // Use loaded alert history
+  // ---------------------------------------------
+
+  if (!this.alertHistory || this.alertHistory.length === 0) return false;
+
+  let lastValidSop = null;
+
+  // find last action that exists in SOP
+  for (let i = this.alertHistory.length - 1; i >= 0; i--) {
+    const histAction = this.alertHistory[i].actionName?.toLowerCase();
+
+    const sopMatch = this.sopActions.find(
+      x => x.prmValue?.toLowerCase() === histAction
+    );
+
+    if (sopMatch) {
+      lastValidSop = sopMatch;
+      break;
+    }
+  }
+
+  if (!lastValidSop) return false;
+
+  const fallbackSeq = Number(lastValidSop.sequence);
+
   const targetSop = this.sopActions.find(
     x => x.prmValue?.toLowerCase() === action
   );
   if (!targetSop) return false;
 
-  const targetSeq = Number(targetSop.sequence);
-
-  // 6️⃣ Normal sequence rule (target must be ahead)
-  return targetSeq > currentSeq;
+  return Number(targetSop.sequence) > fallbackSeq;
 }
+
 
 
 
