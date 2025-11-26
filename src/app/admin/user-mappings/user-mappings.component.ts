@@ -212,11 +212,13 @@ router = inject(Router);
           this.buildHeader();
         //  this.getProjConfigList();
         this.getRoleList_All();
-          this.getFilteredList();
-          this.getUserList();
+         this.getUserList();
           this.getZoneList();
+           this.getRoleCategoryList();
+          this.getFilteredList();
+         
         
-          this.getRoleCategoryList();
+         
 
 
             this.form.get('searchText')?.valueChanges
@@ -265,6 +267,13 @@ router = inject(Router);
 
           if (!userId) return;
 
+
+           //  DO NOT CHECK IF USER IS IN EDIT MODE
+      if (this.isEdit) {
+        console.log("Edit mode → skipping GetRoleCategeoryOnUserId call");
+        return; 
+      }
+
           this.isCheckingUser = true;
           this.service.GetRoleCategeoryOnUserId(userId).pipe(takeUntil(this.destroy$)).subscribe({
             next: (res: any) => {
@@ -277,8 +286,8 @@ router = inject(Router);
               if (hasMapping) {
                 this.userAlreadyMappedMessage = `User "${user.text || userId}" is already mapped. You can edit and update the mapping.`;
                 // optionally disable the form or show warning
-                this.form.get('selectedZone')?.disable();
-                this.form.get('selectedRole')?.disable();
+                // this.form.get('selectedZone')?.disable();
+                // this.form.get('selectedRole')?.disable();
               } else {
                 this.userAlreadyMappedMessage = '';
                 this.form.get('selectedZone')?.enable();
@@ -311,10 +320,9 @@ router = inject(Router);
         }
 
       onProjectSelected(event: any) {
-        this.isRoleOptionsLoaded=false;
-          console.log('Selected Role:', event);
-          debugger;
-          this.getRoleList(event.name);
+      //  if (this.isEdit) return;   // <-- FIX
+      this.isRoleOptionsLoaded = false;
+      this.getRoleList(event.name);
         }
 
 
@@ -334,8 +342,12 @@ router = inject(Router);
       //   value: null
       // });
   
-      this.projectSelectSettings.options = projectOptions;
-          this.projectSelectSettings.options = projectOptions;
+      // this.projectSelectSettings.options = projectOptions;
+      //     this.projectSelectSettings.options = projectOptions;
+this.projectSelectSettings = JSON.parse(JSON.stringify({
+  ...this.projectSelectSettings,
+  options: projectOptions
+}));
   // this.form.controls['selectedProject'].setValue({
   //   name: 'All',
   //   value: null
@@ -824,7 +836,7 @@ editRow(rowData: any) {
       const items = response.result?.items || [];
      
 this.items = items;
-
+debugger;
 
 this.userMappings = items;
 console.log("userMappings",this.userMappings)
@@ -921,7 +933,7 @@ getUserList() {
 getZoneList() {
   this.service.GetZoneList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
    
-      
+      debugger;
         const items = response?.result || [];
 
      
@@ -938,10 +950,12 @@ getZoneList() {
 
     this.ZoneSelectSettings.options = projectOptions;
     this.ZoneOptions=projectOptions
-this.form.controls['selectedZone'].setValue({
-  text: 'All',
-  id: 0
-});
+if (!this.isEdit) {
+  this.form.controls['selectedRole'].setValue({
+    text: 'All',
+    id: 0
+  });
+}
 
 // this.form.controls['selectedStatus'].setValue({
 //   name: 'All',
@@ -961,43 +975,31 @@ close(){
   });
 }
 
-getRoleList(type:any) {
-  debugger;
+getRoleList(type: any) {
+  this.service.GetRoleByCategory(type)
+    .pipe(withLoader(this.loaderService))
+    .subscribe((response: any) => {
 
-let body = { permissions: null };
-  
-  this.service.GetRoleByCategory(type).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
-   
-      
-     const items = response?.result?.items || [];
+      const items = response?.result?.items || [];
 
-const projectOptions = items.map((item: any) => ({
-  text: item.name || 'Unknown',
-  id: item.id
-}));
+      const projectOptions = items.map((item: any) => ({
+        text: item.name || 'Unknown',
+        id: item.id
+      }));
 
-  
-    projectOptions.unshift({
-      text: 'All',
-      id:0
+      projectOptions.unshift({ text: 'All', id: 0 });
+
+      this.RoleOptions = projectOptions;
+      this.isRoleOptionsLoaded = true;
+
+      // 🛑 FIX: do not override selectedRole in edit mode
+      if (!this.isEdit) {
+        this.form.controls['selectedRole'].setValue([{ text: 'All', id: 0 }]);
+      }
+
+    }, error => {
+      console.error('Error fetching Role list', error);
     });
-
-    this.RoleSelectSettings.options = projectOptions;
-    this.RoleOptions=projectOptions
-this.form.controls['selectedRole'].setValue({
-  text: 'All',
-  id: 0
-});
-
-// this.form.controls['selectedStatus'].setValue({
-//   name: 'All',
-//   value: null
-// });
-    this.isRoleOptionsLoaded = true;
-    //this.getFilteredList();
-  }, error => {
-    console.error('Error fetching Role list', error);
-  });
 }
 
 getRoleList_All() {
