@@ -138,5 +138,21 @@ GetFilteredList(
 
 
   
+GetRoleCategeoryOnUserId(
+
+  UserId?: number
+) {
+  let params: string[] = [];
+
+ 
+  if (UserId !== null && UserId !== undefined) {
+    params.push(`UserId=${UserId}`);
+  }
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/UserZoneMapping/GetRoleCategeoryOnUserId${queryString}`;
+
+  return this._httpService._getMethod(url);
+}
 
 }

@@ -18,7 +18,7 @@
                         <select #selectElement class="form-control" style="width: 100%;">
                             <option *ngFor="let option of yourOptions" [value]="option.id">{{ option.text }}</option>
                         </select> -->
-                        <mat-form-field   *ngIf="isUserOptionsLoaded"  appearance="fill" class="w-100">
+                        <mat-form-field *ngIf="isUserOptionsLoaded" appearance="fill" class="w-100">
                             <mat-label>Select User</mat-label>
                             <mat-select multiple formControlName="selectedUser" [disabled]="isEdit">
                                 <mat-option *ngFor="let option of UserOptions" [value]="option">
@@ -26,8 +26,12 @@
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
-
+ <!-- Show warning if user already mapped -->
+                <div style="font-size: small;" *ngIf="userAlreadyMappedMessage" class="alert alert-warning mt-3" role="alert">
+                  {{ userAlreadyMappedMessage }}
+                </div>
                     </div>
+                   
                     <div class="col">
                         <!-- <label>Select Zone</label>
                         <select multiple #selectElement class="form-control" style="width: 100%;" [attr.size]="5">
@@ -78,7 +82,7 @@
                 <div class="row">
                     <div class="col-md-12 text-right">
                         <button mat-stroked-button (click)="close()">Cancel</button>&nbsp;&nbsp;&nbsp;
-                        <button mat-flat-button color="primary" (click)="submit()">Save</button>
+                        <button mat-flat-button color="primary" (click)="submit()" [disabled]="!!userAlreadyMappedMessage || isCheckingUser">Save</button>
                     </div>
                 </div>
             </form>

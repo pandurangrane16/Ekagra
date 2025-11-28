@@ -1,4 +1,5 @@
-
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { AfterViewInit, Component,ElementRef,Inject,inject, Input, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { CommonModule,isPlatformBrowser } from '@angular/common';
 
@@ -45,7 +46,9 @@ declare var $: any;
 })
 
      export class UserMappingsComponent implements OnInit, AfterViewInit, OnDestroy {
-    
+    private destroy$ = new Subject<void>();
+  userAlreadyMappedMessage = '';
+  isCheckingUser = false;
      @ViewChild('selectElement') selectElement!: ElementRef;
   @Input() options: { id: number; text: string }[] = [];
 UserOptions = [
@@ -209,11 +212,13 @@ router = inject(Router);
           this.buildHeader();
         //  this.getProjConfigList();
         this.getRoleList_All();
-          this.getFilteredList();
-          this.getUserList();
+         this.getUserList();
           this.getZoneList();
+           this.getRoleCategoryList();
+          this.getFilteredList();
+         
         
-          this.getRoleCategoryList();
+         
 
 
             this.form.get('searchText')?.valueChanges
@@ -234,6 +239,72 @@ router = inject(Router);
               }
               });
        
+
+                // Subscribe to selectedUser changes
+    const userCtrl = this.form.get('selectedUser');
+    if (userCtrl) {
+      userCtrl.valueChanges
+        .pipe(
+          debounceTime(300),
+          distinctUntilChanged((prev, curr) => {
+            // compare user IDs if they're objects
+            const prevId = Array.isArray(prev) ? prev.map((p: any) => p.id || p) : [prev?.id || prev];
+            const currId = Array.isArray(curr) ? curr.map((c: any) => c.id || c) : [curr?.id || curr];
+            return JSON.stringify(prevId) === JSON.stringify(currId);
+          }),
+          takeUntil(this.destroy$)
+        )
+        .subscribe((selectedUsers: any) => {
+          this.userAlreadyMappedMessage = '';
+
+          if (!selectedUsers || selectedUsers.length === 0) {
+            return;
+          }
+
+          // get the first selected user (or handle multiple as needed)
+          const user = Array.isArray(selectedUsers) ? selectedUsers[0] : selectedUsers;
+          const userId = user?.id || user;
+
+          if (!userId) return;
+
+
+           //  DO NOT CHECK IF USER IS IN EDIT MODE
+      if (this.isEdit) {
+        console.log("Edit mode → skipping GetRoleCategeoryOnUserId call");
+        return; 
+      }
+
+          this.isCheckingUser = true;
+          this.service.GetRoleCategeoryOnUserId(userId).pipe(takeUntil(this.destroy$)).subscribe({
+            next: (res: any) => {
+              debugger;
+              // const hasMapping = !!(res?.result && (Array.isArray(res.result) ? res.result.length > 0 : res.result));
+            const hasMapping =
+              res?.result &&
+              Array.isArray(res.result.items) &&
+              res.result.items.length > 0;
+              if (hasMapping) {
+                this.userAlreadyMappedMessage = `User "${user.text || userId}" is already mapped. You can edit and update the mapping.`;
+                // optionally disable the form or show warning
+                // this.form.get('selectedZone')?.disable();
+                // this.form.get('selectedRole')?.disable();
+              } else {
+                this.userAlreadyMappedMessage = '';
+                this.form.get('selectedZone')?.enable();
+                this.form.get('selectedRole')?.enable();
+              }
+              this.isCheckingUser = false;
+            },
+            error: (err) => {
+              console.error('GetRoleCategeoryOnUserId error', err);
+              this.userAlreadyMappedMessage = '';
+              this.isCheckingUser = false;
+            }
+          });
+        });
+    }
+
+
         }
 
       onProjectChange(value: any) {
@@ -249,10 +320,9 @@ router = inject(Router);
         }
 
       onProjectSelected(event: any) {
-        this.isRoleOptionsLoaded=false;
-          console.log('Selected Role:', event);
-          debugger;
-          this.getRoleList(event.name);
+      //  if (this.isEdit) return;   // <-- FIX
+      this.isRoleOptionsLoaded = false;
+      this.getRoleList(event.name);
         }
 
 
@@ -272,8 +342,12 @@ router = inject(Router);
       //   value: null
       // });
   
-      this.projectSelectSettings.options = projectOptions;
-          this.projectSelectSettings.options = projectOptions;
+      // this.projectSelectSettings.options = projectOptions;
+      //     this.projectSelectSettings.options = projectOptions;
+this.projectSelectSettings = JSON.parse(JSON.stringify({
+  ...this.projectSelectSettings,
+  options: projectOptions
+}));
   // this.form.controls['selectedProject'].setValue({
   //   name: 'All',
   //   value: null
@@ -762,7 +836,7 @@ editRow(rowData: any) {
       const items = response.result?.items || [];
      
 this.items = items;
-
+debugger;
 
 this.userMappings = items;
 console.log("userMappings",this.userMappings)
@@ -859,7 +933,7 @@ getUserList() {
 getZoneList() {
   this.service.GetZoneList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
    
-      
+      debugger;
         const items = response?.result || [];
 
      
@@ -876,10 +950,12 @@ getZoneList() {
 
     this.ZoneSelectSettings.options = projectOptions;
     this.ZoneOptions=projectOptions
-this.form.controls['selectedZone'].setValue({
-  text: 'All',
-  id: 0
-});
+if (!this.isEdit) {
+  this.form.controls['selectedRole'].setValue({
+    text: 'All',
+    id: 0
+  });
+}
 
 // this.form.controls['selectedStatus'].setValue({
 //   name: 'All',
@@ -899,43 +975,31 @@ close(){
   });
 }
 
-getRoleList(type:any) {
-  debugger;
+getRoleList(type: any) {
+  this.service.GetRoleByCategory(type)
+    .pipe(withLoader(this.loaderService))
+    .subscribe((response: any) => {
 
-let body = { permissions: null };
-  
-  this.service.GetRoleByCategory(type).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
-   
-      
-     const items = response?.result?.items || [];
+      const items = response?.result?.items || [];
 
-const projectOptions = items.map((item: any) => ({
-  text: item.displayName || 'Unknown',
-  id: item.id
-}));
+      const projectOptions = items.map((item: any) => ({
+        text: item.name || 'Unknown',
+        id: item.id
+      }));
 
-  
-    projectOptions.unshift({
-      text: 'All',
-      id:0
+      projectOptions.unshift({ text: 'All', id: 0 });
+
+      this.RoleOptions = projectOptions;
+      this.isRoleOptionsLoaded = true;
+
+      // 🛑 FIX: do not override selectedRole in edit mode
+      if (!this.isEdit) {
+        this.form.controls['selectedRole'].setValue([{ text: 'All', id: 0 }]);
+      }
+
+    }, error => {
+      console.error('Error fetching Role list', error);
     });
-
-    this.RoleSelectSettings.options = projectOptions;
-    this.RoleOptions=projectOptions
-this.form.controls['selectedRole'].setValue({
-  text: 'All',
-  id: 0
-});
-
-// this.form.controls['selectedStatus'].setValue({
-//   name: 'All',
-//   value: null
-// });
-    this.isRoleOptionsLoaded = true;
-    //this.getFilteredList();
-  }, error => {
-    console.error('Error fetching Role list', error);
-  });
 }
 
 getRoleList_All() {
@@ -989,6 +1053,8 @@ const projectOptions = items.map((item: any) => ({
     }
   }   
   ngOnDestroy(): void {
+     this.destroy$.next();
+    this.destroy$.complete();
     if (isPlatformBrowser(this.platformId)) {
       // Destroy select2 instance
       $(this.selectElement.nativeElement).select2('destroy');
