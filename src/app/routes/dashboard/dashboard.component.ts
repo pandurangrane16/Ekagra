@@ -115,6 +115,7 @@ OnRegister() {
     // 1️⃣ Check if user already exists
     debugger;
     this.service.CheckUserOrEmailExists(emailOrUsername)
+    
       .pipe(withLoader(this.loaderService))
       .subscribe({
         next: (checkResponse: any) => {

@@ -1,6 +1,6 @@
 <mat-card-content class="p-0">
     <form [formGroup]="form">
-        <div [ngClass]="{ 'readonly-div': !this.task.hasAccess}">
+        <div>
             <div class="row">
                 <div class="col-md-12">
                     <app-cm-textarea [formGroup]="form" [controlName]="'remarks'" [_inputData]="inputFields.remarks">
@@ -11,7 +11,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <label class="me-2">Attachment </label>
-                    <input type="file">
+                       <input type="file" (change)="onFileChange($event)">
                 </div>
 
                 <div class="col-md-6 text-right d-flex align-items-center">

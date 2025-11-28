@@ -32,6 +32,17 @@ export class Globals {
     private _userMappingSource = new BehaviorSubject<UserMapping | null>(null);
   userMapping$ = this._userMappingSource.asObservable();
 
+  private _alertSource = new BehaviorSubject<any | null>(null);
+alert$ = this._alertSource.asObservable();
+
+get alert(): any | null {
+  return this._alertSource.value;
+}
+
+set alert(value: any | null) {
+  this._alertSource.next(value);
+}
+
   get userMapping(): UserMapping | null {
     return this._userMappingSource.value;
   }
@@ -49,6 +60,18 @@ export class Globals {
     sessionStorage.setItem('userMapping', JSON.stringify(mapping));
     this.userMapping = mapping;
   }
+  saveAlert(alert: any) {
+  sessionStorage.setItem("latestAlert", JSON.stringify(alert));
+  this.alert = alert;
+}
+
+restoreAlertFromSession() {
+  const stored = sessionStorage.getItem("latestAlert");
+  if (stored) {
+    this.alert = JSON.parse(stored);
+  }
+}
+
 
   restoreUserMappingFromSession() {
     const stored = sessionStorage.getItem('userMapping');

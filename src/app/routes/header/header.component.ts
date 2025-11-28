@@ -125,17 +125,21 @@ export class HeaderComponent implements OnInit {
       console.log('✅ User restored from sessionStorage:', this.globals.user);
     }
   }
-
-    if (this.globals.user?.id) {
-    this.fetchUserRoleDetails(this.globals.user.id);
-  }
+debugger;
+ 
 
   // 🟢 STEP 2: Subscribe reactively to user updates
-  this.globals.user$.subscribe(user => {
-    this.userInfo = user;
-    this.userName = user?.name || user?.userName || '';
-    console.log('👤 User info updated in header:', this.userInfo);
-  });
+this.globals.user$.subscribe(user => {
+  this.userInfo = user;
+  this.userName = user?.name || user?.userName || '';
+
+  console.log('👤 User info updated in header:', this.userInfo);
+
+  // 🔄 REFRESH ROLE DETAILS WHEN USER CHANGES
+  if (user?.id) {
+    this.fetchUserRoleDetails(user.id);
+  }
+});
 
 
     this.document.documentElement.className = 'dark_theme';

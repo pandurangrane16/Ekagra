@@ -368,6 +368,7 @@ submitAction() {
     return;
   }
 
+  else{
   this.globals.restoreUserMappingFromSession();
   const mapping = this.globals.userMapping;
 
@@ -375,7 +376,7 @@ submitAction() {
     this.toast.error('User category not found. Please re-login.');
     return;
   }
-
+  else{
   const userCategory = mapping.category?.toLowerCase() || '';
   const remark = this.form.controls['remarks'].value;
   const selectedUser = this.form.controls['selectedUser'].value;
@@ -421,7 +422,7 @@ submitAction() {
   if (userCategory === 'field') {
     updateData.lastModifierUserId = selectedUser.value; // ✔ selected user
     updateData.currentStatus = "TransferToSiteEngineer"; // ✔ fixed
-    updateData.remarks= `${AlertLogRemark} (Transfer to: ${selectedUser.text})`;
+    updateData.remarks= `${AlertLogRemark} (Transfer to: ${selectedUser.name})`;
     updateData.isStatus=1
   }
 
@@ -432,7 +433,7 @@ submitAction() {
     updateData.lastModifierUserId = currentUserId;   // ✔ current user
     updateData.creatorUserId = selectedUser.value;   // ✔ receiver
     updateData.currentStatus = "TransferToICCC";     // ✔ fixed
-    updateData.remarks= `${AlertLogRemark} (Transfer to: ${selectedUser.text})`;
+    updateData.remarks= `${AlertLogRemark} (Transfer to: ${selectedUser.name})`;
     updateData.isStatus=1
   }
 
@@ -451,13 +452,13 @@ submitAction() {
       logEntries.push(
         { AlertId: alertId,alertLogRemarks: `FieldEngineerAcknowledgement By ${currentUserName}`,Operation:"FieldEngineerAcknowledgement",ActionType: "FieldEngineerAcknowledgement", UserId: currentUserId },
         { AlertId: alertId, alertLogRemarks:remark,Operation:"TransferBySiteEngineer", ActionType: "TransferBySiteEngineer", UserId: currentUserId},
-        { AlertId: alertId, alertLogRemarks: `Transfer To ${selectedUser.text}`,Operation:"TransferToSiteEngineer", ActionType: "TransferToSiteEngineer", UserId: selectedUser.value}
+        { AlertId: alertId, alertLogRemarks: `Transfer To ${selectedUser.name}`,Operation:"TransferToSiteEngineer", ActionType: "TransferToSiteEngineer", UserId: selectedUser.value}
       );
     } else {
       // CASE B — 2 entries
       logEntries.push(
         { AlertId: alertId, alertLogRemarks:remark, Operation:"TransferBySiteEngineer", ActionType: "TransferBySiteEngineer", UserId: currentUserId },
-        { AlertId: alertId,alertLogRemarks: `Transfer To ${selectedUser.text}`, Operation:"TransferToSiteEngineer", ActionType: "TransferToSiteEngineer", UserId: selectedUser.value }
+        { AlertId: alertId,alertLogRemarks: `Transfer To ${selectedUser.name}`, Operation:"TransferToSiteEngineer", ActionType: "TransferToSiteEngineer", UserId: selectedUser.value }
       );
     }
   }
@@ -472,13 +473,13 @@ submitAction() {
       logEntries.push(
         { AlertId: alertId,alertLogRemarks: `ICCAcknowledgement By ${currentUserName}`,Operation:"ICCAcknowledgement",  ActionType: "ICCAcknowledgement", UserId: currentUserId },
         { AlertId: alertId, alertLogRemarks:remark, Operation:"TransferByICCC", ActionType: "TransferByICCC", UserId: currentUserId},
-        { AlertId: alertId,alertLogRemarks: `Transfer To ${selectedUser.text}`, Operation:"TransferToICCC", ActionType: "TransferToICCC", UserId: selectedUser.value}
+        { AlertId: alertId,alertLogRemarks: `Transfer To ${selectedUser.name}`, Operation:"TransferToICCC", ActionType: "TransferToICCC", UserId: selectedUser.value}
       );
     } else {
       // CREATORID NOT NULL → 2 entries
       logEntries.push(
         { AlertId: alertId, alertLogRemarks:remark, Operation:"TransferByICCC", ActionType: "TransferByICCC", UserId: currentUserId},
-        { AlertId: alertId,alertLogRemarks: `Transfer To ${selectedUser.text}`, Operation:"TransferToICCC", ActionType: "TransferToICCC", UserId: selectedUser.value}
+        { AlertId: alertId,alertLogRemarks: `Transfer To ${selectedUser.name}`, Operation:"TransferToICCC", ActionType: "TransferToICCC", UserId: selectedUser.value}
       );
     }
   }
@@ -492,8 +493,10 @@ submitAction() {
       this.alertLogService.AlertUpdate(updateData)
         .pipe(withLoader(this.loaderService))
         .subscribe({
-          next: () => {
+          next: (res:any) => {
             this.toast.success("Alert updated successfully");
+        const updatedAlert = res?.result;
+        this.globals.saveAlert(updatedAlert);
             this.dialog.closeAll();
             this.router.navigate(['/alerts']);
           },
@@ -511,6 +514,12 @@ submitAction() {
   };
 
   createLogsSequentially(0);
+  }
+
+  
+  }
+
+ 
 }
 
 
