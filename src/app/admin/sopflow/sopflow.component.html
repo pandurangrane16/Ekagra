@@ -28,25 +28,31 @@
 
       <mat-card-content>
         <mat-accordion>
-          <mat-expansion-panel *ngFor="let act of sop.activities" class="sop-panel"   [disabled]="!canAccessAction(act,currentAlertStatus)">
+          <mat-expansion-panel   #panel  *ngFor="let act of sop.activities" class="sop-panel"   [disabled]="!canAccessAction(act,currentAlertStatus)">
             <mat-expansion-panel-header>
               <mat-panel-title>
                 <span class="font-medium">{{ act.id }}</span> - {{ act.useCase }}  
                 <div class="ms-auto"> 
 
 
-                     <ng-container *ngIf="act.action?.toLowerCase() === 'iccacknowledgement'">
-          <span class="text-muted small fst-italic">
-            Acknowledged by:
-           <strong>{{ Acknowledgedname }}</strong>
-          </span>
-        </ng-container>
+            <ng-container *ngIf="act.action?.toLowerCase() === 'iccacknowledgement'">
+  <div class="w-100">
+    <span class="text-muted small fst-italic">
+      Acknowledged by:
+      <strong>{{ Acknowledgedname }}</strong>
+    </span>
+  </div>
+</ng-container>
+
 
         <ng-container *ngIf="act.action?.toLowerCase() === 'fieldengineeracknowledgement'">
-  <span class="text-muted small fst-italic">
-    Acknowledged by:
-    <strong>{{ Acknowledgedname_Field }}</strong>
-  </span>
+  <div class="w-100">
+    <span class="text-muted small fst-italic">
+      Acknowledged by:
+      <strong>{{ Acknowledgedname_Field }}</strong>
+    </span>
+  </div>
+     
 </ng-container>
 
      
@@ -54,7 +60,9 @@
 
 
 
-<ng-container *ngIf="act.action?.toLowerCase() !== 'iccacknowledgement'">
+<ng-container 
+  *ngIf="act.action?.toLowerCase() !== 'iccacknowledgement' 
+         && act.action?.toLowerCase() !== 'fieldengineeracknowledgement'">
   <span
     [ngClass]="
       canAccessAction(act,currentAlertStatus)
@@ -258,14 +266,17 @@
              
                 <div class="row">
                   <div class="col-md-12">
-                    <app-assign-site-engineer [task]="this.policyData"></app-assign-site-engineer>
+                   <app-assign-site-engineer 
+                            [task]="this.policyData"
+                            (actionCompleted)="refreshAfterAction(); panel.close()">
+                   </app-assign-site-engineer>
                   </div>
                 </div>
               
             </div>
             }
             @else if (act.action.toLowerCase() === "fieldengineeracknowledgement") {
-            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+            <div>
              
                 <div class="row">
                   <div class="col-md-12">
@@ -276,11 +287,15 @@
             </div>
             }
             @else if (act.action.toLowerCase() === "addressincident") {
-            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+            <div>
              
                 <div class="row">
                   <div class="col-md-12">
-                    <app-address-issue [task]="act"></app-address-issue>
+                    <app-address-issue 
+                      [task]="this.policyData"
+                      (actionCompleted)="refreshAfterAction(); panel.close()">
+
+                    </app-address-issue>
                   </div>
                 </div>
               

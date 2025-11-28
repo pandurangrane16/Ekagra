@@ -202,15 +202,16 @@ export class SopflowComponent implements OnInit {
     this.policyData = navigation?.extras?.state?.['data'];
 
   }
-  ngOnInit(): void {
+  async ngOnInit() {
 
 debugger;
     const storedUser = sessionStorage.getItem('userInfo');
   const currentUserId = storedUser ? JSON.parse(storedUser).id : 0;
 
-this.loadAlertCurrentStatus(this.policyData.id);
-this.loadSopActions(this.policyData.id);
-   this.loadRoleActions(currentUserId);
+   await this.loadAlertCurrentStatus(this.policyData.id);
+await this.loadSopActions(this.policyData.id);
+  await this.loadRoleActions(currentUserId);
+   await  this.loadAlertHistory(this.policyData.id);
 
         if (!this.globals.user) {
       const storedUser = sessionStorage.getItem('userInfo');
@@ -276,6 +277,7 @@ if (
 
 
 if (userCategory === 'field') {
+  debugger;
   console.warn("CASE 2 triggered → creatorUserId will alwaays have some value.");
   this.Case_RoleCategory_Field();
 }
@@ -313,40 +315,48 @@ if (userCategory === 'field') {
     })
   }
 
-loadAlertCurrentStatus(alertId: number): void {
-  this.alertService.GetAlertsByid(alertId)
-    .pipe(withLoader(this.loaderService))
-    .subscribe({
-      next: (res: any) => {
-
-        this.currentAlertStatus = res?.result?.currentStatus || '';
-
-        console.log("Current Alert Status Loaded:", this.currentAlertStatus);
-      },
-      error: (err: any) => {
-        console.error("Failed to fetch current alert status", err);
-        this.currentAlertStatus = '';
-      }
-    });
+loadAlertCurrentStatus(alertId: number): Promise<void> {
+  return new Promise((resolve) => {
+    this.alertService.GetAlertsByid(alertId)
+      .pipe(withLoader(this.loaderService))
+      .subscribe({
+        next: (res: any) => {
+          this.currentAlertStatus = res?.result?.currentStatus || '';
+          console.log("Current Alert Status Loaded:", this.currentAlertStatus);
+          resolve(); // 👈 IMPORTANT
+        },
+        error: (err: any) => {
+          console.error("Failed to fetch current alert status", err);
+          this.currentAlertStatus = '';
+          resolve(); // 👈 still resolve, so await doesn't hang
+        }
+      });
+  });
 }
+
 
 
 sopActions: any[] = [];  // store SOP action flow
 
-loadSopActions(policyId: number) {
-  this.alertService.getSopActionByAlert(policyId)
-    .pipe(withLoader(this.loaderService))
-    .subscribe({
-      next: (res: any) => {
-        this.sopActions = res?.result?.result?.actions || [];
-        console.log("SOP Actions Loaded:", this.sopActions);
-      },
-      error: (err: any) => {
-        console.error("Failed to load SOP actions", err);
-        this.sopActions = [];
-      }
-    });
+loadSopActions(policyId: number): Promise<void> {
+  return new Promise((resolve) => {
+    this.alertService.getSopActionByAlert(policyId)
+      .pipe(withLoader(this.loaderService))
+      .subscribe({
+        next: (res: any) => {
+          this.sopActions = res?.result?.result?.actions || [];
+          console.log("SOP Actions Loaded:", this.sopActions);
+          resolve(); // ✅ VERY important
+        },
+        error: (err: any) => {
+          console.error("Failed to load SOP actions", err);
+          this.sopActions = [];
+          resolve(); // resolve even on error
+        }
+      });
+  });
 }
+
 
 
 
@@ -395,6 +405,8 @@ insertInitialAlertEntries() {
     .subscribe({
       next: (res: any) => {
         console.log("Alert table updated:", res);
+        const updatedAlert = res?.result;
+        this.globals.saveAlert(updatedAlert);
 
         // 2️⃣ Now call ALERT LOG API
         const alertLogModel = {
@@ -428,11 +440,25 @@ insertInitialAlertEntries() {
 }
 
 alertHistory: any[] = [];
-loadAlertHistory(alertId: number) {
-  this.alertService.GetAlerthistory(alertId).subscribe(res => {
-    this.alertHistory = res?.result || [];
+loadAlertHistory(alertId: number): Promise<void> {
+  return new Promise((resolve) => {
+    this.alertService.GetAlerthistory(alertId)
+      .pipe(withLoader(this.loaderService))
+      .subscribe({
+        next: (res: any) => {
+          this.alertHistory = res?.result || [];
+          console.log("Alert History Loaded:", this.alertHistory);
+          resolve();
+        },
+        error: (err) => {
+          console.error("Failed to load alert history:", err);
+          this.alertHistory = [];
+          resolve(); // still resolve so await doesn't hang
+        }
+      });
   });
 }
+
 async insertEntriesForExistingCreator() {
   // No entry in DB
 
@@ -444,6 +470,8 @@ async insertEntriesForExistingCreator() {
 }
 async getIcccAcknowledgedUser(alertId: number): Promise<string | null> {
   return new Promise(resolve => {
+
+    debugger;
 
     this.alertService.GetAlerthistory(alertId).subscribe({
       next: (res: any) => {
@@ -631,49 +659,52 @@ async getSiteAcknowledgedUser(alertId: number): Promise<string | null> {
 // }
 
 
-loadRoleActions(userId: number) {
+loadRoleActions(userId: number): Promise<void> {
+  return new Promise((resolve) => {
+    this.alertService.GetRoleActionMappingById(userId)
+      .pipe(withLoader(this.loaderService))
+      .subscribe({
+        next: (res: any) => {
 
-  this.alertService.GetRoleActionMappingById(userId)
-    .pipe(withLoader(this.loaderService))
-    .subscribe({
-      next: (res: any) => {
+          const items = res?.result || [];
 
-        const items = res?.result || [];
+          if (Array.isArray(items) && items.length > 0) {
 
-        if (Array.isArray(items) && items.length > 0) {
+            let allActions: string[] = [];
 
-          // ✔ Combine all actionNames (in case multiple roleIds appear)
-          let allActions: string[] = [];
+            items.forEach(item => {
+              if (item.actionNames) {
+                let actions = item.actionNames
+                  .split(',')
+                  .map((a: any) => a.trim().toLowerCase());
 
-          items.forEach(item => {
-            if (item.actionNames) {
-              let actions = item.actionNames
-                .split(',')
-                .map((a:any) => a.trim().toLowerCase());   // normalize
-              
-              allActions.push(...actions);
-            }
-          });
+                allActions.push(...actions);
+              }
+            });
 
-          // ✔ Remove duplicates
-          this.roleActions = [...new Set(allActions)];
+            // remove duplicates
+            this.roleActions = [...new Set(allActions)];
 
-          console.log("🔵 Role Actions Loaded:", this.roleActions);
-        } 
-        else {
+            console.log("🔵 Role Actions Loaded:", this.roleActions);
+          } else {
+            this.roleActions = [];
+            console.warn("⚠ No role actions found for user");
+          }
+
+          resolve(); // ✅ Resolve even when no actions found
+        },
+
+        error: (err: any) => {
+          console.error("❌ Failed to load role action mapping:", err);
           this.roleActions = [];
-          console.warn("⚠ No role actions found for user");
+          resolve(); // ❗ Still resolve on error (to avoid hanging await)
         }
-      },
-
-      error: (err: any) => {
-        console.error("❌ Failed to load role action mapping:", err);
-        this.roleActions = [];
-      }
-    });
+      });
+  });
 }
 
 Case_RoleCategory_Field() {
+  debugger;
 
   const storedUser = sessionStorage.getItem('userInfo');
   const currentUserId = storedUser ? JSON.parse(storedUser).id : 0;
@@ -700,8 +731,8 @@ Case_RoleCategory_Field() {
     return; // STOP HERE → Do not insert anything
   }
 
-
-  // ============================================================
+  else{
+     // ============================================================
   // CASE 2 → NOT TransferToICCC
   // ============================================================
 
@@ -731,8 +762,8 @@ Case_RoleCategory_Field() {
     // ---------------------------------------------------------
     // CASE 2B → NO FieldEngineerAcknowledgement → INSERT NOW
     // ---------------------------------------------------------
-
-    this.Acknowledgedname = this.creatorUserName;   // ICCC
+else{
+      this.Acknowledgedname = this.creatorUserName;   // ICCC
     this.Acknowledgedname_Field = currentUserName;  // FIELD
 
     // 🟢 STEP 1 — Insert into Log table
@@ -774,12 +805,14 @@ Case_RoleCategory_Field() {
             ticketNo: this.policyData.ticketNo,
             zoneId: this.policyData.zoneID,
           };
-
+ debugger;
           this.alertService.AlertUpdate(alertUpdateModel)
             .pipe(withLoader(this.loaderService))
             .subscribe({
               next: (updateRes: any) => {
                 console.log("Alert table updated:", updateRes);
+                        const updatedAlert = updateRes?.result;
+        this.globals.saveAlert(updatedAlert);
                 this.toastr.success("Alert acknowledged successfully");
               },
               error: (updateErr: any) => {
@@ -794,9 +827,15 @@ Case_RoleCategory_Field() {
           this.toastr.error("Failed to insert alert log");
         }
       });
+}
+
 
   }); // END of getAlertHistory()
 
+  }
+
+
+ 
 }
 
 
@@ -852,69 +891,112 @@ async getAlertHistory(alertId: number): Promise<any[]> {
 
 canAccessAction(act: any, currentStatus: string): boolean {
 
-  const action = act.prmValue?.toLowerCase() || '';
+  const action = act.action?.toLowerCase() || '';
   const current = currentStatus?.toLowerCase() || '';
 
-  // ---------------------------------------------
+  // -------------------------------------------------
   // 1️⃣ CHECK ROLE ACTION MAPPING
-  // ---------------------------------------------
+  // -------------------------------------------------
   if (!this.roleActions || this.roleActions.length === 0) return false;
-
-  if (!this.roleActions.includes(action)) return false;
-
-  // ---------------------------------------------
-  // 2️⃣ TRY NORMAL SOP MATCH FIRST
-  // ---------------------------------------------
+  else if (!this.roleActions.includes(action)) return false;
+  else{
+      // -------------------------------------------------
+  // 2️⃣ CASE A: currentStatus is NULL/EMPTY
+  //    → ALLOW role-mapped actions that exist in SOP
+  // -------------------------------------------------
+  if (!current || current.trim() === '') {
+    const targetSop = this.sopActions.find(
+      x => x.prmValue?.toLowerCase() === action
+    );
+    return !!targetSop;
+  }
+  else{
+      // -------------------------------------------------
+  // 3️⃣ TRY NORMAL SOP MATCH
+  // -------------------------------------------------
   const currentSop = this.sopActions.find(
     x => x.prmValue?.toLowerCase() === current
   );
 
-  // If found → normal sequence rule
-  if (currentSop) {
-    const currentSeq = Number(currentSop.sequence);
+  // -------------------------------------------------
+  // 4️⃣ CASE B: currentStatus NOT IN SOP → FALLBACK
+  // -------------------------------------------------
+  if (!currentSop) {
+    if (!this.alertHistory || this.alertHistory.length === 0) return false;
+
+    let lastValidSop = null;
+
+    for (let i = this.alertHistory.length - 1; i >= 0; i--) {
+      const histAction = this.alertHistory[i].actionName?.toLowerCase();
+
+      const sopMatch = this.sopActions.find(
+        x => x.prmValue?.toLowerCase() === histAction
+      );
+
+      if (sopMatch) {
+        lastValidSop = sopMatch;
+        break;
+      }
+    }
+
+    if (!lastValidSop) return false;
+
+    const fallbackSeq = Number(lastValidSop.sequence);
 
     const targetSop = this.sopActions.find(
       x => x.prmValue?.toLowerCase() === action
     );
     if (!targetSop) return false;
 
-    return Number(targetSop.sequence) > currentSeq;
+    return Number(targetSop.sequence) > fallbackSeq;
   }
-
-  // ---------------------------------------------
-  // 3️⃣ FALLBACK → currentStatus NOT IN SOP  
-  // Use loaded alert history
-  // ---------------------------------------------
-
-  if (!this.alertHistory || this.alertHistory.length === 0) return false;
-
-  let lastValidSop = null;
-
-  // find last action that exists in SOP
-  for (let i = this.alertHistory.length - 1; i >= 0; i--) {
-    const histAction = this.alertHistory[i].actionName?.toLowerCase();
-
-    const sopMatch = this.sopActions.find(
-      x => x.prmValue?.toLowerCase() === histAction
-    );
-
-    if (sopMatch) {
-      lastValidSop = sopMatch;
-      break;
-    }
-  }
-
-  if (!lastValidSop) return false;
-
-  const fallbackSeq = Number(lastValidSop.sequence);
+  else{
+      // -------------------------------------------------
+  // 5️⃣ CASE C: NORMAL SOP LOGIC
+  // -------------------------------------------------
+  const currentSeq = Number(currentSop.sequence);
 
   const targetSop = this.sopActions.find(
     x => x.prmValue?.toLowerCase() === action
   );
   if (!targetSop) return false;
 
-  return Number(targetSop.sequence) > fallbackSeq;
+  const targetSeq = Number(targetSop.sequence);
+
+  return targetSeq > currentSeq;
+  }
+
+
+  }
+
+
+  }
+
+
 }
+
+
+async refreshAfterAction() {
+  console.log("Child action completed → refreshing SOP access logic");
+
+  // Reload the currentStatus
+ await this.loadAlertCurrentStatus(this.policyData.id);
+
+  // Reload history if needed
+ await  this.loadAlertHistory(this.policyData.id);
+
+  // 🔥 FORCE change detection of canAccessAction()
+  this.recalculateAllActionAccess();
+}
+
+recalculateAllActionAccess() {
+  this.sops?.forEach(s => {
+    s.activities.forEach(a => {
+      a.hasAccess = this.canAccessAction(a, this.currentAlertStatus);
+    });
+  });
+}
+
 
 
 

@@ -52,6 +52,12 @@ export class alertservice {
     return this._httpService._getMethod( 'api/services/app/RoleActionMapping/GetRoleActionMappingById?userId='+id);
   }
 
+          CreateAlertlogWithFileUpload(data: any) {
+    return this._httpService._postMethod( data,'api/services/app/AlertLog/CreateAlertlogWithFileUpload');
+  }
+
+  
+
 
 
 

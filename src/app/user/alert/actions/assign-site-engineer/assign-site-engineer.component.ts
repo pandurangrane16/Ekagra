@@ -1,5 +1,5 @@
-import { CommonModule} from '@angular/common';
-import { Component,inject, Input, OnInit } from '@angular/core';
+import { CommonModule,} from '@angular/common';
+import { Component,Output,EventEmitter,inject, Input, OnInit } from '@angular/core';
 import { MaterialModule } from '../../../../Material.module';
 import { Globals } from '../../../../utils/global';
 import { ToastrService } from 'ngx-toastr';
@@ -16,6 +16,7 @@ import { alertservice } from '../../../../services/admin/alert.service';
 export class AssignSiteEngineerComponent implements OnInit {
   router = inject(Router);
   @Input() task : any;
+ @Output() actionCompleted = new EventEmitter<void>();
   loaderService = inject(LoaderService);
 
     constructor(private alertService: alertservice, private toastr: ToastrService,public globals: Globals) {
@@ -49,31 +50,40 @@ SubmitAction() {
   // --------------------------
   // 🟢 1. PREPARE ALERT UPDATE
   // --------------------------
+
+
+  let baseAlert = this.globals.alert;
+
+
   const updateAlertData = {
-    id: alertId,
+    id: baseAlert.id,
     lastModifierUserId: currentUserId,
     currentStatus: "AssignToFieldEngineer",
 
     // keep all other fields same as original alert
-    remarks: this.task?.remarks,
-    creatorUserId: this.task?.createruserid,
-    policyName: this.task?.policyName,
-    siteId: this.task?.siteId,
-    policyId: this.task?.policyId,
-    response: this.task?.response,
-    isStatus: this.task?.isStatus,
-    filePath: this.task?.filePath,
-    devices: this.task?.devices,
-    alertSource: this.task?.alertSource,
-    ticketNo: this.task?.ticketNo,
-    zoneId: this.task?.zoneID,
+    remarks: baseAlert?.remarks,
+    creatorUserId: baseAlert?.creatorUserId,
+    policyName: baseAlert?.policyName,
+    siteId: baseAlert?.siteId,
+    policyId: baseAlert?.policyId,
+    response: baseAlert?.response,
+    isStatus: baseAlert?.isStatus,
+    filePath: baseAlert?.filePath,
+    devices: baseAlert?.devices,
+    alertSource: baseAlert?.alertSource,
+    ticketNo: baseAlert?.ticketNo,
+    zoneId: baseAlert?.zoneId,
 
-    creationTime:this.task?.creationTime,
+    creationTime:baseAlert?.creationTime,
     lastModificationTime: new Date(),
     isDeleted: false,
     deleterUserId: 0,
     deletionTime: null
   };
+
+  console.log("Update data final:", updateAlertData);
+
+
 
   // --------------------------
   // 🟢 2. PREPARE ONE LOG ENTRY
@@ -99,8 +109,11 @@ SubmitAction() {
         this.alertService.AlertUpdate(updateAlertData)
           .pipe(withLoader(this.loaderService))
           .subscribe({
-            next: () => {
+            next: (res:any) => {
               this.toastr.success("Alert assigned successfully");
+        const updatedAlert = res?.result;
+        this.globals.saveAlert(updatedAlert);
+              this.actionCompleted.emit();
               //this.dialog.closeAll();
              // this.router.navigate(['/alerts']);
             },
