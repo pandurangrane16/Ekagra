@@ -273,7 +273,18 @@ console.log(this.authRequiredFlag)
 else{
 
 
-  //validation to check api name exists 
+  // Force enable Query Params fields
+    if (this.inputFields?.qsValue) {
+      this.inputFields.qsValue.isDisabled = false;
+    }
+    if (this.inputFields?.qsSelectedType) {
+      this.inputFields.qsSelectedType.isDisabled = false;
+    }
+    if (this.inputFields?.qsKey) {
+      this.inputFields.qsKey.isDisabled = false;
+    }
+
+    
 
   this.form.get('apiName')?.valueChanges
     .pipe(
@@ -900,13 +911,33 @@ this.isProjtypeOptionsLoaded=true;
   get headersFormArray(): FormArray<FormGroup> {
     return this.form.get('headers') as FormArray<FormGroup>;
   }
+  // createHeader() {
+  //   const group = this.fb.group({
+  //     headerKey: [''],
+  //     headerValue: ['']
+  //   });
+  //   this.headersFormArray.push(group);
+  // }
+
   createHeader() {
-    const group = this.fb.group({
-      headerKey: [''],
-      headerValue: ['']
-    });
-    this.headersFormArray.push(group);
-  }
+  const group = this.fb.group({
+    headerKey: [''],
+    headerValue: ['']
+  });
+
+  this.headersFormArray.push(group);
+
+  // 🔥 Force-enable both controls after push()
+  setTimeout(() => {
+    group.get('headerKey')?.enable({ emitEvent: false });
+    group.get('headerValue')?.enable({ emitEvent: false });
+
+    // 🔥 Also override the _inputData disable setting ONLY here
+    this.inputFields.qsKey.isDisabled = false;
+    this.inputFields.qsValue.isDisabled = false;
+  });
+}
+
 
   onProjectSelected($event: Event) {
 
@@ -1231,7 +1262,7 @@ RemoveHeader(index:any){
     itemsArray.removeAt(index);
   }
 submit(): void {
-
+debugger;
   if (!this.responseText || this.responseText.trim() === '') {
     this.toast.error("Response text cannot be empty. Make sure to click Send first.");
     return; 
@@ -1261,13 +1292,13 @@ const creationTimeAPIReq = new Date();
     key: group.get('qsKey')?.value ?? '',
     inputType: group.get('qsInputType')?.value?.value ?? "0",
    inputSource:
-  (group.get('qsInputType')?.value?.value ?? "0") === "2"
-  ? group.get('qsSelectedType')?.value?.value ?? ""
-: group.get('qsSelectedType')?.value?.value ?? "",
+            (group.get('qsInputType')?.value?.value ?? "0") === "2"
+            ? group.get('qsSelectedType')?.value?.value ?? ""
+          : group.get('qsSelectedType')?.value ?? "",
     inputValue:
-      (group.get('qsInputType')?.value?.value ?? "0") === "3"
-        ? group.get('qsValue')?.value
-        : group.get('qsValue')?.value?.value,
+              (group.get('qsInputType')?.value?.value ?? "0") === "3" 
+                ? group.get('qsValue')?.value
+                : group.get('qsValue')?.value?.value, 
     seq: (group.get('qsNo')?.value ?? 1) - 1,
     isDeleted: false,
     deleterUserId: 0,
@@ -1279,7 +1310,7 @@ const creationTimeAPIReq = new Date();
     id:group.get('qsId')?.value ?? 0
     }));
 const maxSeq = requestModels.reduce((max, item) => item.seq > max ? item.seq : max, 0);
-
+console.log("maxSeq",maxSeq)
 
 const methodKeyModel: projapirequestmodel = 
     {
@@ -1416,8 +1447,16 @@ const selectedKeyModels: projapirequestmodel[] = this.queryStringsFormArray.cont
     type: group.get('qsType')?.value?.value ?? "0",
     key: group.get('qsKey')?.value ?? "",
     inputType: group.get('qsInputType')?.value?.value ?? "0",
-    inputSource: group.get('qsSelectedType')?.value?.value ?? "",
-    inputValue: group.get('qsValue')?.value?.value ?? "",
+    // inputSource: group.get('qsSelectedType')?.value?.value ?? "",
+    // inputValue: group.get('qsValue')?.value?.value ?? "",
+    inputSource:
+            (group.get('qsInputType')?.value?.value ?? "0") === "2"
+            ? group.get('qsSelectedType')?.value?.value ?? ""
+          : group.get('qsSelectedType')?.value ?? "",
+    inputValue:
+              (group.get('qsInputType')?.value?.value ?? "0") === "3" 
+                ? group.get('qsValue')?.value
+                : group.get('qsValue')?.value?.value, 
     seq: seqCounter++, 
     isDeleted: false,
     deleterUserId: 0,
@@ -1441,8 +1480,16 @@ const requestModel1: projapirequestmodel[] = this.queryStringsFormArray.controls
     type: group.get('qsType')?.value?.value ?? "0",
     key: group.get('qsKey')?.value ?? "",
     inputType: group.get('qsInputType')?.value?.value ?? "0",
-    inputSource: group.get('qsSelectedType')?.value?.value ?? "",
-    inputValue: group.get('qsValue')?.value?.value ?? "",
+    // inputSource: group.get('qsSelectedType')?.value?.value ?? "",
+    // inputValue: group.get('qsValue')?.value?.value ?? "",
+    inputSource:
+            (group.get('qsInputType')?.value?.value ?? "0") === "2"
+            ? group.get('qsSelectedType')?.value?.value ?? ""
+          : group.get('qsSelectedType')?.value ?? "",
+    inputValue:
+              (group.get('qsInputType')?.value?.value ?? "0") === "3" 
+                ? group.get('qsValue')?.value
+                : group.get('qsValue')?.value?.value, 
     seq: group.get('qsNo')?.value -1,
     isDeleted: false,
     deleterUserId: 0,
@@ -1470,8 +1517,16 @@ if(this.form.controls['isrequireauth'].value==false){
     type: group.get('qsType')?.value?.value ?? "0",
     key: group.get('qsKey')?.value,
     inputType: group.get('qsInputType')?.value.value,
-    inputSource: group.get('qsSelectedType')?.value.value,
-    inputValue: group.get('qsValue')?.value.value,
+    // inputSource: group.get('qsSelectedType')?.value.value,
+    // inputValue: group.get('qsValue')?.value.value,
+    inputSource:
+            (group.get('qsInputType')?.value?.value ?? "0") === "2"
+            ? group.get('qsSelectedType')?.value?.value ?? ""
+          : group.get('qsSelectedType')?.value ?? "",
+    inputValue:
+              (group.get('qsInputType')?.value?.value ?? "0") === "3" 
+                ? group.get('qsValue')?.value
+                : group.get('qsValue')?.value?.value, 
     seq: group.get('qsNo')?.value -1,
     isDeleted: false,
     deleterUserId: 0,
