@@ -21,7 +21,7 @@
   </app-cm-select2> -->
 
   <app-cm-select2
-  *ngIf="ContactTypeSettings?.options?.length"
+  *ngIf="ContactTypeSettings && ContactTypeSettings.options.length"
   [formGroup]="form"
   [controlName]="'ContactType'"
   [settings]="ContactTypeSettings"

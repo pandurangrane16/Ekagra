@@ -61,12 +61,12 @@
   <div *ngIf="f['sourceurl'].touched && f['sourceurl'].errors" class="text-danger mt-1">
   <ng-container [ngSwitch]="true">
     <!-- Required -->
-    <span *ngSwitchCase="f['sourceurl'].errors?.['required']">
+    <span *ngSwitchCase="f['sourceurl'].errors['required']">
       {{ getErrorMessage('sourceurl', 'Source Url', false, '') }}
     </span>
 
     <!-- Pattern / URL validation -->
-    <span *ngSwitchCase="f['sourceurl'].errors?.['pattern']">
+    <span *ngSwitchCase="f['sourceurl'].errors['pattern']">
       {{ getErrorMessage('sourceurl', 'Source Url', true, 'Enter a valid URL without spaces') }}
     </span>
   </ng-container>
@@ -147,11 +147,11 @@
         <div *ngIf="f['wmslayer'].touched && f['wmslayer'].errors" class="text-danger mt-1">
         <ng-container [ngSwitch]="true">
 
-          <span *ngSwitchCase="f['wmslayer'].errors?.['required']">
+        <span *ngSwitchCase="f['wmslayer'].errors['required']">
             {{ getErrorMessage('wmslayer', 'WmsLayer', false, '') }}
           </span>
 
-          <span *ngSwitchCase="f['wmslayer'].errors?.['pattern']">
+          <span *ngSwitchCase="f['wmslayer'].errors['required']">
             {{ getErrorMessage('wmslayer', 'WmsLayer', true, 'Enter a valid URL without spaces') }}
           </span>
 
