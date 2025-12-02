@@ -1,151 +1,253 @@
-import { OnInit, Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, SimpleChanges } from '@angular/core';
 import { HighchartsChartModule } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
 import { CommonModule } from '@angular/common';
+import { atcsDashboardservice } from '../../../../services/atcs/atcsdashboard.service';
 
 @Component({
-    selector: 'app-corridor',
-    imports: [HighchartsChartModule, CommonModule],
-    templateUrl: './corridor.component.html',
-    styleUrl: './corridor.component.css'
+  selector: 'app-corridor',
+  standalone: true,
+  imports: [HighchartsChartModule, CommonModule],
+  templateUrl: './corridor.component.html',
+  styleUrls: ['./corridor.component.css']
 })
-export class CorridorComponent implements OnInit {
-  @ViewChild('customLegend')
-  customLegend!: ElementRef;
-  constructor(private renderer: Renderer2, private el: ElementRef) {}
-  public element: any;
-  jsonData = {
-    "data": [
-        { "name": "Faulty Junction", "y": 10,},
-        { "name": "Faulty Detector", "y": 31,},
-        { "name": "Functional Junction", "y": 40,},
-        { "name": "Disconnected Junction", "y": 40,}
-    ]
-};
+export class CorridorComponent implements OnInit, OnChanges {
 
-Highcharts: typeof Highcharts = Highcharts;
-  chartOptions: Highcharts.Options = {
-    chart: {
-      type: 'pie',
-      backgroundColor: 'transparent',  // Transparent background
-      height:220,
-      spacingBottom:0,
-      events: {
-        load: function () {
-          // Add custom extra label to the far left of xAxis
-          this.renderer.text('NM Joshi', 10, this.plotHeight + 70)
-            .css({
-              fontSize: '16px',
-              fontWeight: '500',
-              color: '#1C2D7B'
-            })
-            .add();
-        }
-      }
-        
-    },
-    legend: {
-      enabled: false
-    },
-    xAxis: {
-      title: {
-        text: 'Time',
-        style:{
-          color:'#FF9933'
-        }
-    },
-      type: 'datetime',
-      labels: {
-        formatter: function() {
-          return Highcharts.dateFormat('%l %p', this.value as number);
-        }
-      }
-    },
-    yAxis:{
-      title: {
-        text: 'Distance(meter)',
-        style:{
-          color:'#FF9933'
-        }
-    },
-    tickPositions: [0, 20, 40],
-    },
-    title: {
-      text: '',
-      align: 'left'
-  },
-  subtitle:{
-    text:'Chinchpokli  Jn.',
-    style:{
-      fontSize: '16px',
-              fontWeight: '500',
-              color: '#1C2D7B'
-    }
-  },
-  
-  plotOptions: {
-    area: {
-      marker: {
-        enabled: false,
-        symbol: 'circle',
-        radius: 2,
-        states: {
-            hover: {
-                enabled: true
-            }
-        }
-    },
-        lineWidth: 1,
-        color: {
-            linearGradient: {
-                x1: 0,
-                y1: 0,
-                x2: 0,
-                y2: 1
-            },
-            stops: [
-                [0, 'rgba(255, 147, 89,1)'],
-                [0.7, 'rgba(255, 147, 89, 0.6)']
-            ]
-        },
-        states: {
-            hover: {
-                lineWidth: 1
-            }
-        },
-        threshold: null
-    }
-},
-  credits: {
-    enabled: false
-  },
-  series: [{
-    type: 'area',
-    data:this.jsonData.data,
-    pointStart: new Date().setHours(6, 0, 0, 0), // today at midnight
-    pointInterval: 2 * 3600 * 1000 // 2 hours in milliseconds
-}] as Highcharts.SeriesOptionsType[] // Casting to SeriesOptionsType[]
- ,
-  responsive: {
-      rules: [{
-          condition: {
-              maxWidth: 500
-          },
-          chartOptions: {
-            
-              legend: {
-                  layout: 'horizontal',
-                  align: 'center',
-                  verticalAlign: 'bottom'
-              }
-          }
-      }]
-  }
-  };
+  @Input() siteId: number = 0;
+  @Input() fromDate: any;
+  @Input() toDate: any;
+  @Input() corridorData: any[] = [];
+
+  Highcharts: typeof Highcharts = Highcharts;
+  chartOptions: Highcharts.Options | null = null;
+
+  constructor(private atcsService: atcsDashboardservice) {}
 
   ngOnInit(): void {
-   
-  
-  } 
+    if (!this.siteId) {
+      const sessionSiteId = sessionStorage.getItem('siteId');
+      this.siteId = sessionSiteId ? Number(sessionSiteId) : 0;
+    }
 
+    this.loadCorridorData();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['corridorData']) {
+      this.prepareChart();
+    }
+  }
+
+  private formatDate(value: any): string {
+    const d = new Date(value);
+    return d.toISOString().split('T')[0];
+  }
+
+  /** Load data from API */
+  loadCorridorData(): void {
+    const today = this.formatDate(new Date());
+
+    const from = this.fromDate ? this.formatDate(this.fromDate) : today;
+    const to = this.toDate ? this.formatDate(this.toDate) : today;
+
+    this.atcsService.getCongestionData(this.siteId, from, to).subscribe({
+      next: (res: any) => {
+        this.corridorData = res?.result || [];
+        this.prepareChart();
+      },
+      error: err => console.error("Corridor API failed:", err)
+    });
+  }
+
+//   /** Build Highcharts Column Graph */
+//   prepareChart(): void {
+
+//     if (!this.corridorData || this.corridorData.length === 0) {
+//       this.chartOptions = null;
+//       return;
+//     }
+
+//     const categories = this.corridorData.map(x => x.RTC);
+
+//     const seriesData = this.corridorData.map((x: any) => ({
+//       y: x.saturation === 'NA' ? 0 : Number(x.saturation),
+//       junctionName: x.junctionName,
+//       junctionStatus: x.junctionStatus,
+//       category: x.RTC
+//     }));
+
+//     this.chartOptions = {
+//       chart: {
+//         type: 'column'
+//       },
+
+//       title: {
+//         text: 'Corridor Saturation Report'
+//       },
+
+//       xAxis: {
+//         categories,
+//         title: { text: 'RTC' },
+//         labels: { rotation: -45 }
+//       },
+
+//       yAxis: {
+//         min: 0,
+//         title: { text: 'Saturation' }
+//       },
+
+//     tooltip: {
+//   useHTML: true,
+//   formatter: function (this: any) {
+//     const p: any = this;  // force bypass TS typing
+
+//     return `
+//       <b>RTC:</b> ${p.category}<br>
+//       <b>Saturation:</b> ${p.y}<br>
+//       <b>Junction:</b> ${p.junctionName}<br>
+//       <b>Status:</b> ${p.junctionStatus}
+//     `;
+//   }
+// },
+
+//       credits: { enabled: false },
+
+//       series: [{
+//         type: 'column',
+//         name: 'Saturation',
+//         data: seriesData
+//       }] as Highcharts.SeriesColumnOptions[]
+//     };
+//   }
+
+
+prepareChart(): void {
+
+  if (!this.corridorData || this.corridorData.length === 0) {
+    this.chartOptions = null;
+    return;
+  }
+
+  const categories = this.corridorData.map(x => x.RTC);
+
+  const seriesData = this.corridorData.map((x: any) => ({
+    y: x.saturation === 'NA' ? 0 : Number(x.saturation),
+    junctionName: x.junctionName,
+    junctionStatus: x.junctionStatus,
+    category: x.RTC
+  }));
+
+  // this.chartOptions = {
+  //   chart: {
+  //     type: 'line',
+  //     zoomType: 'x'
+  //   },
+
+  //   title: {
+  //     text: 'Corridor Saturation Report'
+  //   },
+
+  //   xAxis: {
+  //     categories,
+  //     title: { text: 'RTC' },
+  //     labels: { rotation: -45 }
+  //   },
+
+  //   yAxis: {
+  //     min: 0,
+  //     title: { text: 'Saturation' }
+  //   },
+
+  //   tooltip: {
+  //     useHTML: true,
+  //     formatter: function (this: any) {
+  //       const p: any = this;
+  //       return `
+  //         <b>RTC:</b> ${p.category}<br>
+  //         <b>Saturation:</b> ${p.y}<br>
+  //         <b>Junction:</b> ${p.junctionName}<br>
+  //         <b>Status:</b> ${p.junctionStatus}
+  //       `;
+  //     }
+  //   },
+
+  //   credits: { enabled: false },
+
+  //   plotOptions: {
+  //     line: {
+  //       marker: {
+  //         enabled: false,     // smoother line for hourly data
+  //         radius: 2
+  //       }
+  //     }
+  //   },
+
+  //   series: [{
+  //     type: 'line',
+  //     name: 'Saturation',
+  //     data: seriesData
+  //   }] as Highcharts.SeriesLineOptions[]
+  // };
+
+  this.chartOptions = {
+  chart: {
+    type: 'line',
+    zoomType: 'x',
+  } as Highcharts.ChartOptions,
+
+  title: {
+    text: 'Corridor Saturation Report'
+  },
+
+  xAxis: {
+    categories,
+    title: { text: 'RTC' },
+    labels: { rotation: -45 }
+  },
+
+  yAxis: {
+    min: 0,
+    title: { text: 'Saturation' }
+  },
+
+  tooltip: {
+    useHTML: true,
+    formatter: function (this: any) {
+      const p: any = this;
+      return `
+        <b>RTC:</b> ${p.category}<br>
+        <b>Saturation:</b> ${p.y}<br>
+        <b>Junction:</b> ${p.junctionName}<br>
+        <b>Status:</b> ${p.junctionStatus}
+      `;
+    }
+  },
+
+  credits: { enabled: false },
+
+  plotOptions: {
+    line: {
+      marker: { enabled: false, radius: 2 }
+    }
+  },
+
+  series: [{
+    type: 'line',
+    name: 'Saturation',
+    data: seriesData
+  }] as Highcharts.SeriesLineOptions[]
+};
+
+
+}
+  /** Date Filters */
+  onFromDateChange(event: any) {
+    this.fromDate = event.target.value;
+    this.loadCorridorData();
+  }
+
+  onToDateChange(event: any) {
+    this.toDate = event.target.value;
+    this.loadCorridorData();
+  }
 }

@@ -15,7 +15,7 @@ import { SessionService } from '../../../../services/common/session.service';
 })
 export class ZonalComponent implements OnInit, OnChanges {
 
-
+projectId: number = 0;
     @Input() fromDate!: Date | null;
   @Input() toDate!: Date | null;
 
@@ -219,8 +219,29 @@ Highcharts: typeof Highcharts = Highcharts;
 
   ngOnInit(): void {
 
-     this.id = this.session._getSessionValue("projectIdRoute");
-   this.fetchZoneNames(this.id);
+     // ✅ Step 1: Get project codes from session
+    const projectCodesStr = this.session._getSessionValue("projectCodes");
+    if (!projectCodesStr) {
+      console.error("⚠️ 'projectCodes' not found in session.");
+      return;
+    }
+
+    const projectCodes = JSON.parse(projectCodesStr);
+    const currentProject = "ATCS"; // change dynamically later if needed
+
+    const project = projectCodes.find(
+      (p: any) => p.name.toLowerCase() === currentProject.toLowerCase()
+    );
+
+    if (!project) {
+      console.error(`⚠️ Project "${currentProject}" not found in config.`);
+      return;
+    }
+
+    const projectId = Number(project.value);
+    this.projectId = projectId;
+
+   this.fetchZoneNames(this.projectId);
    //this.getUnprocessedConnectedCtrlData();
   } 
 

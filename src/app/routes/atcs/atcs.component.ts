@@ -35,7 +35,7 @@ interface Junction {
   providers: [provideNativeDateAdapter()]
 })
 export class AtcsComponent {
-
+ corridorData: any[] = [];
   loaderService = inject(LoaderService)
   constructor(private service: atcsDashboardservice) { }
   selectedJunction: string = '';
@@ -45,6 +45,7 @@ export class AtcsComponent {
   id: any;
   startDate: Date | null = null;
 endDate: Date | null = null;
+projectId: number = 0;
 
 
 
@@ -75,7 +76,31 @@ labelList: any[] = [
 
 
   ngOnInit(): void {
+debugger;
+     // ✅ Step 1: Get project codes from session
+    const projectCodesStr = this.session._getSessionValue("projectCodes");
+    if (!projectCodesStr) {
+      console.error("⚠️ 'projectCodes' not found in session.");
+      return;
+    }
 
+    const projectCodes = JSON.parse(projectCodesStr);
+    const currentProject = "ATCS"; // change dynamically later if needed
+
+    const project = projectCodes.find(
+      (p: any) => p.name.toLowerCase() === currentProject.toLowerCase()
+    );
+
+    if (!project) {
+      console.error(`⚠️ Project "${currentProject}" not found in config.`);
+      return;
+    }
+
+    const projectId = Number(project.value);
+    this.projectId = projectId;
+
+    
+    this.loadCorridorData();
     this.id = this.session._getSessionValue("projectIdRoute");
     console.log("projectIdRoute",this.id)
 
@@ -94,6 +119,25 @@ labelList: any[] = [
 
 
   }
+
+loadCorridorData() {
+  const siteId = Number(this.session._getSessionValue("siteId"));  // from session
+  const today = new Date().toISOString().split("T")[0];
+
+  const from = this.startDate
+    ? this.startDate.toISOString().split("T")[0]
+    : today;
+  const to = this.endDate
+    ? this.endDate.toISOString().split("T")[0]
+    : today;
+
+  this.service.getCongestionData(siteId, from, to).subscribe({
+    next: (res) => {
+      this.corridorData = res?.result || res;
+    }
+  });
+}
+
   onMarkerClicked2(siteId: string) {
     this.service.login().pipe(withLoader(this.loaderService)).subscribe({
       next: (res: any) => {
@@ -131,7 +175,7 @@ labelList: any[] = [
 
   onMarkerClicked(siteId: string) {
       const model: SiteRequestModel = {
-  projectId: 1,
+  projectId: this.projectId,
   type: 0,
   inputs: siteId,
   bodyInputs: null,
@@ -182,7 +226,7 @@ labelList: any[] = [
   loadpoints(): void {
     //const basePath = 'https://172.19.32.51:8089/UploadedFiles/Icons/';
     const basePath = this.basepath
-    this.service.GetSiteMasterByProjectId(this.id).pipe(withLoader(this.loaderService)).subscribe({
+    this.service.GetSiteMasterByProjectId(this.projectId).pipe(withLoader(this.loaderService)).subscribe({
       next: (res: any) => {
         const rawSites = res?.result || [];
 
@@ -245,15 +289,14 @@ labelList: any[] = [
 
 
 
-  DateWiseFilter(evtData: any, category: string) {
-    if (category == "start")
-{
-       this.startDate = evtData.value;
-      console.log("Start Date : " + evtData.value);
-}  
-    else{
-       this.endDate = evtData.value;
-      console.log("End Date : " + evtData.value);
-    }
+DateWiseFilter(evt: any, type: string) {
+  if (type === "start") {
+    this.startDate = evt.value;
+  } else {
+    this.endDate = evt.value;
   }
+
+  this.loadCorridorData();
+}
+
 }

@@ -271,13 +271,24 @@ tooltip: {
   } 
       
   fetchCycleData(junctionId: string): void {
-    //     const fromDate = '2025-06-10 00:00:00';
-    // const toDate = '2025-07-18 00:00:00';
+    debugger;
+    // If junctionId is null or empty → use 0
+  const jId = junctionId ? junctionId : "0";
 
-        const fromDate = this.fromDate ? this.fromDate.toISOString() : '';
-    const toDate   = this.toDate ? this.toDate.toISOString() : '';
+  // Today's date in ISO format
+  const todayISO = new Date().toISOString();
 
-  this.service.getJunctioneData(junctionId,fromDate,toDate).pipe(withLoader(this.loaderService)).subscribe(
+  // If this.fromDate is null → use today
+  const fromDate = this.fromDate
+      ? new Date(this.fromDate).toISOString()
+      : todayISO;
+
+  // If this.toDate is null → use today
+  const toDate = this.toDate
+      ? new Date(this.toDate).toISOString()
+      : todayISO;
+
+  this.service.getJunctioneData(jId,fromDate,toDate).pipe(withLoader(this.loaderService)).subscribe(
     (res: any) => {
       
       const data = res?.result || []; 

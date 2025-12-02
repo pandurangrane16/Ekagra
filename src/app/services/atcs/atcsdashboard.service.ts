@@ -143,6 +143,26 @@ getKeysDataForConfig(key: string): Observable<any> {
   }
 
   
+    getCongestionData(siteId?:any ,fromDate?: string, toDate?: string): Observable<any> {
+    const params: string[] = [];
+
+     if (siteId) {
+      params.push(`siteId=${encodeURIComponent(siteId)}`);
+    }
+
+    if (fromDate) {
+      params.push(`fromDate=${encodeURIComponent(fromDate)}`);
+    }
+
+    if (toDate) {
+      params.push(`toDate=${encodeURIComponent(toDate)}`);
+    }
+
+     const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/ATCSGraph/getCongestionData${queryString}`;
+
+    return this._httpService._getMethod(url);
+  }
 
 
 
