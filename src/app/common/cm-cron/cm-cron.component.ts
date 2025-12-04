@@ -69,6 +69,7 @@ export class CmCronComponent {
 
       this.cronExpression = cron;
       this.humanReadable = this.humanize(parts);
+      
     }
   }
 
