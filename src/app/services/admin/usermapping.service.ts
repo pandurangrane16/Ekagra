@@ -136,8 +136,120 @@ GetFilteredList(
   return this._httpService._getMethod(url);
 }
 
+// GetUserMappingList(
+//   StartDate?: string,
+//   EndDate?: string,
+//   SiteName?: string,
+//   ProjectId?: number,
+//   Type?: string,
+//   IsActive?: number,
+//   Filter?: string,
+//   Sorting?: string,
+//   MaxResultCount?: number,
+//   SkipCount?: number
+// ) {
+//   debugger;
+//   let params: string[] = [];
 
-  
+//   if (StartDate) {
+//     params.push(`StartDate=${encodeURIComponent(StartDate)}`);
+//   }
+
+//   if (EndDate) {
+//     params.push(`EndDate=${encodeURIComponent(EndDate)}`);
+//   }
+
+//   if (SiteName) {
+//     params.push(`SiteName=${encodeURIComponent(SiteName)}`);
+//   }
+
+//   if (ProjectId !== null && ProjectId !== undefined) {
+//     params.push(`ProjectId=${ProjectId}`);
+//   }
+
+//   if (Type) {
+//     params.push(`Type=${encodeURIComponent(Type)}`);
+//   }
+
+//   if (IsActive !== null && IsActive !== undefined) {
+//     params.push(`IsActive=${IsActive}`);
+//   }
+
+//   if (Filter && Filter.trim() !== '') {
+//     params.push(`Filter=${encodeURIComponent(Filter)}`);
+//   }
+
+//   if (Sorting) {
+//     params.push(`Sorting=${encodeURIComponent(Sorting)}`);
+//   }
+
+//   if (MaxResultCount !== null && MaxResultCount !== undefined) {
+//     params.push(`MaxResultCount=${MaxResultCount}`);
+//   }
+
+//   if (SkipCount !== null && SkipCount !== undefined) {
+//     params.push(`SkipCount=${SkipCount}`);
+//   }
+
+//   const queryString = params.length ? '?' + params.join('&') : '';
+//   const url = `api/services/app/UserZoneMapping/GetAllUserZonemappingPage${queryString}`;
+
+//   return this._httpService._getMethod(url);
+// }
+
+GetUserMappingList(
+  StartDate?: string,
+  EndDate?: string,
+  SiteName?: string,
+  ProjectId?: number,
+  Type?: string,
+  IsActive?: boolean | null,
+  Filter?: string,
+  Sorting?: string,
+  MaxResultCount?: number,
+  SkipCount?: number
+) {
+  debugger;
+
+  let params: string[] = [];
+
+  // ---- DATE ----
+  if (StartDate) params.push(`StartDate=${encodeURIComponent(StartDate)}`);
+  if (EndDate) params.push(`EndDate=${encodeURIComponent(EndDate)}`);
+
+  // ---- STRINGS ----
+  if (SiteName) params.push(`SiteName=${encodeURIComponent(SiteName)}`);
+  if (Type) params.push(`Type=${encodeURIComponent(Type)}`);
+  if (Filter && Filter.trim() !== '')
+    params.push(`Filter=${encodeURIComponent(Filter)}`);
+  if (Sorting) params.push(`Sorting=${encodeURIComponent(Sorting)}`);
+
+  // ---- NUMBERS ----
+  if (ProjectId !== undefined && ProjectId !== null)
+    params.push(`ProjectId=${ProjectId}`);
+
+  if (MaxResultCount !== undefined && MaxResultCount !== null)
+    params.push(`MaxResultCount=${MaxResultCount}`);
+
+  if (SkipCount !== undefined && SkipCount !== null)
+    params.push(`SkipCount=${SkipCount}`);
+
+  // ---- BOOLEAN (converted to 1 / 0) ----
+  if (IsActive !== undefined && IsActive !== null) {
+    params.push(`IsActive=${IsActive ? 1 : 0}`);
+  }
+
+  // ---- FINAL URL ----
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url =
+    `api/services/app/UserZoneMapping/GetAllUserZonemappingPage` +
+    queryString;
+
+  console.log('Final API URL => ', url);
+
+  return this._httpService._getMethod(url);
+}
+
 GetRoleCategeoryOnUserId(
 
   UserId?: number
