@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { MaterialModule } from '../../../../Material.module';
+import { Component, Input,OnInit } from '@angular/core';
+import { MaterialModule} from '../../../../Material.module';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CmSelect2Component } from '../../../../common/cm-select2/cm-select2.component';
@@ -12,6 +12,7 @@ import { CmSelect2Component } from '../../../../common/cm-select2/cm-select2.com
 })
 export class PaActionComponent implements OnInit {
   form: any;
+    @Input() task: any;
   isApiLoaded: boolean = false;
   audioSettings: any;
   junctionSettings: any;
