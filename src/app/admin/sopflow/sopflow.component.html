@@ -140,6 +140,80 @@
               
             </div>
             }
+             @else if (act.action.toLowerCase() === "atcsvisualverification") {
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+             
+                <div class="row">
+                  <div class="col-md-12">
+                    <app-vms-device-failure [task]="act"></app-vms-device-failure>
+                  </div>
+                </div>
+              
+            </div>
+            }
+              @else if (act.action.toLowerCase() === "flashmode") {
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+             
+                <div class="row">
+                  <div class="col-md-12">
+                  
+                          <app-flashmode 
+                            [task]="this.policyData"
+                            (actionCompleted)="refreshAfterAction(); panel.close()">
+                   </app-flashmode>
+                  </div>
+                </div>
+              
+            </div>
+            }
+             @else if (act.action.toLowerCase() === "emailsms") {
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+             
+                <div class="row">
+                  <div class="col-md-12">
+                  
+                           <app-email-sms 
+                            [task]="this.policyData"
+                            (actionCompleted)="refreshAfterAction(); panel.close()">
+                   </app-email-sms>
+                  </div>
+                </div>
+              
+            </div>
+            }
+            @else if (act.action.toLowerCase() === "vmsemergencypublish") {
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+             
+                <div class="row">
+                  <div class="col-md-12">
+                   <app-vms-broadcasting
+         
+          ngSkipHydration
+            [task]="this.policyData"
+            (actionCompleted)="refreshAfterAction(); panel.close()">
+        </app-vms-broadcasting>
+                  </div>
+                </div>
+              
+            </div>
+            }
+             @else if (act.action.toLowerCase() === "pabroadcasting") {
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+             
+                <div class="row">
+                  <div class="col-md-12">
+                   <app-pa-action
+        
+            [task]="this.policyData"
+            (actionCompleted)="refreshAfterAction(); panel.close()">
+        </app-pa-action>
+                  </div>
+                </div>
+              
+            </div>
+            }
+            
+            
             @else if (act.action === "vmsemergency") {
             <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
               

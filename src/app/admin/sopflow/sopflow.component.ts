@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { MaterialModule } from '../../Material.module';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { VmsBroadcastingComponent } from '../../user/alert/actions/vms-broadcasting/vms-broadcasting.component';
 import { SmsActionComponent } from '../../user/alert/actions/sms-action/sms-action.component';
 import { EmailActionComponent } from '../../user/alert/actions/email-action/email-action.component';
 import { ApiActionComponent } from '../../user/alert/actions/api-action/api-action.component';
@@ -18,11 +19,14 @@ import { ItmsChallanCollectionComponent } from "../../user/alert/actions/itms-ch
 import { EnvSensorFailureComponent } from "../../user/alert/actions/env-sensor-failure/env-sensor-failure.component";
 import { EnvSensorPollutionComponent } from "../../user/alert/actions/env-sensor-pollution/env-sensor-pollution.component";
 import { Router } from '@angular/router';
+import { EmailSMSComponent } from '../../user/alert/actions/email-sms/email-sms.component';
+
 import { alertservice } from '../../services/admin/alert.service';
 import { ToastrService } from 'ngx-toastr';
 import { Globals } from '../../utils/global';
 import { LoaderService } from '../../services/common/loader.service';
 import { withLoader } from '../../services/common/common';
+import { FlashmodeComponent } from '../../user/alert/actions/flashmode/flashmode.component';
 import { IccOperatorAckComponent } from "../../user/alert/actions/icc-operator-ack/icc-operator-ack.component";
 import { AssignSiteEngineerComponent } from '../../user/alert/actions/assign-site-engineer/assign-site-engineer.component';
 import { AddressIssueComponent } from "../../user/alert/actions/address-issue/address-issue.component";
@@ -49,8 +53,8 @@ interface Sop {
 
 @Component({
   selector: 'app-sopflow',
-  imports: [MaterialModule, CommonModule, ReactiveFormsModule, SmsActionComponent, EmailActionComponent, ApiActionComponent, PaActionComponent, VmsDeviceFailureComponent, VmsEmergencyPlayComponent, AtcsHealthComponent, AtcsCongestionComponent, AtcsLampFailureComponent, AtcsDetectorFailureComponent, ItmsCameraFailureComponent, ItmsLpuFailureComponent,
-    ItmsChallanCollectionComponent, EnvSensorFailureComponent, EnvSensorPollutionComponent, IccOperatorAckComponent, AssignSiteEngineerComponent,
+  imports: [MaterialModule, CommonModule, EmailSMSComponent,ReactiveFormsModule, SmsActionComponent, EmailActionComponent, ApiActionComponent, PaActionComponent, VmsDeviceFailureComponent, VmsEmergencyPlayComponent, AtcsHealthComponent, AtcsCongestionComponent, AtcsLampFailureComponent, AtcsDetectorFailureComponent, ItmsCameraFailureComponent, ItmsLpuFailureComponent,
+    ItmsChallanCollectionComponent,VmsBroadcastingComponent, FlashmodeComponent,EnvSensorFailureComponent, EnvSensorPollutionComponent, IccOperatorAckComponent, AssignSiteEngineerComponent,
     AddressIssueComponent, TaskCompletionComponent],
   templateUrl: './sopflow.component.html',
   styleUrl: './sopflow.component.css'
@@ -315,6 +319,14 @@ if (userCategory === 'field') {
     })
   }
 
+onPanelOpen(act: any, broadcastComp?: any) {
+  if (broadcastComp && broadcastComp.loadVmdList) {
+      broadcastComp.loadVmdList(); // Call API now
+  }
+}
+
+
+
 loadAlertCurrentStatus(alertId: number): Promise<void> {
   return new Promise((resolve) => {
     this.alertService.GetAlertsByid(alertId)
@@ -364,7 +376,7 @@ loadSopActions(policyId: number): Promise<void> {
     this.router.navigate(['/alerts']);
   }
 insertInitialAlertEntries() {
-
+ debugger;
     const storedUser = sessionStorage.getItem('userInfo');
   const currentUserId = storedUser ? JSON.parse(storedUser).id : 0;
    const currentUserName = storedUser ? JSON.parse(storedUser).name :0 ;

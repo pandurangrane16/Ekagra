@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener } from '@angular/core';
+import { Component,inject, HostListener } from '@angular/core';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,16 +14,30 @@ import { CmDialogComponent } from '../../common/cm-dialog/cm-dialog.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { RightSheetComponent } from './right-sheet';
+import { withLoader } from '../../services/common/common';
+import { LoaderService } from '../../services/common/loader.service';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { PaDashboardService } from '../../services/Pa/pa_dashboard.service';
+
+
 import { color } from 'highcharts';
 
 @Component({
   selector: 'app-dashboard-pa',
-  imports: [MatButtonToggleModule, CommonModule, MatIconModule, MatFormFieldModule, MatSelectModule, MatInputModule, MapviewComponent,MatButtonModule,MatTooltipModule,MatTabsModule,CmTableComponent, ],
+  imports: [MatButtonToggleModule,MatDatepickerModule, CommonModule, MatIconModule, MatFormFieldModule, MatSelectModule, MatInputModule, MapviewComponent,MatButtonModule,MatTooltipModule,MatTabsModule,CmTableComponent, ],
   templateUrl: './dashboard-pa.component.html',
   styleUrl: './dashboard-pa.component.css',
+    providers: [provideNativeDateAdapter()]
 })
 export class DashboardPaComponent {
+loaderService = inject(LoaderService);
 mapHeight = '350px';
+onlineCount:any;
+startDate:any;
+endDate:any;
+offlineCount:any;
+
 
 headerArr: any;
      totalPages: number = 1;
@@ -53,8 +67,43 @@ processedItems: any[] = [];
  
   
  }
+DateWiseFilter(evtData: any, category: string) {
+  const localDate = new Date(evtData.value);
+
+  // Convert date to UTC explicitly
+  const utcDate = new Date(
+    localDate.getUTCFullYear(),
+    localDate.getUTCMonth(),
+    localDate.getUTCDate(),
+    localDate.getUTCHours(),
+    localDate.getUTCMinutes(),
+    localDate.getUTCSeconds()
+  );
+
+  // Convert to Unix UTC timestamp in milliseconds (13 digits)
+  const unixUtcMs = utcDate.getTime();  // 💥 No /1000 here
+
+  if (category === "start") {
+    this.startDate = unixUtcMs;
+    console.log("Start Date UTC UNIX (ms):", unixUtcMs);
+  } else {
+    this.endDate = unixUtcMs;
+    console.log("End Date UTC UNIX (ms):", unixUtcMs);
+  }
+
+  this.GetOngoingAnnoucement();
+}
+
+
+
  
-  onRowClicked(evt: any) { }
+  onRowClicked(evt: any) {
+    // table emits the clicked row object or id depending on configuration
+    // normalize to an object and expose id for searchWithId
+    const payload = evt && typeof evt === 'object' ? evt : { id: evt };
+    console.log('Row clicked:', payload);
+    // If you want to trigger a navigation or fetch details by id, do it here.
+  }
 
   
   items: any;
@@ -63,7 +112,7 @@ processedItems: any[] = [];
   paUpcomingHeadArr: any;
   collectionSize: any;
 
-paList = [
+paList: any[] = [
    { name: 'PA1', health:'Unavailable',image:'../assets/img/pa_grey.png', button:[{ label: 'Cancel', icon: 'close', type: 'close', color:'gray', disabled:true }] },
    { name: 'Mumbai', health:'Available',image:'../assets/img/pa_blue.png', button:[{ label: 'Cancel', icon: 'close', type: 'close',color:'gray', disabled:true }] },
    { name: 'ecbc', health:'Busy',image:'../assets/img/pa_green.png', button:[{ label: 'Cancel ', icon: 'close', type: 'close', color:'warn' }] },
@@ -78,7 +127,7 @@ paUpcomingList = [
    { name: 'Schedule',  type: 'pa', desination:'ecbc',time:'12:05:00'},
    
   ];
-paOngoingList = [
+paOngoingList: any[] = [
    { type: 'pa', desination:'ecbc', devices:'ecbc', announcement:'scheduled', playlist:'Audio 5', button:[{ label: 'Cancel', icon: 'close', type: 'close', color:'warn', disabled:false }] },
   { type: 'pa', desination:'ecbc', devices:'ecbc', announcement:'scheduled', playlist:'Audio 5', button:[{ label: 'Cancel', icon: 'close', type: 'close', color:'warn', disabled:false }] },
   { type: 'pa', desination:'ecbc', devices:'ecbc', announcement:'scheduled', playlist:'Audio 5', button:[{ label: 'Cancel', icon: 'close', type: 'close', color:'warn', disabled:false }] },
@@ -88,13 +137,15 @@ paOngoingList = [
   
 private dialogRef?: MatDialogRef<RightSheetComponent>;
 constructor(
-private dialog: MatDialog,
+private dialog: MatDialog,private service:PaDashboardService
 
     ){}
 
   ngOnInit(): void {
 
     this.getList();
+    this.fetchPaStatus();
+    this.GetOngoingAnnoucement();
   
       this.buildHeader();
   
@@ -103,19 +154,22 @@ private dialog: MatDialog,
   }
         buildHeader() {  
           this.paHeadArr = [
-            { header: 'PA Name', fieldValue: 'name', position: 1, },
-            { header: 'Health Status', fieldValue: 'health', position: 2, },
-            { header: 'Call Status', fieldValue: 'image', position: 3, },
+            { header: 'PA Name', fieldValue: 'paname', position: 1, },
+            { header: 'Health Status', fieldValue: 'healthstatus',type:'Boolean', position: 2, },
+            { header: 'Call Status', fieldValue: 'callstatus', position: 3, },
             { header: 'Cancel Announcement', fieldValue: 'button', position: 4, },
           
           ];
            this.paOngoingHeadArr = [
-            { header: 'Destination Type', fieldValue: 'type', position: 1, },
-            { header: 'Destination', fieldValue: 'desination', position: 2, },
-            { header: 'Destination Devices', fieldValue: 'devices', position: 3, },
-            { header: 'Announcement Type', fieldValue: 'announcement', position: 4, },
-            { header: 'PlayList Names', fieldValue: 'playlist', position: 5, },
-            { header: 'Cancel Announcement', fieldValue: 'button', position: 6, },
+            { header: 'Destination', fieldValue: 'destination', position: 1, },
+            { header: 'Source', fieldValue: 'source', position: 2, },
+            { header: 'Announcement Status ', fieldValue: 'announcementStatus', position: 3, },
+            { header: 'Duration', fieldValue: 'duration', position: 4, },
+            { header: 'Record Name', fieldValue: 'recordName', position: 5, },
+            { header: 'Audio', fieldValue: 'audio', position: 6, },
+            { header: 'Announcement Type', fieldValue: 'announcementType', position: 7, },
+      
+            { header: 'Cancel Announcement', fieldValue: 'button', position: 8, },
           
           ];
            this.paUpcomingHeadArr = [
@@ -173,6 +227,135 @@ deleteRow(data: any) {
 
     }  
 
+         GetOngoingAnnoucement() {
+  
+const start = this.startDate ??
+  Math.floor(new Date(new Date().setHours(0, 0, 0, 0)).getTime() / 1000);
+
+const end = this.endDate ??
+  Math.floor(new Date(new Date().setHours(23, 59, 59, 999)).getTime() / 1000);
+
+
+   this.MaxResultCount=this.perPage;
+      this.SkipCount=this.MaxResultCount*this.pager;
+      this.recordPerPage=this.perPage;
+
+// Construct final Inputs string
+const inputs = `${start},${end},,,${this.SkipCount},${this.MaxResultCount}`;
+
+const requestBody = {
+  projectId: 3,
+  type: 1,
+  inputs: inputs,
+  bodyInputs: "",
+  seq: 8
+};
+       this.service.GetSiteResponse(requestBody).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+    //  const items = response?.result || [];
+         
+ // 1️⃣ Parse the JSON string in result
+const parsedResult = JSON.parse(response?.result || "{}");
+
+// 2️⃣ Take the data array from parsed result
+const items = parsedResult?.data || [];
+this.items = items;
+
+// To calculate total pagination count
+const totalCount = items.length;
+
+if (Array.isArray(items)) {
+
+  items.forEach((element: any, index: number) => {
+
+    // Map fields safely
+    element.destination = element.destination || '-';
+    element.source = element.source || '-';
+    element.announcementStatus = element.announcementStatus || '-';
+    element.duration = element.duration || '-';
+    element.recordName = element.recordName || '-';
+    element.audio = element.audio || '-';
+    element.announcementType = element.announcementType || '-';
+    element.sNo = element.sNo || index + 1;
+
+    // Add button to last column
+    element.button = [
+      { label: 'Cancel', icon: 'cancel', type: 'cancel' }
+    ];
+  });
+
+  // 3️⃣ Pagination LIKE your existing logic
+  const _length = totalCount / Number(this.recordPerPage);
+
+  if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+    this.totalRecords = Number(this.recordPerPage) * (_length);
+  else if (Math.floor(_length) == 0)
+    this.totalRecords = 10;
+  else
+    this.totalRecords = totalCount;
+
+  this.totalPages = this.totalRecords / this.pager;
+}
+
+      })
+    } 
+           ListView() {
+  
+
+const requestBody = {
+  projectId: 3,
+  type: 1,
+  inputs: "",
+  bodyInputs: "",
+  seq: 2
+};
+       this.service.GetSiteResponse(requestBody).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+    //  const items = response?.result || [];
+         
+ // 1️⃣ Parse the JSON string in result
+const parsedResult = JSON.parse(response?.result || "{}");
+
+// 2️⃣ Take the data array from parsed result
+const items = parsedResult?.data || [];
+this.paList = items;
+
+// To calculate total pagination count
+const totalCount = items.length;
+
+if (Array.isArray(items)) {
+
+  items.forEach((element: any, index: number) => {
+
+    // Map fields safely
+    element.destination = element.destination || '-';
+    element.source = element.source || '-';
+    element.announcementStatus = element.announcementStatus || '-';
+    element.duration = element.duration || '-';
+    element.recordName = element.recordName || '-';
+    element.audio = element.audio || '-';
+    element.announcementType = element.announcementType || '-';
+    element.sNo = element.sNo || index + 1;
+
+    // Add button to last column
+    element.button = [
+      { label: 'Cancel', icon: 'cancel', type: 'cancel' }
+    ];
+  });
+
+  // 3️⃣ Pagination LIKE your existing logic
+  const _length = totalCount / Number(this.recordPerPage);
+
+  if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+    this.totalRecords = Number(this.recordPerPage) * (_length);
+  else if (Math.floor(_length) == 0)
+    this.totalRecords = 10;
+  else
+    this.totalRecords = totalCount;
+
+  this.totalPages = this.totalRecords / this.pager;
+}
+
+      })
+    } 
 
 showComponent(type: 'a' | 'b' | 'c') {
     this.activeComponent = type;
@@ -194,7 +377,52 @@ showComponent(type: 'a' | 'b' | 'c') {
       this.closeDrawer();
     }
   }
- 
+  fetchPaStatus() {
+      const requestBody = {
+    projectId: 3,
+    type: 1,
+    inputs: "all,all,all",
+    bodyInputs: "",
+    seq: 5
+  };
+  this.service.GetSiteResponse(requestBody)
+    .pipe(withLoader(this.loaderService))  
+    .subscribe({
+      next: (res: any) => {
+        const counts = this.getOnlineOfflineCount(res);
+        this.onlineCount = counts.online;
+        this.offlineCount = counts.offline;
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
+}
+
+ getOnlineOfflineCount(apiResult: any) {
+  const parsed = typeof apiResult.result === 'string'
+    ? JSON.parse(apiResult.result)
+    : apiResult.result;
+
+  const data = parsed.data || [];
+
+  const offlineStatuses = [
+    'unregistered',
+    'rejected',
+    'device not configured'
+  ];
+
+  let offline = 0;
+  let online = 0;
+
+  data.forEach((item:any) => {
+    const status = (item.Status || '').toLowerCase();
+    offlineStatuses.includes(status) ? offline++ : online++;
+  });
+
+  return { online, offline };
+}
+
 
   openRightDialog() {
     // 👇 Check if dialog is already open
