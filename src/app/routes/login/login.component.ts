@@ -15,6 +15,7 @@ import { LoaderService } from '../../services/common/loader.service';
 import { withLoader } from '../../services/common/common';
 import { SessionService } from '../../services/common/session.service';
 import { KeycloakService, KEYCLOAK_EVENT_SIGNAL, KeycloakEventType, typeEventArgs, ReadyArgs } from 'keycloak-angular';
+import { Globals } from '../../utils/global';
 
 
 
@@ -117,7 +118,9 @@ export class LoginComponent {
   
   }
 
-
+  if(Globals.prototype.isKeycloakInitialized) {
+    this.router.navigate(['/dashboard']);
+  }
 
   }
   getConfigDetails() {

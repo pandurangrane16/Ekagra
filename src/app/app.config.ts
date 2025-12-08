@@ -7,6 +7,7 @@ import { routes } from './app.routes';
 import { provideToastr } from 'ngx-toastr';
 import { provideKeycloakAngular } from './services/common/keycloak.config';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
+import { Globals } from './utils/global';
 
 export function initializeKeycloak(kc: KeycloakService) {
   return () => {
@@ -32,9 +33,11 @@ export function initializeKeycloak(kc: KeycloakService) {
       })
       .then(() => {
         console.info('✅ Keycloak initialized successfully');
+        Globals.prototype.isKeycloakInitialized = true;
       })
       .catch(err => {
         console.error('❌ Keycloak init failed:', err);
+        Globals.prototype.isKeycloakInitialized = false;
         // Return a resolved promise to prevent Angular bootstrap failure during debugging
         return Promise.resolve();
       });

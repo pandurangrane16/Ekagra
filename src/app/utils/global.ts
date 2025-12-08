@@ -12,6 +12,7 @@ export class Globals {
   // 🧩 User model (defined directly here)
   //    This matches your API response structure
   private _userSource = new BehaviorSubject<User | null>(null);
+  public isKeycloakInitialized: boolean = false;
   user$ = this._userSource.asObservable();
 
   get user(): User | null {
