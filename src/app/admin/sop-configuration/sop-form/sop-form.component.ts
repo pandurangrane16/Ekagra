@@ -373,6 +373,8 @@ export class SopFormComponent {
 
 
   submit() {
+
+    debugger;
     console.log(this.form.controls)
 
     try {
@@ -416,12 +418,9 @@ export class SopFormComponent {
                     const actionNames = actions.map((a: any) => a.actionName?.value);
                     const hasDuplicates = new Set(actionNames).size !== actionNames.length;
 
-                    if (hasDuplicates) {
-                      this.toast.error("Duplicate action names are not allowed. Please make sure all actions are unique.");
-                      return;
-                    }
+                  
 
-                    else {
+                    
                       this.form.markAllAsTouched();
 
                       let _SopConfig = new SopConfig();
@@ -485,7 +484,7 @@ export class SopFormComponent {
                             this.toast.error("Failed to update SOP");
                           }
                         });
-                    }
+                    
 
 
                   }
@@ -520,12 +519,9 @@ export class SopFormComponent {
                     const actionNames = actions.map((a: any) => a.actionName?.value);
                     const hasDuplicates = new Set(actionNames).size !== actionNames.length;
 
-                    if (hasDuplicates) {
-                      this.toast.error("Duplicate action names are not allowed. Please make sure all actions are unique.");
-                      return;
-                    }
+                   
 
-                    else {
+                    
                       this.form.markAllAsTouched();
 
                       let _SopConfig = new SopConfig();
@@ -588,7 +584,7 @@ export class SopFormComponent {
                             this.toast.error("Failed to create SOP");
                           }
                         });
-                    }
+                    
 
 
 

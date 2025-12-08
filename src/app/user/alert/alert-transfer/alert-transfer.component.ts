@@ -56,6 +56,18 @@ export class AlertTransferComponent implements OnInit {
       remarks: ['', Validators.required],
       selectedUser :['',Validators.required]
     });
+
+    debugger;
+    // 🔥 Auto-trim remarks whenever user types
+      this.form.get('remarks')?.valueChanges.subscribe(value => {
+        if (value !== null && value !== undefined) {
+          const trimmed = value.trimStart();
+          if (trimmed !== value) {
+            this.form.get('remarks')?.setValue(trimmed, { emitEvent: false });
+          }
+        }
+      });
+
       this.globals.restoreUserMappingFromSession();
 
   // 🔥 Get category of current user

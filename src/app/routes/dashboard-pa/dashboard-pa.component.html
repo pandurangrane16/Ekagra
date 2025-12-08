@@ -1,3 +1,21 @@
+
+<div class="row mb-2 mt-2 d-flex">
+    <div class="col-md-9"></div>
+    <div class="col-md-3">
+        <div class="card text-left">
+            <mat-form-field>
+                <mat-label>Enter a date range</mat-label>
+                <mat-date-range-input [rangePicker]="picker">
+                    <input matStartDate placeholder="Start date" (dateChange)="DateWiseFilter($event,'start')">
+                    <input matEndDate placeholder="End date" (dateChange)="DateWiseFilter($event,'end')">
+                </mat-date-range-input>
+                <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+            </mat-form-field>
+        </div>
+    </div>
+</div>
 <div class="row d-flex justify-content-evenly">
             <div class="col-md-2 d-flex flex-col justify-content-start">
                 
@@ -7,7 +25,7 @@
                         <div class="d-flex align-items-center"><img src="assets/img/pa-online.png" alt="" class="me-2" width="28px"><span class="text-uppercase"> Online PA
  </span></div>
                         <div class="count mt-4 mb-4">
-                            36
+                              {{ onlineCount }}
                         </div>
                        
                        
@@ -20,7 +38,7 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center"><img src="assets/img/pa-offline.png" alt="" class="me-2" width="28px"><span class="text-uppercase"> Offline PA</span></div>
                         <div class="count mt-4 mb-4">
-                            36
+                               {{ offlineCount }}
                         </div>
                         
                     </div>
@@ -122,7 +140,7 @@
 <div class="card-body p-0">
     <mat-tab-group>
   <mat-tab label="Ongoing Announcements">
-  <app-cm-table [headArr]="paOngoingHeadArr" [gridArr]="paOngoingList" [pagination]="true" [totalRecords]="totalRecords"
+  <app-cm-table [headArr]="paOngoingHeadArr" [gridArr]="items" [pagination]="true" [totalRecords]="totalRecords"
                     [perPage]="perPage" [totalPages]="totalPages" [collectionSize]="collectionSize"
                     (pager)="onPageChange($event)" (recordPerPage)="onPageRecordsChange($event)"
                     (searchWithId)="onRowClicked($event)" (btnAction)="onButtonClicked($event)">

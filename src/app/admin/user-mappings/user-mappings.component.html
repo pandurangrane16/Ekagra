@@ -21,7 +21,7 @@
                         <mat-form-field *ngIf="isUserOptionsLoaded" appearance="fill" class="w-100">
                             <mat-label>Select User</mat-label>
                             <mat-select multiple formControlName="selectedUser" [disabled]="isEdit">
-                                <mat-option *ngFor="let option of UserOptions" [value]="option">
+                                <mat-option *ngFor="let option of UserOptions" [value]="option" >
                                     {{ option.text }}
                                 </mat-option>
                             </mat-select>
@@ -55,7 +55,7 @@
              <app-cm-select2
               *ngIf="isProjectOptionsLoaded"
               [formGroup]="form"
-              [controlName]="'selectedRole'"
+              [controlName]="'selectedCategory'"
               [settings]="projectSelectSettings"
               (returnObject)="onProjectSelected($event)"
             >
@@ -67,20 +67,37 @@
                         <select multiple #selectElement class="form-select" style="width: 100%;" [attr.size]="5">
                             <option *ngFor="let option of yourOptions" [value]="option.id">{{ option.text }}</option>
                         </select> -->
-                        <mat-form-field    *ngIf="isRoleOptionsLoaded" appearance="fill" class="w-100">
+                        <!-- <mat-form-field    *ngIf="isRoleOptionsLoaded" appearance="fill" class="w-100">
                             <mat-label>Select Role</mat-label>
                             <mat-select multiple formControlName="selectedRole">
                                 <mat-option *ngFor="let option of RoleOptions" [value]="option">
                                     {{ option.text }}
                                 </mat-option>
                             </mat-select>
+                        </mat-form-field> -->
+                        <mat-form-field *ngIf="isRoleOptionsLoaded || isEdit" appearance="fill" class="w-100">
+                        <mat-label>Select Role</mat-label>
+                        <mat-select multiple formControlName="selectedRole">
+                            <mat-option *ngFor="let option of RoleOptions" [value]="option">
+                            {{ option.text }}
+                            </mat-option>
+                        </mat-select>
                         </mat-form-field>
 
                     </div>
                 </div>
                 <hr>
                 <div class="row">
-                    <div class="col-md-12 text-right">
+                    <div class="col-md-4 text-left">
+                       <!-- <input matInput formControlName="searchText" (keyup)="onSearchChange()" placeholder="Search"/> -->
+                         <app-cm-input
+                            [formGroup]="form"
+                            [controlName]="'searchText'"
+                            [_inputData]="searchInputSettings">
+                            </app-cm-input>
+                    </div>
+                    <div class="col-md-8 text-right">
+                        
                         <button mat-stroked-button (click)="close()">Cancel</button>&nbsp;&nbsp;&nbsp;
                         <button mat-flat-button color="primary" (click)="submit()" [disabled]="!!userAlreadyMappedMessage || isCheckingUser">Save</button>
                     </div>

@@ -4,19 +4,22 @@
             <app-cm-select-check ngSkipHydration *ngIf="isVmdSelected" [formGroup]="form"
                 [controlName]="'selectedVmdAction'" [settings]="vmdTypeSettings"
                 (returnObject)="onActionTypeSelected($event)" color="primary">
+                
             </app-cm-select-check>
         </div>
     </div>
     <hr>
     <div class="row">
         <div class="col-md-6 d-flex align-items-center gap-2">
+      
             <label class="mb-0">Attachment(Image or Video)</label>
-            <input type="file">
+            <input type="file" (change)="onFileSelected($event)">
+           
         </div>
     
         <div class="col-md-5" *ngIf="isTypeSelected">
             <app-cm-select2 ngSkipHydration *ngIf="isTypeSelected" [formGroup]="form" [controlName]="'selectedUnit'"
-                [settings]="unitSettings" (returnObject)="onActionTypeSelected($event)">
+                [settings]="unitSettings" (returnObject)="onUnitSelected($event)">
             </app-cm-select2>
         </div>
     
