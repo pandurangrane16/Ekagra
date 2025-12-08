@@ -97,7 +97,7 @@ export class AlertTransferComponent implements OnInit {
       const items = response?.result?.items || [];
 
 const projectOptions = items.map((item: any) => ({
-  name: item.name,
+  name: item.userName,
   value: item.id
 }));
   
