@@ -47,8 +47,15 @@ export class AlertTransferComponent implements OnInit {
     options: []
   };
   
-  constructor( public dialogRef: MatDialogRef<AlertTransferComponent>,@Inject(MAT_DIALOG_DATA) public data: any,  private fb: FormBuilder,
-  private dialog : Dialog, private loaderService : LoaderService,private globals:Globals,private service: alertservice, private toast: ToastrService,
+  constructor( 
+  public dialogRef: MatDialogRef<AlertTransferComponent>,
+  @Inject(MAT_DIALOG_DATA) public data: any,  
+  private fb: FormBuilder,
+  private dialog : Dialog, 
+  private loaderService : LoaderService,
+  private globals:Globals,
+  private service: alertservice, 
+  private toast: ToastrService,
   private alertLogService: AlertlogService) { }
   
   
@@ -125,7 +132,7 @@ const projectOptions = items.map((item: any) => ({
     }
   close() {
     // this.dialog.closeAll();
-    this.dialogRef.close(true);
+    this.dialogRef.close(false);
     // this.router.navigate(['/alerts']);
 
   }
