@@ -43,14 +43,27 @@ SubmitAction() {
     return;
   }
 
-  let baseAlert = this.globals.alert;
+   let baseAlert: any;
+
+// Case 1: No global alert stored → use task
+if (!this.globals.alert) {
+  baseAlert = this.task;
+}
+// Case 2: Global alert exists but ID mismatch → use task
+else if (this.globals.alert.id !== this.task.id) {
+  baseAlert = this.task;
+}
+// Case 3: Global alert exists & same ID → use global
+else {
+  baseAlert = this.globals.alert;
+}
 
   const updateAlertData = {
     id: baseAlert.id,
     lastModifierUserId: currentUserId,
     currentStatus: "FlashMode",
     remarks: baseAlert?.remarks,
-    creatorUserId: baseAlert?.creatorUserId,
+     creatorUserId: baseAlert?.creatorUserId ?? baseAlert?.createruserid,
     policyName: baseAlert?.policyName,
     siteId: baseAlert?.siteId,
     policyId: baseAlert?.policyId,
@@ -60,7 +73,7 @@ SubmitAction() {
     devices: baseAlert?.devices,
     alertSource: baseAlert?.alertSource,
     ticketNo: baseAlert?.ticketNo,
-    zoneId: baseAlert?.zoneId,
+     zoneId: baseAlert?.zoneId ?? baseAlert?.zoneID,
     creationTime: baseAlert?.creationTime,
     lastModificationTime: new Date(),
     isDeleted: false,

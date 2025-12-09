@@ -52,7 +52,24 @@ SubmitAction() {
   // --------------------------
 
 
-  let baseAlert = this.globals.alert;
+  
+
+  let baseAlert: any;
+
+// Case 1: No global alert stored → use task
+if (!this.globals.alert) {
+  baseAlert = this.task;
+}
+// Case 2: Global alert exists but ID mismatch → use task
+else if (this.globals.alert.id !== this.task.id) {
+  baseAlert = this.task;
+}
+// Case 3: Global alert exists & same ID → use global
+else {
+  baseAlert = this.globals.alert;
+}
+
+  
 
 
   const updateAlertData = {
@@ -62,7 +79,8 @@ SubmitAction() {
 
     // keep all other fields same as original alert
     remarks: baseAlert?.remarks,
-    creatorUserId: baseAlert?.creatorUserId,
+  
+    creatorUserId: baseAlert?.creatorUserId ?? baseAlert?.createruserid,
     policyName: baseAlert?.policyName,
     siteId: baseAlert?.siteId,
     policyId: baseAlert?.policyId,
@@ -71,8 +89,10 @@ SubmitAction() {
     filePath: baseAlert?.filePath,
     devices: baseAlert?.devices,
     alertSource: baseAlert?.alertSource,
-    ticketNo: baseAlert?.ticketNo,
-    zoneId: baseAlert?.zoneId,
+    ticketNo: baseAlert?.ticketNo, 
+    // zoneId: baseAlert?.zoneId, zoneID
+    zoneId: baseAlert?.zoneId ?? baseAlert?.zoneID,
+   
 
     creationTime:baseAlert?.creationTime,
     lastModificationTime: new Date(),

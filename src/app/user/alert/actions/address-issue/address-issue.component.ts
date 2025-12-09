@@ -129,14 +129,27 @@ async handleCase2_AutoCreatePendingActions() {
 
 
     // ------- UPDATE ALERT TABLE FOR THIS ACTION -------
-      let baseAlert = this.globals.alert;
+       let baseAlert: any;
+
+// Case 1: No global alert stored → use task
+if (!this.globals.alert) {
+  baseAlert = this.task;
+}
+// Case 2: Global alert exists but ID mismatch → use task
+else if (this.globals.alert.id !== this.task.id) {
+  baseAlert = this.task;
+}
+// Case 3: Global alert exists & same ID → use global
+else {
+  baseAlert = this.globals.alert;
+}
     const updatePayload = {
       id: baseAlert?.id,
       currentStatus: act.prmValue,
       lastModifiedUserId: Number(this.globals?.user?.id),
 
       remarks: baseAlert?.remarks,
-      creatorUserId: baseAlert?.createruserid,
+      creatorUserId: baseAlert?.creatorUserId ?? baseAlert?.createruserid,
       policyName: baseAlert?.policyName,
       siteId: baseAlert?.siteId,
       policyId: baseAlert?.policyId,
@@ -146,7 +159,7 @@ async handleCase2_AutoCreatePendingActions() {
       devices: baseAlert?.devices,
       alertSource: baseAlert?.alertSource,
       ticketNo: baseAlert?.ticketNo,
-      zoneId: baseAlert?.zoneID,
+     zoneId: baseAlert?.zoneId ?? baseAlert?.zoneID,
       creationTime: baseAlert?.creationTime,
       lastModificationTime: new Date(),
       isDeleted: false,
@@ -207,7 +220,20 @@ else {
   // 5️⃣ UPDATE ALERT TABLE with FINAL action
   const lastAction = remainingActions[remainingActions.length - 1];
 
-    let baseAlert = this.globals.alert;
+                           let baseAlert: any;
+
+// Case 1: No global alert stored → use task
+if (!this.globals.alert) {
+  baseAlert = this.task;
+}
+// Case 2: Global alert exists but ID mismatch → use task
+else if (this.globals.alert.id !== this.task.id) {
+  baseAlert = this.task;
+}
+// Case 3: Global alert exists & same ID → use global
+else {
+  baseAlert = this.globals.alert;
+}
 
   const updatePayload = {
     id:baseAlert?.id,
@@ -217,7 +243,7 @@ else {
 
 
     remarks:baseAlert?.remarks,
-    creatorUserId: baseAlert?.createruserid,
+    creatorUserId: baseAlert?.creatorUserId ?? baseAlert?.createruserid,
     policyName: baseAlert?.policyName,
     siteId: baseAlert?.siteId,
     policyId:baseAlert?.policyId,
@@ -227,7 +253,7 @@ else {
     devices: baseAlert?.devices,
     alertSource: baseAlert?.alertSource,
     ticketNo:baseAlert?.ticketNo,
-    zoneId: baseAlert?.zoneID,
+    zoneId: baseAlert?.zoneId ?? baseAlert?.zoneID,
 
     creationTime:baseAlert?.creationTime,
     lastModificationTime: new Date(),
@@ -326,13 +352,26 @@ loadSopActions(policyId: number): Promise<void> {
 }
 
 updateAlertStatusAfterSubmit() {
-   let baseAlert = this.globals.alert;
+                           let baseAlert: any;
+
+// Case 1: No global alert stored → use task
+if (!this.globals.alert) {
+  baseAlert = this.task;
+}
+// Case 2: Global alert exists but ID mismatch → use task
+else if (this.globals.alert.id !== this.task.id) {
+  baseAlert = this.task;
+}
+// Case 3: Global alert exists & same ID → use global
+else {
+  baseAlert = this.globals.alert;
+}
   const updatePayload = {
     id: baseAlert?.id,
     currentStatus: "AddressIncident",   
     lastModifiedUserId: this.globals?.user?.id,
     remarks:baseAlert?.remarks,
-    creatorUserId: baseAlert?.createruserid,
+    creatorUserId: baseAlert?.creatorUserId ?? baseAlert?.createruserid,
     policyName: baseAlert?.policyName,
     siteId: baseAlert?.siteId,
     policyId: baseAlert?.policyId,
@@ -342,7 +381,8 @@ updateAlertStatusAfterSubmit() {
     devices: baseAlert?.devices,
     alertSource:baseAlert?.alertSource,
     ticketNo: baseAlert?.ticketNo,
-    zoneId: baseAlert?.zoneID,
+     zoneId: baseAlert?.zoneId ?? baseAlert?.zoneID,
+     
 
     creationTime:baseAlert?.creationTime,
     lastModificationTime: new Date(),

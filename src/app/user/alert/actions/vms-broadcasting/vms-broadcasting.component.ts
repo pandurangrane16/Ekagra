@@ -316,7 +316,20 @@ SubmitAction() {
                 if (response.success == true)
                   {
                      this.toast.success("Request submitted successfully." + "\n" + response.result);
-                      let baseAlert = this.globals.alert;
+                                             let baseAlert: any;
+
+// Case 1: No global alert stored → use task
+if (!this.globals.alert) {
+  baseAlert = this.task;
+}
+// Case 2: Global alert exists but ID mismatch → use task
+else if (this.globals.alert.id !== this.task.id) {
+  baseAlert = this.task;
+}
+// Case 3: Global alert exists & same ID → use global
+else {
+  baseAlert = this.globals.alert;
+}
                  const logEntry = {
     AlertId: alertId,
     ActionType: "VMSEmergencyPublish",
@@ -332,13 +345,26 @@ SubmitAction() {
     .subscribe({
         next: (res: any) => {
                       this.toastr.success("Alert log submitted successfully!");
-                      let baseAlert = this.globals.alert;
+                        let baseAlert: any;
+
+// Case 1: No global alert stored → use task
+if (!this.globals.alert) {
+  baseAlert = this.task;
+}
+// Case 2: Global alert exists but ID mismatch → use task
+else if (this.globals.alert.id !== this.task.id) {
+  baseAlert = this.task;
+}
+// Case 3: Global alert exists & same ID → use global
+else {
+  baseAlert = this.globals.alert;
+}
   const updatePayload = {
     id: baseAlert?.id,
     currentStatus: "VMSEmergencyPublish",   
     lastModifiedUserId: this.globals?.user?.id,
     remarks:baseAlert?.remarks,
-    creatorUserId: baseAlert?.createruserid,
+    creatorUserId: baseAlert?.creatorUserId ?? baseAlert?.createruserid,
     policyName: baseAlert?.policyName,
     siteId: baseAlert?.siteId,
     policyId: baseAlert?.policyId,
@@ -348,7 +374,7 @@ SubmitAction() {
     devices: baseAlert?.devices,
     alertSource:baseAlert?.alertSource,
     ticketNo: baseAlert?.ticketNo,
-    zoneId: baseAlert?.zoneID,
+     zoneId: baseAlert?.zoneId ?? baseAlert?.zoneID,
 
     creationTime:baseAlert?.creationTime,
     lastModificationTime: new Date(),
