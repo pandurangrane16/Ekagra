@@ -8,6 +8,8 @@ import { CmButtonComponent } from '../../../common/cm-button/cm-button.component
 import { Dialog } from '@angular/cdk/dialog';
 import { ResolvedByData } from '../resolved-by-itself/resolved-by-itself.component';
 import { AlertlogService } from '../../../services/admin/alertlog.service';
+import { LoaderService } from '../../../services/common/loader.service';
+import { withLoader } from '../../../services/common/common';
 @Component({
   selector: 'app-alert-history',
   imports: [MaterialModule, CommonModule, ReactiveFormsModule],
@@ -28,7 +30,8 @@ export class AlertHistoryComponent implements OnInit {
        formFieldClass: "w-100"
     }
   }
-  constructor(@Inject(MAT_DIALOG_DATA) public data: ResolvedByData, private fb: FormBuilder, private dialog: Dialog, private alertLogService: AlertlogService) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: ResolvedByData, private fb: FormBuilder, private dialog: Dialog, private alertLogService: AlertlogService
+,private loaderService : LoaderService) { }
   ngOnInit(): void {
      this.loadAlertHistory();
     this.form = this.fb.group({
@@ -41,7 +44,7 @@ export class AlertHistoryComponent implements OnInit {
     if (!alertId) return;
 
     this.isLoading = true;
-    this.alertLogService.GetAlerthistory(alertId).subscribe({
+    this.alertLogService.GetAlerthistory(alertId).pipe(withLoader(this.loaderService)).subscribe({
       next: (res: any) => {
         // adapt to API shape: prefer result.items, fallback to result or raw array
         this.alertHistory = res?.result?.items ?? res?.result ?? res ?? [];

@@ -16,7 +16,8 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { Globals } from '../../../utils/global';
 import { AlertlogService } from '../../../services/admin/alertlog.service';
-  
+  import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+
 
 @Component({
   selector: 'app-alert-transfer',
@@ -46,7 +47,7 @@ export class AlertTransferComponent implements OnInit {
     options: []
   };
   
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any,  private fb: FormBuilder,
+  constructor( public dialogRef: MatDialogRef<AlertTransferComponent>,@Inject(MAT_DIALOG_DATA) public data: any,  private fb: FormBuilder,
   private dialog : Dialog, private loaderService : LoaderService,private globals:Globals,private service: alertservice, private toast: ToastrService,
   private alertLogService: AlertlogService) { }
   
@@ -97,7 +98,7 @@ export class AlertTransferComponent implements OnInit {
       const items = response?.result?.items || [];
 
 const projectOptions = items.map((item: any) => ({
-  name: item.name,
+  name: item.userName,
   value: item.id
 }));
   
@@ -123,7 +124,10 @@ const projectOptions = items.map((item: any) => ({
       });
     }
   close() {
-    this.dialog.closeAll();
+    // this.dialog.closeAll();
+    this.dialogRef.close(true);
+    // this.router.navigate(['/alerts']);
+
   }
 
 
@@ -509,8 +513,9 @@ submitAction() {
             this.toast.success("Alert updated successfully");
         const updatedAlert = res?.result;
         this.globals.saveAlert(updatedAlert);
-            this.dialog.closeAll();
-            this.router.navigate(['/alerts']);
+            // this.dialog.closeAll();
+            // this.router.navigate(['/alerts']);
+            this.dialogRef.close(true);
           },
           error: () => this.toast.error("Alert update failed")
         });

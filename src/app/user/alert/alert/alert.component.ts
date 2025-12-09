@@ -381,7 +381,7 @@ export class AlertComponent implements OnInit {
             element.category === 1 ? 'Medium' :
               element.category === 2 ? 'High' : '';
           element.alertdate = element.creationTime;
-          element.handledby = element.handledUser;
+          element.handledby = element.userName;
           element.devices = element.devices
 
           // element.button = [
@@ -394,7 +394,7 @@ export class AlertComponent implements OnInit {
             element.category === 1 ? 'Medium' :
               element.category === 2 ? 'High' : '';
           element.alertdate = element.creationTime;
-          element.handledby = element.handledUser;
+          element.handledby = element.userName;
           element.devices = element.devices;
           element.createruserid=element.userId;
 
