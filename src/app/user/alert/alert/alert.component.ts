@@ -381,7 +381,7 @@ export class AlertComponent implements OnInit {
             element.category === 1 ? 'Medium' :
               element.category === 2 ? 'High' : '';
           element.alertdate = element.creationTime;
-          element.handledby = element.handledUser;
+          element.handledby = element.userName;
          const statusMap: any = {
   0: 'Created',
   1: 'In Progress',
