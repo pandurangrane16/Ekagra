@@ -17,6 +17,7 @@ import { ToastrService } from 'ngx-toastr';
 import { MaterialModule } from './Material.module';
 import { Subscription } from 'rxjs';
 import { SessionService } from './services/common/session.service';
+import { Globals } from './utils/global';
 
 @Component({
   selector: 'app-root',
@@ -40,6 +41,7 @@ export class AppComponent implements OnInit {
   windowWidth: number = 0;
   loggedIn = false;
   userProfile: any = null;
+  appReady: boolean = false;
   _session = inject(SessionService);
 
   @Input() isSidebarCollapsed = false;
@@ -79,6 +81,7 @@ export class AppComponent implements OnInit {
   }
 
   async getKeyCloakToken() {
+    this.appReady = Globals.prototype.isKeycloakInitialized;
     // keycloakService.init()
     //   .then(() => {
     //     let return_data = bootstrapApplication(AppComponent, {
@@ -99,6 +102,7 @@ export class AppComponent implements OnInit {
         this.showElement = !(event.url === '/' || event.url.includes('login') ||  event.url.includes('register'));
       }
     });
+    this.appReady = Globals.prototype.isKeycloakInitialized;
     // this.signalRService.notifications$.subscribe((message: string) => {
     //   // this.snackBar.open(message, 'Close', {
     //   //   duration: 5000,
