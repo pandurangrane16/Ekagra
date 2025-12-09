@@ -205,7 +205,7 @@ export class AlertComponent implements OnInit {
       { header: 'Category', fieldValue: 'category', position: 4 },
       { header: '[Alert Date]', fieldValue: 'alertdate', position: 5 },
       { header: 'Handeled By', fieldValue: 'handledby', position: 6 },
-      { header: 'Devices', fieldValue: 'devices', position: 7 }
+      { header: 'Status', fieldValue: 'devices', position: 7 }
     ];
   }
 
@@ -381,8 +381,14 @@ export class AlertComponent implements OnInit {
             element.category === 1 ? 'Medium' :
               element.category === 2 ? 'High' : '';
           element.alertdate = element.creationTime;
-          element.handledby = element.handledUser;
-          element.devices = element.devices
+          element.handledby = element.userName;
+         const statusMap: any = {
+  0: 'Created',
+  1: 'In Progress',
+  4: 'Completed'
+};
+
+element.devices = statusMap[element.isStatus] || 'Unknown';
 
           // element.button = [
           //   { label: 'Edit', icon: 'edit', type: 'edit' },
@@ -395,7 +401,7 @@ export class AlertComponent implements OnInit {
               element.category === 2 ? 'High' : '';
           element.alertdate = element.creationTime;
           element.handledby = element.handledUser;
-          element.devices = element.devices;
+         
           element.createruserid=element.userId;
 
           // element.button = [

@@ -25,7 +25,8 @@ import _ from 'lodash';
 
 import { MaterialModule } from "../../Material.module";
 import { AbstractControl, ValidationErrors } from '@angular/forms';
-
+import { debug } from 'node:console';
+import { RoleConfigurationService } from '../../services/admin/role-configuration.service'; 
 // jQuery declared globally
 declare var $: any;
 
@@ -36,7 +37,7 @@ declare var $: any;
     CommonModule,
    CmTableComponent,
    CmSelect2Component,
-    
+    CmInputComponent,
    
     MatCardModule, MatButtonModule,
     MaterialModule
@@ -46,6 +47,17 @@ declare var $: any;
 })
 
      export class UserMappingsComponent implements OnInit, AfterViewInit, OnDestroy {
+      StartDate: string | null = null;
+      EndDate: string | null = null;
+      SiteName: string | null = null;
+      ProjectId: number | null = null;
+      Type: string | null = null;
+      IsActive: boolean | null = null;
+      Filter: string | null = null;
+      Sorting: string | null = null;
+
+    
+
     private destroy$ = new Subject<void>();
   userAlreadyMappedMessage = '';
   isCheckingUser = false;
@@ -187,6 +199,7 @@ router = inject(Router);
       constructor(private fb: FormBuilder,
         private dialog: MatDialog,
         private service: UserMappingService, private toast: ToastrService,
+         private RoleService: RoleConfigurationService,
         @Inject(PLATFORM_ID) private platformId: Object
         ) {}
         
@@ -200,14 +213,25 @@ router = inject(Router);
     return { minArrayLength: { requiredLength: min, actualLength: value.length } };
   };
 }
-        
+        private searchSubject = new Subject<string>();
+
       ngOnInit(): void {
+        debugger;
+  this.searchSubject
+    .pipe(debounceTime(400))
+    .subscribe((value) => {
+      this.pager = 0;
+      this.getFilteredList();
+    });
 
-
+       
        this.form = this.fb.group({
+  
   selectedUser: [null, Validators.required],
   selectedZone: [[], this.minArrayLength(1)],
-  selectedRole: [[], this.minArrayLength(1)]
+  selectedRole: [[], this.minArrayLength(1)],
+  selectedCategory: [null],   
+  searchText: ['']
 });
           this.buildHeader();
         //  this.getProjConfigList();
@@ -227,14 +251,17 @@ router = inject(Router);
                 distinctUntilChanged() 
               )
               .subscribe(value => {
+                debugger;
                    if (value && value.length >= 3) {
                        this.perPage=10;
                  this.pager=0;
+                 this.searchText=value;
                 this.getFilteredList();
               } else if (!value || value.length === 0) {
 
                  this.perPage=10;
                  this.pager=0;
+                 this.searchText="";
                  this.getFilteredList();
               }
               });
@@ -307,6 +334,17 @@ router = inject(Router);
 
         }
 
+        
+// onSearchChange() {
+//   // const value = this.form.get('searchText')?.value;
+
+//   // if (!value || value.length >= 2) {
+//   //   this.searchSubject.next(value);
+//   // }
+//    const value = this.form.value.searchText;
+//   this.searchSubject.next(value);
+//   alert(value); 
+// }
       onProjectChange(value: any) {
           this.selectedProject = value;
           console.log('Selected Project:', value);
@@ -342,8 +380,7 @@ router = inject(Router);
       //   value: null
       // });
   
-      // this.projectSelectSettings.options = projectOptions;
-      //     this.projectSelectSettings.options = projectOptions;
+
 this.projectSelectSettings = JSON.parse(JSON.stringify({
   ...this.projectSelectSettings,
   options: projectOptions
@@ -563,9 +600,8 @@ else{  if(this.isEdit)
             { header: 'UserName', fieldValue: 'userName', position: 1 },
             { header: 'Zone', fieldValue: 'zoneNames', position: 2 },
             { header: 'Role', fieldValue: 'roleNames', position: 3 },
-           
-     
-            { header: 'Action', fieldValue: 'button', position: 4 }
+            { header: 'Category', fieldValue: 'category', position: 4 }, 
+             { header: 'Action', fieldValue: 'button', position: 5 }
           ];
           ;}
       
@@ -669,53 +705,151 @@ deleteRow(rowData: any): void {
     }
   });
 }
+// editRow(rowData: any) {
+//   if (!rowData?.id) {
+//     this.toast.error('Invalid record', 'Error');
+//     return;
+//   }
+
+//   this.selectedRecordId=rowData.id;
+
+//     this.isEdit = true;
+ 
+//   // Call API using your GetById service
+//   this.service.GetById(rowData.id)
+//     .pipe(withLoader(this.loaderService))
+//     .subscribe({
+//       next: (response: any) => {
+//         const result = response?.result;
+//         if (!result) {
+//           this.toast.error('No data found', 'Error');
+//           return;
+//         }
+// debugger;
+//       // this.isRoleOptionsLoaded = false;
+//       // this.getRoleList(result.Category);
+
+//         // Extract IDs and convert comma-separated values to arrays
+//         const zoneIds = result.zoneId ? result.zoneId.split(',').map((id: string) => id.trim()) : [];
+//         const roleIds = result.roleId ? result.roleId.split(',').map((id: string) => id.trim()) : [];
+//         const userId =  String(result.userId);
+
+//         // Find matching option objects from your dropdown lists
+//         const selectedZones = this.ZoneOptions?.filter((z: any) => zoneIds.includes(String(z.id))) || [];
+//         const selectedRoles = this.RoleOptions?.filter((r: any) => roleIds.includes(String(r.id))) || [];
+//         const selectedUser = this.UserOptions?.filter((r: any) => userId.includes(String(r.id))) || [];
+
+
+//   // using rolei find out category  
+
+//   const firstRoleId = roleIds.length > 0 ? roleIds[0] : null;
+
+//     if (firstRoleId) {
+//       this.RoleService.GetAllRoles().subscribe((roleRes: any) => {
+//         const allRoles = roleRes?.result?.items || [];
+//         const matchedRole = allRoles.find((r: any) => String(r.id) === String(firstRoleId));
+//         const category = matchedRole?.category || null;
+//         this.projectSelectSettings = category;
+//         console.log("Matched Category: ", category);
+      
+//       });
+//     }
+
+//         // Patch values into the form
+
+        
+//         this.form.patchValue({
+//           selectedUser:  selectedUser || null,
+//           selectedZone: selectedZones,
+//           selectedRole: selectedRoles,
+//           selectedCategory: this.projectSelectSettings  || null  
+//         });
+
+//         //   this.form.controls['selectedUser'].disable();
+
+//       this.toast.success('Record data loaded successfully. You can now edit the record.', 'Edit Mode Activated');
+
+//       },
+//       error: (err) => {
+//         console.error('Error fetching record:', err);
+//         this.toast.error('Failed to load record', 'Error');
+//       }
+//     });
+// }
+
 editRow(rowData: any) {
-  if (!rowData?.id) {
-    this.toast.error('Invalid record', 'Error');
-    return;
-  }
 
-  this.selectedRecordId=rowData.id;
+  this.selectedRecordId = rowData.id;
+  this.isEdit = true;
 
-    this.isEdit = true;
-
-  // Call API using your GetById service
   this.service.GetById(rowData.id)
     .pipe(withLoader(this.loaderService))
     .subscribe({
       next: (response: any) => {
+
         const result = response?.result;
         if (!result) {
           this.toast.error('No data found', 'Error');
           return;
         }
 
-        // Extract IDs and convert comma-separated values to arrays
-        const zoneIds = result.zoneId ? result.zoneId.split(',').map((id: string) => id.trim()) : [];
-        const roleIds = result.roleId ? result.roleId.split(',').map((id: string) => id.trim()) : [];
-        const userId =  String(result.userId);
+        const zoneIds = result.zoneId?.split(',') || [];
+        const roleIds = result.roleId?.split(',') || [];
+        const userId = String(result.userId);
 
-        // Find matching option objects from your dropdown lists
-        const selectedZones = this.ZoneOptions?.filter((z: any) => zoneIds.includes(String(z.id))) || [];
-        const selectedRoles = this.RoleOptions?.filter((r: any) => roleIds.includes(String(r.id))) || [];
-        const selectedUser = this.UserOptions?.filter((r: any) => userId.includes(String(r.id))) || [];
+        // Step 1: GET FIRST ROLE ID
+        const firstRoleId = roleIds.length > 0 ? Number(roleIds[0]) : null;
+        if (!firstRoleId) {
+          console.warn("No role available in record");
+          return;
+        }
 
-        // Patch values into the form
+        // Step 2: Load ALL roles → find category based on roleId
+        this.RoleService.GetAllRoles().subscribe((roleRes: any) => {
 
-        
-        this.form.patchValue({
-          selectedUser:  selectedUser || null,
-          selectedZone: selectedZones,
-          selectedRole: selectedRoles
+          const allRoles = roleRes?.result?.items || [];
+          const matchedRole = allRoles.find((r: any) => r.id === firstRoleId);
+
+          if (!matchedRole) {
+            console.warn("Role not found in role list");
+            return;
+          }
+
+          const category = matchedRole.category;
+          
+          // Step 3: Bind Category to dropdown
+          this.form.patchValue({
+            selectedCategory: { name: category }
+          });
+
+          // Step 4: Load roles of this category
+          this.getRoleList(category);
+
+          setTimeout(() => {
+            const selectedRoles = this.RoleOptions?.filter((r: any) =>
+              roleIds.includes(String(r.id))
+            ) || [];
+
+            const selectedZones = this.ZoneOptions?.filter((z: any) =>
+              zoneIds.includes(String(z.id))
+            ) || [];
+
+            const selectedUser = this.UserOptions?.filter((u: any) =>
+              userId.includes(String(u.id))
+            ) || [];
+
+            this.form.patchValue({
+              selectedUser: selectedUser,
+              selectedZone: selectedZones,
+              selectedRole: selectedRoles
+            });
+
+            this.toast.success('Record loaded — Edit Mode Active');
+          }, 300); // delay ensures RoleOptions are loaded
         });
-
-        //   this.form.controls['selectedUser'].disable();
-
-      this.toast.success('Record data loaded successfully. You can now edit the record.', 'Edit Mode Activated');
-
       },
-      error: (err) => {
-        console.error('Error fetching record:', err);
+
+      error: () => {
         this.toast.error('Failed to load record', 'Error');
       }
     });
@@ -825,109 +959,189 @@ editRow(rowData: any) {
   //   }  
 
 
-    getFilteredList() {
-  this.MaxResultCount = this.perPage;
-  this.SkipCount = this.MaxResultCount * this.pager;
-  this.recordPerPage = this.perPage;
+//     getFilteredList() {
+//   this.MaxResultCount = this.perPage;
+//   this.SkipCount = this.MaxResultCount * this.pager;
+//   this.recordPerPage = this.perPage;
 
-  this.service.GetFilteredList(this.MaxResultCount, this.SkipCount)
-    .pipe(withLoader(this.loaderService))
-    .subscribe((response: any) => {
-      const items = response.result?.items || [];
+//   this.service.GetFilteredList(this.MaxResultCount, this.SkipCount)
+//     .pipe(withLoader(this.loaderService))
+//     .subscribe((response: any) => {
+//       const items = response.result?.items || [];
      
-this.items = items;
-debugger;
+// this.items = items;
+// debugger;
 
-this.userMappings = items;
-console.log("userMappings",this.userMappings)
-      const totalCount = response.result?.totalCount || 0;
+// this.userMappings = items;
+// console.log("userMappings",this.userMappings)
+//       const totalCount = response.result?.totalCount || 0;
 
-      if (Array.isArray(items)) {
-        items.forEach((element: any) => {
-          // Convert comma-separated string IDs into arrays
-          const zoneIds = element.zoneId ? element.zoneId.split(',').map((id: string) => id.trim()) : [];
-          const roleIds = element.roleId ? element.roleId.split(',').map((id: string) => id.trim()) : [];
+//       if (Array.isArray(items)) {
+//         items.forEach((element: any) => {
+//           // Convert comma-separated string IDs into arrays
+//           const zoneIds = element.zoneId ? element.zoneId.split(',').map((id: string) => id.trim()) : [];
+//           const roleIds = element.roleId ? element.roleId.split(',').map((id: string) => id.trim()) : [];
 
-          // Map Zone Names
-       const zoneNames = zoneIds
-  .map((id: string) => this.ZoneOptions.find((z: any) => String(z.id) === id)?.text)
-  .filter(Boolean)
-  .join(', ');
+//           // Map Zone Names
+//        const zoneNames = zoneIds
+//   .map((id: string) => this.ZoneOptions.find((z: any) => String(z.id) === id)?.text)
+//   .filter(Boolean)
+//   .join(', ');
 
-          // Map Role Names
-          const roleNames = roleIds
-            .map((id: string) => this.RoleOptions2.find((r: any) => String(r.id) === id)?.text)
-            .filter(Boolean)
-            .join(', ');
+//           // Map Role Names
+//           const roleNames = roleIds
+//             .map((id: string) => this.RoleOptions2.find((r: any) => String(r.id) === id)?.text)
+//             .filter(Boolean)
+//             .join(', ');
 
-          // Map User Name (if you have a user list)
-          const userName = this.UserOptions?.find((u: any) => u.id === element.userId)?.text || element.userId;
+//           // Map User Name (if you have a user list)
+//           const userName = this.UserOptions?.find((u: any) => u.id === element.userId)?.text || element.userId;
 
-          // Assign readable fields
-          element.zoneNames = zoneNames || 'N/A';
-          element.roleNames = roleNames || 'N/A';
-          element.userName = userName || 'N/A';
+//           // Assign readable fields
+//           element.zoneNames = zoneNames || 'N/A';
+//           element.roleNames = roleNames || 'N/A';
+//           element.userName = userName || 'N/A';
 
       
 
-          // Add buttons
-          element.button = [
-            { label: 'Edit', icon: 'edit', type: 'edit' },
-            // { label: 'Delete', icon: 'delete', type: 'delete' }
-          ];
-        });
+//           // Add buttons
+//           element.button = [
+//             { label: 'Edit', icon: 'edit', type: 'edit' },
+//             // { label: 'Delete', icon: 'delete', type: 'delete' }
+//           ];
+//         });
 
-        // Pagination handling
-        const _length = totalCount / Number(this.recordPerPage);
-        if (_length > Math.floor(_length) && Math.floor(_length) !== 0)
-          this.totalRecords = Number(this.recordPerPage) * (_length);
-        else if (Math.floor(_length) === 0)
-          this.totalRecords = 10;
-        else
-          this.totalRecords = totalCount;
+//         // Pagination handling
+//         const _length = totalCount / Number(this.recordPerPage);
+//         if (_length > Math.floor(_length) && Math.floor(_length) !== 0)
+//           this.totalRecords = Number(this.recordPerPage) * (_length);
+//         else if (Math.floor(_length) === 0)
+//           this.totalRecords = 10;
+//         else
+//           this.totalRecords = totalCount;
 
-        this.totalPages = this.totalRecords / this.pager;
-      }
+//         this.totalPages = this.totalRecords / this.pager;
+//       }
 
-      // Assign to component variable
+//       // Assign to component variable
+//       this.items = items;
+//     });
+// }
+
+getFilteredList() {
+  debugger;
+
+  this.MaxResultCount = this.perPage;
+  this.SkipCount = this.MaxResultCount * this.pager;
+
+  // const search = this.form.get('searchText')?.value; // ✅ FIXED
+const search = this.searchText;
+  this.service.GetUserMappingList(
+    this.StartDate ?? undefined,
+    this.EndDate ?? undefined,
+    this.SiteName ?? undefined,
+    this.ProjectId ?? undefined,
+    this.Type ?? undefined,
+    this.IsActive ?? undefined,
+    search,
+    this.Sorting ?? undefined,
+    this.MaxResultCount ?? undefined,
+    this.SkipCount ?? undefined
+  )
+    .pipe(withLoader(this.loaderService))
+    .subscribe((response: any) => {
+      const items = response.result?.items || [];
+      const totalCount = response.result?.totalCount || 0;
+
+      items.forEach((element: any) => {
+        const zoneIds = element.zoneId?.split(',').map((x:any) => x.trim()) || [];
+        const roleIds = element.roleId?.split(',').map((x:any) => x.trim()) || [];
+
+        element.zoneNames = element.zoneNames || 'N/A';
+        element.roleNames = element.roleNames || 'N/A';
+        element.userName = element.name || 'N/A';
+        element.category = element.category || 'N/A';
+        element.button = [
+          { label: 'Edit', icon: 'edit', type: 'edit' }
+        ];
+      });
+
+      const pages = totalCount / Number(this.perPage);
+      this.totalRecords = pages > Math.floor(pages)
+        ? Number(this.perPage) * pages
+        : totalCount;
+
       this.items = items;
+      this.userMappings = items;
     });
 }
 
        
-getUserList() {
+// getUserList() {
 
-  this.service.GetUserList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+//   this.service.GetUserList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
    
-      const items = response?.result?.items || [];
+//       const items = response?.result?.items || [];
 
      
-      const projectOptions = items.map((item: any) => ({
+//       const projectOptions = items.map((item: any) => ({
+//         text: item.userName || 'Unknown',
+//         id: item.id
+//       }));
+
+  
+//     projectOptions.unshift({
+//       text: 'All',
+//       id: 0
+//     });
+
+//     this.UserSelectSettings.options = projectOptions;
+//     this.UserOptions=projectOptions
+//     this.UserOptions = response.result.filter((x:any) => x.text !== 'All');
+
+// // this.form.controls['selectedUser'].setValue({
+// //   text: 'All',
+// //   id: 0
+// // });
+
+// // this.form.controls['selectedStatus'].setValue({
+// //   name: 'All',
+// //   value: null
+// // });
+//     this.isUserOptionsLoaded = true;
+//   }, error => {
+//     console.error('Error fetching User list', error);
+//   });
+// }
+getUserList() { 
+  this.service.GetUserList()
+    .pipe(withLoader(this.loaderService))
+    .subscribe((response: any) => {
+
+      const items = response?.result?.items || [];
+
+      // Convert API response → Dropdown array
+      let projectOptions = items.map((item: any) => ({
         text: item.userName || 'Unknown',
         id: item.id
       }));
 
-  
-    projectOptions.unshift({
-      text: 'All',
-      id: 0
+      // ❌ Do NOT add "All"  
+      // ❌ Do NOT unshift All
+      // projectOptions.unshift({ text: 'All', id: 0 });
+
+      // ✔ Remove if API accidentally sends "All"
+    projectOptions = projectOptions.filter(((x:any) => x.text !== 'All'));
+
+      // ✔ Assign clean array
+      this.UserOptions = projectOptions;
+      this.UserSelectSettings.options = projectOptions;
+
+      this.isUserOptionsLoaded = true;
+
+    }, error => {
+      console.error('Error fetching User list', error);
     });
-
-    this.UserSelectSettings.options = projectOptions;
-    this.UserOptions=projectOptions
-// this.form.controls['selectedUser'].setValue({
-//   text: 'All',
-//   id: 0
-// });
-
-// this.form.controls['selectedStatus'].setValue({
-//   name: 'All',
-//   value: null
-// });
-    this.isUserOptionsLoaded = true;
-  }, error => {
-    console.error('Error fetching User list', error);
-  });
 }
 
 getZoneList() {
@@ -975,26 +1189,58 @@ close(){
   });
 }
 
-getRoleList(type: any) {
+// getRoleList(type: any) {
+//   this.service.GetRoleByCategory(type)
+//     .pipe(withLoader(this.loaderService))
+//     .subscribe((response: any) => {
+
+//       const items = response?.result?.items || [];
+
+//       const projectOptions = items.map((item: any) => ({
+//         text: item.name || 'Unknown',
+//         id: item.id
+//       }));
+
+//       projectOptions.unshift({ text: 'All', id: 0 });
+
+//       this.RoleOptions = projectOptions;
+//       this.isRoleOptionsLoaded = true;
+//       this.RoleOptions = response.result.filter((x:any) => x.text !== 'All');
+
+//       // 🛑 FIX: do not override selectedRole in edit mode
+//       if (!this.isEdit) {
+//         this.form.controls['selectedRole'].setValue([{ text: 'All', id: 0 }]);
+//       }
+
+//     }, error => {
+//       console.error('Error fetching Role list', error);
+//     });
+// }
+
+getRoleList(type: any) { 
   this.service.GetRoleByCategory(type)
     .pipe(withLoader(this.loaderService))
     .subscribe((response: any) => {
 
       const items = response?.result?.items || [];
 
-      const projectOptions = items.map((item: any) => ({
+      let projectOptions = items.map((item: any) => ({
         text: item.name || 'Unknown',
         id: item.id
       }));
 
-      projectOptions.unshift({ text: 'All', id: 0 });
+      // ❌ Do NOT add "All"
+      // projectOptions.unshift({ text: 'All', id: 0 });
+
+      // ✔ Remove All if API contains it
+      projectOptions = projectOptions.filter((x:any)   => x.text !== 'All');
 
       this.RoleOptions = projectOptions;
       this.isRoleOptionsLoaded = true;
 
-      // 🛑 FIX: do not override selectedRole in edit mode
+      // 🛑 Keep old role only if NOT editing
       if (!this.isEdit) {
-        this.form.controls['selectedRole'].setValue([{ text: 'All', id: 0 }]);
+        this.form.controls['selectedRole'].setValue(null);
       }
 
     }, error => {

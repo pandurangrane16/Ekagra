@@ -1,3 +1,6 @@
+
+
+
 import { CommonModule,} from '@angular/common';
 import { Component,Output,EventEmitter,inject, Input, OnInit } from '@angular/core';
 import { MaterialModule } from '../../../../Material.module';
@@ -7,14 +10,17 @@ import { withLoader } from '../../../../services/common/common';
 import { LoaderService } from '../../../../services/common/loader.service';
 import { Router } from '@angular/router';
 import { alertservice } from '../../../../services/admin/alert.service';
+import { SmsActionComponent } from '../sms-action/sms-action.component';
+import { EmailActionComponent } from '../email-action/email-action.component';
 @Component({
-  selector: 'app-assign-site-engineer',
-  imports: [CommonModule,MaterialModule],
-  templateUrl: './assign-site-engineer.component.html',
-  styleUrl: './assign-site-engineer.component.css'
+  selector: 'app-email-sms',
+  imports: [CommonModule,MaterialModule,EmailActionComponent,SmsActionComponent],
+  templateUrl: './email-sms.component.html',
+  styleUrl: './email-sms.component.css'
 })
-export class AssignSiteEngineerComponent implements OnInit {
+export class EmailSMSComponent implements OnInit {
   router = inject(Router);
+    selectedAction: string | null = null;
   @Input() task : any;
  @Output() actionCompleted = new EventEmitter<void>();
   loaderService = inject(LoaderService);
@@ -25,9 +31,19 @@ export class AssignSiteEngineerComponent implements OnInit {
   
     }
 
-  ngOnInit(): void {
-    
+  
+  data :any;
+
+ngOnInit(): void {
+    this.data = {
+      userName : "Sujitㅤ♡ㅤShrutika"
+    }
   }
+
+onActionSelect() {
+  console.log("Selected Action =>", this.selectedAction);
+  // You can add more logic if needed when switching action types
+}
 
 
 SubmitAction() {
@@ -52,9 +68,7 @@ SubmitAction() {
   // --------------------------
 
 
-  
-
-  let baseAlert: any;
+   let baseAlert: any;
 
 // Case 1: No global alert stored → use task
 if (!this.globals.alert) {
@@ -69,8 +83,6 @@ else {
   baseAlert = this.globals.alert;
 }
 
-  
-
 
   const updateAlertData = {
     id: baseAlert.id,
@@ -79,8 +91,7 @@ else {
 
     // keep all other fields same as original alert
     remarks: baseAlert?.remarks,
-  
-    creatorUserId: baseAlert?.creatorUserId ?? baseAlert?.createruserid,
+     creatorUserId: baseAlert?.creatorUserId ?? baseAlert?.createruserid,
     policyName: baseAlert?.policyName,
     siteId: baseAlert?.siteId,
     policyId: baseAlert?.policyId,
@@ -89,10 +100,8 @@ else {
     filePath: baseAlert?.filePath,
     devices: baseAlert?.devices,
     alertSource: baseAlert?.alertSource,
-    ticketNo: baseAlert?.ticketNo, 
-    // zoneId: baseAlert?.zoneId, zoneID
+    ticketNo: baseAlert?.ticketNo,
     zoneId: baseAlert?.zoneId ?? baseAlert?.zoneID,
-   
 
     creationTime:baseAlert?.creationTime,
     lastModificationTime: new Date(),
@@ -151,3 +160,4 @@ else {
 }
 
 }
+

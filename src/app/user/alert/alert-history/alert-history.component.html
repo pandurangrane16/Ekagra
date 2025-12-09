@@ -1,7 +1,9 @@
 <div class="dialog-header">
     <div class="row dialog-title">
         <div class="col-md-9 text-left">
-            <span class="dialog-title">Alert Log - <span style="color:yellow;">{{data.policyName}} </span></span>
+            <span class="dialog-title">
+                Alert Log - <span style="color: yellow;">{{data.policyName}}</span>
+            </span>
         </div>
         <div class="col-md-3 text-right">
             <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()">
@@ -10,7 +12,9 @@
         </div>
     </div>
 </div>
-<div class="pageWrapper">
+
+<!-- ⭐ SCROLLABLE CONTENT -->
+<div class="dialog-scroll-area">
   <mat-card class="cardWithShadow theme-card">
     <mat-card-content>
       <table class="table table-bordered" id="AlertHistory">
@@ -19,19 +23,20 @@
             <td class="text-center">Sr No</td>
             <td>Action</td>
             <td class="col-md-2">Performed By</td>
+            <td class="col-md-2">Date Time</td>
           </tr>
         </thead>
         <tbody>
-          <tr *ngIf="isLoading">
-            <td colspan="3" class="text-center">Loading...</td>
-          </tr>
+          <tr *ngIf="isLoading"><td colspan="4" class="text-center">Loading...</td></tr>
           <tr *ngIf="!isLoading && (!alertHistory || alertHistory.length === 0)">
-            <td colspan="3" class="text-center">No history found.</td>
+            <td colspan="4" class="text-center">No history found.</td>
           </tr>
+
           <tr *ngFor="let row of alertHistory; let i = index">
             <td class="text-center">{{ i + 1 }}</td>
-            <td>{{row.actionName|| row.alertLogRemarks   ||row.operation|| '-' }}</td>
+            <td>{{ row.actionName || row.alertLogRemarks || row.operation || '-' }}</td>
             <td>{{ row.userName || row.performedBy || row.creatorName || row.creatorUserId || '-' }}</td>
+            <td>{{ row.creationTime | date:'dd-MMM-yyyy hh:mm a' }}</td>
           </tr>
         </tbody>
       </table>

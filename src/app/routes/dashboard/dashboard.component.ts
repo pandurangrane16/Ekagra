@@ -57,7 +57,7 @@ async ngOnInit(){
   //  window.location.href = (await registerUrl).toString()
 
 
-
+debugger;
   if (keycloak.authenticated) {
     const tokenParsed = keycloak.tokenParsed;
     const subId = tokenParsed?.sub
@@ -69,10 +69,13 @@ async ngOnInit(){
   }
 
 const isLoggedIn = await this.keycloakService.isLoggedIn();
-
+debugger;
 if (isLoggedIn) {
   const profile = await this.keycloakService.loadUserProfile();
      const tokenParsed = keycloak.tokenParsed;
+    const attributes = profile?.attributes as Record<string, string[]>;
+    const mobile = attributes?.['mobile']?.[0] ?? null;
+
   console.log('User Profile:', profile);
       this.userInfo = {
       ...this.userInfo,
@@ -80,7 +83,9 @@ if (isLoggedIn) {
       surname: profile?.lastName || this.userInfo?.surname,
       email: profile?.email || this.userInfo?.email,
       username: profile?.username || this.userInfo?.username,
-       subId: tokenParsed?.sub
+      subId: tokenParsed?.sub,
+      contactNumber: mobile,
+
     };
     console.log('userinfo',this.userInfo);
 } else {
@@ -153,7 +158,8 @@ debugger;
             userName: this.userInfo.username,
             emailAddress: this.userInfo.email,
             password: this.userInfo.username, // same as username
-            captchaResponse: ''
+            captchaResponse: '',
+            phoneNumber: this.userInfo.contactNumber || ''
           };
 
           const signInToken = this.userInfo.subId; // 👈 sub from Keycloak token
