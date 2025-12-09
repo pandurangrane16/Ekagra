@@ -8,7 +8,7 @@ export class Globals {
   // 🧭 Global app-level variables
   CurrentPage: string = '';
   NotificationCount: number = 0;
-
+  public isKeycloakInitialized: boolean = false;
   // 🧩 User model (defined directly here)
   //    This matches your API response structure
   private _userSource = new BehaviorSubject<User | null>(null);
