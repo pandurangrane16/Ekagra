@@ -400,7 +400,7 @@ element.devices = statusMap[element.isStatus] || 'Unknown';
             element.category === 1 ? 'Medium' :
               element.category === 2 ? 'High' : '';
           element.alertdate = element.creationTime;
-          element.handledby = element.unserName;
+          element.handledby = element.userName;
          
           element.createruserid=element.userId;
 

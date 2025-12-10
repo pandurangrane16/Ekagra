@@ -1075,7 +1075,35 @@ const search = this.searchText;
       this.userMappings = items;
     });
 }
+onActionSelectionChange(event: any) {
+  const selectedValues = this.form.value.selectedZone || [];
+  const allOption = this.ZoneOptions.find((x: any) => x.text.toLowerCase() === 'all');
 
+  if (!allOption) return;
+
+  const isAllSelected = selectedValues.some((x: any) => x.id === allOption.id);
+
+  // If ALL is selected → select every option **except ALL**
+  if (isAllSelected) {
+    const allExceptAll = this.ZoneOptions.filter((x: any) => x.id !== allOption.id);
+
+    this.form.patchValue({
+      selectedZone: allExceptAll
+    });
+
+    return;
+  }
+
+  // If user selects anything else → ensure ALL is removed
+  const cleaned = selectedValues.filter((x: any) => x.id !== allOption.id);
+
+  this.form.patchValue({
+    selectedZone: cleaned
+  });
+}
+clearActions() {
+  this.form.patchValue({ selectedZone: [] });
+}
        
 // getUserList() {
 
