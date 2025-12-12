@@ -1,5 +1,5 @@
     {
-        "version": "2.0.13",
+        "version": "2.0.14",
         "api_url": "https://172.19.10.43:8089/",
         "hls_url": "https://10.100.43.108:7000/",
         "ruleConditions": [
@@ -60,5 +60,5 @@
             {"name" : "envrn","value" : "36"},
             {"name" : "water scada","value" : "37"}
         ],
-        "FooterLine" : "Copyright © 2025 CMS Computers India Private Limited. , All rights reserved. v2.0.13"
+        "FooterLine" : "Copyright © 2025 CMS Computers India Private Limited. , All rights reserved. v2.0.14"
     }

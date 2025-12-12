@@ -792,10 +792,12 @@ editRow(rowData: any) {
           this.toast.error('No data found', 'Error');
           return;
         }
-
+debugger;
         const zoneIds = result.zoneId?.split(',') || [];
         const roleIds = result.roleId?.split(',') || [];
-        const userId = String(result.userId);
+        // const userId = result.userId?.split(',') || [];  // ⬅️ FIXED
+        const userId = String(result.userId).split(',').map(x => x.trim());
+
 
         // Step 1: GET FIRST ROLE ID
         const firstRoleId = roleIds.length > 0 ? Number(roleIds[0]) : null;
@@ -1142,6 +1144,7 @@ clearActions() {
 //   });
 // }
 getUserList() { 
+  debugger;
   this.service.GetUserList()
     .pipe(withLoader(this.loaderService))
     .subscribe((response: any) => {

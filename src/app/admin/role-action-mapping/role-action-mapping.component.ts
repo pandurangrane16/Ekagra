@@ -783,7 +783,7 @@ GetRoleList() {
 
      
       const projectOptions = items.map((item: any) => ({
-        text: item.displayName,
+        text: item.name,
         id: item.id
       }));
 
@@ -865,7 +865,7 @@ let body = { permissions: null };
      const items = response?.result?.items || [];
 
 const projectOptions = items.map((item: any) => ({
-  text: item.displayName || 'Unknown',
+  text: item.name || 'Unknown',
   id: item.id
 }));
 
