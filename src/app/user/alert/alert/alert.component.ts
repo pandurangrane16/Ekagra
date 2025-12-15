@@ -7,6 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { withLoader } from '../../../services/common/common';
 import { LoaderService } from '../../../services/common/loader.service';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { InputRequest } from '../../../models/request/inputreq.model';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -120,7 +121,8 @@ export class AlertComponent implements OnInit {
   constructor(private fb: FormBuilder,
     private dialog: MatDialog,
     private service: alertservice,
-    private globals:Globals
+    private globals:Globals,
+    private toastr: ToastrService
   ) { }
 
 
@@ -272,7 +274,15 @@ export class AlertComponent implements OnInit {
     } else if (event.type === 'delete') {
       // this.deleteRow(data);
     } else if (event.type === 'resolved') {
-      const dialogRef = this.dialog.open(ResolvedByItselfComponent, {
+
+         if (data.isStatus === 4) {
+    this.toastr.error(
+      "This alert is already resolved. You cannot Resolve it now.",
+      "Resolve By Itself Not Allowed"
+    );
+    return;  
+  }
+  else{  const dialogRef = this.dialog.open(ResolvedByItselfComponent, {
         width: '800px',
         height: 'auto',
         //title : "Resolved By Iteself",
@@ -282,12 +292,22 @@ export class AlertComponent implements OnInit {
           policyName: data.policyname,
           allData: data
         }
-      })
+      })}
+    
     } else if (event.type === 'transfer') {
-      const dialogRef = this.dialog.open(AlertTransferComponent, {
+      debugger;
+        if (data.isStatus === 4) {
+    this.toastr.error(
+      "This alert is already resolved. You cannot transfer it now.",
+      "Transfer Not Allowed"
+    );
+    return;  
+  }
+  else{
+        const dialogRef = this.dialog.open(AlertTransferComponent, {
         width: '800px',
         height: 'auto',
-        //title : "Resolved By Iteself",
+        //title : "Resolved By Itself",
         position: { top: '20px' },
         panelClass: 'custom-confirm-dialog',
         data: {
@@ -308,6 +328,8 @@ export class AlertComponent implements OnInit {
           this.getFilteredList();
         }
       });
+  }
+
     } else if (event.type === 'perform') {
       this.router.navigate(['user/sopflow'], {
         state: {data: this.clickedRow}
@@ -396,11 +418,9 @@ element.devices = statusMap[element.isStatus] || 'Unknown';
           // ];
           element.ticketid = element.ticketNo;
           element.policyname = element.policyName;
-          element.category = element.category === 0 ? 'Low' :
-            element.category === 1 ? 'Medium' :
-              element.category === 2 ? 'High' : '';
+         
           element.alertdate = element.creationTime;
-          element.handledby = element.unserName;
+      
          
           element.createruserid=element.userId;
 

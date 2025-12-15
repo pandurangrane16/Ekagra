@@ -10,15 +10,15 @@
                     <mat-card-content>
                         <div class="row d-flex align-items-center gap-2">
                             <div class="col d-flex align-items-center">
-                                <button mat-flat-button class="btnSubmit mt-4 d-block" (click)="SubmitAction()">
+                                <button mat-flat-button class="btnSubmit mt-4 d-block" (click)="GetAudio()">
                                     Get Audio
                                 </button>
                            </div><div class="col-md-5">
-                                <app-cm-select2 *ngIf="!isApiLoaded" [formGroup]="form" [controlName]="'audioId'"
+                                <app-cm-select2 *ngIf="isAudioLoaded" [formGroup]="form" [controlName]="'audioId'"
                                     [settings]="audioSettings" (optionSelected)="onManagerSelected($event)">
                                 </app-cm-select2>
                             </div><div class="col-md-4">
-                                <app-cm-select2 *ngIf="!isApiLoaded" [formGroup]="form" [controlName]="'junctionId'"
+                                <app-cm-select2 *ngIf="isJunctionLoaded" [formGroup]="form" [controlName]="'junctionId'"
                                     [settings]="junctionSettings" (optionSelected)="onManagerSelected($event)">
                                 </app-cm-select2>
                             </div><div class="col-md-1 d-flex align-items-center">

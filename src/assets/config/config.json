@@ -53,12 +53,13 @@
             {"name" : "atcs","value" : "1"},
             {"name" : "vms","value" : "2"},
             {"name" : "surveilience","value" : "48"},
-            {"name" : "pa","value" : "4"},
+            {"name" : "pa","value" : "3"},
             {"name" : "itms","value" : "18"},
             {"name" : "ivms","value" : "19"},
             {"name" : "ecb","value" : "35"},
             {"name" : "envrn","value" : "36"},
             {"name" : "water scada","value" : "37"}
         ],
+        "Radius":500,
         "FooterLine" : "Copyright © 2025 CMS Computers India Private Limited. , All rights reserved. v2.0.13"
     }

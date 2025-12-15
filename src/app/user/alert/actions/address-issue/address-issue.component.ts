@@ -65,7 +65,10 @@ await this.loadRoleActions(Number(this.globals?.user?.id));
 
 async handleCase2_AutoCreatePendingActions() {
 
+  this.globals.restoreUserMappingFromSession();
 
+  const storedUser = sessionStorage.getItem('userInfo');
+  const currentUserId = storedUser ? JSON.parse(storedUser).id : 0;
 
   // 1️⃣ Find "Address the Incident" sequence using prmValue
   const currentSeq = this.sopActions.find(
@@ -146,7 +149,7 @@ else {
     const updatePayload = {
       id: baseAlert?.id,
       currentStatus: act.prmValue,
-      lastModifiedUserId: Number(this.globals?.user?.id),
+      lastModifierUserId:  currentUserId,
 
       remarks: baseAlert?.remarks,
       creatorUserId: baseAlert?.creatorUserId ?? baseAlert?.createruserid,
@@ -238,7 +241,7 @@ else {
   const updatePayload = {
     id:baseAlert?.id,
     currentStatus: lastAction.prmValue,
-    lastModifiedUserId: Number(this.globals?.user?.id),
+    lastModifierUserId: Number(this.globals?.user?.id),
    
 
 
@@ -369,7 +372,7 @@ else {
   const updatePayload = {
     id: baseAlert?.id,
     currentStatus: "AddressIncident",   
-    lastModifiedUserId: this.globals?.user?.id,
+    lastModifierUserId: this.globals?.user?.id,
     remarks:baseAlert?.remarks,
     creatorUserId: baseAlert?.creatorUserId ?? baseAlert?.createruserid,
     policyName: baseAlert?.policyName,

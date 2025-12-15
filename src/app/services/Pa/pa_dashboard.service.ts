@@ -28,16 +28,21 @@ export class PaDashboardService {
     SiteResponse(data:any) {
     return this._httpService._postMethod(data,'api/services/app/ProjectAPI/SiteResponse');
   }
-
-  TransferSOP(data: any) {
-    return this._httpService._postMethod(data, 'api/services/app/Alert/TransferSOP');
-  }
-  AlertLogCreate(_data: any) {
+    AlertLogCreate(_data: any) {
     return this._httpService._postMethod(_data, 'api/services/app/AlertLog/Create');
   }
   AlertUpdate(_data: any) {
     return this._httpService._putMethod(_data, 'api/services/app/Alert/Update');
   }
+
+    GetNearbySites(siteid:any, radiusMeters:any, projectid:any) {
+    return this._httpService._getMethod('api/services/app/Zone/GetNearbySites?siteId='+siteid+'&radiusMeters='+radiusMeters+'&projectId='+projectid);
+  }
+
+  TransferSOP(data: any) {
+    return this._httpService._postMethod(data, 'api/services/app/Alert/TransferSOP');
+  }
+
 
     GetAlertsByid(id: any) {
     return this._httpService._getMethod( 'api/services/app/Alert/Get?Id='+id);

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component,Input, OnInit } from '@angular/core';
 import { MaterialModule } from '../../../../Material.module';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -15,6 +15,8 @@ import { AddressbookComponent } from '../addressbook/addressbook.component';
 })
 export class EmailActionComponent implements OnInit {
 form: any;
+    @Input() task : any;
+    @Input() selectedAction!: string;
   contactNoSettings = {
     labelHeader: 'Email ID',
     formFieldClass: 'cm-square-input',
@@ -54,17 +56,25 @@ form: any;
   }
 
   openDialog() {
-    const dialogRef = this.dialog.open(AddressbookComponent, {
-      width: '800px',
-      height: '700px',
-      //title : "Resolved By Iteself",
-      position: { top: '20px' },
-      panelClass: 'custom-confirm-dialog',
-      data: {
-        policyName: "Policy 001"
-      }
-    })
-  }
+  const dialogRef = this.dialog.open(AddressbookComponent, {
+   width: '800px',
+  maxHeight: '90vh', // prevents overflow
+  panelClass: 'custom-confirm-dialog',
+    data: { task: this.task , selectedAction: this.selectedAction }
+  });
+
+  dialogRef.afterClosed().subscribe((result: string[]) => {
+    console.log("Contacts received from dialog:", result);
+
+    if (result && result.length > 0) {
+      // this.task.contactNumbers = result; // Store into task or desired place
+      // console.log("Updated Task:", this.task);
+         this.form.patchValue({
+      emailId: result
+    });
+    }
+  });
+}
   close() {
 
   }

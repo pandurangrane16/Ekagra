@@ -23,7 +23,7 @@ export function initializeKeycloak(kc: KeycloakService) {
         },
         initOptions: {
           // 🔄 Use 'login-required' if all routes need auth, or 'check-sso' for optional login
-         onLoad: 'login-required',
+          onLoad: 'login-required',
           checkLoginIframe: false,
           pkceMethod: 'S256',
           silentCheckSsoRedirectUri: window.location.origin + '/assets/check-sso.html',
@@ -33,6 +33,7 @@ export function initializeKeycloak(kc: KeycloakService) {
       })
       .then(() => {
         console.info('✅ Keycloak initialized successfully');
+        
         Globals.prototype.isKeycloakInitialized = true;
       })
       .catch(err => {

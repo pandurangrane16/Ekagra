@@ -43,6 +43,7 @@ constructor(private keycloakService: KeycloakService,
    private globals:Globals ) {}
 
 async ngOnInit(){
+  this.session._setSessionValue("APITags",null)
   console.log(this.session._getSessionValue("UserValidation"));
   wrapGrid(this.dashboard().nativeElement,{duration:300});
    // Subscribe to the toggle event
@@ -62,10 +63,6 @@ debugger;
     const tokenParsed = keycloak.tokenParsed;
     const subId = tokenParsed?.sub
     console.log('User Info from Keycloak:', tokenParsed);
-
- 
- 
-  
   }
 
 const isLoggedIn = await this.keycloakService.isLoggedIn();

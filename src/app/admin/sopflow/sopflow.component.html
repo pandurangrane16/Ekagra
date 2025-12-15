@@ -34,15 +34,16 @@
                 <span class="font-medium">{{ act.id }}</span> - {{ act.useCase }}  
                 <div class="ms-auto"> 
 
-
-            <ng-container *ngIf="act.action?.toLowerCase() === 'iccacknowledgement'">
-  <div class="w-100">
+  <div class="d-flex align-items-center gap-2">
+       <ng-container *ngIf="act.action?.toLowerCase() === 'iccacknowledgement'">
+  <div class="w-100 text-end">
     <span class="text-muted small fst-italic">
       Acknowledged by:
       <strong>{{ Acknowledgedname }}</strong>
     </span>
   </div>
 </ng-container>
+
 
 
         <ng-container *ngIf="act.action?.toLowerCase() === 'fieldengineeracknowledgement'">
@@ -60,10 +61,28 @@
 
 
 
-<ng-container 
-  *ngIf="act.action?.toLowerCase() !== 'iccacknowledgement' 
-         && act.action?.toLowerCase() !== 'fieldengineeracknowledgement'">
+<div class="d-flex align-items-center gap-2">
+  
+  <!-- COMPLETED / PENDING -->
   <span
+    [ngClass]="
+      getWorkflowStatus(act) === 'completed'
+        ? 'bg-success-subtle text-success'
+        : 'bg-warning-subtle text-warning'
+    "
+    class="d-flex align-items-center rounded px-2 py-1 gap-2"
+  >
+    <span
+      class="statusDot"
+      [ngClass]="getWorkflowStatus(act) === 'completed' ? 'bg-success' : 'bg-warning'"
+    ></span>
+
+    {{ getWorkflowStatus(act) === 'completed' ? 'Completed' : 'Pending' }}
+  </span>
+
+  <!-- ENABLED / DISABLED -->
+  <!-- <span
+
     [ngClass]="
       canAccessAction(act,currentAlertStatus)
         ? 'bg-success-subtle text-success'
@@ -75,9 +94,14 @@
       class="statusDot"
       [ngClass]="canAccessAction(act,currentAlertStatus) ? 'bg-success' : 'bg-secondary'"
     ></span>
+
     {{ canAccessAction(act,currentAlertStatus) ? 'Enabled' : 'Disabled' }}
-  </span>
-</ng-container>
+  </span> -->
+
+</div>
+
+</div>
+
 
 
 
@@ -161,6 +185,21 @@
                             [task]="this.policyData"
                             (actionCompleted)="refreshAfterAction(); panel.close()">
                    </app-flashmode>
+                  </div>
+                </div>
+              
+            </div>
+            }
+                @else if (act.action.toLowerCase() === "actionclosed") {
+            <div [ngClass]="{ 'readonly-div': !act.hasAccess}">
+             
+                <div class="row">
+                  <div class="col-md-12">
+                  
+                          <app-action-closed
+                            [task]="this.policyData"
+                            (actionCompleted)="refreshAfterAction(); panel.close()">
+                   </app-action-closed>
                   </div>
                 </div>
               
@@ -380,7 +419,9 @@
              
                 <div class="row">
                   <div class="col-md-12">
-                    <app-task-completion [task]="act" ></app-task-completion>
+                    <app-task-completion   [task]="this.policyData"
+                      (actionCompleted)="refreshAfterAction(); panel.close()">
+                    </app-task-completion>
                   </div>
                 </div>
               

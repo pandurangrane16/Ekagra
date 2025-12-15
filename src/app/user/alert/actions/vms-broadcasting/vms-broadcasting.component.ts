@@ -362,7 +362,7 @@ else {
   const updatePayload = {
     id: baseAlert?.id,
     currentStatus: "VMSEmergencyPublish",   
-    lastModifiedUserId: this.globals?.user?.id,
+    lastModifierUserId: this.globals?.user?.id,
     remarks:baseAlert?.remarks,
     creatorUserId: baseAlert?.creatorUserId ?? baseAlert?.createruserid,
     policyName: baseAlert?.policyName,
