@@ -25,6 +25,7 @@ import _ from 'lodash';
 import { MaterialModule } from "../../Material.module";
 import { RoleMappingService } from '../../services/admin/role-action-mapping';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { RoleConfigurationService } from '../../services/admin/role-configuration.service'; 
 // jQuery declared globally
 declare var $: any;
 
@@ -84,6 +85,8 @@ router = inject(Router);
       form!: FormGroup;
       isEdit=false;
       selectedRecordId:any;
+      editingId: number | null = null;
+
       userMappings: UserZoneMapping[] = [];
      
       collectionSize = 2;
@@ -170,6 +173,7 @@ router = inject(Router);
       constructor(private fb: FormBuilder,
         private dialog: MatDialog,
         private service: RoleMappingService, private toast: ToastrService,
+        private roleConfigService: RoleConfigurationService,
         @Inject(PLATFORM_ID) private platformId: Object
         ) {}
         
@@ -188,7 +192,8 @@ router = inject(Router);
        this.form = this.fb.group({
   // selectedUser: [null, Validators.required],
   selectedAction: [[], this.minArrayLength(1)],
-  selectedRole: [[], this.minArrayLength(1)]
+  // selectedRole: [[], this.minArrayLength(1)]
+selectedRole: [null, Validators.required]
 });
           this.buildHeader();
          // this.getProjConfigList();
@@ -234,54 +239,172 @@ router = inject(Router);
       onProjectSelected(event: any) {
           console.log('Selected Project:', event);
         }
+// submit() {
+//   debugger;
+//  if (this.form.invalid) {
+//     this.form.markAllAsTouched();
+//     this.toast.error('Form is not valid');
+//     return;
+//   }
+
+//   const roleId = Number(this.form.value.selectedRole.id);
+//   const actionId = this.form.value.selectedAction
+//     .map((x: any) => x.id)
+//     .join(',');
+
+//   // ---------- UPDATE FLOW ----------
+//   if (this.isEdit && this.editingId) {
+
+//     let payload = {
+//       id: this.editingId,
+//       roleId: roleId,
+//       actionId: actionId
+//     };
+
+//     this.service.Update(payload)
+//       .pipe(withLoader(this.loaderService))
+//       .subscribe({
+//         next: () => {
+//           this.toast.success('Updated successfully!');
+//           this.getFilteredList();
+
+//           this.resetFormState();   // ✅ clear id + reset form
+//         },
+//         error: () => {
+//           this.toast.error('Update failed');
+//         }
+//       });
+
+//     return;
+//   }
+
+//   // ---------- CREATE FLOW ----------
+//   let payload = {
+//     id: 0,
+//     roleId: roleId,
+//     actionId: actionId
+//   };
+
+//   this.service.Create2(payload)
+//     .pipe(withLoader(this.loaderService))
+//     .subscribe({
+//       next: () => {
+//         this.toast.success('Created successfully!');
+//         this.getFilteredList();
+
+//         this.resetFormState();
+//       },
+//       error: () => {
+//         this.toast.error('Create failed');
+//       }
+//     });
+
+// }
+
 submit() {
+  debugger;
+
   if (this.form.invalid) {
     this.form.markAllAsTouched();
     this.toast.error('Form is not valid');
     return;
   }
-else{
-    const roleId = Number(this.form.value.selectedRole[0].id);
-  const actionId = this.form.value.selectedAction.map((x: any) => x.id).join(',');
 
-  let payload = {
-    roleId: roleId,
-    actionId: actionId,
-    id: 0
-  };
+  const selectedRoleId = Number(this.form.value.selectedRole.id);
 
-  console.log("Final Payload:", payload);
+  // Convert selected actions → CSV
+  let actionId = this.form.value.selectedAction
+    .map((x: any) => x.id)
+    .join(',');
 
-  // --- ALWAYS CREATE ---
-  this.service.Create2(payload)
+  // ---------------------------------------------
+  // 1️⃣ CALL GETROLES() TO FETCH CATEGORY
+  // ---------------------------------------------
+  this.roleConfigService.GetRoles()
     .pipe(withLoader(this.loaderService))
     .subscribe({
-      next: () => {
-        this.toast.success('RoleActionMapping created successfully');
-        this.getFilteredList();
+      next: (response: any) => {
 
-        this.form.reset({
-          selectedUser: [],
-          selectedAction: [],
-          selectedRole: []
-        });
+        // const roles = response?.result || [];
+        const roles = response?.result?.items || [];
+
+        // Find the selected role's category
+        const currentRole = roles.find((r: any) => r.id === selectedRoleId);
+        const category = currentRole?.category || '';
+
+        // ---------------------------------------------
+        // 2️⃣ APPEND SPECIAL ACTION BASED ON CATEGORY
+        // ---------------------------------------------
+        if (category === 'ICCC') {
+          actionId = actionId ? actionId + ',1' : '1';
+        }
+        else if (category === 'Field') {
+          actionId = actionId ? actionId + ',3' : '3';
+        }
+
+        // ---------------------------------------------
+        // 🔥 3️⃣ CONTINUE EXISTING CREATE/UPDATE FLOW
+        // ---------------------------------------------
+        if (this.isEdit && this.editingId) {
+
+          const payload = {
+            id: this.editingId,
+            roleId: selectedRoleId,
+            actionId: actionId
+          };
+
+          this.service.Update(payload)
+            .pipe(withLoader(this.loaderService))
+            .subscribe({
+              next: () => {
+                this.toast.success('Updated successfully!');
+                this.getFilteredList();
+                this.resetFormState();
+              },
+              error: () => {
+                this.toast.error('Update failed');
+              }
+            });
+
+          return;
+        }
+
+        // CREATE FLOW
+        const payload = {
+          id: 0,
+          roleId: selectedRoleId,
+          actionId: actionId
+        };
+
+        this.service.Create2(payload)
+          .pipe(withLoader(this.loaderService))
+          .subscribe({
+            next: () => {
+              this.toast.success('Created successfully!');
+              this.getFilteredList();
+              this.resetFormState();
+            },
+            error: () => {
+              this.toast.error('Create failed');
+            }
+          });
       },
-      error: (err) => {
-        console.error('Save failed:', err);
-        this.toast.error('Failed to save RoleActionMapping');
 
-        this.form.reset({
-          selectedUser: [],
-          selectedAction: [],
-          selectedRole: []
-        });
+      error: () => {
+        this.toast.error('Failed to load roles from configuration');
       }
     });
 }
 
-}
+    resetFormState() {
+  this.form.reset({
+    selectedRole: null,
+    selectedAction: []
+  });
 
-    
+  this.isEdit = false;
+  this.editingId = null;   // ✅ clear stored id
+}
 
         openDialog() {
       this.router.navigate(['/admin/projform']);   
@@ -400,15 +523,17 @@ deleteRow(rowData: any): void {
   });
 }
 editRow(rowData: any) {
+  debugger;
   if (!rowData?.id) {
     this.toast.error('Invalid record', 'Error');
     return;
   }
 
+
   this.selectedRecordId=rowData.id;
 
     this.isEdit = true;
-
+    this.editingId = rowData.id; 
   // Call API using your GetById service
   this.service.GetById(rowData.id)
     .pipe(withLoader(this.loaderService))
@@ -420,13 +545,32 @@ editRow(rowData: any) {
           return;
         }
 
+
+          let payload = {
+            roleId: response.result.roleId,
+            actionId: response.result.actionId,
+            id: rowData.id
+          };
+
+
         // Extract IDs and convert comma-separated values to arrays
-        const zoneIds = result.zoneId ? result.zoneId.split(',').map((id: string) => id.trim()) : [];
-        const roleIds = result.roleId ? result.roleId.split(',').map((id: string) => id.trim()) : [];
+        // const zoneIds = result.zoneId ? result.zoneId.split(',').map((id: string) => id.trim()) : [];
+        // const roleIds = result.roleId ? result.roleId.split(',').map((id: string) => id.trim()) : [];
+        const zoneIds = result.zoneId
+          ? String(result.zoneId).split(',').map((id: string) => id.trim())
+          : [];
+
+            const roleIds = result.roleId
+              ? String(result.roleId).split(',').map((id: string) => id.trim())
+              : [];
+
+            const actionIds = result.actionId
+              ? String(result.actionId).split(',').map((id: string) => id.trim())
+              : [];
         const userId =  String(result.userId);
 
         // Find matching option objects from your dropdown lists
-        const selectedActions = this.ZoneOptions?.filter((z: any) => zoneIds.includes(String(z.id))) || [];
+        const selectedActions = this.ZoneOptions?.filter((z: any) => actionIds.includes(String(z.id))) || [];
         const selectedRoles = this.RoleOptions?.filter((r: any) => roleIds.includes(String(r.id))) || [];
         const selectedUser = this.UserOptions?.filter((r: any) => userId.includes(String(r.id))) || [];
 
@@ -436,7 +580,8 @@ editRow(rowData: any) {
         this.form.patchValue({
           selectedUser:  selectedUser || null,
           selectedAction: selectedActions,
-          selectedRole: selectedRoles
+          selectedRole: selectedRoles.length > 0 ? selectedRoles[0] : null
+
         });
 
         //   this.form.controls['selectedUser'].disable();
@@ -450,8 +595,35 @@ editRow(rowData: any) {
       }
     });
 }
+clearActions() {
+  this.form.patchValue({ selectedAction: [] });
+}
+        onActionSelectionChange(event: any) {
+  const selectedValues = this.form.value.selectedAction || [];
+  const allOption = this.ZoneOptions.find((x: any) => x.text.toLowerCase() === 'all');
 
-        
+  if (!allOption) return;
+
+  const isAllSelected = selectedValues.some((x: any) => x.id === allOption.id);
+
+  // If ALL is selected → select every option **except ALL**
+  if (isAllSelected) {
+    const allExceptAll = this.ZoneOptions.filter((x: any) => x.id !== allOption.id);
+
+    this.form.patchValue({
+      selectedAction: allExceptAll
+    });
+
+    return;
+  }
+
+  // If user selects anything else → ensure ALL is removed
+  const cleaned = selectedValues.filter((x: any) => x.id !== allOption.id);
+
+  this.form.patchValue({
+    selectedAction: cleaned
+  });
+}
         getProjConfigList() {
       this._request.currentPage = this.pager;
       this._request.pageSize = Number(this.recordPerPage);
@@ -708,7 +880,7 @@ GetRoleList() {
 
      
       const projectOptions = items.map((item: any) => ({
-        text: item.displayName,
+        text: item.name,
         id: item.id
       }));
 
@@ -735,40 +907,76 @@ GetRoleList() {
   });
 }
 
-GetActionList() {
-  this.service.GetActionList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+// GetActionList() {
+//   this.service.GetActionList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
    
       
-        const items = response?.result || [];
+//         const items = response?.result || [];
 
      
-        const projectOptions = items.map((item: any) => ({
-          text: item.prmvalue,
-          id: item.prmidentifier
+//         const projectOptions = items.map((item: any) => ({
+//           text: item.prmvalue,
+//           id: item.prmidentifier
        
-        }));
+//         }));
 
   
-    projectOptions.unshift({
-      text: 'All',
-      id: 0
-    });
+//     projectOptions.unshift({
+//       text: 'All',
+//       id: 0
+//     });
 
-    this.ZoneSelectSettings.options = projectOptions;
-    this.ZoneOptions=projectOptions
-// this.form.controls['selectedAction'].setValue({
-//   text: 'All',
-//   id: 0
-// });
+//     this.ZoneSelectSettings.options = projectOptions;
+//     this.ZoneOptions=projectOptions
+// // this.form.controls['selectedAction'].setValue({
+// //   text: 'All',
+// //   id: 0
+// // });
 
-// this.form.controls['selectedStatus'].setValue({
-//   name: 'All',
-//   value: null
-// });
-    this.isZoneOptionsLoaded = true;
-  }, error => {
-    console.error('Error fetching Zone list', error);
-  });
+// // this.form.controls['selectedStatus'].setValue({
+// //   name: 'All',
+// //   value: null
+// // });
+//     this.isZoneOptionsLoaded = true;
+//   }, error => {
+//     console.error('Error fetching Zone list', error);
+//   });
+// }
+
+GetActionList() {
+  this.service.GetActionList()
+    .pipe(withLoader(this.loaderService))
+    .subscribe((response: any) => {
+
+      // Keep full list untouched
+      const items = response?.result || [];
+
+      // Create dropdown list excluding 2 entries
+      const filteredOptions = items
+        .filter((item: any) =>
+          item.prmvalue !== 'ICCAcknowledgement' &&
+          item.prmvalue !== 'FieldEngineerAcknowledgement'
+        )
+        .map((item: any) => ({
+          text: item.prmvalue,
+          id: item.prmidentifier
+        }));
+
+      // Add ALL at the top
+      filteredOptions.unshift({
+        text: 'All',
+        id: 0
+      });
+
+      // Bind only filtered options to dropdown
+      this.ZoneSelectSettings.options = filteredOptions;
+      this.ZoneOptions = filteredOptions;
+
+      this.isZoneOptionsLoaded = true;
+    },
+      error => {
+        console.error('Error fetching Action list', error);
+      });
 }
 
 close(){
@@ -777,6 +985,7 @@ close(){
     selectedAction: [],      
     selectedRole: []        
   });
+   this.resetFormState();
 }
 
 getRoleList() {
@@ -786,18 +995,26 @@ let body = { permissions: null };
   this.service.GetRoleList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
    
       
-     const items = response?.result?.items || [];
+    const items = response?.result?.items || [];
+
+    //let items = response?.result || [];
+
+    // // ❗ REMOVE two values here
+    // items = items.filter((item: any) =>
+    //   item.prmvalue !== 'ICCAcknowledgement' &&
+    //   item.prmvalue !== 'FieldEngineerAcknowledgement'
+    // );
 
 const projectOptions = items.map((item: any) => ({
-  text: item.displayName || 'Unknown',
+  text: item.name || 'Unknown',
   id: item.id
 }));
 
   
-    projectOptions.unshift({
-      text: 'All',
-      id:0
-    });
+    // projectOptions.unshift({
+    //   text: 'All',
+    //   id:0
+    // });
 
     this.RoleSelectSettings.options = projectOptions;
     this.RoleOptions=projectOptions

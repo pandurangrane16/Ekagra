@@ -20,7 +20,8 @@
                         </select> -->
                  <mat-form-field    *ngIf="isRoleOptionsLoaded" appearance="fill" class="w-100">
                             <mat-label>Select Role</mat-label>
-                            <mat-select multiple formControlName="selectedRole">
+                           
+                                <mat-select formControlName="selectedRole" [disabled]="isEdit" >
                                 <mat-option *ngFor="let option of RoleOptions" [value]="option">
                                     {{ option.text }}
                                 </mat-option>
@@ -33,14 +34,32 @@
                         <select multiple #selectElement class="form-control" style="width: 100%;" [attr.size]="5">
                             <option *ngFor="let option of yourOptions" [value]="option.id">{{ option.text }}</option>
                         </select> -->
-                        <mat-form-field   *ngIf="isZoneOptionsLoaded" appearance="fill" class="w-100">
+                        <!-- <mat-form-field   *ngIf="isZoneOptionsLoaded" appearance="fill" class="w-100">
                             <mat-label>Select Action</mat-label>
-                            <mat-select multiple formControlName="selectedAction">
+                            <mat-select multiple formControlName="selectedAction" (selectionChange)="onActionSelectionChange($event)">
                                 <mat-option *ngFor="let option of ZoneOptions" [value]="option">
                                     {{ option.text }}
                                 </mat-option>
                             </mat-select>
-                        </mat-form-field>
+                        </mat-form-field> -->
+
+                        <mat-form-field *ngIf="isZoneOptionsLoaded" appearance="fill" class="w-100">
+  <mat-label>Select Action</mat-label>
+
+  <mat-select multiple formControlName="selectedAction" (selectionChange)="onActionSelectionChange($event)">
+    
+    <!-- CLEAR OPTION -->
+    <mat-option class="clear-option" (click)="clearActions()" style="color: red; font-weight: bold;">
+      Clear Selection
+    </mat-option>
+
+    <!-- NORMAL OPTIONS -->
+    <mat-option *ngFor="let option of ZoneOptions" [value]="option">
+      {{ option.text }}
+    </mat-option>
+
+  </mat-select>
+</mat-form-field>
 
                     </div>
                     <div class="col">
