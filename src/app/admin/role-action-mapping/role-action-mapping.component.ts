@@ -25,6 +25,7 @@ import _ from 'lodash';
 import { MaterialModule } from "../../Material.module";
 import { RoleMappingService } from '../../services/admin/role-action-mapping';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { RoleConfigurationService } from '../../services/admin/role-configuration.service'; 
 // jQuery declared globally
 declare var $: any;
 
@@ -172,6 +173,7 @@ router = inject(Router);
       constructor(private fb: FormBuilder,
         private dialog: MatDialog,
         private service: RoleMappingService, private toast: ToastrService,
+        private roleConfigService: RoleConfigurationService,
         @Inject(PLATFORM_ID) private platformId: Object
         ) {}
         
@@ -237,66 +239,161 @@ selectedRole: [null, Validators.required]
       onProjectSelected(event: any) {
           console.log('Selected Project:', event);
         }
+// submit() {
+//   debugger;
+//  if (this.form.invalid) {
+//     this.form.markAllAsTouched();
+//     this.toast.error('Form is not valid');
+//     return;
+//   }
+
+//   const roleId = Number(this.form.value.selectedRole.id);
+//   const actionId = this.form.value.selectedAction
+//     .map((x: any) => x.id)
+//     .join(',');
+
+//   // ---------- UPDATE FLOW ----------
+//   if (this.isEdit && this.editingId) {
+
+//     let payload = {
+//       id: this.editingId,
+//       roleId: roleId,
+//       actionId: actionId
+//     };
+
+//     this.service.Update(payload)
+//       .pipe(withLoader(this.loaderService))
+//       .subscribe({
+//         next: () => {
+//           this.toast.success('Updated successfully!');
+//           this.getFilteredList();
+
+//           this.resetFormState();   // ✅ clear id + reset form
+//         },
+//         error: () => {
+//           this.toast.error('Update failed');
+//         }
+//       });
+
+//     return;
+//   }
+
+//   // ---------- CREATE FLOW ----------
+//   let payload = {
+//     id: 0,
+//     roleId: roleId,
+//     actionId: actionId
+//   };
+
+//   this.service.Create2(payload)
+//     .pipe(withLoader(this.loaderService))
+//     .subscribe({
+//       next: () => {
+//         this.toast.success('Created successfully!');
+//         this.getFilteredList();
+
+//         this.resetFormState();
+//       },
+//       error: () => {
+//         this.toast.error('Create failed');
+//       }
+//     });
+
+// }
+
 submit() {
   debugger;
- if (this.form.invalid) {
+
+  if (this.form.invalid) {
     this.form.markAllAsTouched();
     this.toast.error('Form is not valid');
     return;
   }
 
-  const roleId = Number(this.form.value.selectedRole.id);
-  const actionId = this.form.value.selectedAction
+  const selectedRoleId = Number(this.form.value.selectedRole.id);
+
+  // Convert selected actions → CSV
+  let actionId = this.form.value.selectedAction
     .map((x: any) => x.id)
     .join(',');
 
-  // ---------- UPDATE FLOW ----------
-  if (this.isEdit && this.editingId) {
-
-    let payload = {
-      id: this.editingId,
-      roleId: roleId,
-      actionId: actionId
-    };
-
-    this.service.Update(payload)
-      .pipe(withLoader(this.loaderService))
-      .subscribe({
-        next: () => {
-          this.toast.success('Updated successfully!');
-          this.getFilteredList();
-
-          this.resetFormState();   // ✅ clear id + reset form
-        },
-        error: () => {
-          this.toast.error('Update failed');
-        }
-      });
-
-    return;
-  }
-
-  // ---------- CREATE FLOW ----------
-  let payload = {
-    id: 0,
-    roleId: roleId,
-    actionId: actionId
-  };
-
-  this.service.Create2(payload)
+  // ---------------------------------------------
+  // 1️⃣ CALL GETROLES() TO FETCH CATEGORY
+  // ---------------------------------------------
+  this.roleConfigService.GetRoles()
     .pipe(withLoader(this.loaderService))
     .subscribe({
-      next: () => {
-        this.toast.success('Created successfully!');
-        this.getFilteredList();
+      next: (response: any) => {
 
-        this.resetFormState();
+        // const roles = response?.result || [];
+        const roles = response?.result?.items || [];
+
+        // Find the selected role's category
+        const currentRole = roles.find((r: any) => r.id === selectedRoleId);
+        const category = currentRole?.category || '';
+
+        // ---------------------------------------------
+        // 2️⃣ APPEND SPECIAL ACTION BASED ON CATEGORY
+        // ---------------------------------------------
+        if (category === 'ICCC') {
+          actionId = actionId ? actionId + ',1' : '1';
+        }
+        else if (category === 'Field') {
+          actionId = actionId ? actionId + ',3' : '3';
+        }
+
+        // ---------------------------------------------
+        // 🔥 3️⃣ CONTINUE EXISTING CREATE/UPDATE FLOW
+        // ---------------------------------------------
+        if (this.isEdit && this.editingId) {
+
+          const payload = {
+            id: this.editingId,
+            roleId: selectedRoleId,
+            actionId: actionId
+          };
+
+          this.service.Update(payload)
+            .pipe(withLoader(this.loaderService))
+            .subscribe({
+              next: () => {
+                this.toast.success('Updated successfully!');
+                this.getFilteredList();
+                this.resetFormState();
+              },
+              error: () => {
+                this.toast.error('Update failed');
+              }
+            });
+
+          return;
+        }
+
+        // CREATE FLOW
+        const payload = {
+          id: 0,
+          roleId: selectedRoleId,
+          actionId: actionId
+        };
+
+        this.service.Create2(payload)
+          .pipe(withLoader(this.loaderService))
+          .subscribe({
+            next: () => {
+              this.toast.success('Created successfully!');
+              this.getFilteredList();
+              this.resetFormState();
+            },
+            error: () => {
+              this.toast.error('Create failed');
+            }
+          });
       },
+
       error: () => {
-        this.toast.error('Create failed');
+        this.toast.error('Failed to load roles from configuration');
       }
     });
-
 }
 
     resetFormState() {
@@ -810,40 +907,76 @@ GetRoleList() {
   });
 }
 
-GetActionList() {
-  this.service.GetActionList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+// GetActionList() {
+//   this.service.GetActionList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
    
       
-        const items = response?.result || [];
+//         const items = response?.result || [];
 
      
-        const projectOptions = items.map((item: any) => ({
-          text: item.prmvalue,
-          id: item.prmidentifier
+//         const projectOptions = items.map((item: any) => ({
+//           text: item.prmvalue,
+//           id: item.prmidentifier
        
-        }));
+//         }));
 
   
-    projectOptions.unshift({
-      text: 'All',
-      id: 0
-    });
+//     projectOptions.unshift({
+//       text: 'All',
+//       id: 0
+//     });
 
-    this.ZoneSelectSettings.options = projectOptions;
-    this.ZoneOptions=projectOptions
-// this.form.controls['selectedAction'].setValue({
-//   text: 'All',
-//   id: 0
-// });
+//     this.ZoneSelectSettings.options = projectOptions;
+//     this.ZoneOptions=projectOptions
+// // this.form.controls['selectedAction'].setValue({
+// //   text: 'All',
+// //   id: 0
+// // });
 
-// this.form.controls['selectedStatus'].setValue({
-//   name: 'All',
-//   value: null
-// });
-    this.isZoneOptionsLoaded = true;
-  }, error => {
-    console.error('Error fetching Zone list', error);
-  });
+// // this.form.controls['selectedStatus'].setValue({
+// //   name: 'All',
+// //   value: null
+// // });
+//     this.isZoneOptionsLoaded = true;
+//   }, error => {
+//     console.error('Error fetching Zone list', error);
+//   });
+// }
+
+GetActionList() {
+  this.service.GetActionList()
+    .pipe(withLoader(this.loaderService))
+    .subscribe((response: any) => {
+
+      // Keep full list untouched
+      const items = response?.result || [];
+
+      // Create dropdown list excluding 2 entries
+      const filteredOptions = items
+        .filter((item: any) =>
+          item.prmvalue !== 'ICCAcknowledgement' &&
+          item.prmvalue !== 'FieldEngineerAcknowledgement'
+        )
+        .map((item: any) => ({
+          text: item.prmvalue,
+          id: item.prmidentifier
+        }));
+
+      // Add ALL at the top
+      filteredOptions.unshift({
+        text: 'All',
+        id: 0
+      });
+
+      // Bind only filtered options to dropdown
+      this.ZoneSelectSettings.options = filteredOptions;
+      this.ZoneOptions = filteredOptions;
+
+      this.isZoneOptionsLoaded = true;
+    },
+      error => {
+        console.error('Error fetching Action list', error);
+      });
 }
 
 close(){
@@ -862,7 +995,15 @@ let body = { permissions: null };
   this.service.GetRoleList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
    
       
-     const items = response?.result?.items || [];
+    const items = response?.result?.items || [];
+
+    //let items = response?.result || [];
+
+    // // ❗ REMOVE two values here
+    // items = items.filter((item: any) =>
+    //   item.prmvalue !== 'ICCAcknowledgement' &&
+    //   item.prmvalue !== 'FieldEngineerAcknowledgement'
+    // );
 
 const projectOptions = items.map((item: any) => ({
   text: item.name || 'Unknown',

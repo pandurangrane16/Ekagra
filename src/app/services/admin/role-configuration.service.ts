@@ -11,9 +11,19 @@ export class RoleConfigurationService {
  jsonurl: string = '/assets/config/config.json';
 
 
-GetRoles(_data: any) {
-    return this._httpService._getMethod(_data,'api/services/app/Role/GetRoles');
-  }
+// GetRoles(_data: any) {
+//     return this._httpService._getMethod(_data,'api/services/app/Role/GetRoles');
+//   }
+GetRoles() {
+  const body = {
+    permissions: ['']
+  };
+
+  return this._httpService._postMethod(
+    body,
+    'api/services/app/Role/GetRoles'
+  );
+}
 
   GetRoleForEdit(Id: number) {
     return this._httpService._getMethod('api/services/app/Role/GetRoleForEdit?Id='+Id);
