@@ -228,7 +228,7 @@ router = inject(Router);
        this.form = this.fb.group({
   
   selectedUser: [null, Validators.required],
-  selectedZone: [[], this.minArrayLength(1)],
+  selectedZone: [[null], this.minArrayLength(1)],
   selectedRole: [[], this.minArrayLength(1)],
   selectedCategory: [null],   
   searchText: ['']

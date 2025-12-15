@@ -1,4 +1,4 @@
-mat-label{font-size: 16px; font-weight: 500; margin-bottom: 15px; color:#4C535F}
+mat-label{font-size: 14px; font-weight: 400; margin-bottom: 4px; color:#000;}
 
  
  ::ng-deep .mat-mdc-text-field-wrapper  {
@@ -10,13 +10,14 @@ background-color:#EDF2F6;
 
  }
 
- ::ng-deep .mat-mdc-select-arrow svg {
+ /* ::ng-deep .mat-mdc-select-arrow svg {
     fill: black;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-}
+} */
+
    .mat-mdc-outlined-button{
 --mat-sys-primary:#1c2d7b;
 border-color: var(--mat-sys-primary);
@@ -27,3 +28,4 @@ color: var(--mat-sys-primary);
     color: white;
     background-color: var(--mat-sys-primary);
 }
+.clear-option{color: red!important;}

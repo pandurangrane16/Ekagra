@@ -52,7 +52,7 @@
 </div> -->
 
 <div [formGroup]="formGroup" class="d-flex flex-column"> 
-  <mat-label class="mb-1">{{settings.labelHeader}}</mat-label>
+  <mat-label >{{settings.labelHeader}}</mat-label>
   <mat-form-field [appearance]="settings.appearance || 'fill'" [class]="settings.formFieldClass">
     <input matInput
            aria-label="State"
@@ -60,7 +60,7 @@
            [formControlName]="controlName"
            (click)="onInputClick(); autocompleteTrigger.openPanel()"
            [readonly]="true"               
-           placeholder="-- select --"        
+           placeholder="-- Select --"        
            [disabled]="!!formGroup.get(controlName)?.disabled" />
 
     <!-- Arrow icon -->
@@ -71,7 +71,7 @@
 <button mat-icon-button matSuffix disableRipple tabIndex="-1" (click)="!formGroup.get(controlName)?.disabled && autocompleteTrigger.openPanel()"
       [disabled]="!!formGroup.get(controlName)?.disabled"
       [attr.aria-disabled]="formGroup.get(controlName)?.disabled ? 'true' : 'false'">
-      <mat-icon>{{ isPanelOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
+      <mat-icon>{{ isPanelOpen ? 'arrow_drop_down' : 'arrow_drop_down' }}</mat-icon>
     </button>
     
 <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayWith" (optionSelected)="ChangeSelection($event)">

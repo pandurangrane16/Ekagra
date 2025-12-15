@@ -1,4 +1,4 @@
-mat-label{font-size: 14px; font-weight: 400; margin-bottom: 5px;}
+mat-label{font-size: 14px; font-weight: 400; margin-bottom: 0px;}
 
  
  ::ng-deep .mat-mdc-text-field-wrapper  {
@@ -7,3 +7,7 @@ mat-label{font-size: 14px; font-weight: 400; margin-bottom: 5px;}
 border: 1px solid #E0E4EC;
 background-color:#EDF2F6;
  }
+.material-icons{color: rgba(0, 0, 0, 0.54)}
+.mat-mdc-select.mat-mdc-select-focused .mat-mdc-select-arrow {
+  color: rgba(0, 0, 0, 0.54) 
+}
