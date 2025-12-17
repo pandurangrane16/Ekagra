@@ -43,14 +43,38 @@ siteWiseVoilationDataColors = [
             '#9b20d9', '#9215ac', '#861ec9', '#7a17e6', '#7010f9', '#691af3',
             '#6225ed', '#5b30e7', '#533be1', '#4c46db'
         ];
-lprDataColors = [
-            '#32cd32', '#ff8c00', '#004f4f', '#dc143c'
-        ];
+// lprDataColors = [
+//             '#32cd32', '#ff8c00', '#004f4f', '#dc143c'
+//         ];
 
 violationsData: any[] = [];
 revenueData: any[] = [];
 challanData: any[] = [];  
 siteWiseVoilationData: any[] = [];
+violationColorMap: Record<string, string> = {
+  DOUBLEPARK: '#ff6347',
+  FCEXPIRED: '#4682b4',
+  FOOTPATHDRIVE: '#32cd32',
+  FREELEFT: '#ffd700',
+  INSURANCEEXPIRED: '#ff98f6',
+  MISCELLANEOUS: '#004f4f',
+  MOBILEUSE: '#ff1493',
+  NOHELMET: '#8a2be2',
+  NOPARK: '#20b2aa',
+  NOSEATBELT: '#dc143c',
+  OVERSPEED: '#999966',
+  PERMITINVALID: '#00006e',
+  PUCCEXPIRED: '#ff8c00',
+  RASHDRIVE: '#ff6347',
+  REDLIGHT: '#dc143c',
+  REGNINVALID: '#4682b4',
+  STOPLINE: '#32cd32',
+  TAXEXPIRED: '#ffd700',
+  TRIPLERIDE: '#8a2be2',
+  WRONGDIRECTION: '#20b2aa',
+  WRONGLANE: '#999966'
+};
+
 // violationsData = 
 //      [
 //         ['DOUBLEPARK', 30 ],

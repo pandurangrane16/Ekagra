@@ -149,27 +149,41 @@ export class AlertComponent implements OnInit {
     //// this.getProjList();
     this.getFilteredList();
 
-    this.getFilteredList();
+    // this.getFilteredList();
 
 
 
-    this.form.get('searchText')?.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged()
-      )
-      .subscribe(value => {
-        if (value && value.length >= 3) {
-          this.perPage = 10;
-          this.pager = 0;
-          this.getFilteredList();
-        } else if (!value || value.length === 0) {
+    // this.form.get('searchText')?.valueChanges
+    //   .pipe(
+    //     debounceTime(300),
+    //     distinctUntilChanged()
+    //   )
+    //   .subscribe(value => {
+    //     if (value && value.length >= 3) {
+    //       this.perPage = 10;
+    //       this.pager = 0;
+    //       this.getFilteredList();
+    //     } else if (!value || value.length === 0) {
 
-          this.perPage = 10;
-          this.pager = 0;
-          this.getFilteredList();
-        }
-      });
+    //       this.perPage = 10;
+    //       this.pager = 0;
+    //       this.getFilteredList();
+    //     }
+    //   });
+
+this.form.get('searchText')?.valueChanges
+  .pipe(
+    debounceTime(400),
+    distinctUntilChanged()
+  )
+  .subscribe(value => {
+    this.pager = 0;
+    this.perPage = 10;
+
+    if (!value || value.length >= 3) {
+      this.getFilteredList();
+    }
+  });
 
   }
 
@@ -381,90 +395,165 @@ export class AlertComponent implements OnInit {
     });
   }
 
-  getFilteredList() {
-    const currentUserId = this.globals.user?.id || 0;
-   // const selectedProjectId = this.form.controls['selectedProject'].value.value;
-    const selectedStatus = this.form.controls['selectedStatus'].value.value;
-    const search = this.form.controls['searchText'].value
-    const selectedCategory = this.form.controls['selectedCategory'].value.value;
-    this.MaxResultCount = this.perPage;
-    this.SkipCount = this.MaxResultCount * this.pager;
-    this.recordPerPage = this.perPage;
+//   getFilteredList() {
+//     const currentUserId = this.globals.user?.id || 0;
+//    // const selectedProjectId = this.form.controls['selectedProject'].value.value;
+//     // const selectedStatus = this.form.controls['selectedStatus'].value.value;
+//     // const search = this.form.controls['searchText'].value
+//     // const selectedCategory = this.form.controls['selectedCategory'].value.value;
 
-    console.log(this.startDate, this.endDate)
+//     const selectedStatus =
+//   this.form.controls['selectedStatus']?.value?.value ?? null;
 
-    const formattedStart = this.startDate?.toISOString();
-    const formattedEnd = this.endDate?.toISOString();
+// const selectedCategory =
+//   this.form.controls['selectedCategory']?.value?.value ?? null;
 
+// const search =
+//   this.form.controls['searchText']?.value?.trim() || '';
 
-    this.service.GetFilteredList(currentUserId,formattedStart, formattedEnd, selectedStatus, search, selectedCategory,this.MaxResultCount, this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
-      console.log(this.startDate, this.endDate)
-      const items = response.result?.items;
-      this.items = items;
-      this.form.reset();
-      const totalCount = response.result?.totalCount;
+//     this.MaxResultCount = this.perPage;
+//     this.SkipCount = this.MaxResultCount * this.pager;
+//     this.recordPerPage = this.perPage;
 
+//     console.log(this.startDate, this.endDate)
 
-      if (Array.isArray(items)) {
-
-        items.forEach((element: any) => {
+//     const formattedStart = this.startDate?.toISOString();
+//     const formattedEnd = this.endDate?.toISOString();
 
 
-          //let _data = JSON.parse(element);
-          element.ticketid = element.ticketNo;
-          element.policyname = element.policyName;
-          element.category = element.category === 0 ? 'Low' :
-            element.category === 1 ? 'Medium' :
-              element.category === 2 ? 'High' : '';
-          element.alertdate = element.creationTime;
-          element.handledby = element.userName;
-         const statusMap: any = {
-  0: 'Created',
-  1: 'In Progress',
-  4: 'Completed'
-};
+//     this.service.GetFilteredList(currentUserId,formattedStart, formattedEnd, selectedStatus, search, selectedCategory,this.MaxResultCount, this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
+//       console.log(this.startDate, this.endDate)
+//       const items = response.result?.items;
+//       this.items = items;
+//       // this.form.reset();
+//       const totalCount = response.result?.totalCount;
 
-element.devices = statusMap[element.isStatus] || 'Unknown';
 
-          // element.button = [
-          //   { label: 'Edit', icon: 'edit', type: 'edit' },
-          //   { label: 'Delete', icon: 'delete', type: 'delete' }
-          // ];
-          element.ticketid = element.ticketNo;
-          element.policyname = element.policyName;
+//       if (Array.isArray(items)) {
+
+//         items.forEach((element: any) => {
+
+
+//           //let _data = JSON.parse(element);
+//           element.ticketid = element.ticketNo;
+//           element.policyname = element.policyName;
+//           element.category = element.category === 0 ? 'Low' :
+//             element.category === 1 ? 'Medium' :
+//               element.category === 2 ? 'High' : '';
+//           element.alertdate = element.creationTime;
+//           element.handledby = element.userName;
+//          const statusMap: any = {
+//   0: 'Created',
+//   1: 'In Progress',
+//   4: 'Completed'
+// };
+
+// element.devices = statusMap[element.isStatus] || 'Unknown';
+
+//           // element.button = [
+//           //   { label: 'Edit', icon: 'edit', type: 'edit' },
+//           //   { label: 'Delete', icon: 'delete', type: 'delete' }
+//           // ];
+//           element.ticketid = element.ticketNo;
+//           element.policyname = element.policyName;
          
-          element.alertdate = element.creationTime;
+//           element.alertdate = element.creationTime;
       
          
-          element.createruserid=element.userId;
+//           element.createruserid=element.userId;
 
-          // element.button = [
-          //   { label: 'Edit', icon: 'edit', type: 'edit' },
-          //   { label: 'Delete', icon: 'delete', type: 'delete' }
-          // ];
+//           // element.button = [
+//           //   { label: 'Edit', icon: 'edit', type: 'edit' },
+//           //   { label: 'Delete', icon: 'delete', type: 'delete' }
+//           // ];
 
-          element.buttonlist = [
-            { label: 'Transfer', icon: 'output', type: 'transfer', disabled: false },
-            { label: 'Perform', icon: 'schedule', type: 'perform', disabled: false },
-            { label: 'Resolved By Itself', icon: 'check_circle', type: 'resolved', disabled: false },
-            { label: 'History', icon: 'history', type: 'history', disabled: false },
-            // { label: 'Transfer', icon: 'output', type: 'transfer' },
-          ]
+//           element.buttonlist = [
+//             { label: 'Transfer', icon: 'output', type: 'transfer', disabled: false },
+//             { label: 'Perform', icon: 'schedule', type: 'perform', disabled: false },
+//             { label: 'Resolved By Itself', icon: 'check_circle', type: 'resolved', disabled: false },
+//             { label: 'History', icon: 'history', type: 'history', disabled: false },
+//             // { label: 'Transfer', icon: 'output', type: 'transfer' },
+//           ]
 
 
 
-        });
-        var _length = totalCount / Number(this.recordPerPage);
-        if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-          this.totalRecords = Number(this.recordPerPage) * (_length);
-        else if (Math.floor(_length) == 0)
-          this.totalRecords = 10;
-        else
-          this.totalRecords = totalCount;
-        this.totalPages = this.totalRecords / this.pager;
-      }
+//         });
+//         var _length = totalCount / Number(this.recordPerPage);
+//         if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+//           this.totalRecords = Number(this.recordPerPage) * (_length);
+//         else if (Math.floor(_length) == 0)
+//           this.totalRecords = 10;
+//         else
+//           this.totalRecords = totalCount;
+//         this.totalPages = this.totalRecords / this.pager;
+//       }
+//     });
+//   }
+
+getFilteredList() {
+  const currentUserId = this.globals.user?.id || 0;
+
+  const selectedStatus =
+    this.form.controls['selectedStatus']?.value?.value ?? null;
+
+  const selectedCategory =
+    this.form.controls['selectedCategory']?.value?.value ?? null;
+
+  const search =
+    this.form.controls['searchText']?.value?.trim() || '';
+
+  this.MaxResultCount = this.perPage;
+  this.SkipCount = this.MaxResultCount * this.pager;
+
+  const formattedStart = this.startDate?.toISOString();
+  const formattedEnd = this.endDate?.toISOString();
+
+  this.service
+    .GetFilteredList(
+      currentUserId,
+      formattedStart,
+      formattedEnd,
+      selectedStatus,
+      search,
+      selectedCategory,
+      this.MaxResultCount,
+      this.SkipCount
+    )
+    .pipe(withLoader(this.loaderService))
+    .subscribe((response: any) => {
+
+      const items = response.result?.items || [];
+      this.items = items;
+
+      const totalCount = response.result?.totalCount || 0;
+      this.totalRecords = totalCount;
+      this.totalPages = Math.ceil(totalCount / this.perPage);
+
+      items.forEach((element: any) => {
+        element.ticketid = element.ticketNo;
+        element.policyname = element.policyName;
+        element.category =
+          element.category === 0 ? 'Low' :
+          element.category === 1 ? 'Medium' :
+          element.category === 2 ? 'High' : '';
+
+        element.alertdate = element.creationTime;
+        element.handledby = element.userName;
+
+        element.devices =
+          element.isStatus === 0 ? 'Created' :
+          element.isStatus === 1 ? 'In Progress' :
+          element.isStatus === 4 ? 'Completed' : 'Unknown';
+
+        element.buttonlist = [
+          { label: 'Transfer', icon: 'output', type: 'transfer' },
+          { label: 'Perform', icon: 'schedule', type: 'perform' },
+          { label: 'Resolved By Itself', icon: 'check_circle', type: 'resolved' },
+          { label: 'History', icon: 'history', type: 'history' }
+        ];
+      });
     });
-  }
+}
 
   updateAlertStatus(data: any) {
     this.service.updateAlert(data).subscribe(res => {
