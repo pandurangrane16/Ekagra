@@ -67,6 +67,7 @@ export class alertservice {
     ToTime?: any,
     Type?: any,
     Filter?: any,
+    Category?: any,
     maxResultCount?: number,
     skipCount?: number
   ) {
@@ -89,7 +90,9 @@ export class alertservice {
       params.push(`Filter=${encodeURIComponent(Filter)}`);
     }
 
-
+    if (Category !== null && Category !== undefined) {
+      params.push(`Category=${Category}`);
+    }
 
     if (maxResultCount !== null && maxResultCount !== undefined) {
       params.push(`MaxResultCount=${maxResultCount}`);
