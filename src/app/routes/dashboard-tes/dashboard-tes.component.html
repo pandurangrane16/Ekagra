@@ -7,7 +7,7 @@
                         <div class="d-flex align-items-center"><img src="assets/img/violations.png" alt="" class="me-2"><span class="text-uppercase">Today's <br/> TOTAL VIOLATION
  </span></div>
                         <div class="count mt-4 mb-4">
-                            36
+                            {{TodaysTotalVoilation}}
                         </div>
                        
                        
@@ -21,7 +21,7 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center"><img src="assets/img/revenue.png" alt="" class="me-2"><span class="text-uppercase">Today's <br/> TOTAL REVENUE</span></div>
                         <div class="count mt-4 mb-4">
-                            36
+                              {{TodaysTotalRevenue}}
                         </div>
                         
                     </div>
@@ -33,7 +33,7 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center"><img src="assets/img/challan.png" alt="" class="me-2"><span class="text-uppercase">Today's <br/>PROCESSED CHALLAN</span></div>
                         <div class="count mt-4 mb-4">
-                            36
+                             {{TodaysProcessedChallan}}
                         </div>
                        
                     </div>
@@ -43,11 +43,25 @@
                 </div>
                  <div class="col-md-10">
                     <div class="d-flex justify-content-end mb-1">
-                        <mat-button-toggle-group name="fontStyle" aria-label="Font Style" color="primary">
+                        <!-- <mat-button-toggle-group name="fontStyle" aria-label="Font Style" color="primary">
     <mat-button-toggle value="bold">Day</mat-button-toggle>
     <mat-button-toggle value="italic" selected>Week</mat-button-toggle>
     <mat-button-toggle value="underline">Month</mat-button-toggle>
-  </mat-button-toggle-group></div>
+  </mat-button-toggle-group> -->
+  <mat-button-toggle-group
+  name="fontStyle"
+  aria-label="Font Style"
+  color="primary"
+  #filterButton="matButtonToggleGroup"
+  (change)="onFilterChange($event.value)">
+
+  <mat-button-toggle value="day">Day</mat-button-toggle>
+  <mat-button-toggle value="week" selected>Week</mat-button-toggle>
+  <mat-button-toggle value="month">Month</mat-button-toggle>
+
+</mat-button-toggle-group>
+
+</div>
                     <div class="row d-flex justify-content-evenly">
 <div class="col-md-4"> <div class="card" #cardRefV> <div class="card-body">
   <div class="d-flex justify-content-between my-1" style="align-items: center;">
@@ -112,7 +126,7 @@
     </div>
     
 </div>
-<div class="col-md-5 mt-2">
+<!-- <div class="col-md-5 mt-2">
     <div class="card"  #cardRef2>
         <div class="card-body">
              <div class="d-flex justify-content-between my-1" style="align-items: center;">
@@ -127,7 +141,7 @@
         </div>
     </div>
     
-</div>
+</div> -->
               
             </div>
 
