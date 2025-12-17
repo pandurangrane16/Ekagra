@@ -95,6 +95,17 @@ export class AlertComponent implements OnInit {
       { name: 'All Tickets', value: '2' }
     ]
   };
+    CategorySelectSettings = {
+    labelHeader: 'Select Category Type',
+    lableClass: 'form-label',
+    formFieldClass: 'w-100',
+    appearance: 'fill',
+    options: [
+      { name: 'Low', value: '0' },
+      { name: 'Medium', value: '1' },
+      { name: 'High', value: '2' }
+    ]
+  };
   searchInputSettings = {
     labelHeader: 'Search',
     placeholder: 'Type to search...',
@@ -130,6 +141,7 @@ export class AlertComponent implements OnInit {
     this.form = this.fb.group({
       selectedProject: [''],
       selectedStatus: [''],
+      selectedCategory: [''],
       searchText: ['']
     });
     this.buildHeader();
@@ -371,9 +383,10 @@ export class AlertComponent implements OnInit {
 
   getFilteredList() {
     const currentUserId = this.globals.user?.id || 0;
-    const selectedProjectId = this.form.controls['selectedProject'].value.value;
+   // const selectedProjectId = this.form.controls['selectedProject'].value.value;
     const selectedStatus = this.form.controls['selectedStatus'].value.value;
     const search = this.form.controls['searchText'].value
+    const selectedCategory = this.form.controls['selectedCategory'].value.value;
     this.MaxResultCount = this.perPage;
     this.SkipCount = this.MaxResultCount * this.pager;
     this.recordPerPage = this.perPage;
@@ -384,10 +397,11 @@ export class AlertComponent implements OnInit {
     const formattedEnd = this.endDate?.toISOString();
 
 
-    this.service.GetFilteredList(currentUserId,formattedStart, formattedEnd, selectedStatus, search, this.MaxResultCount, this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
+    this.service.GetFilteredList(currentUserId,formattedStart, formattedEnd, selectedStatus, search, selectedCategory,this.MaxResultCount, this.SkipCount).pipe(withLoader(this.loaderService)).subscribe((response: any) => {
       console.log(this.startDate, this.endDate)
       const items = response.result?.items;
       this.items = items;
+      this.form.reset();
       const totalCount = response.result?.totalCount;
 
 
