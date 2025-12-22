@@ -39,6 +39,14 @@ violationsDataColors = [
             '#ff6347', '#4682b4', '#32cd32', '#ffd700', '#ff98f6ff', '#004f4f',
             '#ff1493', '#8a2be2', '#20b2aa', '#dc143c','#999966','#00006e','#ff8c00','#ff6347'
         ];
+        revenueDataColors= [
+            '#ff6347', '#4682b4', '#32cd32', '#ffd700', '#ff98f6ff', '#004f4f',
+            '#ff1493', '#8a2be2', '#20b2aa', '#dc143c','#999966','#00006e','#ff8c00','#ff6347'
+        ];
+        challanDataColors= [
+            '#ff6347', '#4682b4', '#32cd32', '#ffd700', '#ff98f6ff', '#004f4f',
+            '#ff1493', '#8a2be2', '#20b2aa', '#dc143c','#999966','#00006e','#ff8c00','#ff6347'
+        ];
 siteWiseVoilationDataColors = [
             '#9b20d9', '#9215ac', '#861ec9', '#7a17e6', '#7010f9', '#691af3',
             '#6225ed', '#5b30e7', '#533be1', '#4c46db'
@@ -51,30 +59,6 @@ violationsData: any[] = [];
 revenueData: any[] = [];
 challanData: any[] = [];  
 siteWiseVoilationData: any[] = [];
-violationColorMap: Record<string, string> = {
-  DOUBLEPARK: '#ff6347',
-  FCEXPIRED: '#4682b4',
-  FOOTPATHDRIVE: '#32cd32',
-  FREELEFT: '#ffd700',
-  INSURANCEEXPIRED: '#ff98f6',
-  MISCELLANEOUS: '#004f4f',
-  MOBILEUSE: '#ff1493',
-  NOHELMET: '#8a2be2',
-  NOPARK: '#20b2aa',
-  NOSEATBELT: '#dc143c',
-  OVERSPEED: '#999966',
-  PERMITINVALID: '#00006e',
-  PUCCEXPIRED: '#ff8c00',
-  RASHDRIVE: '#ff6347',
-  REDLIGHT: '#dc143c',
-  REGNINVALID: '#4682b4',
-  STOPLINE: '#32cd32',
-  TAXEXPIRED: '#ffd700',
-  TRIPLERIDE: '#8a2be2',
-  WRONGDIRECTION: '#20b2aa',
-  WRONGLANE: '#999966'
-};
-
 // violationsData = 
 //      [
 //         ['DOUBLEPARK', 30 ],
@@ -244,7 +228,7 @@ fetchVoilationData(): void {
           item.violationType,
           item.violationCount || 0
         ]);
-
+        this.violationsDataColors = this.generateColors(this.violationsData.length);
         // 🔥 Required for OnPush
         this.cdr.markForCheck();
       },
@@ -317,7 +301,7 @@ fetchTotalRevenue(): void {
           item.violationType,
           item.violationPenaltyAmount || 0
         ]);
-
+        this.revenueDataColors = this.generateColors(this.revenueData.length);
         // 🔥 Required for OnPush
         this.cdr.markForCheck();
       },
@@ -390,7 +374,7 @@ fetchTotalProcessedChallan(): void {
           item.violationType,
           item.violationCount || 0
         ]);
-
+      this.challanDataColors = this.generateColors(this.challanData.length);
         // 🔥 Required for OnPush
         this.cdr.markForCheck();
       },
@@ -441,7 +425,16 @@ fetchSiteWiseVoilationData(): void {
       }
     });
 }
+private generateColors(count: number): string[] {
+  const colors: string[] = [];
 
+  for (let i = 0; i < count; i++) {
+    const hue = Math.round((360 / count) * i); // spread colors evenly
+    colors.push(`hsl(${hue}, 70%, 55%)`);
+  }
+
+  return colors;
+}
 // If there is no site wise data then use below method with dummy data 
 // fetchSiteWiseVoilationData(): void {
 

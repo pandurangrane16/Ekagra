@@ -301,100 +301,336 @@ selectedRole: [null, Validators.required]
 
 // }
 
-submit() {
-  debugger;
+// submit() {
+//   debugger;
 
+//   if (this.form.invalid) {
+//     this.form.markAllAsTouched();
+//     this.toast.error('Form is not valid');
+//     return;
+//   }
+
+//   const selectedRoleId = Number(this.form.value.selectedRole.id);
+
+//   // Convert selected actions → CSV
+//   let actionId = this.form.value.selectedAction
+//     .map((x: any) => x.id)
+//     .join(',');
+
+//   // ---------------------------------------------
+//   // 1️⃣ CALL GETROLES() TO FETCH CATEGORY
+//   // ---------------------------------------------
+//   this.roleConfigService.GetRoles()
+//     .pipe(withLoader(this.loaderService))
+//     .subscribe({
+//       next: (response: any) => {
+
+//         // const roles = response?.result || [];
+//         const roles = response?.result?.items || [];
+
+//         // Find the selected role's category
+//         const currentRole = roles.find((r: any) => r.id === selectedRoleId);
+//         const category = currentRole?.category || '';
+
+//         // ---------------------------------------------
+//         // 2️⃣ APPEND SPECIAL ACTION BASED ON CATEGORY
+//         // ---------------------------------------------
+//         if (category === 'ICCC') {
+//           actionId = actionId ? actionId + ',1' : '1';
+//         }
+//         else if (category === 'Field') {
+//           actionId = actionId ? actionId + ',3' : '3';
+//         }
+
+//         // ---------------------------------------------
+//         // 🔥 3️⃣ CONTINUE EXISTING CREATE/UPDATE FLOW
+//         // ---------------------------------------------
+//         if (this.isEdit && this.editingId) {
+
+//           const payload = {
+//             id: this.editingId,
+//             roleId: selectedRoleId,
+//             actionId: actionId
+//           };
+
+//           this.service.Update(payload)
+//             .pipe(withLoader(this.loaderService))
+//             .subscribe({
+//               next: () => {
+//                 this.toast.success('Updated successfully!');
+//                 this.getFilteredList();
+//                 this.resetFormState();
+//               },
+//               error: () => {
+//                 this.toast.error('Update failed');
+//               }
+//             });
+
+//           return;
+//         }
+
+//         // CREATE FLOW
+//         const payload = {
+//           id: 0,
+//           roleId: selectedRoleId,
+//           actionId: actionId
+//         };
+
+//         this.service.Create2(payload)
+//           .pipe(withLoader(this.loaderService))
+//           .subscribe({
+//             next: () => {
+//               this.toast.success('Created successfully!');
+//               this.getFilteredList();
+//               this.resetFormState();
+//             },
+//             error: () => {
+//               this.toast.error('Create failed');
+//             }
+//           });
+//       },
+
+//       error: () => {
+//         this.toast.error('Failed to load roles from configuration');
+//       }
+//     });
+// }
+
+// submit() {
+
+//   if (this.form.invalid) {
+//     this.form.markAllAsTouched();
+//     this.toast.error('Form is not valid');
+//     return;
+//   }
+
+//   const roleId = Number(this.form.value.selectedRole.id);
+
+//   let actionId = this.form.value.selectedAction
+//     .map((x: any) => x.id)
+//     .join(',');
+
+//   // 1 Get Role Category
+//   this.roleConfigService.GetRoles()
+//     .pipe(withLoader(this.loaderService))
+//     .subscribe({
+//       next: (response: any) => {
+
+//         const roles = response?.result?.items || [];
+//         const currentRole = roles.find((r: any) => r.id === roleId);
+//         const category = currentRole?.category || '';
+
+//         // 2️ Append special actions
+//         if (category === 'ICCC') {
+//           actionId = actionId ? actionId + ',1' : '1';
+//         } else if (category === 'Field') {
+//           actionId = actionId ? actionId + ',3' : '3';
+//         }
+
+//         // -------------------------------------------------
+//         //  3️ CHECK ROLE–ACTION MAPPING EXISTENCE
+//         // -------------------------------------------------
+//         this.service.CheckRoleActionMappingExist(roleId, actionId)
+//           .pipe(withLoader(this.loaderService))
+//           .subscribe({
+//              next: (exists: any) => {
+
+//               if (exists) {
+//                 this.toast.warning(
+//                   'Selected role already has one or more selected actions mapped.',
+//                   'Duplicate Mapping'
+//                 );
+//                 return; //  STOP SAVE
+//               }
+
+//               // -------------------------------------------------
+//               // 4️ CONTINUE SAVE (CREATE / UPDATE)
+//               // -------------------------------------------------
+//               if (this.isEdit && this.editingId) {
+
+//                 // const payload = {
+//                 //   id: this.editingId,
+//                 //   roleId: roleId,
+//                 //   actionId: actionId
+//                 // };
+
+//                 // this.service.Update(payload)
+//                 //   .pipe(withLoader(this.loaderService))
+//                 //   .subscribe({
+//                 //     next: () => {
+//                 //       this.toast.success('Updated successfully!');
+//                 //       this.getFilteredList();
+//                 //       this.resetFormState();
+//                 //     },
+//                 //     error: () => this.toast.error('Update failed')
+//                 //   });
+
+//                 // return;
+
+//                             this.service.GetById(this.editingId)
+//                 .pipe(withLoader(this.loaderService))
+//                 .subscribe({
+//                   next: (response: any) => {
+
+//                     const existing = response?.result;
+//                     if (!existing) {
+//                       this.toast.error('Existing record not found');
+//                       return;
+//                     }
+
+//                     // Normalize values for comparison
+//                     const existingRoleId = Number(existing.roleId);
+//                     const existingActionId = String(existing.actionId);
+
+//                     // 🔴 NO CHANGE → SKIP UPDATE
+//                     if (existingRoleId === roleId && existingActionId === actionId) {
+//                       this.toast.info('No changes detected. Update skipped.');
+//                       return;
+//                     }
+
+//                     // 🟢 CHANGE DETECTED → UPDATE
+//                     const payload = {
+//                       id: this.editingId,
+//                       roleId: roleId,
+//                       actionId: actionId
+//                     };
+
+//                     this.service.Update(payload)
+//                       .pipe(withLoader(this.loaderService))
+//                       .subscribe({
+//                         next: () => {
+//                           this.toast.success('Updated successfully!');
+//                           this.getFilteredList();
+//                           this.resetFormState();
+//                         },
+//                         error: () => this.toast.error('Update failed')
+//                       });
+//                   },
+//                   error: () => {
+//                     this.toast.error('Failed to fetch existing record');
+//                   }
+//                 });
+//                 return;
+
+//               }
+
+//               // CREATE
+//               const payload = {
+//                 id: 0,
+//                 roleId: roleId,
+//                 actionId: actionId
+//               };
+
+//               this.service.Create2(payload)
+//                 .pipe(withLoader(this.loaderService))
+//                 .subscribe({
+//                   next: () => {
+//                     this.toast.success('Created successfully!');
+//                     this.getFilteredList();
+//                     this.resetFormState();
+//                   },
+//                   error: () => this.toast.error('Create failed')
+//                 });
+//             },
+//             error: () => {
+//               this.toast.error('Failed to validate role-action mapping');
+//             }
+//           });
+//       },
+//       error: () => {
+//         this.toast.error('Failed to load roles');
+//       }
+//     });
+// }
+
+
+submit() {
+debugger;
   if (this.form.invalid) {
     this.form.markAllAsTouched();
     this.toast.error('Form is not valid');
     return;
   }
 
-  const selectedRoleId = Number(this.form.value.selectedRole.id);
+  const roleId = Number(this.form.value.selectedRole.id);
 
-  // Convert selected actions → CSV
   let actionId = this.form.value.selectedAction
     .map((x: any) => x.id)
     .join(',');
 
-  // ---------------------------------------------
-  // 1️⃣ CALL GETROLES() TO FETCH CATEGORY
-  // ---------------------------------------------
+  // 1️ Get Role Category
   this.roleConfigService.GetRoles()
     .pipe(withLoader(this.loaderService))
     .subscribe({
       next: (response: any) => {
 
-        // const roles = response?.result || [];
         const roles = response?.result?.items || [];
-
-        // Find the selected role's category
-        const currentRole = roles.find((r: any) => r.id === selectedRoleId);
+        const currentRole = roles.find((r: any) => r.id === roleId);
         const category = currentRole?.category || '';
 
-        // ---------------------------------------------
-        // 2️⃣ APPEND SPECIAL ACTION BASED ON CATEGORY
-        // ---------------------------------------------
+        // 2️ Append system actions
         if (category === 'ICCC') {
           actionId = actionId ? actionId + ',1' : '1';
-        }
-        else if (category === 'Field') {
+        } else if (category === 'Field') {
           actionId = actionId ? actionId + ',3' : '3';
         }
 
-        // ---------------------------------------------
-        // 🔥 3️⃣ CONTINUE EXISTING CREATE/UPDATE FLOW
-        // ---------------------------------------------
-        if (this.isEdit && this.editingId) {
-
-          const payload = {
-            id: this.editingId,
-            roleId: selectedRoleId,
-            actionId: actionId
-          };
-
-          this.service.Update(payload)
-            .pipe(withLoader(this.loaderService))
-            .subscribe({
-              next: () => {
-                this.toast.success('Updated successfully!');
-                this.getFilteredList();
-                this.resetFormState();
-              },
-              error: () => {
-                this.toast.error('Update failed');
-              }
-            });
-
-          return;
-        }
-
-        // CREATE FLOW
-        const payload = {
-          id: 0,
-          roleId: selectedRoleId,
-          actionId: actionId
-        };
-
-        this.service.Create2(payload)
+        // -------------------------------------------------
+        // 3️ CHECK ROLE ID EXISTENCE (CREATE ONLY)
+        // -------------------------------------------------
+        this.service.CheckRoleIdExists(roleId, this.isEdit ? this.editingId! : null)
           .pipe(withLoader(this.loaderService))
           .subscribe({
-            next: () => {
-              this.toast.success('Created successfully!');
-              this.getFilteredList();
-              this.resetFormState();
+            next: (exists: any) => {
+
+              if (!this.isEdit && exists) {
+                this.toast.warning(
+                  'This role is already mapped. Please edit the existing record instead of creating a new one.',
+                  'Role Already Exists'
+                );
+                return;
+              }
+
+              // -------------------------------------------------
+              // 4️ SAVE
+              // -------------------------------------------------
+              const payload = {
+                id: this.isEdit ? this.editingId : 0,
+                roleId: roleId,
+                actionId: actionId
+              };
+
+              const apiCall = this.isEdit
+                ? this.service.Update(payload)
+                : this.service.Create2(payload);
+
+              apiCall
+                .pipe(withLoader(this.loaderService))
+                .subscribe({
+                  next: () => {
+                    this.toast.success(
+                      this.isEdit ? 'Updated successfully!' : 'Created successfully!'
+                    );
+                    this.getFilteredList();
+                    this.resetFormState();
+                  },
+                  error: () => {
+                    this.toast.error(this.isEdit ? 'Update failed' : 'Create failed');
+                  }
+                });
             },
             error: () => {
-              this.toast.error('Create failed');
+              this.toast.error('Failed to validate role mapping');
             }
           });
       },
-
       error: () => {
-        this.toast.error('Failed to load roles from configuration');
+        this.toast.error('Failed to load roles');
       }
     });
 }
+
+
 
     resetFormState() {
   this.form.reset({
@@ -958,7 +1194,7 @@ GetActionList() {
           item.prmvalue !== 'FieldEngineerAcknowledgement'
         )
         .map((item: any) => ({
-          text: item.prmvalue,
+          text: item.rfu1,
           id: item.prmidentifier
         }));
 
