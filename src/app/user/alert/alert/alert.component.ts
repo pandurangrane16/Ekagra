@@ -539,6 +539,12 @@ getFilteredList() {
 
         element.alertdate = element.creationTime;
         element.handledby = element.userName;
+  
+         
+        element.alertdate = element.creationTime;
+      
+         
+        element.createruserid=element.userId;
 
         element.devices =
           element.isStatus === 0 ? 'Created' :
