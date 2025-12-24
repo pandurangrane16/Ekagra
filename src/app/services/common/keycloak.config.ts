@@ -4,6 +4,17 @@ const localhostCondition = createInterceptorCondition<IncludeBearerTokenConditio
   urlPattern: /^(http:\/\/localhost:4200)(\/.*)?$/i
 });
 
+
+
+
+
+
+
+
+
+
+
+
 export const provideKeycloakAngular = () =>
   provideKeycloak({
     config: {
