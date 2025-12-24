@@ -233,13 +233,13 @@ router = inject(Router);
   selectedCategory: [null],   
   searchText: ['']
 });
-          this.buildHeader();
+        this.buildHeader();
         //  this.getProjConfigList();
         this.getRoleList_All();
-         this.getUserList();
-          this.getZoneList();
-           this.getRoleCategoryList();
-          this.getFilteredList();
+        this.getZoneList();
+        this.getUserList();
+        this.getRoleCategoryList();
+        this.getFilteredList();
          
         
          

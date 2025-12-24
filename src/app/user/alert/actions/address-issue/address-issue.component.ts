@@ -18,6 +18,7 @@ import { CmTextareaComponent } from '../../../../common/cm-textarea/cm-textarea.
   styleUrl: './address-issue.component.css'
 })
 export class AddressIssueComponent implements OnInit {
+  readonly MAX_FILE_SIZE = 5 * 1024 * 1024;
   @Input() task: any;
    @Output() actionCompleted = new EventEmitter<void>();
  loaderService = inject(LoaderService);
@@ -53,11 +54,35 @@ export class AddressIssueComponent implements OnInit {
 await this.loadRoleActions(Number(this.globals?.user?.id));
   }
 
-  onFileChange(event: any) {
-  if (event.target.files && event.target.files.length > 0) {
-    this.selectedFile = event.target.files[0];
-    console.log("Selected File:", this.selectedFile);
+//   onFileChange(event: any) {
+//   if (event.target.files && event.target.files.length > 0) {
+//     this.selectedFile = event.target.files[0];
+//     console.log("Selected File:", this.selectedFile);
+//   }
+// }
+
+onFileChange(event: any) {
+  const input = event.target as HTMLInputElement;
+
+  if (!input.files || input.files.length === 0) {
+    return;
   }
+
+  const file = input.files[0];
+
+  // ❌ File size validation (5 MB)
+  if (file.size > this.MAX_FILE_SIZE) {
+    this.toastr.error('File size should not exceed 5 MB.');
+    this.selectedFile = null;
+
+    // Reset file input
+    input.value = '';
+    return;
+  }
+
+  // ✅ Valid file
+  this.selectedFile = file;
+  console.log('Selected File:', this.selectedFile);
 }
 
 

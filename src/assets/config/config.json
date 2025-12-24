@@ -48,7 +48,7 @@
                 "value": "is_not_null"
             }
         ],
-        "basePath": "https://172.19.32.51:8089/UploadedFiles/Icons/",
+        "basePath": "https://172.19.10.43:8089/UploadedFiles/Icons/",
         "projectCodes": [
             {"name" : "atcs","value" : "1"},
             {"name" : "vms","value" : "2"},
