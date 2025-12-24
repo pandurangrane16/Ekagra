@@ -1,10 +1,14 @@
-import { Component, Inject, PLATFORM_ID, OnInit } from '@angular/core';
+import { Component, Inject, PLATFORM_ID, OnInit, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import * as Highcharts from 'highcharts';
 import { CommonModule } from '@angular/common';
 import { HighchartsChartModule } from 'highcharts-angular';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { withLoader } from '../../../../services/common/common';
+import { LoaderService } from '../../../../services/common/loader.service';
+import { SessionService } from '../../../../services/common/session.service';
+import { vmsdashboardService } from '../../../../services/dashboard/vmsDashboard.service';
 
 @Component({
     selector: 'app-total-violation',
@@ -17,6 +21,9 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class TotalViolationComponent implements OnInit {
    Highcharts!: typeof Highcharts;
+   totalEntries:any;
+  totalUniqueSites:any;
+   loaderService = inject(LoaderService);
    chartOptions!: Highcharts.Options;
     isBrowser = false;
     guageValue=250;
@@ -25,7 +32,7 @@ export class TotalViolationComponent implements OnInit {
         { name: 'LMV', y: this.guageValue, color: '#5DBAE8', custom: { img: '/assets/img/gaugeDot.png' } },
       ]
     }
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: Object,private service:vmsdashboardService,private session: SessionService ) {}
   async ngOnInit(): Promise<void> {
     this.isBrowser = isPlatformBrowser(this.platformId);
   
@@ -63,7 +70,7 @@ export class TotalViolationComponent implements OnInit {
        center: ['50%', '75%'],
        size: '80%',
       startAngle: -140,
-        endAngle: 90,
+        endAngle: 140,
       background: [
         {
           outerRadius: '100%',
@@ -75,17 +82,23 @@ export class TotalViolationComponent implements OnInit {
     },
           yAxis: {
            min: 0,
-           max: 500,
+           max: 250,
            lineWidth: 0,
            tickPositions: [],
-           stops: [[0.6, '#1C2D7B']],
+           labels: {
+    enabled: false
+  },
+         stops: [
+    [0.1, '#1C2D7B'], // Dark blue from the start
+    [1.0, '#1C2D7B']  // Dark blue at the end
+  ],
          },
          tooltip:{
           enabled:false
          },
     plotOptions: {
       solidgauge: {
-        dataLabels: { enabled: true, y: 5, borderWidth: 0, useHTML: true,
+        dataLabels: { enabled: false, y: 5, borderWidth: 0, useHTML: true,
           // formatter: function () {
           //   //    console.log(this);
           //       return `<div style="color: ${this.color};"> ${this.y} </div>`;
@@ -101,9 +114,11 @@ export class TotalViolationComponent implements OnInit {
           //   `;
           // },
          },
-        linecap: 'round',
+     
         stickyTracking: true,
-        rounded: true,
+       
+        linecap: 'square', // Change 'round' to 'square'
+    rounded: false,
       },
     },
     series: [
@@ -116,6 +131,44 @@ export class TotalViolationComponent implements OnInit {
     ],
   };
     }
+    this.hello();
+  }
+
+  hello(){
+    debugger;
+    this.service
+  .GetPenaltyDetails(
+    'CMS Office Bhandup',
+    '2024-12-11',
+    '2025-12-19'
+  )
+  .pipe(withLoader(this.loaderService))
+  .subscribe({
+    next: (response: any) => {
+      const result = response?.result;
+
+      // ✅ Safely extract totals
+      const totalEntries = result?.totalEntries ?? 0;
+      const totalUniqueSites = result?.totalUniqueSites ?? 0;
+
+      // 🔁 Use them wherever needed
+      this.totalEntries = totalEntries;
+      this.totalUniqueSites = totalUniqueSites;
+
+      // // Example: bind totalEntries to gauge
+      // this.guageValue = totalEntries;
+
+      // console.log('Total Entries:', totalEntries);
+      // console.log('Total Unique Sites:', totalUniqueSites);
+    },
+    error: (err) => {
+      console.error('API Error:', err);
+      this.totalEntries = 0;
+      this.totalUniqueSites = 0;
+      this.guageValue = 0;
+    }
+  });
+
   }
 }
 

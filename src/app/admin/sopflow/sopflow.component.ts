@@ -484,6 +484,8 @@ getWorkflowStatus(act: any): 'completed' | 'pending' {
 
 
 async insertEntriesForExistingCreator() {
+
+  
   // No entry in DB
 
   const name = await this.getIcccAcknowledgedUser(this.policyData.id);
