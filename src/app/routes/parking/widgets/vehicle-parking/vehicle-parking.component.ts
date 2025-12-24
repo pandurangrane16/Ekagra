@@ -134,7 +134,7 @@ tooltip: {
   },
   series: [{
     type: 'pie',
-    innerSize: '50%',
+    innerSize: '70%',
     borderRadius: 0,
     data:this.jsonData.data,
 }] as Highcharts.SeriesOptionsType[] // Casting to SeriesOptionsType[]

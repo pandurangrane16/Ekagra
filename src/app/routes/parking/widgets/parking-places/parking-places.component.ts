@@ -30,7 +30,7 @@ jsonData: ChartSeries[] = [
 Highcharts: typeof Highcharts = Highcharts;
   chartOptions: Highcharts.Options = {
     chart: {
-      type: 'column',
+      type: 'scatter',
       backgroundColor: 'transparent',  // Transparent background
         
     },
@@ -84,7 +84,7 @@ Highcharts: typeof Highcharts = Highcharts;
     name: seriesItem.name,
     data: seriesItem.data,
     color: seriesItem.color,
-    type: 'column'
+    type: 'scatter'
   })) as Highcharts.SeriesOptionsType[],
   responsive: {
       rules: [{

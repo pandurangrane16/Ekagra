@@ -47,7 +47,7 @@ export class TotalViolationComponent implements OnInit {
       this.chartOptions = {
         chart: {
            type: 'solidgauge',
-          height: 250,
+          height: 230,
        //   width:150,
            backgroundColor: 'transparent',
            spacingTop:0,

@@ -1,27 +1,27 @@
 <div class="row mb-2 mt-2 d-flex">
-    <div class="col-md-9">
+    <div class="col-md-9 pe-0 me-0">
 <div class="card" style="height: 365px;">
 <div class="card-body" >
     <div class="row">
-        <div class="col-md-3">
-            <h6 class="mb-0">Earning Report</h6>
-<div class="d-flex flex-column align-items-center">
-   <div class="earning">₹{{ totalAmountCollected }}</div>
-   <div class="d-flex align-items-center pb-4 border-bottom">
-    <img src="assets/img/earningIcon.png" alt="" class="me-2"> <span>Your  total<br/> earnings</span>
+        <div class="col-md-12 d-flex align-items-center gap-4">
+            <!-- <h6 class="mb-0">Earning Report</h6> -->
+<div class="d-flex flex-row align-items-center">
+   <div class="earning mb-2">₹{{ totalAmountCollected }}</div>
+   <div class="d-flex align-items-center ms-2 mb-2">
+    <img src="assets/img/earningIcon.png" alt="" class="me-2"> <span style="line-height: 14px;">Your  total<br/> earnings</span>
    </div>
-   <div class="w-75">
-    <!-- <app-daily></app-daily> -->
-   </div>
+   
 
-</div>
-        </div>
-        <div class="col-md-9">
-            <mat-form-field class="w-100 mb-2">
+</div> <div class="flex-grow-1">
+      <mat-form-field class="w-100 mb-2">
                 <mat-icon matPrefix>search</mat-icon>
-                <input matInput>
+                <input matInput >
                
               </mat-form-field> <button mat-icon-button class="mapMenu" appearance="outline"><mat-icon>more_horiz</mat-icon></button>
+</div>
+        </div>
+        <div class="col-md-12">
+          
              
             <app-mapview></app-mapview></div>
     </div>
@@ -30,104 +30,109 @@
 </div>
 </div>
 <div class="row mt-2 d-flex">
-    <div class="col-md-5">
-        <div class="row d-flex justify-content-evenly">
-            <div class="col-md-6">
-                <div class="card todays">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center"><img src="assets/img/arrow_Entry.png" alt="" class="me-2"><span>Todays <br/>total  Entry</span></div>
-                        <div class="count mt-4 mb-4">
-                            36
-                        </div>
-                        <div class="progress">
-                            <div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                          </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card todays">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center"><img src="assets/img/arrow_Exit.png" alt="" class="me-2"><span>Todays <br/>total  Exit</span></div>
-                        <div class="count mt-4 mb-4">
-                            68
-                        </div>
-                        <div class="progress">
-                            <div class="progress-bar bg-danger" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                          </div>
-                    </div>
-                </div>
-            </div>
-           
-            <div class="col-md-6 mt-2">
-                <div class="card todays">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center"><img src="assets/img/arrow_Vacant.png" alt="" class="me-2"><span>Todays <br/>total  Vacant</span></div>
-                        <div class="count mt-4 mb-4">
-                            120
-                        </div>
-                        <div class="progress">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                          </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 mt-2">
-                <div class="card todays">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center"><img src="assets/img/arrow_Pending.png" alt="" class="me-2"><span>Todays <br/>total  Pendings</span></div>
-                        <div class="count mt-4 mb-4">
-                            70%
-                        </div>
-                        <div class="progress">
-                            <div class="progress-bar bg-warning" role="progressbar" style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
-                          </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-7">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                       <h6 class="text-center"> Vehicle Parking</h6>
-                       <app-vehicle-parking></app-vehicle-parking>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                       
-
-                       
-                        <div class="text-right d-flex justify-content-end"><span class="dot"></span><span class="dot"></span><span class="dot active"></span></div>
-                       <h6 class="text-center mt-1"> Sensors Health</h6> 
-                     <div class="w-75 mx-auto">  <app-sensors-health class="mt-3"></app-sensors-health></div>
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-<div class="col-md-3">
-    <div class="card">
-    <div class="card-body">
-        <h6>Total  Violation</h6>
-       <app-total-violation></app-total-violation>
-        </div>
-    </div>
-    <div class="card mt-2">
+    <div class="col-md-6">
+       <div class="card">
     <div class="card-body">
        <div > <h6>Parking</h6> <button mat-icon-button class="mapMenu" appearance="outline"><mat-icon>more_horiz</mat-icon></button></div>  
 
        <app-parking-places class="mt-3"></app-parking-places>
         </div>
     </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-6  px-0">
+                <div class="card">
+                    <div class="card-body">
+                       <h6 class="text-center"> Vehicle Parking</h6>
+                      
+                       <app-vehicle-parking></app-vehicle-parking>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                 <div class="card">
+    <div class="card-body text-center pb-4">
+        <h6>Total  Violation</h6>
+       <app-total-violation></app-total-violation>
+        </div>
+    </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div class="col-md-3">
+
+    <div class="card">
+                    <div class="card-body">
+                       
+
+                       
+                        <div class="text-right d-flex justify-content-end pe-2"><span class="dot"></span><span class="dot"></span><span class="dot active"></span></div>
+                       <h6 class="text-center mt-1 mb-5"> Sensors Health</h6> 
+                        
+                     <div class="w-75 mx-auto">  <app-sensors-health class="mt-3"></app-sensors-health></div>
+                        
+                    </div>
+                </div>
+  
+    <div class="row d-flex mt-3">
+            <div class="col-md-6 pe-1">
+                <div class="card todays">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center"><img src="assets/img/arrow_Entry.png" alt="" class="me-2"><span>Todays <br/>total  Entry</span></div>
+                        <div class="count mt-4 mb-4">
+                            36
+                        </div>
+                        <div class="progress mt-5">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 ps-1">
+                <div class="card todays">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center"><img src="assets/img/arrow_Exit.png" alt="" class="me-2"><span>Todays <br/>total  Exit</span></div>
+                        <div class="count mt-4 mb-4">
+                            68
+                        </div>
+                        <div class="progress  mt-5">
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                    </div>
+                </div>
+            </div>
+           
+            <div class="col-md-6 mt-2 pe-1">
+                <div class="card todays">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center"><img src="assets/img/arrow_Vacant.png" alt="" class="me-2"><span>Todays <br/>total  Vacant</span></div>
+                        <div class="count mt-4 mb-4">
+                            120
+                        </div>
+                        <div class="progress  mt-5">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mt-2 ps-1">
+                <div class="card todays">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center"><img src="assets/img/arrow_Pending.png" alt="" class="me-2"><span>Todays <br/>total  Pendings</span></div>
+                        <div class="count mt-4 mb-4">
+                            70%
+                        </div>
+                        <div class="progress  mt-5">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+   
 
 </div>
 </div>
