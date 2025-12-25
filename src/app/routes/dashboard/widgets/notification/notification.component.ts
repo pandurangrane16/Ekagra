@@ -32,7 +32,7 @@ export class NotificationComponent  implements OnInit,OnChanges {
   ngOnInit(): void {
     // this.alertsData = this.alertsService.getData();
      //console.log("hi4",this.alertsData);
-    this.fetchAlerts();
+    //this.fetchAlerts();
     //console.log("hi",this.alertsData);
 
     }

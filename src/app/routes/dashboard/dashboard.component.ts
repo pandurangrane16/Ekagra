@@ -43,6 +43,7 @@ constructor(private keycloakService: KeycloakService,
    private globals:Globals ) {}
 
 async ngOnInit(){
+  console.log('Dashboard component initialized');
   console.log(this.session._getSessionValue("UserValidation"));
   wrapGrid(this.dashboard().nativeElement,{duration:300});
    // Subscribe to the toggle event
