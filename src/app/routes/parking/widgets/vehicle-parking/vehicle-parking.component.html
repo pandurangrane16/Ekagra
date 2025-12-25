@@ -1,15 +1,18 @@
+
 <highcharts-chart 
+  *ngIf="isChartReady"
   [Highcharts]="Highcharts"
   [options]="chartOptions"
 
-  style="width: 100%; min-height: 200px; display: block;"
+  style="width: 100%; min-height: 165px; display: block;"
 ></highcharts-chart>
 
 
-<div class="d-flex flex-wrap">
+<div class="d-flex flex-wrap mt-4">
    
-    <div *ngFor="let serie of jsonData.data; index as i;" class="d-flex align-items-center me-4">
-      <span [ngStyle]="{'width': '10px', 'height': '10px','border-radius': '25px', 'background-color': serie.color, 'display':'block'}"></span> <label>  &nbsp;{{serie.name}} </label>
+    <div *ngFor="let serie of jsonData.data; index as i;" class="d-flex align-items-center me-3 w-100">
+      <span [ngStyle]="{'width': '10px', 'height': '10px','border-radius': '25px', 'background-color': serie.color, 'display':'block'}"></span> 
+       <img src="{{serie.custom.img}}"/><label>  &nbsp;{{serie.name}} - <strong>{{serie.y}}</strong></label> 
     </div>
  
 </div>

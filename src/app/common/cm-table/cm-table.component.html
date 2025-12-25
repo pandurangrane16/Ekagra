@@ -29,7 +29,7 @@
               @if (head.fieldValue === 'check')
               {
               <div *ngFor="let chk of item.check" class="d-inline-block me-2">
-                <mat-checkbox color="primary">{{ chk.label }}</mat-checkbox>
+                <mat-checkbox [(ngModel)]="chk.checked"color="primary">{{ chk.label }}</mat-checkbox>
               </div>
               }
               @else if(head.fieldValue === 'button') {

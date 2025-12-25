@@ -24,6 +24,7 @@ import { EmailSMSComponent } from '../../user/alert/actions/email-sms/email-sms.
 import { alertservice } from '../../services/admin/alert.service';
 import { ToastrService } from 'ngx-toastr';
 import { Globals } from '../../utils/global';
+import { ActionClosedComponent } from '../../user/alert/actions/action-closed/action-closed.component';
 import { LoaderService } from '../../services/common/loader.service';
 import { withLoader } from '../../services/common/common';
 import { FlashmodeComponent } from '../../user/alert/actions/flashmode/flashmode.component';
@@ -53,7 +54,7 @@ interface Sop {
 
 @Component({
   selector: 'app-sopflow',
-  imports: [MaterialModule, CommonModule, EmailSMSComponent,ReactiveFormsModule, SmsActionComponent, EmailActionComponent, ApiActionComponent, PaActionComponent, VmsDeviceFailureComponent, VmsEmergencyPlayComponent, AtcsHealthComponent, AtcsCongestionComponent, AtcsLampFailureComponent, AtcsDetectorFailureComponent, ItmsCameraFailureComponent, ItmsLpuFailureComponent,
+  imports: [MaterialModule,ActionClosedComponent, CommonModule, EmailSMSComponent,ReactiveFormsModule, SmsActionComponent, EmailActionComponent, ApiActionComponent, PaActionComponent, VmsDeviceFailureComponent, VmsEmergencyPlayComponent, AtcsHealthComponent, AtcsCongestionComponent, AtcsLampFailureComponent, AtcsDetectorFailureComponent, ItmsCameraFailureComponent, ItmsLpuFailureComponent,
     ItmsChallanCollectionComponent,VmsBroadcastingComponent, FlashmodeComponent,EnvSensorFailureComponent, EnvSensorPollutionComponent, IccOperatorAckComponent, AssignSiteEngineerComponent,
     AddressIssueComponent, TaskCompletionComponent],
   templateUrl: './sopflow.component.html',
@@ -416,6 +417,7 @@ insertInitialAlertEntries() {
     .pipe(withLoader(this.loaderService))
     .subscribe({
       next: (res: any) => {
+        this.refreshAfterAction();
         console.log("Alert table updated:", res);
         const updatedAlert = res?.result;
         this.globals.saveAlert(updatedAlert);
@@ -470,8 +472,20 @@ loadAlertHistory(alertId: number): Promise<void> {
       });
   });
 }
+getWorkflowStatus(act: any): 'completed' | 'pending' {
+  const action = act.action?.toLowerCase() || '';
+
+  const isCompleted = this.alertHistory?.some(
+    h => h.actionName?.toLowerCase() === action
+  );
+
+  return isCompleted ? 'completed' : 'pending';
+}
+
 
 async insertEntriesForExistingCreator() {
+
+  
   // No entry in DB
 
   const name = await this.getIcccAcknowledgedUser(this.policyData.id);
@@ -731,6 +745,7 @@ Case_RoleCategory_Field() {
   if (status === 'transfertositeengineer') {
 
     // ICCC Name
+
     this.getIcccAcknowledgedUser(alertId).then((icccName) => {
       this.Acknowledgedname = icccName || '';
     });
@@ -822,6 +837,7 @@ else{
             .pipe(withLoader(this.loaderService))
             .subscribe({
               next: (updateRes: any) => {
+                this.refreshAfterAction();
                 console.log("Alert table updated:", updateRes);
                         const updatedAlert = updateRes?.result;
         this.globals.saveAlert(updatedAlert);
@@ -960,7 +976,7 @@ canAccessAction(act: any, currentStatus: string): boolean {
     );
     if (!targetSop) return false;
 
-    return Number(targetSop.sequence) > fallbackSeq;
+   return Number(targetSop.sequence) === fallbackSeq + 1;
   }
   else{
       // -------------------------------------------------
@@ -975,7 +991,7 @@ canAccessAction(act: any, currentStatus: string): boolean {
 
   const targetSeq = Number(targetSop.sequence);
 
-  return targetSeq > currentSeq;
+  return targetSeq === currentSeq + 1;
   }
 
 
@@ -999,12 +1015,14 @@ async refreshAfterAction() {
 
   // 🔥 FORCE change detection of canAccessAction()
   this.recalculateAllActionAccess();
+  
 }
 
 recalculateAllActionAccess() {
   this.sops?.forEach(s => {
     s.activities.forEach(a => {
       a.hasAccess = this.canAccessAction(a, this.currentAlertStatus);
+      this.getWorkflowStatus(a); 
     });
   });
 }

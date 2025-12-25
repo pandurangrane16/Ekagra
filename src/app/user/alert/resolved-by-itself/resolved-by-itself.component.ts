@@ -26,7 +26,7 @@ export interface ResolvedByData {
   styleUrl: './resolved-by-itself.component.css'
 })
 export class ResolvedByItselfComponent implements OnInit {
-
+readonly MAX_FILE_SIZE = 5 * 1024 * 1024; // 10 MB
   form: FormGroup;
 
   // Holds all file slots with file data
@@ -68,15 +68,51 @@ export class ResolvedByItselfComponent implements OnInit {
   }
 
   // ✅ Handle file selection
-  onFileSelected(event: Event, index: number): void {
-    const input = event.target as HTMLInputElement;
-    if (!input?.files?.length) return;
+  // onFileSelected(event: Event, index: number): void {
+  //   const input = event.target as HTMLInputElement;
+  //   if (!input?.files?.length) return;
 
-    const selectedFiles = Array.from(input.files);
-    this.fileSlots[index].files = selectedFiles;
-    this.fileSlots[index].names = selectedFiles.map(f => f.name).join(', ');
-    input.value = ''; // reset for next upload
+  //   const selectedFiles = Array.from(input.files);
+  //   this.fileSlots[index].files = selectedFiles;
+  //   this.fileSlots[index].names = selectedFiles.map(f => f.name).join(', ');
+  //   input.value = ''; // reset for next upload
+  // }
+
+  onFileSelected(event: Event, index: number): void {
+  const input = event.target as HTMLInputElement;
+  if (!input?.files?.length) return;
+
+  const selectedFiles = Array.from(input.files);
+  const validFiles: File[] = [];
+  const rejectedFiles: string[] = [];
+
+  selectedFiles.forEach(file => {
+    if (file.size <= this.MAX_FILE_SIZE) {
+      validFiles.push(file);
+    } else {
+      rejectedFiles.push(file.name);
+    }
+  });
+
+  // ❌ Show error if any file exceeds size
+  if (rejectedFiles.length > 0) {
+    this._snackBar.open(
+      `File size should not exceed 5 MB. Rejected: ${rejectedFiles.join(', ')}`,
+      'Close',
+      {
+        duration: 4000,
+        panelClass: ['snackbar-error']
+      }
+    );
   }
+
+  // ✅ Assign only valid files
+  this.fileSlots[index].files = validFiles;
+  this.fileSlots[index].names = validFiles.map(f => f.name).join(', ');
+
+  // Reset input so same file can be reselected
+  input.value = '';
+}
 
   // ✅ Trigger the hidden input click
   triggerFileInput(index: number): void {

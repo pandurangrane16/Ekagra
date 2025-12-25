@@ -1,6 +1,16 @@
 .text-right{text-align: right;}
 .clientlogo{width: 180px;}
 .CMSlogo{ margin-left: 16px;}
+
+:host(.shift120) footer {margin-left: 120px!important;}
+:host {
+  display: block;
+}
+
+
+:host(.content) {
+  margin-left: 0;
+}
 @media only screen and (max-width: 600px) {
 .clientlogo{width: 100px;}
 .CMSlogo{width: 60px;}

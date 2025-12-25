@@ -21,9 +21,9 @@
       
       <ng-container [ngSwitch]="selectedAction">
 
-        <app-sms-action *ngSwitchCase="'sms'"></app-sms-action>
+        <app-sms-action  [task]="this.task"   [selectedAction]="'sms'" *ngSwitchCase="'sms'"></app-sms-action>
 
-        <app-email-action *ngSwitchCase="'email'"></app-email-action>
+        <app-email-action  [task]="this.task"   [selectedAction]="'email'"  *ngSwitchCase="'email'"></app-email-action>
 
         <p *ngSwitchDefault class="text-muted fst-italic">
           Please select an action type.

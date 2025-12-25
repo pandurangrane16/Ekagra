@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input,OnInit } from '@angular/core';
 import { MaterialModule } from '../../../../Material.module';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -16,6 +16,8 @@ import { CmTextareaComponent } from '../../../../common/cm-textarea/cm-textarea.
   standalone: true
 })
 export class SmsActionComponent implements OnInit {
+    @Input() task : any;
+    @Input() selectedAction!: string;
   form: any;
   contactNoSettings = {
     labelHeader: 'Contact Number\'s',
@@ -45,18 +47,29 @@ export class SmsActionComponent implements OnInit {
     })
   }
 
+
   openDialog() {
-    const dialogRef = this.dialog.open(AddressbookComponent, {
-      width: '800px',
-      height: '700px',
-      //title : "Resolved By Iteself",
-      position: { top: '20px' },
-      panelClass: 'custom-confirm-dialog',
-      data: {
-        policyName: "Policy 001"
-      }
-    })
-  }
+  const dialogRef = this.dialog.open(AddressbookComponent, {
+    width: '800px',
+    height: '700px',
+    position: { top: '20px' },
+    panelClass: 'custom-confirm-dialog',
+    data: { task: this.task , selectedAction: this.selectedAction }
+  });
+
+  dialogRef.afterClosed().subscribe((result: string[]) => {
+    console.log("Contacts received from dialog:", result);
+
+    if (result && result.length > 0) {
+      // this.task.contactNumbers = result; // Store into task or desired place
+      // console.log("Updated Task:", this.task);
+         this.form.patchValue({
+      contactNo: result
+    });
+    }
+  });
+}
+
   close() {
 
   }

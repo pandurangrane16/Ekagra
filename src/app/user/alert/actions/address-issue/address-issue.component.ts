@@ -18,6 +18,7 @@ import { CmTextareaComponent } from '../../../../common/cm-textarea/cm-textarea.
   styleUrl: './address-issue.component.css'
 })
 export class AddressIssueComponent implements OnInit {
+  readonly MAX_FILE_SIZE = 5 * 1024 * 1024;
   @Input() task: any;
    @Output() actionCompleted = new EventEmitter<void>();
  loaderService = inject(LoaderService);
@@ -53,11 +54,35 @@ export class AddressIssueComponent implements OnInit {
 await this.loadRoleActions(Number(this.globals?.user?.id));
   }
 
-  onFileChange(event: any) {
-  if (event.target.files && event.target.files.length > 0) {
-    this.selectedFile = event.target.files[0];
-    console.log("Selected File:", this.selectedFile);
+//   onFileChange(event: any) {
+//   if (event.target.files && event.target.files.length > 0) {
+//     this.selectedFile = event.target.files[0];
+//     console.log("Selected File:", this.selectedFile);
+//   }
+// }
+
+onFileChange(event: any) {
+  const input = event.target as HTMLInputElement;
+
+  if (!input.files || input.files.length === 0) {
+    return;
   }
+
+  const file = input.files[0];
+
+  // ❌ File size validation (5 MB)
+  if (file.size > this.MAX_FILE_SIZE) {
+    this.toastr.error('File size should not exceed 5 MB.');
+    this.selectedFile = null;
+
+    // Reset file input
+    input.value = '';
+    return;
+  }
+
+  // ✅ Valid file
+  this.selectedFile = file;
+  console.log('Selected File:', this.selectedFile);
 }
 
 
@@ -65,7 +90,10 @@ await this.loadRoleActions(Number(this.globals?.user?.id));
 
 async handleCase2_AutoCreatePendingActions() {
 
+  this.globals.restoreUserMappingFromSession();
 
+  const storedUser = sessionStorage.getItem('userInfo');
+  const currentUserId = storedUser ? JSON.parse(storedUser).id : 0;
 
   // 1️⃣ Find "Address the Incident" sequence using prmValue
   const currentSeq = this.sopActions.find(
@@ -146,7 +174,7 @@ else {
     const updatePayload = {
       id: baseAlert?.id,
       currentStatus: act.prmValue,
-      lastModifiedUserId: Number(this.globals?.user?.id),
+      lastModifierUserId:  currentUserId,
 
       remarks: baseAlert?.remarks,
       creatorUserId: baseAlert?.creatorUserId ?? baseAlert?.createruserid,
@@ -238,7 +266,7 @@ else {
   const updatePayload = {
     id:baseAlert?.id,
     currentStatus: lastAction.prmValue,
-    lastModifiedUserId: Number(this.globals?.user?.id),
+    lastModifierUserId: Number(this.globals?.user?.id),
    
 
 
@@ -369,7 +397,7 @@ else {
   const updatePayload = {
     id: baseAlert?.id,
     currentStatus: "AddressIncident",   
-    lastModifiedUserId: this.globals?.user?.id,
+    lastModifierUserId: this.globals?.user?.id,
     remarks:baseAlert?.remarks,
     creatorUserId: baseAlert?.creatorUserId ?? baseAlert?.createruserid,
     policyName: baseAlert?.policyName,

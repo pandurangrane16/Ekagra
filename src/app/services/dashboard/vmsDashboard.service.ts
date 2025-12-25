@@ -24,6 +24,16 @@ ProjectfieldCreate(_data: any) {
     PostSiteResponse(_data: any) {
     return this._httpService._postMethod(_data, 'api/services/app/ProjectAPI/SiteResponse');
   }
+ GetVehicleCategoryWiseCount(SiteId: any, fromdate: any, todate: any) {
+    return this._httpService._getMethod('api/services/app/NeatParkGraph/GetVehicleCategoryWiseCount?siteIds='+encodeURIComponent(SiteId)+'&fromDate='+fromdate+'&toDate='+todate);
+  }
+   GetTotalCollectionAmount(SiteId: any, fromdate: any, todate: any) {
+    return this._httpService._getMethod('api/services/app/NeatParkGraph/GetTotalCollectionAmount?siteIds='+encodeURIComponent(SiteId)+'&fromDate='+fromdate+'&toDate='+todate);
+  }
+ GetPenaltyDetails(SiteId: any, fromdate: any, todate: any) {
+    return this._httpService._getMethod('api/services/app/NeatParkGraph/GetPenaltyDetails?siteIds='+encodeURIComponent(SiteId)+'&fromDate='+fromdate+'&toDate='+todate);
+  }
+
 
 
 

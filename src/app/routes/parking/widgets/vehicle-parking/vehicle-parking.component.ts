@@ -1,8 +1,19 @@
-import { OnInit, Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
+import { OnInit, Component,inject, ElementRef, Renderer2, ViewChild } from '@angular/core';
 import { HighchartsChartModule } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
 import { CommonModule } from '@angular/common';
-
+import { withLoader } from '../../../../services/common/common';
+import { LoaderService } from '../../../../services/common/loader.service';
+import { SessionService } from '../../../../services/common/session.service';
+import { vmsdashboardService } from '../../../../services/dashboard/vmsDashboard.service';
+interface VehicleChartPoint {
+  name: string;
+  y: number;
+  color: string;
+  custom: {
+    img: string;
+  };
+}
 @Component({
     selector: 'app-vehicle-parking',
     imports: [HighchartsChartModule, CommonModule],
@@ -11,17 +22,34 @@ import { CommonModule } from '@angular/common';
 })
 export class VehicleParkingComponent implements OnInit {
   @ViewChild('customLegend')
+  loaderService = inject(LoaderService);
   customLegend!: ElementRef;
-  constructor(private renderer: Renderer2, private el: ElementRef) {}
+  constructor(private renderer: Renderer2, private el: ElementRef,private service:vmsdashboardService,private session: SessionService ) {}
   public element: any;
-  jsonData = {
-    "data": [
-      { name: 'LMV', y: 320, color: '#5DBAE8', custom: { img: '/assets/img/LMV.png' } },
-      { name: 'HMV', y: 50, color: '#FFB2B2', custom: { img: '/assets/img/HMV.png' } },
-      { name: 'Private Bus', y: 100, color: '#FF9933', custom: { img: '/assets/img/bus.png' } },
-      { name: 'Car', y: 100, color: '#192970', custom: { img: '/assets/img/car.png' } }
-    ]
+  isChartReady = false;
+  vehicleMetaMap: any = {
+  'Two Wheeler': {
+    color: '#5DBAE8',
+    img: '/assets/img/LMV.png'
+  },
+  'Four Wheeler': {
+    color: '#FFB2B2',
+    img: '/assets/img/car.png'
+  }
 };
+
+jsonData: { data: VehicleChartPoint[] } = {
+  data: []
+};
+
+//   jsonData = {
+//     "data": [
+//       { name: 'LMV', y: 320, color: '#5DBAE8', custom: { img: '/assets/img/LMV.png' } },
+//       { name: 'HMV', y: 50, color: '#FFB2B2', custom: { img: '/assets/img/HMV.png' } },
+//       { name: 'Private Bus', y: 100, color: '#FF9933', custom: { img: '/assets/img/bus.png' } },
+//       { name: 'Car', y: 100, color: '#192970', custom: { img: '/assets/img/car.png' } }
+//     ]
+// };
 Highcharts: typeof Highcharts = Highcharts;
   chartOptions: Highcharts.Options = {
     chart: {
@@ -37,9 +65,19 @@ Highcharts: typeof Highcharts = Highcharts;
       text: '',
       align: 'left'
   },
-  tooltip: {
-    format: '{point.percentage:.0f} %',
-  },
+tooltip: {
+  useHTML: true,
+  formatter: function () {
+    const ctx = this as any;      // 👈 Highcharts formatter context
+    const point = ctx.point;
+
+    return `
+      <b>${point.name}</b><br/>
+      Count: <b>${point.y}</b><br/>
+      Percentage: <b>${ctx.percentage.toFixed(1)}%</b>
+    `;
+  }
+},
  
    legend: {
         enabled:false,
@@ -96,7 +134,7 @@ Highcharts: typeof Highcharts = Highcharts;
   },
   series: [{
     type: 'pie',
-    innerSize: '50%',
+    innerSize: '70%',
     borderRadius: 0,
     data:this.jsonData.data,
 }] as Highcharts.SeriesOptionsType[] // Casting to SeriesOptionsType[]
@@ -119,8 +157,44 @@ Highcharts: typeof Highcharts = Highcharts;
   };
 
   ngOnInit(): void {
-   
+   this.loadVehicleCategoryChart();
   } 
 
+  loadVehicleCategoryChart() {
+  this.service
+    .GetVehicleCategoryWiseCount(
+      'CMS Office Bhandup',
+      '2025-12-11',
+      '2025-12-19'
+    )
+    .pipe(withLoader(this.loaderService))
+    .subscribe({
+      next: (response: any) => {
+        const breakdown = response?.result?.categoryBreakdown ?? [];
+        this.prepareChartData(breakdown);
+      }
+    });
+}
+prepareChartData(breakdown: any[]) {
+
+const chartData: VehicleChartPoint[] = breakdown.map(item => ({
+  name: item.vehicleCategory,   // always string
+  y: item.count,                // always number
+  color: this.vehicleMetaMap[item.vehicleCategory]?.color ?? '#ccc',
+  custom: {
+    img: this.vehicleMetaMap[item.vehicleCategory]?.img ?? ''
+  }
+}));
+
+  // ✅ Update pie series data ONLY
+  (this.chartOptions.series as Highcharts.SeriesPieOptions[])[0].data =
+    chartData;
+
+  // ✅ Update custom legend
+  this.jsonData.data = chartData;
+    this.isChartReady = true;
 }
 
+  
+
+}

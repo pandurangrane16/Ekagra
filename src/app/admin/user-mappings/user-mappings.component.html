@@ -18,9 +18,10 @@
                         <select #selectElement class="form-control" style="width: 100%;">
                             <option *ngFor="let option of yourOptions" [value]="option.id">{{ option.text }}</option>
                         </select> -->
-                        <mat-form-field *ngIf="isUserOptionsLoaded" appearance="fill" class="w-100">
-                            <mat-label>Select User</mat-label>
-                            <mat-select multiple formControlName="selectedUser" [disabled]="isEdit">
+                         <mat-label>Select User</mat-label>
+                        <mat-form-field *ngIf="isUserOptionsLoaded" appearance="fill" class="w-100" >
+                           
+                            <mat-select multiple formControlName="selectedUser" [disabled]="isEdit" placeholder=" -- Select --">
                                 <mat-option *ngFor="let option of UserOptions" [value]="option" >
                                     {{ option.text }}
                                 </mat-option>
@@ -37,14 +38,29 @@
                         <select multiple #selectElement class="form-control" style="width: 100%;" [attr.size]="5">
                             <option *ngFor="let option of yourOptions" [value]="option.id">{{ option.text }}</option>
                         </select> -->
-                        <mat-form-field   *ngIf="isZoneOptionsLoaded" appearance="fill" class="w-100">
+                        <!-- <mat-form-field   *ngIf="isZoneOptionsLoaded" appearance="fill" class="w-100">
                             <mat-label>Select Zone</mat-label>
                             <mat-select multiple formControlName="selectedZone">
                                 <mat-option *ngFor="let option of ZoneOptions" [value]="option">
                                     {{ option.text }}
                                 </mat-option>
                             </mat-select>
-                        </mat-form-field>
+                        </mat-form-field> -->
+<mat-label>Select Action</mat-label>
+                        <mat-form-field *ngIf="isZoneOptionsLoaded" appearance="fill" class="w-100">
+  
+                    <mat-select multiple formControlName="selectedZone" (selectionChange)="onActionSelectionChange($event)" placeholder=" -- Select --">
+                         
+                        <mat-option class="clear-option" (click)="clearActions()">
+                        Clear Selection
+                        </mat-option>
+                        <mat-option *ngFor="let option of ZoneOptions" [value]="option">
+                            
+                                    {{ option.text }}
+                                </mat-option>
+                    </mat-select>
+                    </mat-form-field>
+
 
                     </div>
                         <div class="col">
@@ -75,9 +91,10 @@
                                 </mat-option>
                             </mat-select>
                         </mat-form-field> -->
+                        <mat-label *ngIf="isRoleOptionsLoaded || isEdit">Select Role</mat-label>
                         <mat-form-field *ngIf="isRoleOptionsLoaded || isEdit" appearance="fill" class="w-100">
-                        <mat-label>Select Role</mat-label>
-                        <mat-select multiple formControlName="selectedRole">
+                        
+                        <mat-select multiple formControlName="selectedRole"  placeholder=" -- Select --">
                             <mat-option *ngFor="let option of RoleOptions" [value]="option">
                             {{ option.text }}
                             </mat-option>
@@ -96,7 +113,7 @@
                             [_inputData]="searchInputSettings">
                             </app-cm-input>
                     </div>
-                    <div class="col-md-8 text-right">
+                    <div class="col-md-4 ms-auto  d-flex align-items-center justify-content-end">
                         
                         <button mat-stroked-button (click)="close()">Cancel</button>&nbsp;&nbsp;&nbsp;
                         <button mat-flat-button color="primary" (click)="submit()" [disabled]="!!userAlreadyMappedMessage || isCheckingUser">Save</button>

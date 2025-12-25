@@ -19,7 +19,7 @@
       <div class="sidebar">
         <h2>Step {{ currentStep + 1 }}</h2>
         <p class="subtitle">
-          Please enter the rule information and ensure all fields are complete before proceeding to the next step.
+          
         </p>
         <div class="steps">
           <div *ngFor="let step of steps; let i = index" class="step">
@@ -379,7 +379,7 @@
 
         <div *ngIf="currentStep === 2">
           <h3>Rule Schedule</h3>
-          <p class="info-text">Add your work experience here...</p>
+          <p class="info-text"></p>
           <hr />
 
                          <app-cm-cron-expression (cronChange)="getCronFromData($event)"></app-cm-cron-expression>
@@ -392,16 +392,17 @@
 
 
                                 <div class="row">
+                                     <div class="col-md-6">
+                                        <label style="position: relative; top: 6px; display: block;">Hour*</label>
+                                        <app-cm-select-check [formGroup]="thirdFormGroup" [controlName]="'hour'"
+                                            [settings]="hourSettings" (returnObject)="setThirdFormValues($event,'hour')" ></app-cm-select-check>
+                                    </div>
                                     <div class="col-md-6">
                                         <label style="position: relative; top: 6px; display: block;">Minute*</label>
                                         <app-cm-select-check [formGroup]="thirdFormGroup" [controlName]="'minute'"
                                             [settings]="minuteSettings" (returnObject)="setThirdFormValues($event,'min')"></app-cm-select-check>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label style="position: relative; top: 6px; display: block;">Hour*</label>
-                                        <app-cm-select-check [formGroup]="thirdFormGroup" [controlName]="'hour'"
-                                            [settings]="hourSettings" (returnObject)="setThirdFormValues($event,'hour')" ></app-cm-select-check>
-                                    </div>
+                                 
                                 </div>
 
 

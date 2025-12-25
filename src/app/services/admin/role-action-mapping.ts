@@ -49,7 +49,7 @@ ProjectCreate(_data: any) {
 
 
   Create(_data: any) {
-    return this._httpService._postMethod(_data, 'api/services/app/UserZoneMapping/Create');
+    return this._httpService._postMethod(_data, 'api/services/app/RoleActionMapping/Create');
   }
 
     Create2(_data: any) {
@@ -60,10 +60,10 @@ ProjectCreate(_data: any) {
 
   
   Update(_data: any) {
-    return this._httpService._putMethod(_data, 'api/services/app/UserZoneMapping/Update');
+    return this._httpService._putMethod(_data, 'api/services/app/RoleActionMapping/Update');
   }
 GetAll() {
-    return this._httpService._getMethod('api/services/app/UserZoneMapping/GetAll');
+    return this._httpService._getMethod('api/services/app/RoleActionMapping/GetAll');
   }
 
 GetProjectList() {
@@ -72,7 +72,7 @@ GetProjectList() {
 
 
   GetById(id:any) {
-    return this._httpService._getMethod('api/services/app/UserZoneMapping/Get?Id='+id);
+    return this._httpService._getMethod('api/services/app/RoleActionMapping/Get?Id='+id);
   }
 UploadFile(formData: FormData) {
   return this._httpService._postMethod( formData,'api/services/app/FileUpload/UploadIcon');
@@ -162,6 +162,48 @@ GetFilteredList2(
 }
 
 
-  
+  CheckRoleActionMappingExist(
+  roleId?: any,
+  actionIds?: any,
+ 
+) {
+  let params: string[] = [];
+
+  if (roleId !== null && roleId !== undefined) {
+    params.push(`roleId=${roleId}`);
+  }
+
+
+  if (actionIds !== null && actionIds !== undefined) {
+    params.push(`actionIds=${actionIds}`);
+  }
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/RoleActionMapping/CheckRoleActionMappingExist${queryString}`;
+
+  return this._httpService._postMethod(null,url);
+}
+    
+    CheckRoleIdExists(
+              roleId?: any,
+              id?: any,
+            
+            ) {
+              let params: string[] = [];
+
+              if (roleId !== null && roleId !== undefined) {
+                params.push(`roleId=${roleId}`);
+              }
+
+
+              if (id !== null && id !== undefined) {
+                params.push(`id=${id}`);
+              }
+
+              const queryString = params.length ? '?' + params.join('&') : '';
+              const url = `api/services/app/RoleActionMapping/CheckRoleIdExists${queryString}`;
+
+              return this._httpService._postMethod(null,url);
+            }
 
 }

@@ -228,18 +228,18 @@ router = inject(Router);
        this.form = this.fb.group({
   
   selectedUser: [null, Validators.required],
-  selectedZone: [[], this.minArrayLength(1)],
+  selectedZone: [[null], this.minArrayLength(1)],
   selectedRole: [[], this.minArrayLength(1)],
   selectedCategory: [null],   
   searchText: ['']
 });
-          this.buildHeader();
+        this.buildHeader();
         //  this.getProjConfigList();
         this.getRoleList_All();
-         this.getUserList();
-          this.getZoneList();
-           this.getRoleCategoryList();
-          this.getFilteredList();
+        this.getZoneList();
+        this.getUserList();
+        this.getRoleCategoryList();
+        this.getFilteredList();
          
         
          
@@ -792,10 +792,12 @@ editRow(rowData: any) {
           this.toast.error('No data found', 'Error');
           return;
         }
-
+debugger;
         const zoneIds = result.zoneId?.split(',') || [];
         const roleIds = result.roleId?.split(',') || [];
-        const userId = String(result.userId);
+        // const userId = result.userId?.split(',') || [];  // ⬅️ FIXED
+        const userId = String(result.userId).split(',').map(x => x.trim());
+
 
         // Step 1: GET FIRST ROLE ID
         const firstRoleId = roleIds.length > 0 ? Number(roleIds[0]) : null;
@@ -1075,7 +1077,35 @@ const search = this.searchText;
       this.userMappings = items;
     });
 }
+onActionSelectionChange(event: any) {
+  const selectedValues = this.form.value.selectedZone || [];
+  const allOption = this.ZoneOptions.find((x: any) => x.text.toLowerCase() === 'all');
 
+  if (!allOption) return;
+
+  const isAllSelected = selectedValues.some((x: any) => x.id === allOption.id);
+
+  // If ALL is selected → select every option **except ALL**
+  if (isAllSelected) {
+    const allExceptAll = this.ZoneOptions.filter((x: any) => x.id !== allOption.id);
+
+    this.form.patchValue({
+      selectedZone: allExceptAll
+    });
+
+    return;
+  }
+
+  // If user selects anything else → ensure ALL is removed
+  const cleaned = selectedValues.filter((x: any) => x.id !== allOption.id);
+
+  this.form.patchValue({
+    selectedZone: cleaned
+  });
+}
+clearActions() {
+  this.form.patchValue({ selectedZone: [] });
+}
        
 // getUserList() {
 
@@ -1114,6 +1144,7 @@ const search = this.searchText;
 //   });
 // }
 getUserList() { 
+  debugger;
   this.service.GetUserList()
     .pipe(withLoader(this.loaderService))
     .subscribe((response: any) => {

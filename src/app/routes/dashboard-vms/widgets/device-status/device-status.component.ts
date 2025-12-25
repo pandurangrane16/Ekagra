@@ -20,6 +20,7 @@ export class DeviceStatusComponent implements OnInit {
   customLegend!: ElementRef;
   constructor(private renderer: Renderer2, private el: ElementRef,private service:vmsdashboardService,private session: SessionService ) {}
   public element: any;
+  legendData: any[] = [];
   jsonData = {
     "data": [
         { "name": "Active", "y": 66, "color": "#05da4cff"},
@@ -27,6 +28,7 @@ export class DeviceStatusComponent implements OnInit {
     ]
 };
 Highcharts: typeof Highcharts = Highcharts;
+chartOptions?: Highcharts.Options; 
 //   chartOptions: Highcharts.Options = {
 //     chart: {
 //       type: 'pie',
@@ -183,7 +185,7 @@ Highcharts: typeof Highcharts = Highcharts;
 //   }
 //   };
 
-  chartOptions?: Highcharts.Options; 
+ 
 
   ngOnInit(): void {
    this.getDeviceStatus();
@@ -282,6 +284,11 @@ const requestPayload = {
   }
 
   initializeChart(active: number, inactive: number) {
+
+      this.legendData = [
+    { name: 'Active', y: active, color: '#05da4cff' },
+    { name: 'Inactive', y: inactive, color: '#98DDFF' }
+  ];
     this.chartOptions = {
       chart: {
         type: 'pie',

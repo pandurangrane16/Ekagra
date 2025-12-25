@@ -40,6 +40,13 @@
     (optionSelected)="onProjectSelected($event)">
   </app-cm-select2>
 
+    <app-cm-select2
+    [formGroup]="form"
+    [controlName]="'selectedCategory'"
+    [settings]="CategorySelectSettings"
+    (optionSelected)="onProjectSelected($event)">
+  </app-cm-select2>
+
   <button mat-flat-button
        class="btn-primary mt-4" (click)="submit()"  
        >

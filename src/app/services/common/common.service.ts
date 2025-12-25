@@ -14,13 +14,14 @@ export class CommonService {
   }
 
   _sessionAPITags(): Observable<any> {
+    debugger;
     if (!this.isBrowser) {
       return of([]); // return empty observable if not browser
     }
 
     // Check sessionStorage cache
     const cached = sessionStorage.getItem("APITags");
-    if (cached != undefined || cached != null) {
+    if (cached != undefined && cached != null && cached != "null") {
       return of(JSON.parse(cached)); // return cached data as observable
     }
 

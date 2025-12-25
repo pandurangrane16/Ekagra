@@ -1,7 +1,7 @@
 .card{border-radius: 16px;}
 .card-body{ overflow: hidden; padding: 15px;}
 .material-icons {font-size: 18px}
-.earning{font-size: 48px; font-weight: 900; color: black; font-family: poppins; margin: 40px 0;}
+.earning{font-size: 36px; font-weight: 900; color: black; font-family: poppins; margin: 0px 0;}
 span{color: #6E6E6E;}
 .border-bottom{ border-bottom: 1px solid #ccc;}
 .mapMenu{ position: absolute; right: 20px; top:20px; border: 1px solid #E0E0E0;

@@ -1,0 +1,112 @@
+import { Injectable, OnInit } from '@angular/core';
+import { HttpService } from './common/http.service';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
+
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class emailsmsservice {
+  constructor(
+    private _httpService: HttpService,
+  private http: HttpClient) { }
+
+ jsonurl: string = '/assets/config/config.json';
+
+getKeysDataForConfig(key: string): Observable<any> {
+  return this.http.get('/assets/config/config.json').pipe(
+    map((config: any) => config[key])
+  );
+}
+
+ProjectCreate(_data: any) {
+    return this._httpService._postMethod(_data, 'api/services/app/Project/Create');
+  }
+
+GetAll() {
+    return this._httpService._getMethod('api/services/app/Project/GetAll');
+  }
+
+GetProjectList() {
+    return this._httpService._getMethod('api/services/app/Project/GetProjectList');
+  }
+UploadFile(formData: FormData) {
+  return this._httpService._postMethod( formData,'api/services/app/FileUpload/UploadIcon');
+}
+
+
+    ProjectEdit(_data: any) {
+    return this._httpService._putMethod(_data, 'api/services/app/Project/Update');
+  }
+
+  Delete(id: number) {
+    return this._httpService._deleteMethod('api/services/app/Project/Delete?Id='+id);
+  }
+
+CheckProjectName(
+  projectName?: any,
+  Id?: any,
+ 
+) {
+  let params: string[] = [];
+
+  if (projectName !== null && projectName !== undefined) {
+    params.push(`projectName=${projectName}`);
+  }
+
+
+  if (Id !== null && Id !== undefined) {
+    params.push(`Id=${Id}`);
+  }
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/Project/CheckProjectNameExist${queryString}`;
+
+  return this._httpService._postMethod(null,url);
+}
+
+GetFilteredList(
+  zoneIds?: number,
+  categoryId?: string,
+  searchText?:any
+//   status?: boolean,
+//   maxResultCount?: number,
+//   skipCount?: number
+) {
+  let params: string[] = [];
+
+  if (zoneIds !== null && zoneIds !== undefined) {
+    params.push(`zoneIds=${zoneIds}`);
+  }
+   if (categoryId !== null && categoryId !== undefined) {
+    params.push(`categoryId=${categoryId}`);
+  }
+
+  if (searchText !== null && searchText !== undefined && searchText.trim() !== '') {
+    params.push(`searchText=${encodeURIComponent(searchText)}`);
+  }
+
+//   if (status !== null && status !== undefined) {
+//     params.push(`IsActive=${status}`);
+//   }
+
+//   if (maxResultCount !== null && maxResultCount !== undefined) {
+//     params.push(`MaxResultCount=${maxResultCount}`);
+//   }
+
+//   if (skipCount !== null && skipCount !== undefined) {
+//     params.push(`SkipCount=${skipCount}`);
+//   }
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/Alert/GetUserListByZoneAndCategory${queryString}`;
+
+  return this._httpService._getMethod(url);
+}
+
+
+  
+
+}
