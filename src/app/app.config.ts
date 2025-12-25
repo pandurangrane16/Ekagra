@@ -83,7 +83,7 @@ export function initializeKeycloak(kc: KeycloakService) {
     // 🔐 Init Keycloak (do NOT return this promise)
     kc.init({
       config: {
-        url: 'http://172.19.10.43:8080',   // ⚠ Prefer hostname over IP if possible
+        url: 'https://172.19.10.43:8443',   // ⚠ Prefer hostname over IP if possible
         realm: 'cmsrealm',
         clientId: 'Ekgara',
       },
