@@ -48,12 +48,15 @@
               {{child.label}}
             </a>
           </mat-menu> -->
-          <div class="submenu" [ngClass]="{'expanded' : showSubSubMenu}">
-					<!-- <mat-list-item routerLinkActive="active-link" [routerLink]="[child.link]" #rla="routerLinkActive" *ngFor="let child of item.children">{{child.label}}</mat-list-item> -->
-					<a href="#" routerLinkActive="active-link" [routerLink]="[child.link]"
-              #rla="routerLinkActive" *ngFor="let child of item.children">{{child.label}}
+          <div class="submenu" [ngClass]="{'expanded' : item.isOpen}" *ngIf="item.children && item.isOpen">
+            <a routerLinkActive="active-link" [routerLink]="child.link"
+              [routerLinkActiveOptions]="{exact:true}"
+              class="submenu-link"
+              *ngFor="let child of item.children">
+              <img [src]="child.icon || 'assets/img/LineArrow.svg'" alt="" class="submenu-icon">
+              <span class="submenu-text">{{child.label}}</span>
             </a>
-				</div>
+          </div>
           }
 
         </li>

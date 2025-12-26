@@ -2,7 +2,7 @@
 .clientlogo{width: 180px;}
 .CMSlogo{ margin-left: 16px;}
 
-:host(.shift120) footer {margin-left: 120px!important;}
+:host(.shift120) footer {margin-left: 170px!important;}
 :host {
   display: block;
 }
