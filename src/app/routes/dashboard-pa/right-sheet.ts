@@ -18,12 +18,12 @@ import { MatTabsModule } from '@angular/material/tabs';
 })
 export class RightSheetComponent {
 links = [
-  { label: 'Live', icon: 'campaign' },
+  // { label: 'Live', icon: 'campaign' },
   { label: 'Recorded File', icon: 'settings_voice' },
-  { label: 'Uploaded File', icon: 'upload' }
+  // { label: 'Uploaded File', icon: 'upload' }
 ];
 activeLink = this.links[0]; // default tab
-innerlinks = ['PA', 'Group', 'Zone'];
+innerlinks = ['PA', 'Zone'];
 activeInnerlink = this.innerlinks[0]; // default tab
 selectedFileName = '';
 
@@ -36,4 +36,5 @@ onFileChange(event: Event) {
     this.selectedFileName = '';
   }
 }
+
 }
