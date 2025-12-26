@@ -141,11 +141,33 @@ export class SurveilienceCameraComponent implements OnInit, OnDestroy {
             }
           }
         );
+        
+const projectCodesStr = this.session._getSessionValue("projectCodes");
+
+if (!projectCodesStr) {
+  console.error('⚠️ projectCodes not found in session');
+  return;
+}
+
+const projectCodes = JSON.parse(projectCodesStr);
+    const currentProject = "Surveilience"; // change dynamically later if needed
+
+    const project = projectCodes.find(
+      (p: any) => p.name.toLowerCase() === currentProject.toLowerCase()
+    );
+
+    if (!project) {
+      console.error(`⚠️ Project "${currentProject}" not found in config.`);
+      return;
+    }
+
+    const projectId = Number(project.value);
 
         const sub = dialogRef.afterClosed().subscribe((result: any) => {
           if (this.destroyed) return;
           if (result) {
-            const projectId = this.session._getSessionValue('projectIdRoute');
+            // const projectId = this.session._getSessionValue('projectIdRoute');
+          
             this.surveillanceService
               .GetSiteLocationCameraListForSurveillance(projectId)
               .pipe(withLoader(this.loaderService))

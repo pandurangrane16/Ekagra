@@ -19,6 +19,7 @@ interface MenuItem {
   isOpen?: boolean;
   link: string;
   apiLable?: string;
+  appendProject?: boolean;
 }
 
 @Component({
@@ -279,8 +280,10 @@ export class SidenavComponent implements OnInit {
       const configRaw = this.sessionService._getSessionValue('config');
       const parsed = configRaw ? JSON.parse(configRaw.toString()) : null;
       const codeObj = parsed?.projectCodes?.find((x: any) => x.name === item.apiLable);
-      const targetRoute = codeObj ? `${item.link}/${codeObj.value}` : item.link;
-      if (codeObj) this.sessionService._setSessionValue('projectIdRoute', codeObj);
+      // Only append project code for routes that are admin pages or explicitly opt-in
+      const shouldAppend = codeObj && (item.appendProject === true || item.link.startsWith('admin'));
+      const targetRoute = shouldAppend ? `${item.link}/${codeObj.value}` : item.link;
+      if (shouldAppend) this.sessionService._setSessionValue('projectIdRoute', codeObj);
       const absolute = targetRoute.startsWith('/') ? targetRoute : `/${targetRoute}`;
       console.log('Navigating to (absolute):', absolute);
       this.router.navigateByUrl(absolute);
