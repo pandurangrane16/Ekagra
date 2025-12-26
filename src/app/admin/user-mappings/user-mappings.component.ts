@@ -1280,8 +1280,7 @@ getRoleList(type: any) {
 }
 
 getRoleList_All() {
-  debugger;
-
+  
 let body = { permissions: null };
   
   this.service.GetRoleList().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
@@ -1321,21 +1320,31 @@ const projectOptions = items.map((item: any) => ({
       ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       // Initialize select2
-      $(this.selectElement.nativeElement).select2();
-
-      // Handle change event
-      $(this.selectElement.nativeElement).on('change', (event: any) => {
-        this.selectedValue = $(event.target).val();
-      });
+          try {
+            if (this.selectElement && this.selectElement.nativeElement) {
+              $(this.selectElement.nativeElement).select2();
+              $(this.selectElement.nativeElement).on('change', (event: any) => {
+                this.selectedValue = $(event.target).val();
+              });
+            }
+          } catch (err) {
+            console.warn('select2 init error:', err);
+          }
     }
   }   
   ngOnDestroy(): void {
-     this.destroy$.next();
-    this.destroy$.complete();
-    if (isPlatformBrowser(this.platformId)) {
-      // Destroy select2 instance
-      $(this.selectElement.nativeElement).select2('destroy');
-    }
+         this.destroy$.next();
+        this.destroy$.complete();
+        if (isPlatformBrowser(this.platformId)) {
+          try {
+            if (this.selectElement && this.selectElement.nativeElement) {
+              try { $(this.selectElement.nativeElement).off('change'); } catch(e) {}
+              try { $(this.selectElement.nativeElement).select2('destroy'); } catch(e) {}
+            }
+          } catch (err) {
+            console.warn('Error during select2 destroy in UserMappings:', err);
+          }
+        }
   }
       
     

@@ -61,45 +61,45 @@ export class SidenavComponent implements OnInit {
   }
 
   constructor(public headerService: HeaderService, public routes: Router, private route: ActivatedRoute) {
-debugger;
   }
   ngOnInit(): void {
-    debugger;
+    
     let _data = this.sessionService._getSessionValue("config");
     console.log(_data ?? '');
     this.configData = _data;
     this.menuItems = [
+      // {
+      //   icon: './assets/img/icon_dashboard1.svg',
+      //   label: 'Dashboard',
+      //   link: 'dashboard',
+      //   activeIcon: './assets/img/icon_dashboard2.svg',
+      //    isOpen: false,
+      //   children: [
+      //   ]
+      // },
       {
-        icon: './assets/img/icon_dashboard1.svg',
-        label: 'Dashboard',
-        link: 'dashboard',
-        activeIcon: './assets/img/icon_dashboard2.svg',
-         isOpen: false,
-        children: [{
-          icon: './assets/img/icon_settings.svg',
-          activeIcon: './assets/img/icon_settings1.svg',
-          label: 'Ekagra Dashboard',
+          icon: './assets/img/icon_dashboard1.svg',
+           activeIcon: './assets/img/icon_dashboard2.svg',
+          label: 'Dashboard',
           link: 'dashboard',
         }, {
-          icon: './assets/img/icon_settings.svg',
-          activeIcon: './assets/img/icon_settings1.svg',
-          label: 'VMS Dashboard',
+         icon: './assets/img/icon_surveillance.svg',
+        activeIcon: './assets/img/icon_surveillance1.svg',
+          label: 'VMS',
           link: 'vms',
         }, 
         {
-          icon: './assets/img/icon_settings.svg',
-          activeIcon: './assets/img/icon_settings1.svg',
-          label: 'TES Dashboard',
+          icon: './assets/img/icon_surveillance.svg',
+        activeIcon: './assets/img/icon_surveillance1.svg',
+          label: 'TES',
           link: 'tes',
         }, 
         {
-          icon: './assets/img/icon_settings.svg',
-          activeIcon: './assets/img/icon_settings1.svg',
-          label: 'PA Dashboard',
+         icon: './assets/img/icon_surveillance.svg',
+        activeIcon: './assets/img/icon_surveillance1.svg',
+          label: 'PA',
           link: 'pa',
-        }
-        ]
-      },
+        },
       {
         icon: './assets/img/icon_surveillance.svg',
         activeIcon: './assets/img/icon_surveillance1.svg',
@@ -132,12 +132,12 @@ debugger;
         label: 'Alerts',
         link: 'alerts',
       },
-      {
-        icon: './assets/img/icon_SOPs.svg',
-        activeIcon: './assets/img/icon_SOPs1.svg',
-        label: 'SOPs',
-        link: '#',
-      },
+      // {
+      //   icon: './assets/img/icon_SOPs.svg',
+      //   activeIcon: './assets/img/icon_SOPs1.svg',
+      //   label: 'SOPs',
+      //   link: '#',
+      // },
       // {
       //   icon: './assets/img/icon_Chat.svg',
       //   activeIcon: './assets/img/icon_Chat1.svg',
@@ -163,8 +163,8 @@ debugger;
           label: 'Dashboard',
           link: 'admin/dashboard',
         }, {
-          icon: './assets/img/icon_settings.svg',
-          activeIcon: './assets/img/icon_settings1.svg',
+          icon: './assets/img/icon_more.svg',
+          activeIcon: './assets/img/icon_more.svg',
           label: 'Project Configuration',
           link: 'admin/projconfig',
         }, {
@@ -222,12 +222,12 @@ debugger;
           label: 'User Configuration',
           link: 'admin/userheirarchy',
         },
-        {
-          icon: './assets/img/icon_settings.svg',
-          activeIcon: './assets/img/icon_settings1.svg',
-          label: 'User Dashboard',
-          link: 'user/user-dash',
-        },
+        // {
+        //   icon: './assets/img/icon_settings.svg',
+        //   activeIcon: './assets/img/icon_settings1.svg',
+        //   label: 'User Dashboard',
+        //   link: 'user/user-dash',
+        // },
         {
           icon: './assets/img/icon_settings.svg',
           activeIcon: './assets/img/icon_settings1.svg',
@@ -267,23 +267,27 @@ debugger;
   }
 
   toggleMenuItem(item: MenuItem) {
-    console.log(item);
-    // Only toggle if sidebar is not collapsed and item has children
-    if (!this.isSidebarCollapsed && item.children) {
+    console.log('toggleMenuItem', item);
+    // If item has children, toggle its open state
+    if (item.children) {
       item.isOpen = !item.isOpen;
+      return;
     }
-    else {
-      // const code = JSON.parse(this.configData).projectCodes.filter((x: any) => x.name == item.apiLable)[0].value;
-      debugger;
-      const config = this.sessionService._getSessionValue("config");
-      const code = config
-      ? JSON.parse(config.toString())?.projectCodes?.find((x: any) => x.name === item.apiLable)?.value
-      : null;
 
-      const targetRoute = `${item.link}/${code?.value ?? ''}`;
-      console.log('Navigating to:', targetRoute);
-      this.sessionService._setSessionValue("projectIdRoute", code);
-      this.router.navigate([targetRoute]);
+    // For leaf items, build absolute route and navigate
+    try {
+      const configRaw = this.sessionService._getSessionValue('config');
+      const parsed = configRaw ? JSON.parse(configRaw.toString()) : null;
+      const codeObj = parsed?.projectCodes?.find((x: any) => x.name === item.apiLable);
+      const targetRoute = codeObj ? `${item.link}/${codeObj.value}` : item.link;
+      if (codeObj) this.sessionService._setSessionValue('projectIdRoute', codeObj);
+      const absolute = targetRoute.startsWith('/') ? targetRoute : `/${targetRoute}`;
+      console.log('Navigating to (absolute):', absolute);
+      this.router.navigateByUrl(absolute);
+    } catch (err) {
+      console.error('Navigation error:', err);
+      const absolute = item.link.startsWith('/') ? item.link : `/${item.link}`;
+      this.router.navigateByUrl(absolute);
     }
   }
 }

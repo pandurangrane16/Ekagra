@@ -1283,8 +1283,16 @@ this.form.controls['selectedRole'].setValue({
   }   
   ngOnDestroy(): void {
     if (isPlatformBrowser(this.platformId)) {
-      // Destroy select2 instance
-      $(this.selectElement.nativeElement).select2('destroy');
+      // Destroy select2 instance if element exists
+      try {
+        if (this.selectElement && this.selectElement.nativeElement) {
+          // remove change handler and destroy select2 safely
+          try { $(this.selectElement.nativeElement).off('change'); } catch(e) {}
+          try { $(this.selectElement.nativeElement).select2('destroy'); } catch(e) {}
+        }
+      } catch (err) {
+        console.warn('Error during select2 destroy:', err);
+      }
     }
   }
       
