@@ -9,23 +9,30 @@
     <ul>
       <ng-container *ngFor="let item of menuItems">
         <li class="sidebar-menu-item">
-          <button mat-button type="button" class="sidebar-item"
+          <button mat-button type="button" class="sidebar-item justify-content-left" style="width: 90%; padding-left:15px; justify-content: left;" [class.active-link]="isItemActive(item)"
             [ngClass]="{ 'has-children': item.children, 'menu-item-active': item.isOpen }"
             (click)="toggleMenuItem(item)">
             <img [src]="item.icon" style="max-width: 20px; max-height: 20px;" class="mr-1">
             <span class="sidebar-item-text">{{ item.label }}</span>
-            <span *ngIf="item.children && !isSidebarCollapsed" class="material-icons sidebar-item-arrow"
+            <span *ngIf="item.children && !isSidebarCollapsed" class="material-icons sidebar-item-arrow order-last ms-auto"
               [ngClass]="{ rotated: item.isOpen }">expand_more</span>
           </button>
-          <div class="submenu" [ngClass]="{'expanded' : item.isOpen}" *ngIf="item.children && item.isOpen">
-            <a routerLinkActive="active-link" [routerLink]="child.link"
-              [routerLinkActiveOptions]="{exact:true}"
-              class="submenu-link"
-              *ngFor="let child of item.children">
-              <img [src]="child.icon || 'assets/img/LineArrow.svg'" alt="" class="submenu-icon">
-              <span class="submenu-text">{{child.label}}</span>
-            </a>
-          </div>
+        <div class="submenu"
+       [hidden]="!item.isOpen"
+       [ngClass]="{ expanded: item.isOpen }">
+
+    <a *ngFor="let child of item.children"
+       [routerLink]="child.link"
+       class="submenu-link"
+       [class.active-link]="isChildActive(child)">
+
+      <img [src]="child.icon || child.activeIcon" class="submenu-icon">
+      <span class="submenu-text">{{ child.label }}</span>
+    </a>
+
+  </div>
+           
+         
         </li>
       </ng-container>
     </ul>

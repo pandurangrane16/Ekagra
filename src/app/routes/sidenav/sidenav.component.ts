@@ -159,67 +159,67 @@ export class SidenavComponent implements OnInit {
         link: '',
         isOpen: false,
         children: [{
-          icon: './assets/img/next.png',
+          icon: './assets/img/dot.png',
           activeIcon: './assets/img/next.png',
           label: 'Dashboard',
           link: 'admin/dashboard',
         }, {
-          icon: './assets/img/next.png',
+          icon: './assets/img/dot.png',
           activeIcon: './assets/img/next.png',
           label: 'Project Config',
           link: 'admin/projconfig',
         }, {
-          icon: './assets/img/next.png',
-          activeIcon: './assets/img/next.png',
+          icon: './assets/img/dot.png',
+          activeIcon: './assets/img/dot.png',
           label: 'Site Config',
           link: 'admin/siteconfig',
         },
         {
-          icon: './assets/img/next.png',
-          activeIcon: './assets/img/next.png',
+          icon: './assets/img/dot.png',
+          activeIcon: './assets/img/dot.png',
           label: 'Sop Config',
           link: 'admin/sopconfig',
         },
         {
-          icon: './assets/img/next.png',
-          activeIcon: './assets/img/next.png',
+          icon: './assets/img/dot.png',
+          activeIcon: './assets/img/dot.png',
           label: 'Project field Config',
           link: 'admin/projfieldconfig',
         }, {
-          icon: './assets/img/next.png',
-          activeIcon: './assets/img/next.png',
+          icon: './assets/img/dot.png',
+          activeIcon: './assets/img/dot.png',
           label: 'Zone Config',
           link: 'admin/zoneconfig',
         }, {
-          icon: './assets/img/next.png',
-          activeIcon: './assets/img/next.png',
+          icon: './assets/img/dot.png',
+          activeIcon: './assets/img/dot.png',
           label: 'Map Config',
           link: 'admin/mapconfig',
         }, {
-          icon: './assets/img/next.png',
-          activeIcon: './assets/img/next.png',
+          icon: './assets/img/dot.png',
+          activeIcon: './assets/img/dot.png',
           label: 'Project Filed Map',
           link: 'admin/projfieldmap',
         }, {
-          icon: './assets/img/next.png',
-          activeIcon: './assets/img/next.png',
+          icon: './assets/img/dot.png',
+          activeIcon: './assets/img/dot.png',
           label: 'Contact Config',
           link: 'admin/ContactConf',
         }, {
-          icon: './assets/img/next.png',
-          activeIcon: './assets/img/next.png',
+          icon: './assets/img/dot.png',
+          activeIcon: './assets/img/dot.png',
           label: 'API Playground',
           link: 'admin/apilist',
         },
         {
-          icon: './assets/img/next.png',
-          activeIcon: './assets/img/next.png',
+          icon: './assets/img/dot.png',
+          activeIcon: './assets/img/dot.png',
           label: 'Rule Engine',
           link: 'admin/ruleenginelist',
         },
         {
-          icon: './assets/img/next.png',
-          activeIcon: './assets/img/next.png',
+          icon: './assets/img/dot.png',
+          activeIcon: './assets/img/dot.png',
           label: 'User Config',
           link: 'admin/userheirarchy',
         },
@@ -230,26 +230,43 @@ export class SidenavComponent implements OnInit {
         //   link: 'user/user-dash',
         // },
         {
-          icon: './assets/img/next.png',
-          activeIcon: './assets/img/next.png',
+          icon: './assets/img/dot.png',
+          activeIcon: './assets/img/dot.png',
           label: 'Role Config',
           link: 'admin/roleconfigList',
         },
           {
-          icon: './assets/img/next.png',
-          activeIcon: './assets/img/next.png',
+          icon: './assets/img/dot.png',
+          activeIcon: './assets/img/dot.png',
           label: 'Role Action Mapping',
           link: 'admin/role-action',
         },
         {
-          icon: './assets/img/next.png',
-          activeIcon: './assets/img/next.png',
+          icon: './assets/img/dot.png',
+          activeIcon: './assets/img/dot.png',
           label: 'User Mappings',
           link: 'admin/userMappings',
         }]
       }
     ];
+
   }
+
+ isChildActive(child: any): boolean {
+  return this.router.isActive(child.link, {
+    paths: 'exact',
+    queryParams: 'ignored',
+    fragment: 'ignored',
+    matrixParams: 'ignored'
+  });
+}
+
+isItemActive(item: any): boolean {
+  if (!item.children?.length) {
+    return this.isChildActive(item);
+  }
+  return item.children.some((child: any) => this.isChildActive(child));
+}
   toggleLogoMain() {
     this.headerService.showLogo = !this.headerService.showLogo;
     console.log(this.headerService.showLogo);
