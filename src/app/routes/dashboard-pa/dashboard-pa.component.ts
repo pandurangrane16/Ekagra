@@ -227,77 +227,94 @@ deleteRow(data: any) {
 
     }  
 
-         GetOngoingAnnoucement() {
-  
-const start = this.startDate ??
-  Math.floor(new Date(new Date().setHours(0, 0, 0, 0)).getTime() / 1000);
+  GetOngoingAnnoucement() {
 
-const end = this.endDate ??
-  Math.floor(new Date(new Date().setHours(23, 59, 59, 999)).getTime() / 1000);
+  const start = this.startDate ??
+    Math.floor(new Date(new Date().setHours(0, 0, 0, 0)).getTime() / 1000);
 
+  const end = this.endDate ??
+    Math.floor(new Date(new Date().setHours(23, 59, 59, 999)).getTime() / 1000);
 
-   this.MaxResultCount=this.perPage;
-      this.SkipCount=this.MaxResultCount*this.pager;
-      this.recordPerPage=this.perPage;
+  this.MaxResultCount = this.perPage;
+  this.SkipCount = this.MaxResultCount * this.pager;
+  this.recordPerPage = this.perPage;
 
-// Construct final Inputs string
-const inputs = `${start},${end},,,${this.SkipCount},${this.MaxResultCount}`;
+  const inputs = `${start},${end},,,${this.SkipCount},${this.MaxResultCount}`;
 
-const requestBody = {
-  projectId: 3,
-  type: 1,
-  inputs: inputs,
-  bodyInputs: "",
-  seq: 8
-};
-       this.service.GetSiteResponse(requestBody).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
-    //  const items = response?.result || [];
-         
- // 1️⃣ Parse the JSON string in result
-const parsedResult = JSON.parse(response?.result || "{}");
+  const requestBody = {
+    projectId: 3,
+    type: 1,
+    inputs: inputs,
+    bodyInputs: "",
+    seq: 8
+  };
 
-// 2️⃣ Take the data array from parsed result
-const items = parsedResult?.data || [];
-this.items = items;
+  this.service
+    .GetSiteResponse(requestBody)
+    .pipe(withLoader(this.loaderService))
+    .subscribe({
+      next: (response: any) => {
 
-// To calculate total pagination count
-const totalCount = items.length;
+        let parsedResult: any = {};
+        let items: any[] = [];
 
-if (Array.isArray(items)) {
+        try {
+          parsedResult = JSON.parse(response?.result || "{}");
+          items = parsedResult?.data || [];
+        } catch (err) {
+          console.error('JSON parse failed:', err);
+          items = [];
+        }
 
-  items.forEach((element: any, index: number) => {
+        this.items = items;
 
-    // Map fields safely
-    element.destination = element.destination || '-';
-    element.source = element.source || '-';
-    element.announcementStatus = element.announcementStatus || '-';
-    element.duration = element.duration || '-';
-    element.recordName = element.recordName || '-';
-    element.audio = element.audio || '-';
-    element.announcementType = element.announcementType || '-';
-    element.sNo = element.sNo || index + 1;
+        const totalCount = items.length;
 
-    // Add button to last column
-    element.button = [
-      { label: 'Cancel', icon: 'cancel', type: 'cancel' }
-    ];
-  });
+        if (Array.isArray(items)) {
 
-  // 3️⃣ Pagination LIKE your existing logic
-  const _length = totalCount / Number(this.recordPerPage);
+          items.forEach((element: any, index: number) => {
+            element.destination = element.destination || '-';
+            element.source = element.source || '-';
+            element.announcementStatus = element.announcementStatus || '-';
+            element.duration = element.duration || '-';
+            element.recordName = element.recordName || '-';
+            element.audio = element.audio || '-';
+            element.announcementType = element.announcementType || '-';
+            element.sNo = index + 1;
 
-  if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-    this.totalRecords = Number(this.recordPerPage) * (_length);
-  else if (Math.floor(_length) == 0)
-    this.totalRecords = 10;
-  else
-    this.totalRecords = totalCount;
+            element.button = [
+              { label: 'Cancel', icon: 'cancel', type: 'cancel' }
+            ];
+          });
 
-  this.totalPages = this.totalRecords / this.pager;
+          // Pagination logic (unchanged)
+          const _length = totalCount / Number(this.recordPerPage);
+
+          if (_length > Math.floor(_length) && Math.floor(_length) !== 0)
+            this.totalRecords = Number(this.recordPerPage) * _length;
+          else if (Math.floor(_length) === 0)
+            this.totalRecords = 10;
+          else
+            this.totalRecords = totalCount;
+
+          this.totalPages = this.totalRecords / this.pager;
+        }
+      },
+
+      error: (error: any) => {
+        console.error('GetOngoingAnnouncement API failed:', error);
+
+        // Reset UI safely
+        this.items = [];
+        this.totalRecords = 0;
+        this.totalPages = 0;
+
+        // Optional: show toast
+        // this.toastr.error('Failed to load ongoing announcements');
+      }
+    });
 }
 
-      })
-    } 
            ListView() {
   
 

@@ -45,7 +45,7 @@
                 </div>
               
           
-                <div class="card todays">
+                <!-- <div class="card todays">
                     <div class="card-body">
                         <div class="d-flex align-items-center"><img src="assets/img/challan.png" alt="" class="me-2"><span class="text-uppercase">Registration <br/> Status</span></div>
                         <div class="count mt-4">
@@ -54,7 +54,7 @@
                         </div>
                        
                     </div>
-                </div>
+                </div> -->
                   
 </div>
                 </div>
@@ -103,18 +103,18 @@
 <label for="" class="ms-1">  PA List View </label>
 
                 </div> <div class="d-flex align-items-center justify-content-between col-md-8">
-<mat-form-field >
+<!-- <mat-form-field >
     <mat-select placeholder="Select">
                         <mat-option>PA </mat-option>
                         <mat-option>Zone </mat-option>
                         <mat-option>Group </mat-option>
                     </mat-select>
-                  </mat-form-field>
-<mat-form-field>
+                  </mat-form-field> -->
+<!-- <mat-form-field>
                 <mat-icon matPrefix>search</mat-icon>
                 <input matInput placeholder="Search">
                
-              </mat-form-field>
+              </mat-form-field> -->
                   <div class="example-button-row">
     <div class="example-flex-container">
       <button mat-icon-button matTooltip="Download PA Status Report PDF">
@@ -147,14 +147,14 @@
                 </app-cm-table>
 
 </mat-tab>
-  <mat-tab label="Upcoming Schedule Announcements">  
+  <!-- <mat-tab label="Upcoming Schedule Announcements">  
     <app-cm-table [headArr]="paUpcomingHeadArr" [gridArr]="paUpcomingList" [pagination]="true" [totalRecords]="totalRecords"
                     [perPage]="perPage" [totalPages]="totalPages" [collectionSize]="collectionSize"
                     (pager)="onPageChange($event)" (recordPerPage)="onPageRecordsChange($event)"
                     (searchWithId)="onRowClicked($event)" (btnAction)="onButtonClicked($event)">
                 </app-cm-table> 
             
-            </mat-tab>
+            </mat-tab> -->
 
 </mat-tab-group>
 </div>
