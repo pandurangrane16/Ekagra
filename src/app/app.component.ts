@@ -96,12 +96,27 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit() {
-   this.router.events.subscribe(event => {
+    // Show/hide header/sidebar based on route
+    this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         // Hide element on '/' and '/login', show on all other routes
-        this.showElement = !(event.url === '/' || event.url.includes('login') ||  event.url.includes('register'));
+        this.showElement = !(event.url === '/' || event.url.includes('login') || event.url.includes('register'));
       }
     });
+
+    // Show global loader during navigation to avoid blank screen between redirects
+    this.router.events.subscribe((event: any) => {
+      const NavigationStart = (window as any).ng && (window as any).ng.coreTokens ? null : null; // noop to keep typing
+      const evName = event.constructor && event.constructor.name;
+      if (evName === 'NavigationStart') {
+        this.loaderService.showLoader();
+      }
+      if (evName === 'NavigationEnd' || evName === 'NavigationCancel' || evName === 'NavigationError') {
+        // small delay to avoid flicker
+        setTimeout(() => this.loaderService.hideLoader(), 150);
+      }
+    });
+
     this.appReady = Globals.prototype.isKeycloakInitialized;
     // this.signalRService.notifications$.subscribe((message: string) => {
     //   // this.snackBar.open(message, 'Close', {

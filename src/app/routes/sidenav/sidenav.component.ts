@@ -157,7 +157,7 @@ export class SidenavComponent implements OnInit {
         activeIcon: './assets/img/config.png',
         label: 'Config',
         link: '',
-        isOpen: true,
+        isOpen: false,
         children: [{
           icon: './assets/img/next.png',
           activeIcon: './assets/img/next.png',
