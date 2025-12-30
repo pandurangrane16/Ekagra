@@ -5,7 +5,7 @@
       <div *ngFor="let row of rows; let i = index" class="breadcrumb-row">
     <!-- <span class="breadcrumb-index">{{ row.index ?? (i + 1) }}.</span> -->
     <ng-container *ngIf="row.parts.length === 1">
-      <h5 *ngIf="row.link; else plain" [routerLink]="row.link" class="breadcrumb-text" class="mb-0 text-white">{{ row.parts[0] }}</h5>
+      <h5 *ngIf="row.link; else plain" [routerLink]="row.link" class="breadcrumb-text" class="mb-0 text-primary">{{ row.parts[0] }}</h5>
       <ng-template #plain><span class="breadcrumb-text">{{ row.parts[0] }}</span></ng-template>
       
     </ng-container>

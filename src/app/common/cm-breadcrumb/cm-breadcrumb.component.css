@@ -1,8 +1,6 @@
 .cm-breadcrumb{
   padding: 8px 16px;
   /* background: transparent; */
-      background-color: #1c2d7b;
-    color: white;
 }
 .breadcrumb-row{
   font-family: Poppins, sans-serif;
@@ -57,4 +55,7 @@ background-color:#EDF2F6;
   box-shadow: none !important;
   padding: 4px 8px;
   background-color: transparent !important;
+}
+.text-primary{
+  color:var(--primary-color)!important;
 }

@@ -1,10 +1,10 @@
-<div class="pageWrapper">
+<!-- <div class="pageWrapper">
     <mat-card class="cardWithShadow theme-card">
         <div class="row">
             <mat-card-header>
                 <div class="col-md-11" style="padding-left: 40px;">
                     <mat-card-title>
-                        <h2 style="margin-top: 10px;">Role Configuration</h2>
+                        <h5 style="margin-top: 10px;">Role Configuration</h5>
                     </mat-card-title>
                 </div>
                 <div class="col text-right">
@@ -16,7 +16,22 @@
             </mat-card-header>
         </div>
         <hr>
-        <mat-card-content class="b-t-1 scroll">
+        <mat-card-content class="b-t-1 scroll"> -->
+
+
+            <div class="card mt-1">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <mat-card-title>
+            <h5 class="mt-1 mb-0">Role Configuration</h5>
+        </mat-card-title>
+
+        <button mat-icon-button matTooltip="Back to List" aria-label="Back" (click)="close()"
+            style="margin-top: -10px; margin-bottom: -10px">
+            <mat-icon>reply</mat-icon>
+        </button>
+    </div>
+
+    <div class="card-body">
 
             <form [formGroup]="form" class="form-container">
                 <div class="row">
@@ -61,8 +76,9 @@
                         <app-cm-toggle [formGroup]="form" [settings]="isActiveSettings">
                         </app-cm-toggle>
                     </div>
+                    <hr>
                 </div>
-                <hr>
+                
                 <div class="row">
                     <!-- disable Save when form invalid or while existence check in progress -->
                     <div class="dialog-actions">
@@ -73,6 +89,7 @@
             </form>
 
 
-        </mat-card-content>
-    </mat-card>
+        <!-- </mat-card-content>
+    </mat-card> -->
+</div>
 </div>
