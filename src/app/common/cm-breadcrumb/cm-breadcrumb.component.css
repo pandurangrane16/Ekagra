@@ -3,8 +3,6 @@
   /* background: transparent; */
       background-color: #1c2d7b;
     color: white;
-    margin-top: 1%;
-       margin-bottom: 1%;
 }
 .breadcrumb-row{
   font-family: Poppins, sans-serif;
@@ -30,3 +28,8 @@
   align-items: center;
 }
 
+.pill-input {
+  --mdc-outlined-text-field-container-shape: 50px; /* Adjust the value as needed */
+  /* If using 'fill' appearance, you may also need: */
+  --mdc-filled-text-field-container-shape: 50px;
+}

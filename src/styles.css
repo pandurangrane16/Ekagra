@@ -87,7 +87,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     white-space: nowrap;  
 }
 .mat-mdc-button .mdc-button__label,.mat-button .mdc-button__label{display: flex!important;}
-
+.card-header {
+  background-color: var(--primary-color);
+  color: #fff;
+}
  
 
 

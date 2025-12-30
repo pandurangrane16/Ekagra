@@ -3,7 +3,7 @@
 .todays span{ line-height: 13px; font-size: 12px;}
 .todays .progress{--bs-progress-height: 4px;}
 .todays .count{
-    font-size: 48px;
+    font-size: 28px;
     font-weight: medium;
     color: black;
 }

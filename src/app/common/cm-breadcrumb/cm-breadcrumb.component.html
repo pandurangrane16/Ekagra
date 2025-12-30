@@ -1,8 +1,11 @@
-<nav class="cm-breadcrumb" aria-label="breadcrumb">
-  <div *ngFor="let row of rows; let i = index" class="breadcrumb-row">
+<div class="cm-breadcrumb card-header" aria-label="breadcrumb">
+
+<div class="row d-flex align-item-center">
+    <div class="col-md-4 d-flex align-item-center">
+      <div *ngFor="let row of rows; let i = index" class="breadcrumb-row">
     <!-- <span class="breadcrumb-index">{{ row.index ?? (i + 1) }}.</span> -->
     <ng-container *ngIf="row.parts.length === 1">
-      <a *ngIf="row.link; else plain" [routerLink]="row.link" class="breadcrumb-text">{{ row.parts[0] }}</a>
+      <h5 *ngIf="row.link; else plain" [routerLink]="row.link" class="breadcrumb-text" class="mb-0 text-white">{{ row.parts[0] }}</h5>
       <ng-template #plain><span class="breadcrumb-text">{{ row.parts[0] }}</span></ng-template>
       
     </ng-container>
@@ -16,6 +19,42 @@
       </span>
     </ng-container>
   </div>
-</nav>
+    </div>
+     <div class="col-md-4 d-flex align-items-center">
+       <!-- <mat-label>Select Zone</mat-label> -->
+                        <mat-form-field appearance="fill" class="w-100">
+ 
+                    <mat-select placeholder=" -- Select Zone--">
+                         
+                        <!-- <mat-option class="clear-option" (click)="clearActions()">
+                        Clear Selection
+                        </mat-option>
+                        <mat-option *ngFor="let option of ZoneOptions" [value]="option">
+                            
+                                    {{ option.text }}
+                                </mat-option> -->
+                    </mat-select>
+                    </mat-form-field>
+    </div>
+    <div class="col-md-4">
+       
+            <mat-form-field class="pill-input w-100">
+                <mat-label>Enter a date range</mat-label>
+                <mat-date-range-input [rangePicker]="picker" >
+                    <input matStartDate placeholder="Start date" (dateChange)="DateWiseFilter($event,'start')">
+                    <input matEndDate placeholder="End date" (dateChange)="DateWiseFilter($event,'end')">
+                </mat-date-range-input>
+                <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+            </mat-form-field>
+        
+    </div>
+   
+</div>
+
+
+  
+</div>
 
 
