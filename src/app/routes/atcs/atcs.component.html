@@ -29,6 +29,8 @@
       [(ngModel)]="selectedZones" 
       (selectionChange)="onActionSelectionChange($event)" 
       placeholder="-- Select --">
+
+      
       
       <mat-option class="clear-option" (click)="clearActions()">
         Clear Selection
@@ -94,7 +96,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-2">
+    <!-- <div class="col-md-2">
         <div class="card">
             <div class="card-body">
                 <h6>Alerts & Notification</h6>
@@ -103,7 +105,7 @@
                  [toDate]="endDate"></app-notification>
             </div>
         </div>
-    </div>
+    </div> -->
 </div>
 <div class="row d-flex align-items-stretch">
     <div class="col-md-6">
@@ -118,9 +120,32 @@
                 </div>
                 <!-- <app-corridor></app-corridor> -->
                  <!-- <app-corridor [corridorList]="corridorData"></app-corridor> -->
-             <app-corridor
+                  
+             <!-- <app-corridor
   [corridorData]="corridorData">
-</app-corridor>
+</app-corridor> -->
+
+
+
+    <div>
+        <div class="card-body">
+            <mat-form-field class="w-100 mb-3">
+                <mat-label>Select Corridor Junction</mat-label>
+                <mat-select placeholder="Select Junction" [(value)]="selectedCorridorJunction"
+                    (selectionChange)="onCorridorJunctionChange($event)">
+                    @for (junction of junctions; track junction.value) {
+                    <mat-option [value]="junction.value">{{junction.viewValue}}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+           <app-corridor [corridorData]="corridorData"></app-corridor>
+        </div>
+    </div>
+
+
+
+
 
             </div>
         </div>
@@ -153,8 +178,11 @@
                   </mat-form-field>
                   <!-- <div class="d-flex align-items-center justify-content-between" style="font-size: 13px;">  <mat-icon>arrow_back_ios</mat-icon>  {{ getSelectedJunctionName() }} <mat-icon>arrow_forward_ios</mat-icon>
        </div> -->
-                   <app-cycle [junctionName]="selectedJunction"     [fromDate]="startDate"
-                 [toDate]="endDate"></app-cycle>
+                 <app-cycle 
+  [junctionName]="selectedJunction" 
+  [fromDate]="startDate"
+  [toDate]="endDate"
+  [zoneIds]="selectedZoneIds"> </app-cycle>
         </div>
         </div>
     </div>

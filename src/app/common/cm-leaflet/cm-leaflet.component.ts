@@ -195,6 +195,30 @@ private plotSitesOnMap(sites: any[]): void {
     if (!this.markerMap) this.markerMap = new Map<string, any>();
     this.markerMap.set(site.siteId, marker);
 
+// Define a cleaner layout with Site Name as a header and Site ID as sub-text
+const tooltipHtml = `
+  <div style="
+    padding: 4px; 
+    line-height: 1.4; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  ">
+    <div style="font-weight: bold; font-size: 13px; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.2); margin-bottom: 4px; padding-bottom: 2px;">
+      ${site.siteName}
+    </div>
+    <div style="font-size: 11px; color: #bdc3c7;">
+      ID: <span style="color: #3498db; font-weight: bold;">${site.siteId}</span>
+    </div>
+  </div>
+`;
+
+marker.bindTooltip(tooltipHtml, {
+  direction: 'top',
+  offset: [0, -20],
+  sticky: true,
+  opacity: 0.95,
+  className: 'custom-tooltip' // We will style the container in CSS below
+});
+
     marker.on('click', () => {
       this.markerClicked.emit(site.siteId); 
       this.waitAndBindPopup(site.siteId, marker);
@@ -210,24 +234,62 @@ private plotSitesOnMap(sites: any[]): void {
     this.map.fitBounds(bounds, { padding: [30, 30] });
   }
 }
+// private waitAndBindPopup(siteId: string, marker: any): void {
+//   const maxAttempts = 10;
+//   let attempts = 0;
+
+//   const checkAndBind = () => {
+//     const siteData = this.popupData?.[siteId];
+
+//     if (siteData) {
+//       const popupHtml = this.generatePopupHtml(siteId, this.popupData);
+//       marker.bindPopup(popupHtml).openPopup();
+//            marker.on('popupclose', () => {
+//         delete this.popupData[siteId];
+//       });
+//     } else if (attempts < maxAttempts) {
+//       attempts++;
+//       setTimeout(checkAndBind, 200); 
+//     } else {
+//       console.warn(`Popup data not available after waiting for siteId: ${siteId}`);
+//     }
+//   };
+
+//   checkAndBind();
+// }
+
 private waitAndBindPopup(siteId: string, marker: any): void {
   const maxAttempts = 10;
   let attempts = 0;
 
   const checkAndBind = () => {
-    const siteData = this.popupData?.[siteId];
+    const rawData = this.popupData?.[siteId];
+debugger;
+    if (rawData) {
+      let isError = false;
 
-    if (siteData) {
-      const popupHtml = this.generatePopupHtml(siteId, this.popupData);
+      // 1. Check if the response is the error string you provided
+      // We look for "status":500 inside the result string
+      // if (typeof rawData === 'string' && rawData.includes('"status":500')) {
+      //   isError = true;
+      // }
+
+      // 2. Pass the error flag to the generator
+      const popupHtml = this.generatePopupHtml(siteId, this.popupData, isError);
+      
       marker.bindPopup(popupHtml).openPopup();
-           marker.on('popupclose', () => {
+
+      marker.on('popupclose', () => {
         delete this.popupData[siteId];
       });
     } else if (attempts < maxAttempts) {
       attempts++;
       setTimeout(checkAndBind, 200); 
     } else {
-      console.warn(`Popup data not available after waiting for siteId: ${siteId}`);
+      // 3. Timeout fallback: Show unavailable message
+      const popupHtml = this.generatePopupHtml(siteId, null, true);
+      marker.bindPopup(popupHtml).openPopup();
+      console.warn(`Popup data timeout for siteId: ${siteId}`);
     }
   };
 
@@ -385,12 +447,88 @@ private waitAndBindPopup(siteId: string, marker: any): void {
 // }
 
 
-private generatePopupHtml(siteId: string, statusData: any): string {
-  const site = this.sites.find(s => s.siteId === siteId);
-  const lat = site?.lat ?? '';
-  const lng = site?.long ?? '';
+// private generatePopupHtml(siteId: string, statusData: any): string {
+//   const site = this.sites.find(s => s.siteId === siteId);
+//   const lat = site?.lat ?? '';
+//   const lng = site?.long ?? '';
 
-  const controllerData = statusData?.[siteId]?.controller ?? {};
+//   const controllerData = statusData?.[siteId]?.controller ?? {};
+
+//   const rowsHtml = this.labelList.map(label => {
+//     let value: any;
+
+//     switch (label.key) {
+//       case 'sl':
+//         value = (controllerData.jnAdaptiveInfo?.CoordPhaseSaturationLevel ?? 0) * 100;
+//         break;
+//       case 'm':
+//         value = this.getMode(controllerData[label.key]);
+//         break;
+//       case 'h':
+//         value = this.getHealth(controllerData[label.key]);
+//         break;
+//       default:
+//         value = controllerData[label.key];
+//         break;
+//     }
+
+//     if (value === null || value === undefined || value === '') {
+//       value = '—';
+//     }
+
+//     return `
+//       <tr>
+//         <td style="padding: 4px 8px; font-weight: bold; color: #333;">${label.label}</td>
+//         <td style="padding: 4px 8px; color: #555;">${value}</td>
+//       </tr>
+//     `;
+//   }).join('');
+
+//   return `
+//     <div style="font-family: Arial, sans-serif; font-size: 12px; max-width: 280px;">
+//       <div style="text-align: center; font-weight: bold; font-size: 14px; margin-bottom: 6px; color: #2c3e50;">
+//         ${site?.siteName ?? 'Unknown Site'}
+//       </div>
+  
+//       <table style="width: 100%; border-collapse: collapse; background: #f9f9f9; border-radius: 4px; overflow: hidden;">
+//         <tbody>
+//           ${rowsHtml}
+//         </tbody>
+//       </table>
+//     </div>
+//   `;
+// }
+
+
+private generatePopupHtml(siteId: string, statusData: any, isError: boolean = false): string {
+  debugger;
+  const site = this.sites.find(s => s.siteId === siteId);
+  const siteName = site?.siteName ?? 'Unknown Site';
+
+  // Header template used for both success and error states
+  const headerHtml = `
+    <div style="text-align: center; font-weight: bold; font-size: 14px; margin-bottom: 8px; color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+      ${siteName}
+    </div>
+  `;
+
+  // 1. Check for Error State or Missing Data
+  if (isError || !statusData || !statusData[siteId]) {
+    return `
+      <div style="font-family: Arial, sans-serif; font-size: 12px; width: 220px; padding: 5px;">
+        ${headerHtml}
+        <div style="background: #fff5f5; border: 1px solid #feb2b2; color: #c53030; padding: 12px; border-radius: 4px; text-align: center; margin-top: 5px;">
+          <div style="font-size: 18px; margin-bottom: 4px;">⚠️</div>
+          <strong style="display: block; margin-bottom: 2px;">Data Unavailable</strong>
+          <span style="font-size: 10px; opacity: 0.8;">The server encountered an error for this site (500).</span>
+        </div>
+      </div>
+    `;
+  }
+
+  // 2. Normal Data Processing
+else{
+    const controllerData = statusData[siteId]?.controller ?? {};
 
   const rowsHtml = this.labelList.map(label => {
     let value: any;
@@ -398,6 +536,7 @@ private generatePopupHtml(siteId: string, statusData: any): string {
     switch (label.key) {
       case 'sl':
         value = (controllerData.jnAdaptiveInfo?.CoordPhaseSaturationLevel ?? 0) * 100;
+        if (!isNaN(value)) value = value.toFixed(1) + '%';
         break;
       case 'm':
         value = this.getMode(controllerData[label.key]);
@@ -416,25 +555,23 @@ private generatePopupHtml(siteId: string, statusData: any): string {
 
     return `
       <tr>
-        <td style="padding: 4px 8px; font-weight: bold; color: #333;">${label.label}</td>
-        <td style="padding: 4px 8px; color: #555;">${value}</td>
+        <td style="padding: 6px 8px; font-weight: bold; color: #333; border-bottom: 1px solid #eee;">${label.label}</td>
+        <td style="padding: 6px 8px; color: #555; border-bottom: 1px solid #eee;">${value}</td>
       </tr>
     `;
   }).join('');
 
   return `
-    <div style="font-family: Arial, sans-serif; font-size: 12px; max-width: 280px;">
-      <div style="text-align: center; font-weight: bold; font-size: 14px; margin-bottom: 6px; color: #2c3e50;">
-        ${site?.siteName ?? 'Unknown Site'}
-      </div>
-  
-      <table style="width: 100%; border-collapse: collapse; background: #f9f9f9; border-radius: 4px; overflow: hidden;">
+    <div style="font-family: Arial, sans-serif; font-size: 12px; min-width: 240px; max-width: 280px;">
+      ${headerHtml}
+      <table style="width: 100%; border-collapse: collapse; background: #f9f9f9; border-radius: 4px; overflow: hidden; border: 1px solid #eee;">
         <tbody>
           ${rowsHtml}
         </tbody>
       </table>
     </div>
   `;
+}
 }
 
 
