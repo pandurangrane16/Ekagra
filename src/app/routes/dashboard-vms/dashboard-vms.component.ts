@@ -15,11 +15,11 @@ import { MaterialModule } from '../../Material.module';
 import { VmsEmergencyComponent } from './vms-emergency/vms-emergency.component';
 import { CommonService } from '../../services/common/common.service';
 import { alertservice } from '../../services/admin/alert.service';
-
+import{CmBreadcrumbComponent} from '../../common/cm-breadcrumb/cm-breadcrumb.component';
 
 @Component({
   selector: 'app-dashboard-vms',
-  imports: [DeviceStatusComponent, CmTableComponent, MaterialModule],
+  imports: [DeviceStatusComponent, CmTableComponent, MaterialModule, CmBreadcrumbComponent],
   templateUrl: './dashboard-vms.component.html',
   styleUrl: './dashboard-vms.component.css'
 })

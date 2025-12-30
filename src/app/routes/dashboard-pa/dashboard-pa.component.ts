@@ -20,13 +20,14 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { PaDashboardService } from '../../services/Pa/pa_dashboard.service';
 import { CmSelectCheckComponent } from '../../common/cm-select-check/cm-select-check.component';
-
-
+// import { CmBreadcrumbComponent } from '../../common/cm-breadcrumb/cm-breadcrumb.component';
+import{CmBreadcrumbComponent} from '../../common/cm-breadcrumb/cm-breadcrumb.component';
+import { withLatestFrom } from 'rxjs';    
 import { color } from 'highcharts';
 
 @Component({
   selector: 'app-dashboard-pa',
-  imports: [MatButtonToggleModule,MatDatepickerModule,CmSelectCheckComponent, CommonModule, MatIconModule, MatFormFieldModule, MatSelectModule, MatInputModule, MapviewComponent,MatButtonModule,MatTooltipModule,MatTabsModule,CmTableComponent, ],
+  imports: [MatButtonToggleModule,MatDatepickerModule,CmSelectCheckComponent, CommonModule, MatIconModule, MatFormFieldModule, MatSelectModule, MatInputModule, MapviewComponent,MatButtonModule,MatTooltipModule,MatTabsModule,CmTableComponent,CmBreadcrumbComponent],
   templateUrl: './dashboard-pa.component.html',
   styleUrl: './dashboard-pa.component.css',
     providers: [provideNativeDateAdapter()]

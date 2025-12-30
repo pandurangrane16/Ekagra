@@ -1,0 +1,21 @@
+<nav class="cm-breadcrumb" aria-label="breadcrumb">
+  <div *ngFor="let row of rows; let i = index" class="breadcrumb-row">
+    <!-- <span class="breadcrumb-index">{{ row.index ?? (i + 1) }}.</span> -->
+    <ng-container *ngIf="row.parts.length === 1">
+      <a *ngIf="row.link; else plain" [routerLink]="row.link" class="breadcrumb-text">{{ row.parts[0] }}</a>
+      <ng-template #plain><span class="breadcrumb-text">{{ row.parts[0] }}</span></ng-template>
+      
+    </ng-container>
+    <ng-container *ngIf="row.parts.length > 1">
+      <span class="breadcrumb-path">
+        <ng-container *ngFor="let p of row.parts; let last = last">
+          <!-- <span class="crumb">{{ p }}</span> -->
+           <i *ngIf="i > 0" class="fa fa-chevron-right breadcrumb-arrow"></i>
+          <span *ngIf="!last" class="sep">&nbsp;&gt;&nbsp;</span>
+        </ng-container>
+      </span>
+    </ng-container>
+  </div>
+</nav>
+
+
