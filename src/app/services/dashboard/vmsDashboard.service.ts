@@ -27,6 +27,26 @@ ProjectfieldCreate(_data: any) {
  GetVehicleCategoryWiseCount(SiteId: any, fromdate: any, todate: any) {
     return this._httpService._getMethod('api/services/app/NeatParkGraph/GetVehicleCategoryWiseCount?siteIds='+encodeURIComponent(SiteId)+'&fromDate='+fromdate+'&toDate='+todate);
   }
+
+   GetSensorStatusSummary(fromdate: any, todate: any) {
+    return this._httpService._getMethod('api/services/app/NeatParkGraph/GetSensorStatusSummary?fromDate='+fromdate+'&toDate='+todate);
+  }
+
+GetParkingOccupancySummaryPerLot(siteIds: string[], fromDate: string, toDate: string) {
+  let queryParts: string[] = [];
+  queryParts.push(`fromDate=${fromDate}`);
+  queryParts.push(`toDate=${toDate}`);
+
+  siteIds.forEach(id => {
+    queryParts.push(`siteIds=${id}`);
+  });
+
+  // Join them with '&'
+  const queryString = queryParts.join('&');
+
+  // If your _getMethod handles the '?' internally, just pass the string
+  return this._httpService._getMethod('api/services/app/NeatParkGraph/GetParkingOccupancySummaryPerLot?' + queryString);
+}
    GetTotalCollectionAmount(SiteId: any, fromdate: any, todate: any) {
     return this._httpService._getMethod('api/services/app/NeatParkGraph/GetTotalCollectionAmount?siteIds='+encodeURIComponent(SiteId)+'&fromDate='+fromdate+'&toDate='+todate);
   }

@@ -43,9 +43,22 @@ export class AtcsComponent {
   islabel: boolean = false;
   basepath: any;
   id: any;
-  startDate: Date | null = null;
-endDate: Date | null = null;
+//   startDate: Date | null = null;
+// endDate: Date | null = null;
+
+endDate: Date = new Date();
+  startDate: Date = new Date(this.endDate.getTime() - (24 * 60 * 60 * 1000));
 projectId: number = 0;
+ ZoneSelectSettings = {
+          labelHeader: 'Select Zone',
+          lableClass: 'form-label',
+           multiple: false,
+          formFieldClass: '', 
+          appearance: 'fill',
+          options: []
+        };
+        isZoneOptionsLoaded: boolean = false;
+        ZoneOptions: any[] = [];
 
 
 
@@ -76,6 +89,7 @@ labelList: any[] = [
 
 
   ngOnInit(): void {
+    this.getZoneList();
 debugger;
      // ✅ Step 1: Get project codes from session
     const projectCodesStr = this.session._getSessionValue("projectCodes");
@@ -120,6 +134,63 @@ debugger;
 
   }
 
+// Define this at the top of your class
+selectedZones: any[] = [];
+
+// onActionSelectionChange(event: any) {
+//   // Use the event value or the bound property
+//   const selectedValues = event.value || [];
+  
+//   // Find the 'All' option in your list
+//   const allOption = this.ZoneOptions.find((x: any) => x.text.toLowerCase() === 'all');
+
+//   if (!allOption) return;
+
+//   const isAllSelected = selectedValues.some((x: any) => x.id === allOption.id);
+
+//   // 1. If 'ALL' was just clicked -> Select every other option except 'ALL'
+//   if (isAllSelected) {
+//     const allExceptAll = this.ZoneOptions.filter((x: any) => x.id !== allOption.id);
+//     this.selectedZones = [...allExceptAll];
+//     return;
+//   }
+
+//   // 2. Default behavior: selectedZones is already updated by [(ngModel)]
+//   // But we ensure 'ALL' is never part of the final selection array if other things are picked
+//   this.selectedZones = selectedValues.filter((x: any) => x.id !== allOption.id);
+// }
+getSelectedZoneIds(): number[] {
+  // Map the objects in selectedZones to just their numeric IDs
+  return this.selectedZones.map(zone => zone.id);
+}
+
+// 1. Define a simple property
+selectedZoneIds: number[] = [];
+
+onActionSelectionChange(event: any) {
+  const selectedValues = event.value || [];
+  const allOption = this.ZoneOptions.find((x: any) => x.text.toLowerCase() === 'all');
+
+  if (!allOption) return;
+
+  const isAllSelected = selectedValues.some((x: any) => x.id === allOption.id);
+
+  if (isAllSelected) {
+    const allExceptAll = this.ZoneOptions.filter((x: any) => x.id !== allOption.id);
+    this.selectedZones = [...allExceptAll];
+  } else {
+    this.selectedZones = selectedValues.filter((x: any) => x.id !== allOption.id);
+  }
+
+  // 2. UPDATE THE IDS HERE (Not in the template)
+  this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
+}
+
+// Ensure you also update IDs in your clear function
+clearActions() {
+  this.selectedZones = [];
+  this.selectedZoneIds = [];
+}
 loadCorridorData() {
   const siteId = Number(this.session._getSessionValue("siteId"));  // from session
   const today = new Date().toISOString().split("T")[0];
@@ -135,6 +206,57 @@ loadCorridorData() {
     next: (res) => {
       this.corridorData = res?.result || res;
     }
+  });
+}
+
+getZoneList() {
+  this.service.GetAllZones().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+   
+      debugger;
+        const items = response?.result || [];
+
+     
+        const projectOptions = items.map((item: any) => ({
+          text: (item.zoneName || '').trim() || 'Unknown',
+          id: item.id
+        }));
+
+  
+    // projectOptions.unshift({
+    //   text: 'All',
+    //   id: 0
+    // });
+
+  
+    // 1. Set selectedZones to everything except the "All" option (id: 0)
+    this.selectedZones = [...projectOptions];
+    
+    // 2. Map the IDs to your array that goes to the Child component
+    this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
+
+
+      projectOptions.unshift({
+      text: 'All',
+      id: 0
+    });
+      this.ZoneSelectSettings.options = projectOptions;
+    this.ZoneOptions=projectOptions
+    
+// if (!this.isEdit) {
+//   this.form.controls['selectedRole'].setValue({
+//     text: 'All',
+//     id: 0
+//   });
+// }
+
+// this.form.controls['selectedStatus'].setValue({
+//   name: 'All',
+//   value: null
+// });
+
+    this.isZoneOptionsLoaded = true;
+  }, error => {
+    console.error('Error fetching Zone list', error);
   });
 }
 

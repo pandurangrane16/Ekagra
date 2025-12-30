@@ -4,16 +4,41 @@
         <div class="card text-left">
             <mat-form-field>
                 <mat-label>Enter a date range</mat-label>
-                <mat-date-range-input [rangePicker]="picker">
-                    <input matStartDate placeholder="Start date" (dateChange)="DateWiseFilter($event,'start')">
-                    <input matEndDate placeholder="End date" (dateChange)="DateWiseFilter($event,'end')">
-                </mat-date-range-input>
+             <mat-date-range-input [rangePicker]="picker">
+        <input matStartDate 
+               [value]="startDate" 
+               placeholder="Start date" 
+               (dateChange)="DateWiseFilter($event,'start')">
+        <input matEndDate 
+               [value]="endDate" 
+               placeholder="End date" 
+               (dateChange)="DateWiseFilter($event,'end')">
+    </mat-date-range-input>
                 <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-date-range-picker #picker></mat-date-range-picker>
             </mat-form-field>
         </div>
     </div>
+</div>
+<div class="d-flex flex-column">
+  <mat-label class="zone-label mb-1">Select Zone</mat-label>
+  <mat-form-field *ngIf="isZoneOptionsLoaded" appearance="outline" class="small-dropdown">
+    <mat-select 
+      multiple 
+      [(ngModel)]="selectedZones" 
+      (selectionChange)="onActionSelectionChange($event)" 
+      placeholder="-- Select --">
+      
+      <mat-option class="clear-option" (click)="clearActions()">
+        Clear Selection
+      </mat-option>
+
+      <mat-option *ngFor="let option of ZoneOptions" [value]="option">
+        {{ option.text }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
 <div class="row mb-2 mt-2 d-flex">
     <div class="col-md-10">
@@ -22,7 +47,7 @@
     <div class="row">
         <div class="col-md-3">
             <h6 class="mb-0">Zonal Overview</h6>
-<app-zonal [fromDate]="startDate" [toDate]="endDate"></app-zonal>
+<app-zonal [fromDate]="startDate" [toDate]="endDate"   [zoneIds]="selectedZoneIds"></app-zonal>
         </div>
 
 <div class="col-md-9" *ngIf="siteList && siteList.length > 0; else noFields">
@@ -104,7 +129,11 @@
         <div class="card">
             <div class="card-body">
                 <h6><img src="assets/img/sign-Y.png" alt="" class="me-1">Failures in Functional Junctions</h6>
-                <app-failures   [fromDate]="startDate" [toDate]="endDate"></app-failures>
+              <app-failures 
+  [fromDate]="startDate" 
+  [toDate]="endDate" 
+  [zoneIds]="selectedZoneIds">
+</app-failures>
             </div>
         </div>
     </div>

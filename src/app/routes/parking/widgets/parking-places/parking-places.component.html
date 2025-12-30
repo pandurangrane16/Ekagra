@@ -1,4 +1,4 @@
-<div class="d-flex flex-wrap mb-2">
+<!-- <div class="d-flex flex-wrap mb-2">
    
   <div *ngFor="let serie of jsonData; index as i;" class="d-flex align-items-center me-4">
     <span [ngStyle]="{'width': '10px', 'height': '10px','border-radius': '25px', 'background-color': serie.color, 'display':'block'}"></span> <label>  &nbsp;{{serie.name}} </label>
@@ -12,4 +12,37 @@
   style="width: 100%; min-height:175px; display: block;"
 ></highcharts-chart>
 <div class="d-flex justify-content-center">
-  <button mat-raised-button class="btn-primary mb-2 w-50">Details</button></div>
+  <button mat-raised-button class="btn-primary mb-2 w-50">Details</button></div> -->
+
+
+
+  <div *ngIf="chartOptions?.series">
+  
+  <div class="d-flex flex-wrap mb-2">
+    <div *ngFor="let serie of jsonData; index as i;" class="d-flex align-items-center me-4">
+      <span [ngStyle]="{
+        'width': '10px', 
+        'height': '10px',
+        'border-radius': '25px', 
+        'background-color': serie.color, 
+        'display':'block'
+      }"></span> 
+      <label>&nbsp;{{serie.name}}</label>
+    </div>
+  </div>
+
+  <highcharts-chart 
+    [Highcharts]="Highcharts"
+    [options]="chartOptions"
+    style="width: 100%; min-height:175px; display: block;"
+  ></highcharts-chart>
+
+  <!-- <div class="d-flex justify-content-center">
+    <button mat-raised-button class="btn-primary mb-2 w-50">Details</button>
+  </div> -->
+
+</div>
+
+<div *ngIf="!chartOptions?.series" class="text-center p-4">
+  <span>Loading Parking Data...</span>
+</div>

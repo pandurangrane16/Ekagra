@@ -18,6 +18,7 @@ export class ZonalComponent implements OnInit, OnChanges {
 projectId: number = 0;
     @Input() fromDate!: Date | null;
   @Input() toDate!: Date | null;
+    @Input() zoneIds: number[] = [];
 
  session = inject(SessionService);
   
@@ -134,7 +135,7 @@ Highcharts: typeof Highcharts = Highcharts;
   };
 
     ngOnChanges(changes: SimpleChanges): void {
-    if ((changes['fromDate'] || changes['toDate']) && this.fromDate && this.toDate) {
+    if ((changes['fromDate'] || changes['toDate']|| changes['zoneIds']) && this.fromDate && this.toDate) {
       this.getUnprocessedConnectedCtrlData();
     }}
 
@@ -166,7 +167,7 @@ Highcharts: typeof Highcharts = Highcharts;
   console.log("from",from);
    console.log("to",to);
 
-    this.service.getUnprocessedConnectedCtrlData(this.zoneNames,from, to).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+    this.service.GetUnprocessedConnectedCtrlData(from, to, this.zoneIds).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
    const rawData = Object.values(response.result || {});
 
     // Step 1: Count occurrences of each Status

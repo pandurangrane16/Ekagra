@@ -34,46 +34,55 @@ sitedata(id: any, headers: any) {
   return this.http.get(`${this.baseurl2}${id}`, headers);
 }
 
-getUnprocessedConnectedCtrlData(zones: string[], from?: string, to?: string): Observable<any> {
+GetUnprocessedConnectedCtrlData(fromDate?: string, toDate?: string, zoneIds?: number[]): Observable<any> {
   const params: string[] = [];
 
-  if (zones && zones.length) {
-    zones.forEach(zone => {
-      params.push(`zoneName=${encodeURIComponent(zone)}`);
+  // Add Date filters if provided
+  if (fromDate) {
+    params.push(`from=${encodeURIComponent(fromDate)}`);
+  }
+  if (toDate) {
+    params.push(`to=${encodeURIComponent(toDate)}`);
+  }
+
+  // Handle multiple zoneIds as shown in your curl: ?zoneIds=60&zoneIds=61
+  if (zoneIds && zoneIds.length > 0) {
+    zoneIds.forEach((id: number) => {
+      params.push(`zoneIds=${encodeURIComponent(id.toString())}`);
     });
   }
 
-  if (from) {
-    params.push(`from=${encodeURIComponent(from)}`);
-  }
-
-  if (to) {
-    params.push(`to=${encodeURIComponent(to)}`);
-  }
-
+  // Join parameters with '&' and prepend '?' if any exist
   const queryString = params.length ? '?' + params.join('&') : '';
   const url = `api/services/app/ATCSGraph/GetUnprocessedConnectedCtrlData${queryString}`;
 
   return this._httpService._getMethod(url);
 }
 
+getFailureData(fromDate?: string, toDate?: string, zoneIds?: number[]): Observable<any> {
+  const params: string[] = [];
 
-  getFailureData(fromDate?: string, toDate?: string): Observable<any> {
-    const params: string[] = [];
+  // Add Date filters if provided
+  if (fromDate) {
+    params.push(`fromDate=${encodeURIComponent(fromDate)}`);
+  }
+  if (toDate) {
+    params.push(`toDate=${encodeURIComponent(toDate)}`);
+  }
 
-    if (fromDate) {
-      params.push(`fromDate=${encodeURIComponent(fromDate)}`);
-    }
+  // Handle multiple zoneIds as shown in your curl: ?zoneIds=60&zoneIds=61
+  if (zoneIds && zoneIds.length > 0) {
+    zoneIds.forEach((id: number) => {
+      params.push(`zoneIds=${encodeURIComponent(id.toString())}`);
+    });
+  }
 
-    if (toDate) {
-      params.push(`toDate=${encodeURIComponent(toDate)}`);
-    }
-
-     const queryString = params.length ? '?' + params.join('&') : '';
+  // Join parameters with '&' and prepend '?' if any exist
+  const queryString = params.length ? '?' + params.join('&') : '';
   const url = `api/services/app/ATCSGraph/getJunctionFailureData${queryString}`;
 
-    return this._httpService._getMethod(url);
-  }
+  return this._httpService._getMethod(url);
+}
 
 
    getAlerts(fromDate?: string, toDate?: string): Observable<any> {
@@ -125,6 +134,10 @@ getKeysDataForConfig(key: string): Observable<any> {
 
     GetZones(id:any) {
     return this._httpService._getMethod('api/services/app/Zone/GetZoneListOnProjectId?ProjectId='+id);
+  } 
+
+      GetAllZones() {
+    return this._httpService._getMethod('api/services/app/Zone/GetZoneListByUserId');
   } 
 
     SiteResponse(data:any) {

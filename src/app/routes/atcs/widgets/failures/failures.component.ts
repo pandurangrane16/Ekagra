@@ -19,6 +19,8 @@ export class FailuresComponent implements OnInit,OnChanges {
   
     @Input() fromDate!: Date | null;
   @Input() toDate!: Date | null;
+ 
+  @Input() zoneIds: number[] = [];
   @ViewChild('customLegend')
   customLegend!: ElementRef;
   constructor(private renderer: Renderer2, private el: ElementRef, private service:atcsDashboardservice) {}
@@ -162,7 +164,7 @@ Highcharts: typeof Highcharts = Highcharts;
 }
       ngOnChanges(changes: SimpleChanges): void {
     // This will fire whenever parent updates fromDate or toDate
-    if ((changes['fromDate'] || changes['toDate']) && this.fromDate && this.toDate) {
+    if ((changes['fromDate'] || changes['toDate']|| changes['zoneIds']) && this.fromDate && this.toDate) {
         this.fetchFailureData();
     }
   }
@@ -179,7 +181,7 @@ fetchFailureData(): void {
 
     
 
-    this.service.getFailureData(fromDate, toDate).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+    this.service.getFailureData(fromDate, toDate,this.zoneIds).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
       const rawData = response.result || [];
 
       const colors = ['#344BFD', '#66CC66', '#53CEE7', '#FFD200', '#FC4F64', '#FF5733', '#C70039', '#900C3F', '#581845', '#1ABC9C', '#2ECC71'];
