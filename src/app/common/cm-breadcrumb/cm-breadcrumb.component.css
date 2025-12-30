@@ -27,9 +27,34 @@
   display: inline-flex;
   align-items: center;
 }
+::ng-deep .mat-mdc-text-field-wrapper  {
+  --mdc-filled-text-field-container-color: #EDF2F6!important;
+ border-radius: 8px!important;
+border: 1px solid #E0E4EC;
+background-color:#EDF2F6;
+ }
 
-.pill-input {
-  --mdc-outlined-text-field-container-shape: 50px; /* Adjust the value as needed */
-  /* If using 'fill' appearance, you may also need: */
-  --mdc-filled-text-field-container-shape: 50px;
+ ::ng-deep .mat-mdc-paginator .mat-form-field, .mat-mdc-paginator-page-size-select {
+  appearance: none; 
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 8px 0 0 !important;
+  border: none !important;
+}
+
+::ng-deep .mat-mdc-paginator .mat-form-field-wrapper {
+  padding-bottom: 0 !important;
+}
+
+::ng-deep .mat-mdc-paginator .mat-form-field-underline,
+::ng-deep .mat-mdc-paginator .mat-form-field-outline {
+  display: none !important;
+}
+
+::ng-deep .mat-mdc-paginator .mat-select-trigger {
+  border: none !important;
+  box-shadow: none !important;
+  padding: 4px 8px;
+  background-color: transparent !important;
 }

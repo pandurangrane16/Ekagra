@@ -147,6 +147,10 @@
 ::ng-deep .right-dialog .mdc-dialog__container{height: auto!important;}
 
 
-
+::ng-deep .pill-input {
+  --mdc-outlined-text-field-container-shape: 50px!important; /* Adjust the value as needed */
+  /* If using 'fill' appearance, you may also need: */
+  --mdc-filled-text-field-container-shape: 50px!important;
+}
 
 
