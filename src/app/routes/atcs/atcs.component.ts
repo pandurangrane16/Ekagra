@@ -35,14 +35,17 @@ interface Junction {
   providers: [provideNativeDateAdapter()]
 })
 export class AtcsComponent {
- corridorData: any[] = [];
+//  corridorData: any[] = [];
   loaderService = inject(LoaderService)
   constructor(private service: atcsDashboardservice) { }
   selectedJunction: string = '';
+  selectedCorridorJunction: string = '';
   isMap: boolean = false;
   islabel: boolean = false;
   basepath: any;
   id: any;
+  allCorridorData: any[] = []; // Stores everything from the API
+corridorData: any[] = [];
 //   startDate: Date | null = null;
 // endDate: Date | null = null;
 
@@ -184,29 +187,77 @@ onActionSelectionChange(event: any) {
 
   // 2. UPDATE THE IDS HERE (Not in the template)
   this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
+  this.loadJunctions();
+  this.loadCorridorData();
+  this.loadpoints();
 }
 
 // Ensure you also update IDs in your clear function
 clearActions() {
   this.selectedZones = [];
   this.selectedZoneIds = [];
+  this.loadJunctions();
+  this.loadCorridorData();
 }
+
+
 loadCorridorData() {
-  const siteId = Number(this.session._getSessionValue("siteId"));  // from session
-  const today = new Date().toISOString().split("T")[0];
+  // 1. Get the Name string from the dropdown. 
+  // Fallback to session if no selection exists.
+  const junctionName = this.selectedCorridorJunction;
 
-  const from = this.startDate
-    ? this.startDate.toISOString().split("T")[0]
-    : today;
-  const to = this.endDate
-    ? this.endDate.toISOString().split("T")[0]
-    : today;
+  // 2. Format dates to ISO String as required by your Swagger ($date-time)
+  const from = this.startDate ? this.startDate.toISOString() : '';
+  const to = this.endDate ? this.endDate.toISOString() : '';
+     
 
-  this.service.getCongestionData(siteId, from, to).subscribe({
-    next: (res) => {
-      this.corridorData = res?.result || res;
-    }
-  });
+  // 3. Safety check: Ensure we have a name before calling the API
+  // if (!junctionName) {
+  //   console.warn("No Junction Name available for Corridor Data");
+  //   return;
+  // }
+
+  // 4. Call the service passing the name string
+  this.service.getCongestionData(from, to,this.selectedZoneIds)
+    .pipe(withLoader(this.loaderService))
+    .subscribe({
+     next: (res: any) => {
+        // 2. Store the full list in the master variable
+        this.allCorridorData = res?.result || [];
+        
+        // 3. Filter data for the currently selected junction
+        this.filterCorridorByJunction();
+        
+        console.log('Total Records:', this.allCorridorData.length);
+      },
+      error: (err) => {
+        console.error("Error loading corridor data:", err);
+        this.allCorridorData = [];
+        this.corridorData = [];
+      }
+    });
+}
+
+filterCorridorByJunction() {
+  debugger;
+  if (this.selectedCorridorJunction) {
+    // Only show records matching the selected junctionName (e.g., "UCON_12_5301")
+    this.corridorData = this.allCorridorData.filter(item => 
+      item.junctionName === this.selectedCorridorJunction
+    );
+    console.log(`Filtered Records for ${this.selectedCorridorJunction}:`, this.corridorData);
+  } else {
+    // Fallback: show everything or nothing
+    this.corridorData = this.allCorridorData;
+    console.log("No junction selected, showing all records.",this.corridorData);
+  }
+}
+
+
+
+onCorridorJunctionChange(event: any) {
+    this.selectedCorridorJunction = event.value;
+    this.filterCorridorByJunction(); // Instantly update graph without API call
 }
 
 getZoneList() {
@@ -233,6 +284,8 @@ getZoneList() {
     
     // 2. Map the IDs to your array that goes to the Child component
     this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
+    
+   
 
 
       projectOptions.unshift({
@@ -296,7 +349,7 @@ getZoneList() {
   }
 
   onMarkerClicked(siteId: string) {
-      const model: SiteRequestModel = {
+  const model: SiteRequestModel = {
   projectId: this.projectId,
   type: 0,
   inputs: siteId,
@@ -348,7 +401,14 @@ getZoneList() {
   loadpoints(): void {
     //const basePath = 'https://172.19.32.51:8089/UploadedFiles/Icons/';
     const basePath = this.basepath
-    this.service.GetSiteMasterByProjectId(this.projectId).pipe(withLoader(this.loaderService)).subscribe({
+    const projectId = this.getAtcsProjectId();
+
+  // If projectId is null, we shouldn't make the API call
+  if (projectId === null) {
+    console.error("Cannot load junctions: ATCS Project ID not found.");
+    return;
+  }
+    this.service.GetActiveSitesbyZoneAndProject(this.selectedZoneIds, [projectId]).pipe(withLoader(this.loaderService)).subscribe({
       next: (res: any) => {
         const rawSites = res?.result || [];
 
@@ -386,16 +446,63 @@ getZoneList() {
   //   });
   // }
 
-  loadJunctions(): void {
-    this.service.GetAll().pipe(withLoader(this.loaderService)).subscribe((res: any) => {
-      if (res?.result?.items) {
-        this.junctions = res.result.items.map((item: any) => ({
+  getAtcsProjectId(): number | null {
+  const projectCodesStr = this.session._getSessionValue("projectCodes");
+  
+  if (!projectCodesStr) {
+    console.warn("⚠️ projectCodes not found in session.");
+    return null;
+  }
+
+  try {
+    const projectCodes = JSON.parse(projectCodesStr);
+    const currentProject = "atcs"; // Set to "atcs"
+
+    const project = projectCodes.find(
+      (p: any) => p.name.toLowerCase() === currentProject.toLowerCase()
+    );
+
+    if (!project) {
+      console.error(`⚠️ Project "${currentProject}" not found in config.`);
+      return null;
+    }
+
+    return Number(project.value);
+  } catch (e) {
+    console.error("Error parsing project codes", e);
+    return null;
+  }
+}
+loadJunctions(): void {
+const projectId = this.getAtcsProjectId();
+
+  // If projectId is null, we shouldn't make the API call
+  if (projectId === null) {
+    console.error("Cannot load junctions: ATCS Project ID not found.");
+    return;
+  }
+
+  // Pass the dynamic projectId in an array as required by the API
+  this.service.GetActiveSitesbyZoneAndProject(this.selectedZoneIds, [projectId])
+    .pipe(withLoader(this.loaderService))
+    .subscribe((res: any) => {
+  
+      if (res?.success && Array.isArray(res.result)) {
+        this.junctions = res.result.map((item: any) => ({
           value: item.siteId.toString(),
           viewValue: `${item.siteName} (${item.siteId})`
         }));
+
+
+       this.selectedJunction = this.junctions[0].value;
+       this.selectedCorridorJunction = this.junctions[0].value;
+        
+        console.log('Initial junction selected:', this.selectedJunction);
+      } else {
+        this.junctions = [];
       }
     });
-  }
+}
 
 
   onJunctionChange(event: MatSelectChange) {
@@ -418,6 +525,7 @@ DateWiseFilter(evt: any, type: string) {
     this.endDate = evt.value;
   }
 
+  this.loadCorridorData();
   this.loadCorridorData();
 }
 
