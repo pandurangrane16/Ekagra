@@ -19,6 +19,9 @@ export class CycleComponent implements OnInit {
   @Input() junctionName!: string;
       @Input() fromDate!: Date | null;
   @Input() toDate!: Date | null;
+  @Input() zoneIds: number[] = [];
+
+  cycleData: any[] = [];
   @ViewChild('customLegend')
   customLegend!: ElementRef;
   constructor(private renderer: Renderer2, private el: ElementRef,private service:atcsDashboardservice) {}
@@ -269,6 +272,21 @@ tooltip: {
     console.log('Junction changed:', this.junctionName);
     
   } 
+
+
+  getCycleData() {
+    const start = this.fromDate ? this.fromDate.toISOString() : '';
+    const end = this.toDate ? this.toDate.toISOString() : '';
+
+    this.service.getCycleTimeData(this.zoneIds, start, end).pipe(withLoader(this.loaderService)).subscribe({
+      next: (res:any) => {
+        if (res && res.success) {
+          this.cycleData = res.result; // Store the array of objects
+          console.log('Cycle Time Data Stored:', this.cycleData);
+        }
+      }
+    });
+  }
       
   fetchCycleData(junctionId: string): void {
     debugger;
@@ -323,19 +341,55 @@ tooltip: {
 }
 
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['junctionName']) {
-      console.log('Received junctionName:', this.junctionName);
-      this.fetchCycleData(this.junctionName);
-    }
-
-
-      // Detect fromDate or toDate change
-  if ((changes['fromDate'] || changes['toDate']) && this.fromDate && this.toDate) {
-    console.log('Date range changed:', this.fromDate, this.toDate);
-    this.fetchCycleData(this.junctionName,);
+ngOnChanges(changes: SimpleChanges): void {
+  // 1. If Dates or Zone IDs change, we MUST fetch fresh data from the server
+  const apiInputsChanged = changes['fromDate'] || changes['toDate'] || changes['zoneIds'];
+  
+  if (apiInputsChanged && this.fromDate && this.toDate && this.zoneIds.length > 0) {
+    console.log('Fetching fresh cycle data due to date/zone change');
+    this.getCycleData(); 
+  } 
+  // 2. If only junctionName changed (and we aren't already fetching new data), 
+  // just update the chart from the already stored this.allCycleData
+  else if (changes['junctionName'] && !apiInputsChanged) {
+    console.log('Filtering stored data for junction:', this.junctionName);
+    this.updateChartForSelectedJunction();
   }
-  }
+}
+
+updateChartForSelectedJunction() {
+  if (!this.cycleData.length) return;
+
+  debugger;
+
+  console.log('Updating chart for junction:', this.junctionName);
+  console.log('Total stored cycle data entries:', this.cycleData.length);
+
+  // Filter the stored data based on the junction name/ID
+  // Adjust the 'item.junctionName' check to match your API string exactly
+  const filteredData = this.cycleData.filter((item: any) => 
+    item.junctionName.includes(this.junctionName) || this.junctionName === 'All'
+  );
+
+  // Patch the data as requested
+  this.jsonData = { data: [...filteredData] };
+  console.log('Filtered Data for Junction:', filteredData,this.jsonData);
+
+  // Update chartOptions with a new series reference
+  this.chartOptions = {
+    ...this.chartOptions,
+    series: [{
+      type: 'area',
+      name: 'Cycle Time',
+      data: this.jsonData.data.map((item: any) => ({
+        name: item.sequenceNo,
+        y: Number(item.cycleTime),
+        sequenceNo: item.sequenceNo,
+        RTC: item.RTC
+      }))
+    }]
+  };
+}
 
 }
 

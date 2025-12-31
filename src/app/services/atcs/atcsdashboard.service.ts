@@ -122,6 +122,71 @@ getFailureData(fromDate?: string, toDate?: string, zoneIds?: number[]): Observab
     return this._httpService._getMethod(url);
   }
 
+  getCycleTimeData(zoneIds: number[], fromDate: string, toDate: string): Observable<any> {
+  const params: string[] = [];
+
+  // Repeated zoneIds parameters: ?zoneIds=60&zoneIds=61
+  if (zoneIds && zoneIds.length > 0) {
+    zoneIds.forEach(id => {
+      params.push(`zoneIds=${encodeURIComponent(id.toString())}`);
+    });
+  }
+
+  if (fromDate) params.push(`fromDate=${encodeURIComponent(fromDate)}`);
+  if (toDate) params.push(`toDate=${encodeURIComponent(toDate)}`);
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/ATCSGraph/getCycleTimeData${queryString}`;
+
+  return this._httpService._getMethod(url);
+}
+
+GetActiveSitesbyZoneAndProject(zoneIds?: number[], projectIds?: number[]): Observable<any> {
+  const params: string[] = [];
+
+
+  if (zoneIds && zoneIds.length > 0) {
+    zoneIds.forEach((id: number) => {
+      params.push(`zoneIds=${encodeURIComponent(id.toString())}`);
+    });
+  }
+
+  
+  if (projectIds && projectIds.length > 0) {
+    projectIds.forEach((id: number) => {
+      params.push(`projectIds=${encodeURIComponent(id.toString())}`);
+    });
+  }
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  
+
+  const url = `api/services/app/Site/GetActiveSitesbyZoneAndProject${queryString}`;
+
+  return this._httpService._getMethod(url);
+}
+
+getCongestionData( fromDate: string, toDate: string,zoneIds: number[],): Observable<any> {
+  const params: string[] = [];
+
+  if (fromDate) params.push(`fromDate=${encodeURIComponent(fromDate)}`);
+  if (toDate) params.push(`toDate=${encodeURIComponent(toDate)}`);
+
+  if (zoneIds && zoneIds.length > 0) {
+    zoneIds.forEach((id: number) => {
+      params.push(`zoneIds=${encodeURIComponent(id.toString())}`);
+    });
+  }
+
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  
+
+  const url = `api/services/app/ATCSGraph/getCongestionData${queryString}`;
+
+  return this._httpService._getMethod(url);
+}
+
 getKeysDataForConfig(key: string): Observable<any> {
   return this.http.get('/assets/config/config.json').pipe(
     map((config: any) => config[key])
@@ -156,26 +221,7 @@ getKeysDataForConfig(key: string): Observable<any> {
   }
 
   
-    getCongestionData(siteId?:any ,fromDate?: string, toDate?: string): Observable<any> {
-    const params: string[] = [];
 
-     if (siteId) {
-      params.push(`siteId=${encodeURIComponent(siteId)}`);
-    }
-
-    if (fromDate) {
-      params.push(`fromDate=${encodeURIComponent(fromDate)}`);
-    }
-
-    if (toDate) {
-      params.push(`toDate=${encodeURIComponent(toDate)}`);
-    }
-
-     const queryString = params.length ? '?' + params.join('&') : '';
-  const url = `api/services/app/ATCSGraph/getCongestionData${queryString}`;
-
-    return this._httpService._getMethod(url);
-  }
 
 
 
