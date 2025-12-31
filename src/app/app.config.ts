@@ -64,6 +64,7 @@
 // };
 
 import { ApplicationConfig, APP_INITIALIZER, importProvidersFrom } from '@angular/core';
+import { MatNativeDateModule } from '@angular/material/core';
 import { provideRouter, withHashLocation } from '@angular/router';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -114,6 +115,7 @@ export const appConfig: ApplicationConfig = {
     provideKeycloakAngular(),
 
     importProvidersFrom(KeycloakAngularModule),
+    importProvidersFrom(MatNativeDateModule),
 
     {
       provide: APP_INITIALIZER,
