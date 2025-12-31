@@ -4,12 +4,12 @@
     { parts: ['VMS Dashboard'], link: '/dashboard-vms' }
   ]">
 </app-cm-breadcrumb>
-<div class="row">
-  <div class="col-md-12"></div>
- 
-    <button mat-flat-button color="primary" class="btn w-50 text-right btnEmergencyPublish" (click)="OpenEmergencyPublish()">Emergency Publish</button>
+<div>
+   
+    <button mat-flat-button color="primary" class="btn w-50 text-right btnEmergencyPublish" (click)="OpenEmergencyPublish()" matTooltip="Emergency Publish"><img src="assets/img/publish.png" alt="" width="24px" class="faa-tada animated"></button>
   
 </div>
+<div class="card-body">
 <div class="row mb-2 mt-2 d-flex">
   <div class="col-md-3">
     <div class="card">
@@ -21,7 +21,7 @@
     </div>
   </div>
 
-  <div class="col-md-9 vms-table-scroll">
+  <div class="col-md-9 vms-table-scroll border-0">
 
     <app-cm-table [headArr]="headArr" [gridArr]="userList" [pagination]="true" [totalRecords]="totalRecords"
       [perPage]="perPage" [totalPages]="totalPages" [collectionSize]="collectionSize" (pager)="onPageChange($event)"
@@ -31,5 +31,6 @@
 
 
   </div>
+</div>
 </div>
 </div>

@@ -32,6 +32,7 @@ export class VmsEmergencyComponent implements OnInit {
     lableClass: 'form-label',
     formFieldClass: 'w-100',
     appearance: 'fill',
+    placeholder: 'placeholder',
     options: [
       { name: 'SMS', value: 0 },
       { name: 'EMAIL', value: 1 },
@@ -59,6 +60,7 @@ export class VmsEmergencyComponent implements OnInit {
     labelHeader: 'Select VMD(Controller)',
     lableClass: 'form-label',
     formFieldClass: 'w-100',
+    placeholder: 'Select VMD',
     appearance: 'fill',
     // options: {}
      options: [] as any[]
@@ -119,6 +121,23 @@ export class VmsEmergencyComponent implements OnInit {
   }
   onFileSelected(evt: any) {
     this.uploadedFile = evt;
+    const input = evt.target as HTMLInputElement;
+
+  if (!input.files || input.files.length === 0) {
+    return;
+  }
+
+  const file = input.files[0];
+  const maxSize = 5 * 1024 * 1024; // 5 MB
+
+  if (file.size > maxSize) {
+    alert('File size must be less than 5 MB');
+    input.value = ''; // reset input
+    return;
+  }
+
+  // File is valid
+  console.log('File accepted:', file);
   }
   SubmitAction() {
     this._common._sessionAPITags().subscribe(res => {

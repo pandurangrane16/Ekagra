@@ -1,28 +1,34 @@
-<form [formGroup]="form" style="padding: 10px;">
+<form [formGroup]="form" style="padding: 10px;" class="card p-0">
+    <div class="card-header">
+        
+            <h5> Emergency Publish</h5>
+       
+    </div>
+    <div class="card-body">
     <div class="row">
         <div class="col-md-12">
-            <h2> Emergency Publish</h2>
-        </div>
-    </div>
-    <hr>
-    <div class="row">
-        <div class="col-md-6">
+            
             <app-cm-select-check ngSkipHydration 
             *ngIf="isTypeSelected || vmdTypeSettings.options != undefined" 
             [formGroup]="form"
                 [controlName]="'selectedVmdAction'" [settings]="vmdTypeSettings"
-                (returnObject)="onVMSSelected($event)" color="primary">
+                (returnObject)="onVMSSelected($event)" color="primary" class="mt-0">
             </app-cm-select-check>
         </div>
-    </div>
-    <hr>
-    <div class="row">
-        <div class="col-md-6 d-flex align-items-center gap-2">
-            <label class="mb-0">Attachment(Image or Video)</label>
-            <input type="file" (change)="onFileSelected($event)">
+    
+    
+   
+        <div class="col-md-12 align-items-center d-flex mt-2">
+           <div  class="w-100"> <label class="w-100">
+            Attach File <small> (Image / Video / Audio – max 5 MB) </small>
+           
+        </label>
+            <input type="file" (change)="onFileSelected($event)" class="mt-1 form-control" accept="image/*,video/*,audio/*">
+            </div>
         </div>
     </div>
-    <div class="row">
+
+    <div class="row mt-2">
         <div class="col-md-6" *ngIf="isTypeSelected">
             <app-cm-select2 ngSkipHydration *ngIf="isTypeSelected" [formGroup]="form" [controlName]="'selectedUnit'"
                 [settings]="unitSettings" (returnObject)="onUnitSelected($event)">
@@ -30,6 +36,7 @@
         </div>
     
         <div class="col-md-6" *ngIf="isTypeSelected">
+            <label class="mb-0 w-100">Unit Value</label>
             <app-cm-input ngSkipHydration [formGroup]="form" [controlName]="'unitValue'"
                 [_inputData]="inputFields.unitValue">
             </app-cm-input>
@@ -46,5 +53,6 @@
                 Cancel
             </button>
         </div>
+    </div>
     </div>
 </form>
