@@ -1,8 +1,9 @@
-<p>user-profile</p>
+<!-- <p>user-profile</p> -->
 <div class="profile-container">
 
-  <h2 class="title">Edit Profile</h2>
-
+  <h2 class="title">User Profile</h2>
+  <p class="success" *ngIf="successMsg">{{ successMsg }}</p>
+  <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
   <form (ngSubmit)="saveProfile()" #profileForm="ngForm" novalidate>
 
     <!-- First Name -->
@@ -68,7 +69,6 @@
   </form>
 
   <!-- Messages -->
-  <p class="success" *ngIf="successMsg">{{ successMsg }}</p>
-  <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+
 
 </div>
