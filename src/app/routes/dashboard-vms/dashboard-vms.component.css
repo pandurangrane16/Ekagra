@@ -27,3 +27,21 @@
 .vms-table-scroll::-webkit-scrollbar-thumb:hover {
   background: #999;
 }
+
+.btnEmergencyPublish
+{
+  width: 8% !important;
+  border-radius: 50% 0 0 50%;
+    position: fixed;
+    right: -10px;
+    top: 50%;
+    z-index: 10;
+    cursor: pointer;
+    transform: translateY(-50%);
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+	    background: linear-gradient(305deg, #FFD600 -13.87%, #FF007A 104.8%) !important;
+    color: white;
+}

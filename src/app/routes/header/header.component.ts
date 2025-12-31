@@ -259,4 +259,8 @@ private loadUserInfo(): void {
     }
   }
  
+
+  profileRedirect() {
+ this.router.navigate(['/profile']);  }
+ 
 }

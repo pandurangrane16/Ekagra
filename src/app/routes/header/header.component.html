@@ -29,6 +29,10 @@
         <img src="assets/img/user.png" alt="" class="rounded-5"> <span class="online rounded-5" *ngIf="online"></span>
       </button>
       <mat-menu #menu="matMenu">
+         <button mat-menu-item (click)="profileRedirect()">
+          <mat-icon></mat-icon>
+          <span>User Profile</span>
+        </button>
      <button mat-menu-item (click)="logout()">
           <mat-icon>logout</mat-icon>
           <span>Logout</span>

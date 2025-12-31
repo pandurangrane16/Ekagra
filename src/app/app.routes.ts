@@ -31,7 +31,7 @@ import { RegisterRedirectComponent } from './pages/register-redirect/register-re
 import { DashboardVMSComponent } from './routes/dashboard-vms/dashboard-vms.component';
 import { DashboardTESComponent } from './routes/dashboard-tes/dashboard-tes.component';
 import { DashboardPaComponent } from './routes/dashboard-pa/dashboard-pa.component';
-
+import { UserProfileComponent } from './routes/user-profile/user-profile.component';
 export const routes: Routes = [
       // { path: "", component: DashboardComponent, },
       { path: "login", component: LoginComponent, },
@@ -66,6 +66,7 @@ export const routes: Routes = [
       { path: 'tes', component: DashboardTESComponent},
       { path: 'pa', component: DashboardPaComponent},
       { path: 'cron', component: CmCronComponent },
+      {path:'profile',component:UserProfileComponent},
       {
             path: 'admin',
             //  component: AdminDashboardComponent,

@@ -1,14 +1,16 @@
 // src/app/services/keycloak.service.ts
 import { Injectable } from '@angular/core';
 import Keycloak from 'keycloak-js';
-
+import { KeycloakService as key } from 'keycloak-angular';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { UserprofileModel } from '../../models/admin/userprofile.model';
 @Injectable({
   providedIn: 'root',
 })
 export class KeycloakService {
   private keycloak: Keycloak.KeycloakInstance;
 
-  constructor() {
+  constructor(private http: HttpClient,private keyService: key) {
     this.keycloak = new Keycloak({
       url: 'https://10.100.43.108:8443/',
       realm: 'cmsrealm',
@@ -83,4 +85,47 @@ export class KeycloakService {
   getUsername(): string | undefined {
     return this.keycloak.tokenParsed ? (this.keycloak.tokenParsed as any).preferred_username : undefined;
   }
+
+  getProfile() {
+  debugger;
+
+  const keycloak = this.keyService.getKeycloakInstance();
+  let token = null;
+
+  if (keycloak.authenticated) {
+    token = keycloak.token;
+  }
+
+  const headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  });
+
+  return this.http.get<any>(
+    'https://172.19.10.43:8443/realms/cmsrealm/account',
+    { headers }
+  );
+}
+  updateProfile(payload:UserprofileModel) {
+debugger;
+
+    const keycloak =  this.keyService.getKeycloakInstance();
+     let token=null;
+    if (keycloak.authenticated) {
+       token =keycloak.token
+    }
+  const headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  });
+
+  return this.http.post<any>(
+    'https://172.19.10.43:8443/realms/cmsrealm/account',
+    payload,
+    { headers } 
+  );
+  
+}
+
+
 }
