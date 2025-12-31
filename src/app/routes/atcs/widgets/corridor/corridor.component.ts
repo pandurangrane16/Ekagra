@@ -130,7 +130,7 @@ prepareChart(): void {
   }
 
   // const categories = this.corridorData.map(x => x.RTC);
-  const categories = this.corridorData.map((_, index) => index.toString());
+  const categories = this.corridorData.map(x => x.RTC);
 
   const seriesData = this.corridorData.map((x: any) => ({
     y: x.saturation === 'NA' ? 0 : Number(x.saturation),
@@ -195,6 +195,8 @@ prepareChart(): void {
   chart: {
     type: 'line',
     zoomType: 'x',
+    marginBottom: 80,
+    marginRight: 20
   } as Highcharts.ChartOptions,
 
   title: {
@@ -206,13 +208,22 @@ prepareChart(): void {
 
   xAxis: {
     categories,
-    title: { text: 'RTC' },
-    labels: { rotation: 0 }
+    title: { 
+        text: 'RTC',
+        align: 'middle',
+        offset: 10 /* Move title up properly */
+    },
+    labels: { 
+        enabled: false /* Hide the tick labels completely */
+    }
   },
 
   yAxis: {
     min: 0,
-    title: { text: 'Saturation' }
+    title: { 
+        text: 'Saturation',
+        align: 'middle'
+    }
   },
 
   tooltip: {
@@ -220,14 +231,10 @@ prepareChart(): void {
     formatter: function (this: any) {
       const p: any = this;
       return `
-        <b>RTC:</b> ${p.rtc}<br>
+        <b>RTC:</b> ${p.point.rtc}<br>
         <b>Saturation:</b> ${p.y}<br>
-       
-        <b>Status:</b> ${p.junctionStatus}
+        <b>Status:</b> ${p.point.junctionStatus}
       `;
-
-
-  
     }
   },
 

@@ -283,6 +283,9 @@ tooltip: {
         if (res && res.success) {
           this.cycleData = res.result; // Store the array of objects
           console.log('Cycle Time Data Stored:', this.cycleData);
+          
+          // Fix: Render the chart immediately after data is fetched
+          this.updateChartForSelectedJunction();
         }
       }
     });
