@@ -35,7 +35,7 @@ loaderService = inject(LoaderService);
   private readonly keycloakSignal = inject(KEYCLOAK_EVENT_SIGNAL);
 
   form!: FormGroup;
-  version: string = "2.0.18";
+  version: string = "2.0.19";
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,

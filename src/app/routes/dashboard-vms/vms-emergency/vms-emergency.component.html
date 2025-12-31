@@ -7,7 +7,9 @@
     <hr>
     <div class="row">
         <div class="col-md-6">
-            <app-cm-select-check ngSkipHydration *ngIf="isTypeSelected || vmdTypeSettings.options != undefined" [formGroup]="form"
+            <app-cm-select-check ngSkipHydration 
+            *ngIf="isTypeSelected || vmdTypeSettings.options != undefined" 
+            [formGroup]="form"
                 [controlName]="'selectedVmdAction'" [settings]="vmdTypeSettings"
                 (returnObject)="onVMSSelected($event)" color="primary">
             </app-cm-select-check>

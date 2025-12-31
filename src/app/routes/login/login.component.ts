@@ -36,7 +36,7 @@ export class LoginComponent {
   private readonly keycloakSignal = inject(KEYCLOAK_EVENT_SIGNAL);
 
   loginForm!: FormGroup;
-  version: string = "2.0.18";
+  version: string = "2.0.19";
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
