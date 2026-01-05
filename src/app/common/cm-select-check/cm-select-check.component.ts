@@ -23,10 +23,10 @@ export class CmSelectCheckComponent {
   filteredOptions: any[] = [];
   selectedValues: string[] = [];
   openAutocomplete: boolean = false;
-  
+  // @Input() placeholder!: string;
+
   ngOnInit() {
     this.filteredOptions = this.options;
-
     this.searchCtrl.valueChanges
       .pipe(
         startWith(''),

@@ -3,23 +3,22 @@
   <div class="row d-flex align-item-center">
     <div class="col-md-6 d-flex align-item-center">
       <div *ngFor="let row of rows; let i = index" class="breadcrumb-row">
-        <!-- <span class="breadcrumb-index">{{ row.index ?? (i + 1) }}.</span> -->
-        <ng-container *ngIf="row.parts.length === 1">
-          <h6 *ngIf="row.link; else plain" [routerLink]="row.link" class="breadcrumb-text" class="mb-0 text-white">{{
-            row.parts[0] }}</h6>
-          <ng-template #plain><span class="breadcrumb-text">{{ row.parts[0] }}</span></ng-template>
-
+    <!-- <span class="breadcrumb-index">{{ row.index ?? (i + 1) }}.</span> -->
+    <ng-container *ngIf="row.parts.length === 1">
+      <h5 *ngIf="row.link; else plain" [routerLink]="row.link" class="breadcrumb-text" class="mb-0 text-primary">{{ row.parts[0] }}</h5>
+      <ng-template #plain><span class="breadcrumb-text">{{ row.parts[0] }}</span></ng-template>
+      
+    </ng-container>
+    <ng-container *ngIf="row.parts.length > 1">
+      <span class="breadcrumb-path">
+        <ng-container *ngFor="let p of row.parts; let last = last">
+          <!-- <span class="crumb">{{ p }}</span> -->
+           <i *ngIf="i > 0" class="fa fa-chevron-right breadcrumb-arrow"></i>
+          <span *ngIf="!last" class="sep">&nbsp;&gt;&nbsp;</span>
         </ng-container>
-        <ng-container *ngIf="row.parts.length > 1">
-          <span class="breadcrumb-path">
-            <ng-container *ngFor="let p of row.parts; let last = last">
-              <!-- <span class="crumb">{{ p }}</span> -->
-              <i *ngIf="i > 0" class="fa fa-chevron-right breadcrumb-arrow"></i>
-              <span *ngIf="!last" class="sep">&nbsp;&gt;&nbsp;</span>
-            </ng-container>
-          </span>
-        </ng-container>
-      </div>
+      </span>
+    </ng-container>
+  </div>
     </div>
     <div class="col-md-3 d-flex align-items-center">
       <mat-form-field appearance="fill" class="w-100">

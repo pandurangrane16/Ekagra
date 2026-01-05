@@ -76,12 +76,20 @@ export class AppComponent implements OnInit {
     private signalRService: SignalRService,
     private snackBar: MatSnackBar,
     //private keycloakService: KeycloakService,
-    public router: Router
+    public router: Router,
+    private globals: Globals
   ) {
   }
 
   async getKeyCloakToken() {
     this.appReady = Globals.prototype.isKeycloakInitialized;
+    // Restore user info (if any) from sessionStorage so `Globals.user` is populated app-wide
+    try {
+      this.globals.restoreUserFromSession();
+      console.log('AppComponent restored Globals.user:', this.globals.user);
+    } catch (e) {
+      console.warn('Failed to restore Globals.user in AppComponent', e);
+    }
     // keycloakService.init()
     //   .then(() => {
     //     let return_data = bootstrapApplication(AppComponent, {

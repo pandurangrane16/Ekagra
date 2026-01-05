@@ -4,13 +4,14 @@ import Keycloak from 'keycloak-js';
 import { KeycloakService as key } from 'keycloak-angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UserprofileModel } from '../../models/admin/userprofile.model';
+import { HttpService } from '../common/http.service';
 @Injectable({
   providedIn: 'root',
 })
 export class KeycloakService {
   private keycloak: Keycloak.KeycloakInstance;
 
-  constructor(private http: HttpClient,private keyService: key) {
+  constructor(private http: HttpClient,private keyService: key,private _httpService: HttpService) {
     this.keycloak = new Keycloak({
       url: 'https://10.100.43.108:8443/',
       realm: 'cmsrealm',
@@ -126,6 +127,21 @@ debugger;
   );
   
 }
+
+
+// updateAbpUser(payload: any) {
+//   const url = '/api/services/app/UserConf/UpdateUserProfile';
+
+//   return this.http.post(url, payload, {
+//     headers: new HttpHeaders({
+//       'Content-Type': 'application/json'
+//     })
+//   });
+// }
+
+  updateAbpUser(_data: any) {
+    return this._httpService._postMethod(_data, 'api/services/app/UserConf/UpdateUserProfile');
+  }
 
 
 }

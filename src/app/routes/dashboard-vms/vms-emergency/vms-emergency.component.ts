@@ -13,7 +13,7 @@ import { CmSelect2Component } from '../../../common/cm-select2/cm-select2.compon
 import { VmsBroadcastingComponent } from "../../../user/alert/actions/vms-broadcasting/vms-broadcasting.component";
 import { SessionService } from '../../../services/common/session.service';
 import { CommonService } from '../../../services/common/common.service';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-vms-emergency',
@@ -32,6 +32,7 @@ export class VmsEmergencyComponent implements OnInit {
     lableClass: 'form-label',
     formFieldClass: 'w-100',
     appearance: 'fill',
+    placeholder: 'placeholder',
     options: [
       { name: 'SMS', value: 0 },
       { name: 'EMAIL', value: 1 },
@@ -59,8 +60,10 @@ export class VmsEmergencyComponent implements OnInit {
     labelHeader: 'Select VMD(Controller)',
     lableClass: 'form-label',
     formFieldClass: 'w-100',
+    placeholder: 'Select VMD',
     appearance: 'fill',
-    options: {}
+    // options: {}
+     options: [] as any[]
   };
   unitSettings = {
     labelHeader: 'Select Unit',
@@ -77,6 +80,7 @@ export class VmsEmergencyComponent implements OnInit {
   uploadedFile: any;
   constructor(private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: any,
+    private dialogRef: MatDialogRef<VmsEmergencyComponent>
   ) { }
   ngOnInit(): void {
     console.log(this.data);
@@ -117,6 +121,23 @@ export class VmsEmergencyComponent implements OnInit {
   }
   onFileSelected(evt: any) {
     this.uploadedFile = evt;
+    const input = evt.target as HTMLInputElement;
+
+  if (!input.files || input.files.length === 0) {
+    return;
+  }
+
+  const file = input.files[0];
+  const maxSize = 5 * 1024 * 1024; // 5 MB
+
+  if (file.size > maxSize) {
+    alert('File size must be less than 5 MB');
+    input.value = ''; // reset input
+    return;
+  }
+
+  // File is valid
+  console.log('File accepted:', file);
   }
   SubmitAction() {
     debugger;
@@ -145,9 +166,10 @@ export class VmsEmergencyComponent implements OnInit {
               next: (response: any) => {
                 _count = _count + 1;
                 if (_count == this._vmdSelected.length) {
-                  if(response.success == true)
+                  if(response.success == true) {
                     this.toast.success("Request submitted successfully." + "\n" + response.result);
-                  else {
+                    this.dialogRef.close(response);
+                  } else {
                     console.log(response);
                     this.toast.error("An error occurred." + "\n" + response.result);
                   }
@@ -177,7 +199,7 @@ export class VmsEmergencyComponent implements OnInit {
 
   addMinutes(seconds: number) {
     const now = new Date();
-    now.setMinutes(now.getSeconds() + seconds);
+    now.setSeconds(now.getSeconds() + seconds);
 
     const formatted = this.formatDateTime(now);
     console.log(formatted);
@@ -185,6 +207,8 @@ export class VmsEmergencyComponent implements OnInit {
   }
 
 
-  CancelAction() { }
+  CancelAction() {
+    this.dialogRef.close();
+  }
 }
 
