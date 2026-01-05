@@ -24,10 +24,12 @@ import { CmSelectCheckComponent } from '../../common/cm-select-check/cm-select-c
 import{CmBreadcrumbComponent} from '../../common/cm-breadcrumb/cm-breadcrumb.component';
 import { withLatestFrom } from 'rxjs';    
 import { color } from 'highcharts';
+import { atcsDashboardservice } from '../../services/atcs/atcsdashboard.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-dashboard-pa',
-  imports: [MatButtonToggleModule,MatDatepickerModule,CmSelectCheckComponent, CommonModule, MatIconModule, MatFormFieldModule, MatSelectModule, MatInputModule, MapviewComponent,MatButtonModule,MatTooltipModule,MatTabsModule,CmTableComponent,CmBreadcrumbComponent],
+  imports: [MatButtonToggleModule,MatDatepickerModule,CmSelectCheckComponent, CommonModule, MatIconModule, MatFormFieldModule, MatSelectModule, MatInputModule, MapviewComponent,MatButtonModule,MatTooltipModule,MatTabsModule,CmTableComponent,CmBreadcrumbComponent, FormsModule],
   templateUrl: './dashboard-pa.component.html',
   styleUrl: './dashboard-pa.component.css',
     providers: [provideNativeDateAdapter()]
@@ -53,6 +55,21 @@ processedItems: any[] = [];
  totalRecords: any = 0;
  activeComponent: 'a' | 'b' | 'c' = 'a';
  drawerState: 'in' | 'out' = 'out';
+
+ // Zone Properties
+ isZoneOptionsLoaded: boolean = false;
+ ZoneOptions: any[] = [];
+ selectedZones: any[] = [];
+ selectedZoneIds: any[] = [];
+ ZoneSelectSettings = {
+    labelHeader: 'Select Zone',
+    lableClass: 'form-label',
+    multiple: false,
+    formFieldClass: '', 
+    appearance: 'fill',
+    options: []
+ };
+
  viewDevice(rowData: any): void {
    const dialogRef = this.dialog.open(CmDialogComponent, {
      width: '600px',
@@ -139,12 +156,63 @@ paOngoingList: any[] = [
   
 private dialogRef?: MatDialogRef<RightSheetComponent>;
 constructor(
-private dialog: MatDialog,private service:PaDashboardService
-
+private dialog: MatDialog,private service:PaDashboardService, private atcsService: atcsDashboardservice
     ){}
 
-  ngOnInit(): void {
+    getZoneList() {
+        this.atcsService.GetAllZones().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+            const items = response?.result || [];
 
+            const projectOptions = items.map((item: any) => ({
+                text: (item.zoneName || '').trim() || 'Unknown',
+                id: item.id
+            }));
+
+            // 1. Set selectedZones to everything except the "All" option (id: 0)
+            this.selectedZones = [...projectOptions];
+            
+            // 2. Map the IDs to your array that goes to the Child component
+            this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
+
+            projectOptions.unshift({
+                text: 'All',
+                id: 0
+            });
+            this.ZoneSelectSettings.options = projectOptions;
+            this.ZoneOptions=projectOptions
+            this.isZoneOptionsLoaded = true;
+        }, error => {
+            console.error('Error fetching Zone list', error);
+        });
+    }
+
+    onActionSelectionChange(event: any) {
+        const selectedValues = event.value || [];
+        const allOption = this.ZoneOptions.find((x: any) => x.text.toLowerCase() === 'all');
+
+        if (!allOption) return;
+
+        const isAllSelected = selectedValues.some((x: any) => x.id === allOption.id);
+
+        if (isAllSelected) {
+            const allExceptAll = this.ZoneOptions.filter((x: any) => x.id !== allOption.id);
+            this.selectedZones = [...allExceptAll];
+        } else {
+            this.selectedZones = selectedValues.filter((x: any) => x.id !== allOption.id);
+        }
+
+        this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
+        // Trigger any updates based on zone selection if needed
+    }
+
+    clearActions() {
+        this.selectedZones = [];
+        this.selectedZoneIds = [];
+        // Clear logic
+    }
+
+  ngOnInit(): void {
+    this.getZoneList(); // Load zones
     this.getList();
     this.fetchPaStatus();
     this.GetOngoingAnnoucement();

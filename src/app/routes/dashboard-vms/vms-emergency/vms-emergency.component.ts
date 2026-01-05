@@ -119,6 +119,7 @@ export class VmsEmergencyComponent implements OnInit {
     this.uploadedFile = evt;
   }
   SubmitAction() {
+    debugger;
     this._common._sessionAPITags().subscribe(res => {
       let _inputTag = res.find((x: any) => x.tag == "VMSCommandPublish");
       let _inputRequest = JSON.parse(JSON.parse(_inputTag.inputRequest).bodyInputs);

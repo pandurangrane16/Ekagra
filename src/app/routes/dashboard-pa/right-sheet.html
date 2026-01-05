@@ -1,132 +1,133 @@
 <nav mat-tab-nav-bar>
-  <a mat-tab-link
-    *ngFor="let link of links"
-    (click)="activeLink = link"
-    [active]="activeLink === link">
-   <mat-icon class="me-2">{{ link.icon }}</mat-icon>
+  <a mat-tab-link *ngFor="let link of links" (click)="activeLink = link" [active]="activeLink === link">
+    <mat-icon class="me-2">{{ link.icon }}</mat-icon>
     {{ link.label }}
   </a>
- 
+
 </nav>
 <div class="card bg-success" style="border-radius: 0;">
-<div class="card-body">
-<nav mat-tab-nav-bar class="bg-light rounded" color="primary">
-  <a mat-tab-link
-    *ngFor="let innerLink of innerlinks"
-    (click)="activeInnerlink = innerLink"
-    [active]="activeInnerlink === innerLink" class="p-0">
-    {{ innerLink }}
-  </a>
-</nav>
-<div class="tab-content p-1">
-  <ng-container [ngSwitch]="activeInnerlink" dynamicHeight>
+  <div class="card-body">
+    <nav mat-tab-nav-bar class="bg-light rounded" color="primary">
+      <a mat-tab-link *ngFor="let innerLink of innerlinks" (click)="activeInnerlink = innerLink"
+        [active]="activeInnerlink === innerLink" class="p-0">
+        {{ innerLink }}
+      </a>
+    </nav>
+    <div class="tab-content p-1">
+      <ng-container [ngSwitch]="activeInnerlink" dynamicHeight>
 
-    <div *ngSwitchCase="'PA'">
-     <mat-form-field class="w-100">
-    <mat-select placeholder="Select Destination">
-         
-                <input matInput class="form-control">
-                                    
-                        <mat-option>dsds </mat-option>
-                        <mat-option>sdsd </mat-option>
-                    </mat-select>
-                  </mat-form-field>
+        <div *ngSwitchCase="'PA'">
+          <mat-form-field class="w-100">
+            <mat-select placeholder="Select Destination">
+
+              <input matInput class="form-control">
+
+              <mat-option>dsds </mat-option>
+              <mat-option>sdsd </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div *ngSwitchCase="'Group'">
+          <mat-form-field class="w-100">
+            <mat-select placeholder="Select Destination">
+
+              <input matInput class="form-control">
+
+
+              <mat-option>dsds </mat-option>
+              <mat-option>sdsd </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <!-- <mat-checkbox color="primary" class="text-light mt-2">Want to hear the announcement that is currently playing...!</mat-checkbox> -->
+
+        </div>
+
+        <div *ngSwitchCase="'Zone'">
+          <mat-form-field class="w-100">
+            <mat-select placeholder="Select Zone" [(ngModel)]="selectedZones"
+              (selectionChange)="onZoneSelectionChange($event)" multiple>
+
+              <mat-option class="clear-option" (click)="clearZones()">
+                Clear Selection
+              </mat-option>
+              <mat-option *ngFor="let option of ZoneOptions" [value]="option">
+                {{option.text}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- <mat-checkbox color="primary" class="text-light mt-2">Want to hear the announcement that is currently playing...!</mat-checkbox> -->
+        </div>
+
+        <div *ngSwitchDefault>
+          <p>hgh</p>
+        </div>
+
+      </ng-container>
     </div>
-
-    <div *ngSwitchCase="'Group'">
-       <mat-form-field class="w-100">
-    <mat-select placeholder="Select Destination">
-         
-                <input matInput class="form-control">
-             
-                       
-                        <mat-option>dsds </mat-option>
-                        <mat-option>sdsd </mat-option>
-                    </mat-select>
-                  </mat-form-field>
- <!-- <mat-checkbox color="primary" class="text-light mt-2">Want to hear the announcement that is currently playing...!</mat-checkbox> -->
-                  
-    </div>
-
-    <div *ngSwitchCase="'Zone'">
-       <mat-form-field class="w-100">
-    <mat-select placeholder="Select Destination">
-         
-                <input matInput class="form-control">
-             
-                       
-                        <mat-option>dsds </mat-option>
-                        <mat-option>sdsd </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-   
-   <!-- <mat-checkbox color="primary" class="text-light mt-2">Want to hear the announcement that is currently playing...!</mat-checkbox> -->
-                </div>
-
-    <div *ngSwitchDefault>
-       <p>hgh</p>
-    </div>
-
-  </ng-container>
-</div>
-</div>
+  </div>
 </div>
 <div class="tab-content">
   <ng-container [ngSwitch]="activeLink.label">
 
     <div *ngSwitchCase="'Live'">
-     
+
     </div>
 
     <div *ngSwitchCase="'Recorded File'">
 
-        <div class="d-flex gap-2 p-2 align-items-center">
-        
-            <mat-form-field class="w-75" appearance="outline">
-    <mat-select placeholder="Select Recorded Audio">
-         
-                <input matInput class="form-control" placeholder="Search...">
-             
-                       
-                        <mat-option>dsds </mat-option>
-                        <mat-option>sdsd </mat-option>
-                    </mat-select>
-                  </mat-form-field> <button mat-stroked-button><mat-icon>play_arrow</mat-icon></button>
-                 <button mat-stroked-button color="warn"><mat-icon >delete</mat-icon></button>
-        
-     </div>
-       
+      <div class="d-flex gap-2 p-2 align-items-center">
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Select Recorded Audio</mat-label>
+          <mat-select placeholder="Select Recorded Audio" [(ngModel)]="selectedAudio">
+
+            <!-- <div class="p-2">
+              <input class="form-control" placeholder="Search...">
+            </div> -->
+
+            <mat-option *ngFor="let audio of audioSettings.options" [value]="audio.value">
+              {{ audio.name }}
+            </mat-option>
+
+            <mat-option *ngIf="audioSettings.options.length === 0" disabled>
+              No audio files found
+            </mat-option>
+
+          </mat-select>
+        </mat-form-field>
+        <!-- <button mat-stroked-button><mat-icon>play_arrow</mat-icon></button>
+        <button mat-stroked-button color="warn"><mat-icon>delete</mat-icon></button> -->
+
+      </div>
+
     </div>
 
     <div *ngSwitchCase="'Uploaded File'">
       <div class="d-flex align-items-center p-2 gap-2">
-     <mat-form-field appearance="outline" class="w-75">
-  <mat-label>Upload File</mat-label>
+        <mat-form-field appearance="outline" class="w-75">
+          <mat-label>Upload File</mat-label>
 
-  <!-- Hidden native file input -->
-  <input type="file"
-         #fileInput
-         (change)="onFileChange($event)"
-         style="display: none" />
+          <!-- Hidden native file input -->
+          <input type="file" #fileInput (change)="onFileChange($event)" style="display: none" />
 
-  <!-- Visible text box + button -->
-  <input matInput
-         [value]="selectedFileName"
-         placeholder="Choose a file to upload"
-         readonly
-         (click)="fileInput.click()" type="text"/>
+          <!-- Visible text box + button -->
+          <input matInput [value]="selectedFileName" placeholder="Choose a file to upload" readonly
+            (click)="fileInput.click()" type="text" />
 
- 
-  <button mat-icon-button matSuffix>
-    <mat-icon>attach_file</mat-icon>
-  </button>
-  
 
-  <mat-hint *ngIf="!selectedFileName">No file selected</mat-hint>
-</mat-form-field>
-<button mat-flat-button color="primary">
-    <mat-icon>upload</mat-icon>
-  </button></div>
+          <button mat-icon-button matSuffix>
+            <mat-icon>attach_file</mat-icon>
+          </button>
+
+
+          <mat-hint *ngIf="!selectedFileName">No file selected</mat-hint>
+        </mat-form-field>
+        <button mat-flat-button color="primary">
+          <mat-icon>upload</mat-icon>
+        </button>
+      </div>
     </div>
 
     <div *ngSwitchDefault>
@@ -137,7 +138,7 @@
 </div>
 
 <div class="card-footer p-2">
-    <hr class="mt-1">
-    <button mat-flat-button class="me-2" color="primary">Broadcast</button>
-          <button mat-flat-button color="warn" >Hang Up</button>
+  <hr class="mt-1">
+  <button mat-flat-button class="me-2" color="primary">Broadcast</button>
+  <button mat-flat-button color="warn">Hang Up</button>
 </div>
