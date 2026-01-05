@@ -14,6 +14,9 @@ import { VmsBroadcastingComponent } from "../../../user/alert/actions/vms-broadc
 import { SessionService } from '../../../services/common/session.service';
 import { CommonService } from '../../../services/common/common.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Globals } from '../../../utils/global';
+import { FormArray } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-vms-emergency',
@@ -25,6 +28,7 @@ export class VmsEmergencyComponent implements OnInit {
   loaderService = inject(LoaderService);
   _common = inject(CommonService);
   form: any;
+  dropdown:any;
   isTypeSelected: boolean = false;
   _vmdSelected: any[];
   actionTypeSettings = {
@@ -85,13 +89,15 @@ export class VmsEmergencyComponent implements OnInit {
   ngOnInit(): void {
     console.log(this.data);
     this.vmdTypeSettings = this.data.data;
+   
+    console.log(this.vmdTypeSettings);
     this.form = this.fb.group({
-      selectedAction: ['', Validators.required],
-      selectedVmdAction: [],
-      remarks: ['', Validators.required],
-      isVerified: [false, Validators.required],
-      selectedUnit: [],
-      unitValue: []
+      selectedAction: [''],
+      selectedVmdAction: ['', Validators.required],
+      remarks: [''],
+      isVerified: [false],
+      selectedUnit: ['', Validators.required],
+      unitValue: ['', Validators.required]
     })
     //this.GetVmdList();
   }
@@ -139,51 +145,91 @@ export class VmsEmergencyComponent implements OnInit {
   // File is valid
   console.log('File accepted:', file);
   }
-  SubmitAction() {
-    debugger;
-    this._common._sessionAPITags().subscribe(res => {
-      let _inputTag = res.find((x: any) => x.tag == "VMSCommandPublish");
-      let _inputRequest = JSON.parse(JSON.parse(_inputTag.inputRequest).bodyInputs);
-      console.log(_inputRequest);
-      let _input = _inputRequest[0];
-      let _request: any[] = [];
-      this.convertToBase64(this.uploadedFile.target.files[0]).then((base64: string) => {
-        let base64String = base64;
-        console.log(_input);
-        let duration = Number(this.form.controls["unitValue"].value);
-        let _durSec = this.form.controls["selectedUnit"].value.name.toLocaleLowerCase() == "minutes" ? duration * 60 : duration;
-        var _count = 0;
-        this._vmdSelected.forEach(element => {
-          _input.vmsid = element;
-          _input.publishType = "image";
-          _input.textContent = base64String;
-          _input.fromTime = this.addMinutes(60);
-          _input.toTime = this.addMinutes(_durSec);
-          _inputTag.inputRequest = JSON.stringify(_input);
-          this.alertService.SiteResponse(_inputTag)
-            .pipe(withLoader(this.loaderService))
-            .subscribe({
-              next: (response: any) => {
-                _count = _count + 1;
-                if (_count == this._vmdSelected.length) {
-                  if(response.success == true) {
-                    this.toast.success("Request submitted successfully." + "\n" + response.result);
-                    this.dialogRef.close(response);
-                  } else {
-                    console.log(response);
-                    this.toast.error("An error occurred." + "\n" + response.result);
-                  }
-                }
-                console.log(response);
-              },
-              error: (error) => {
-                console.error('Error fetching VMD list:', error);
-              }
-            });
-        });
-      });
-    })
+SubmitAction() {
+
+
+  if (this.form.invalid) {
+    // Mark all controls as touched to trigger the display of validation errors in the UI
+    this.form.markAllAsTouched();
+    this.toast.error("Please fill all required fields.");
+    return; // Exit the function and don't proceed to API calls
   }
+  else{
+      // 2. Additional check: Ensure at least one VMD is selected (since it's not in the FB group)
+  if (!this._vmdSelected || this._vmdSelected.length === 0) {
+    this.toast.error("Please select at least one VMD.");
+    return;
+  }
+  else{
+      this._common._sessionAPITags().subscribe(res => {
+    const rawTag = res.find((x: any) => x.tag == "VMSCommandPublish");
+    if (!rawTag) return;
+
+    const outerTemplate = JSON.parse(rawTag.inputRequest);
+    const bodyTemplate = JSON.parse(outerTemplate.bodyInputs)[0];
+
+    const file = this.uploadedFile.target.files[0];
+    this.convertToBase64(file).then((base64String: string) => {
+      
+      const duration = Number(this.form.controls["unitValue"].value);
+      const isMinutes = this.form.controls["selectedUnit"].value.name.toLocaleLowerCase() === "minutes";
+      const _durSec = isMinutes ? duration * 60 : duration;
+
+      let successCount = 0;
+      let totalVmds = this._vmdSelected.length;
+
+      // Loop through each VMD and call the API individually
+      this._vmdSelected.forEach((vmsId: any) => {
+        
+        // 1. Prepare the single-command array for this specific VMD
+        const singleCommandArray = [{
+          ...bodyTemplate,
+          vmsid: vmsId,
+          publishType: "image",
+          textContent: base64String,
+          fromTime: this.addMinutes(60),
+          toTime: this.addMinutes(_durSec)
+        }];
+
+        // 2. Build the payload for THIS specific VMD
+        const finalPayload = {
+          projectId: outerTemplate.projectId,
+          type: outerTemplate.type,
+          inputs: outerTemplate.inputs,
+          bodyInputs: JSON.stringify(singleCommandArray), // Still stringified, but only 1 item
+          seq: outerTemplate.seq
+        };
+
+        // 3. Call SiteResponse inside the loop
+        this.alertService.SiteResponse(finalPayload)
+          .pipe(withLoader(this.loaderService))
+          .subscribe({
+            next: (response: any) => {
+              if (response.success) {
+                successCount++;
+                // Only show success toast and close dialog when ALL requests are finished
+                if (successCount === totalVmds) {
+                  this.toast.success(`Successfully broadcasted to all ${totalVmds} VMDs.`);
+                  this.dialogRef?.close(response);
+                }
+              } else {
+                this.toast.error(`Failed to update VMD: ${vmsId}`);
+              }
+            },
+            error: (error) => {
+              console.error(`Error for VMD ${vmsId}:`, error);
+            }
+          });
+      });
+    });
+  });
+  }
+
+
+  }
+
+
+}
 
   formatDateTime(date: Date): string {
     const year = date.getFullYear();

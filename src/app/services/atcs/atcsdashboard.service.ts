@@ -84,6 +84,27 @@ getFailureData(fromDate?: string, toDate?: string, zoneIds?: number[]): Observab
   return this._httpService._getMethod(url);
 }
 
+startBroadcast(audioFileName: string, paNames: string): Observable<any> {
+  const params: string[] = [];
+
+if (audioFileName) {
+    // Removed encodeURIComponent to send the raw string (e.g., "Audio 5")
+    params.push(`AudioFileName=${audioFileName}`);
+  }
+
+  if (paNames) {
+    // Matches "paNames" key from Swagger
+    params.push(`paNames=${encodeURIComponent(paNames)}`);
+  }
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/PAGraph/StartAnnouncementOnPaName${queryString}`;
+
+  // Fix: Pass an empty string "" instead of an empty object {} 
+  // to satisfy the 'string' parameter requirement
+  return this._httpService._postMethod(url, "");
+}
+
 
    getAlerts(fromDate?: string, toDate?: string): Observable<any> {
     const params: string[] = [];

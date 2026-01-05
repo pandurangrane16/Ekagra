@@ -31,6 +31,9 @@ ProjectfieldCreate(_data: any) {
    GetSensorStatusSummary(fromdate: any, todate: any) {
     return this._httpService._getMethod('api/services/app/NeatParkGraph/GetSensorStatusSummary?fromDate='+fromdate+'&toDate='+todate);
   }
+        GetAllZones() {
+    return this._httpService._getMethod('api/services/app/Zone/GetZoneListByUserId');
+  } 
 
 GetParkingOccupancySummaryPerLot(siteIds: string[], fromDate: string, toDate: string) {
   let queryParts: string[] = [];

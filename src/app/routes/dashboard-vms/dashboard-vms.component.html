@@ -1,9 +1,10 @@
 <div class="card p-0">
-<app-cm-breadcrumb
-  [breadcrumbItems]="[
-    { parts: ['VMS Dashboard'], link: '/dashboard-vms' }
-  ]">
-</app-cm-breadcrumb>
+  <app-cm-breadcrumb [breadcrumbItems]="[{ parts: ['VMS Dashboard'], link: '/dashboard-vms' }]"
+       [zoneOptions]="ZoneOptions" [selectedZones]="selectedZones"
+        (zoneSelectionChange)="onActionSelectionChange($event)" (configClear)="clearActions()"
+        >
+    </app-cm-breadcrumb>
+  
 <div>
    
     <button mat-flat-button color="primary" class="btn w-50 text-right btnEmergencyPublish" (click)="OpenEmergencyPublish()" matTooltip="Emergency Publish"><img src="assets/img/publish.png" alt="" width="24px" class="faa-tada animated"></button>

@@ -13,6 +13,7 @@ import { withLoader } from '../../services/common/common';
 import { FormsModule } from '@angular/forms';
 import {CommonService} from '../../services/common/common.service';
 import { SessionService } from '../../services/common/session.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-right-sheet',
@@ -25,6 +26,7 @@ import { SessionService } from '../../services/common/session.service';
     ]
 })
 export class RightSheetComponent implements OnInit {
+  
 links = [
   // { label: 'Live', icon: 'campaign' },
   { label: 'Recorded File', icon: 'settings_voice' },
@@ -54,7 +56,7 @@ selectedZones: any[] = [];
  selectedZoneIds: number[] = [];
 loaderService = inject(LoaderService);
 
-constructor(private service: atcsDashboardservice) {}
+constructor(private service: atcsDashboardservice,   private toastr : ToastrService , ) {}
 
 ngOnInit(): void {
     this.getZoneList();
@@ -79,6 +81,49 @@ ngOnInit(): void {
 
     const projectId = Number(project.value);
     this.projectId = projectId;
+}
+
+onBroadcast() {
+  debugger;
+if (!this.selectedAudio || this.selectedAudio.trim() === '') {
+    console.warn("Broadcast aborted: No audio file selected.");
+    this.toastr.error('Please select an audio file for broadcast.');
+    
+    // You could add a toast notification here: this.notify.warn('Please select an audio file');
+    return;
+  }
+  else{
+      // 2. Check if there is at least one site name in the comma-separated string
+  if (!this.commaSeparatedSiteNames || this.commaSeparatedSiteNames.trim() === '') {
+    console.warn("Broadcast aborted: No sites/junctions available for broadcast.");
+    this.toastr.error('No active sites found for the selected zones.');
+    // You could add a toast notification here: this.notify.warn('No active sites found for the selected zones');
+    return;
+  }
+  else{
+      const audioFile = this.selectedAudio;
+  const paNames = this.commaSeparatedSiteNames;
+
+  console.log(`Starting broadcast: Audio=${audioFile}, Sites=${paNames}`);
+
+  this.service.startBroadcast(audioFile, paNames)
+    .pipe(withLoader(this.loaderService))
+    .subscribe({
+      next: (res) => {
+        console.log('Broadcast started successfully', res);
+        // Add success notification here
+      },
+      error: (err) => {
+        console.error('Broadcast failed', err);
+        // Add error notification here
+      }
+    });
+  }
+
+
+  }
+
+
 }
 
 

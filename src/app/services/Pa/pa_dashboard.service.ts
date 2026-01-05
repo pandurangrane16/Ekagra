@@ -15,7 +15,9 @@ export class PaDashboardService {
   ProjectfieldCreate(_data: any) {
     return this._httpService._postMethod(_data, 'api/services/app/ProjectField/Create');
   }
-
+      GetAllZones() {
+    return this._httpService._getMethod('api/services/app/Zone/GetZoneListByUserId');
+  } 
   GetAllUsers() {
     return this._httpService._getMethod('api/services/app/Alert/GetAllUsers');
   }

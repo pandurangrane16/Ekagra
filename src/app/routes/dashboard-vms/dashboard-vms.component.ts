@@ -44,6 +44,20 @@ export class DashboardVMSComponent implements OnInit {
     options: {}
   };
 
+   // Zone Properties
+ isZoneOptionsLoaded: boolean = false;
+ ZoneOptions: any[] = [];
+ selectedZones: any[] = [];
+ selectedZoneIds: any[] = [];
+ ZoneSelectSettings = {
+    labelHeader: 'Select Zone',
+    lableClass: 'form-label',
+    multiple: false,
+    formFieldClass: '', 
+    appearance: 'fill',
+    options: []
+ };
+
 
   totalRecords: any = 0;
 
@@ -67,7 +81,11 @@ export class DashboardVMSComponent implements OnInit {
 
 
   userList: any[] = [];
-
+    clearActions() {
+        this.selectedZones = [];
+        this.selectedZoneIds = [];
+        // Clear logic
+    }
   getList() {
     // ✅ Step 1: Get project codes from session
     const projectCodesStr = this.session._getSessionValue("projectCodes");
@@ -131,6 +149,52 @@ export class DashboardVMSComponent implements OnInit {
         }
       });
   }
+
+    getZoneList() {
+        this.service.GetAllZones().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+            const items = response?.result || [];
+
+            const projectOptions = items.map((item: any) => ({
+                text: (item.zoneName || '').trim() || 'Unknown',
+                id: item.id
+            }));
+
+            // 1. Set selectedZones to everything except the "All" option (id: 0)
+            this.selectedZones = [...projectOptions];
+            
+            // 2. Map the IDs to your array that goes to the Child component
+            this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
+
+            projectOptions.unshift({
+                text: 'All',
+                id: 0
+            });
+            this.ZoneSelectSettings.options = projectOptions;
+            this.ZoneOptions=projectOptions
+            this.isZoneOptionsLoaded = true;
+        }, error => {
+            console.error('Error fetching Zone list', error);
+        });
+    }
+
+    onActionSelectionChange(event: any) {
+        const selectedValues = event.value || [];
+        const allOption = this.ZoneOptions.find((x: any) => x.text.toLowerCase() === 'all');
+
+        if (!allOption) return;
+
+        const isAllSelected = selectedValues.some((x: any) => x.id === allOption.id);
+
+        if (isAllSelected) {
+            const allExceptAll = this.ZoneOptions.filter((x: any) => x.id !== allOption.id);
+            this.selectedZones = [...allExceptAll];
+        } else {
+            this.selectedZones = selectedValues.filter((x: any) => x.id !== allOption.id);
+        }
+
+        this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
+        // Trigger any updates based on zone selection if needed
+    }
 
   GetVmdList() {
     this._common._sessionAPITags().subscribe(res => {
@@ -204,6 +268,7 @@ export class DashboardVMSComponent implements OnInit {
   ngOnInit(): void {
 
     this.getList();
+    this.getZoneList();
 
     this.buildHeader();
 
@@ -331,7 +396,8 @@ export class DashboardVMSComponent implements OnInit {
       panelClass: 'custom-confirm-dialog',
       data: {
         data: this.vmdTypeSettings
-      }
+      },
+      autoFocus: false,
     });
   }
 
