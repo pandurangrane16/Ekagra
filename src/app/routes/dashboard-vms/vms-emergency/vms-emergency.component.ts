@@ -92,10 +92,9 @@ export class VmsEmergencyComponent implements OnInit {
    
     console.log(this.vmdTypeSettings);
     this.form = this.fb.group({
-      selectedAction: [''],
-      selectedVmdAction: ['', Validators.required],
-      remarks: [''],
-      isVerified: [false],
+      
+      selectedVmdAction: [''],
+     
       selectedUnit: ['', Validators.required],
       unitValue: ['', Validators.required]
     })

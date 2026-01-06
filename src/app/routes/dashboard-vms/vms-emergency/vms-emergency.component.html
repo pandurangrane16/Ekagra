@@ -20,10 +20,10 @@
    
         <div class="col-md-12 align-items-center d-flex mt-2">
            <div  class="w-100"> <label class="w-100">
-            Attach File <small> (Image / Video / Audio – max 5 MB) </small>
+            Attach File <small> (Images only – max 5 MB) </small>
            
         </label>
-            <input type="file" (change)="onFileSelected($event)" class="mt-1 form-control" accept="image/*,video/*,audio/*">
+            <input type="file" (change)="onFileSelected($event)" class="mt-1 form-control" accept="image/png, image/jpeg, image/jpg, image/gif">
             </div>
         </div>
     </div>
