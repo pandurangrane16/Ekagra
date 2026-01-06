@@ -14,6 +14,7 @@ import { CmButtonComponent } from "../../common/cm-button/cm-button.component";
 import { MaterialModule } from '../../Material.module';
 import { VmsEmergencyComponent } from './vms-emergency/vms-emergency.component';
 import { CommonService } from '../../services/common/common.service';
+
 import { alertservice } from '../../services/admin/alert.service';
 import{CmBreadcrumbComponent} from '../../common/cm-breadcrumb/cm-breadcrumb.component';
 
@@ -84,69 +85,89 @@ export class DashboardVMSComponent implements OnInit {
     clearActions() {
         this.selectedZones = [];
         this.selectedZoneIds = [];
+        this.getList();
         // Clear logic
     }
   getList() {
-    // ✅ Step 1: Get project codes from session
-    const projectCodesStr = this.session._getSessionValue("projectCodes");
-    if (!projectCodesStr) {
-      console.warn("⚠️ projectCodes not found in session, retrying...");
-      setTimeout(() => this.getList(), 500);
-      return;
-    }
+    // // ✅ Step 1: Get project codes from session
+    // const projectCodesStr = this.session._getSessionValue("projectCodes");
+    // if (!projectCodesStr) {
+    //   console.warn("⚠️ projectCodes not found in session, retrying...");
+    //   setTimeout(() => this.getList(), 500);
+    //   return;
+    // }
 
-    const projectCodes = JSON.parse(projectCodesStr);
-    const currentProject = "vms"; // change dynamically later if needed
+    // const projectCodes = JSON.parse(projectCodesStr);
+    // const currentProject = "vms"; // change dynamically later if needed
 
-    const project = projectCodes.find(
-      (p: any) => p.name.toLowerCase() === currentProject.toLowerCase()
-    );
+    // const project = projectCodes.find(
+    //   (p: any) => p.name.toLowerCase() === currentProject.toLowerCase()
+    // );
 
-    if (!project) {
-      console.error(`⚠️ Project "${currentProject}" not found in config.`);
-      return;
-    }
+    // if (!project) {
+    //   console.error(`⚠️ Project "${currentProject}" not found in config.`);
+    //   return;
+    // }
 
-    const projectId = Number(project.value);
+    // const projectId = Number(project.value);
 
-    // ✅ Step 2: Prepare API payload
-    const requestPayload = {
-      projectId,
-      type: 0,
-      inputs: "string",
-      bodyInputs: "string",
-      seq: 7
-    };
-    debugger;
+    // // ✅ Step 2: Prepare API payload
+    // const requestPayload = {
+    //   projectId,
+    //   type: 0,
+    //   inputs: "string",
+    //   bodyInputs: "string",
+    //   seq: 7
+    // };
+    // debugger;
     // ✅ Step 3: Call API via service + loader
+    const zoneIds = this.selectedZoneIds || [];
     this.service
-      .PostSiteResponse(requestPayload)
+      .GetVmsListDataByZone(zoneIds)
       .pipe(withLoader(this.loaderService))
       .subscribe({
-        next: (response: any) => {
-          const result = response?.result ? JSON.parse(response.result) : null;
+ next: (response: any) => {
+  debugger;
+      // 1. Check if the response is successful and contains an array
+      if (response?.success && Array.isArray(response.result)) {
 
-          if (result?.deviceData || Array.isArray(result)) {
-            // If API returns an array directly (your sample case)
-            const data = Array.isArray(result) ? result : result.deviceData;
+        if (response.result.length === 0) {
+      this.userList = [];
+      this.toaster.error('No VMS data found for the selected zones.');
+      return;
+    }
+    else{
+        // 2. Filter out the summary object (the one with 'Connected' property)
+        // We only want the items that have a 'vmsId'
+        const vmsItems = response.result.filter((item: any) => item.vmsId !== undefined);
 
-            // ✅ Step 4: Transform API data for your table
-            this.userList = data.map((item: any) => ({
-              location: item.vmsDescription,
-              vmsId: item.vmsId,
-              button: [{ label: "View", icon: "visibility", type: "view" }],
-              img: "../assets/img/cam1.jpg"
-            }));
+        // 3. Map the VMS data to your table format
+        this.userList = vmsItems.map((item: any) => ({
+          location: item.vmsDescription,
+          vmsId: item.vmsId,
+          vmsCode: item.vmsCode, // Added this since it's available now
+         
+          button: [{ label: "View", icon: "visibility", type: "view" }],
+          img: "../assets/img/cam1.jpg"
+        }));
 
-            this.totalRecords = this.userList.length;
-            console.log("✅ Loaded VMS list:", this.userList);
-          } else {
-            console.warn("⚠️ No VMS data found in API response");
-          }
-        },
-        error: (err) => {
-          console.error("❌ Error fetching VMS list:", err);
-        }
+        this.totalRecords = this.userList.length;
+        console.log("✅ Loaded VMS list:", this.userList);
+    }
+        
+      
+      } else {
+        this.userList = [];
+        this.totalRecords = 0;
+        console.warn("⚠️ No VMS data found in API response");
+        this.toaster.error('No VMS data found in API response.');
+      }
+    },
+      error: (err) => {
+      console.error("❌ API Error:", err);
+      this.userList = [];
+      this.toaster.error('Failed to load VMS list. Please try again later.');
+    }
       });
   }
 
@@ -193,6 +214,7 @@ export class DashboardVMSComponent implements OnInit {
         }
 
         this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
+        this.getList();
         // Trigger any updates based on zone selection if needed
     }
 
@@ -261,7 +283,7 @@ export class DashboardVMSComponent implements OnInit {
   // ];
   constructor(
     private dialog: MatDialog,
-    private service: vmsdashboardService, private session: SessionService
+    private service: vmsdashboardService, private session: SessionService,private toaster: ToastrService
 
   ) { }
 

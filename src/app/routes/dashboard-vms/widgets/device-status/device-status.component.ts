@@ -1,14 +1,16 @@
-import { OnInit,inject, Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
+import { OnInit,inject,Input,SimpleChanges, Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
 import { HighchartsChartModule } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
 import { CommonModule } from '@angular/common';
 import { withLoader } from '../../../../services/common/common';
 import { LoaderService } from '../../../../services/common/loader.service';
 import { SessionService } from '../../../../services/common/session.service';
+import { ToastrService } from 'ngx-toastr';
 import { vmsdashboardService } from '../../../../services/dashboard/vmsDashboard.service';
 
 @Component({
   selector: 'app-device-status',
+ 
   imports: [HighchartsChartModule, CommonModule],
   templateUrl: './device-status.component.html',
   styleUrl: './device-status.component.css'
@@ -16,9 +18,11 @@ import { vmsdashboardService } from '../../../../services/dashboard/vmsDashboard
 
 export class DeviceStatusComponent implements OnInit {
      loaderService = inject(LoaderService);
+      @Input() zoneIds: number[] = [];
   @ViewChild('customLegend')
+ 
   customLegend!: ElementRef;
-  constructor(private renderer: Renderer2, private el: ElementRef,private service:vmsdashboardService,private session: SessionService ) {}
+  constructor(private renderer: Renderer2,private toastr: ToastrService, private el: ElementRef,private service:vmsdashboardService,private session: SessionService ) {}
   public element: any;
   legendData: any[] = [];
   jsonData = {
@@ -190,6 +194,13 @@ chartOptions?: Highcharts.Options;
   ngOnInit(): void {
    this.getDeviceStatus();
   } 
+  ngOnChanges(changes: SimpleChanges): void {
+    debugger;
+    if (changes['zoneIds'] && changes['zoneIds'].currentValue) {
+      console.log('New Zone IDs received in child:', this.zoneIds);
+      this.getDeviceStatus();// Call your API logic here
+    }
+  }
 // getDeviceStatus() {
 //   const requestPayload = {
 //     projectId: 2,
@@ -235,48 +246,65 @@ chartOptions?: Highcharts.Options;
 
 getDeviceStatus() {
 
+// debugger;
+
+//  const projectCodesStr = this.session._getSessionValue("projectCodes");
+// const projectCodes = projectCodesStr ? JSON.parse(projectCodesStr) : [];
+
+//   // ✅ Identify current project (example: VMS)
+//   const currentProject = "vms";
+// debugger;
+//   const project = projectCodes.find(
+//     (p: any) => p.name.toLowerCase() === currentProject.toLowerCase()
+//   );
+// debugger;
+//   if (!project) {
+//     console.error(`⚠️ Project "${currentProject}" not found in config.`);
+//     return;
+//   }
+
+// const projectId = Number(project.value);
+
+// const requestPayload = {
+//   projectId,
+//   type: 0,
+//   inputs: 'string',
+//   bodyInputs: 'string',
+//   seq: 6
+// };
 debugger;
-
- const projectCodesStr = this.session._getSessionValue("projectCodes");
-const projectCodes = projectCodesStr ? JSON.parse(projectCodesStr) : [];
-
-  // ✅ Identify current project (example: VMS)
-  const currentProject = "vms";
-debugger;
-  const project = projectCodes.find(
-    (p: any) => p.name.toLowerCase() === currentProject.toLowerCase()
-  );
-debugger;
-  if (!project) {
-    console.error(`⚠️ Project "${currentProject}" not found in config.`);
-    return;
-  }
-
-const projectId = Number(project.value);
-
-const requestPayload = {
-  projectId,
-  type: 0,
-  inputs: 'string',
-  bodyInputs: 'string',
-  seq: 6
-};
-
+const zoneIds = this.zoneIds || [];
     this.service
-      .PostSiteResponse(requestPayload)
+      .GetVmsListDataByZone(zoneIds)
       .pipe(withLoader(this.loaderService))
       .subscribe({
-        next: (response: any) => {
-          const result = response?.result ? JSON.parse(response.result) : null;
+      next: (response: any) => {
+      // 1. Check if success is true and result exists as an array
+      if (response?.success && Array.isArray(response.result)) {
+        
+        // 2. Find the object that contains 'Connected' property
+        // In your JSON, it's the last element, but .find() is safer
+        const statusData = response.result.find((item: any) => item.hasOwnProperty('Connected'));
 
-          if (result?.deviceData) {
-            const active = parseInt(result.deviceData.active, 10);
-            const inactive = parseInt(result.deviceData.inActive, 10);
-            this.initializeChart(active, inactive); // ✅ Only build chart after API success
-          } else {
-            console.warn('⚠️ No deviceData found in API response');
-          }
-        },
+        if (statusData) {
+          // 3. Extract and parse values (using 0 as fallback)
+          const connected = parseInt(statusData.Connected, 10) || 0;
+          const disconnected = parseInt(statusData.Disconnected, 10) || 0;
+          
+          // 4. Initialize chart with new names
+          this.initializeChart(connected, disconnected); 
+          console.log(`Chart updated: Connected (${connected}), Disconnected (${disconnected})`);
+        } else {
+          console.warn('⚠️ Connection status data not found in result array');
+          this.toastr.error('Connection status data not found in result array');
+          this.initializeChart(0, 0);
+        }
+      } else {
+        console.warn('⚠️ API response unsuccessful or result is not an array');
+        this.toastr.error('API response unsuccessful or result is not an array');
+        this.initializeChart(0, 0);
+      }
+    },
         error: (err) => {
           console.error('❌ Error fetching device status:', err);
         }

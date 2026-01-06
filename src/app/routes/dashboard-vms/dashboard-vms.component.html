@@ -16,7 +16,8 @@
     <div class="card">
       <div class="card-body text-center">
         <h6>Device Status</h6>
-        <app-device-status></app-device-status>
+      <app-device-status [zoneIds]="selectedZoneIds"></app-device-status>
+      
 
       </div>
     </div>
@@ -24,7 +25,7 @@
 
   <div class="col-md-9 vms-table-scroll border-0">
 
-    <app-cm-table [headArr]="headArr" [gridArr]="userList" [pagination]="true" [totalRecords]="totalRecords"
+    <app-cm-table [headArr]="headArr" [gridArr]="userList" [pagination]="false" [totalRecords]="totalRecords"
       [perPage]="perPage" [totalPages]="totalPages" [collectionSize]="collectionSize" (pager)="onPageChange($event)"
       (recordPerPage)="onPageRecordsChange($event)" (searchWithId)="onRowClicked($event)"
       (btnAction)="onButtonClicked($event)">

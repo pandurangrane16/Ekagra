@@ -28,6 +28,26 @@ ProjectfieldCreate(_data: any) {
     return this._httpService._getMethod('api/services/app/NeatParkGraph/GetVehicleCategoryWiseCount?siteIds='+encodeURIComponent(SiteId)+'&fromDate='+fromdate+'&toDate='+todate);
   }
 
+
+
+  GetVmsListDataByZone(zoneIds?: number[]): Observable<any> {
+  const params: string[] = [];
+
+
+  if (zoneIds && zoneIds.length > 0) {
+    zoneIds.forEach((id: number) => {
+      params.push(`zoneIds=${encodeURIComponent(id.toString())}`);
+    });
+  }
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  
+
+  const url = `api/services/app/VMSGraph/GetVmsListDataByZone${queryString}`;
+
+  return this._httpService._getMethod(url);
+}
+
    GetSensorStatusSummary(fromdate: any, todate: any) {
     return this._httpService._getMethod('api/services/app/NeatParkGraph/GetSensorStatusSummary?fromDate='+fromdate+'&toDate='+todate);
   }
