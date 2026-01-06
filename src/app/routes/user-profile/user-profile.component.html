@@ -43,7 +43,7 @@
     </div>
 
     <!-- Mobile -->
-    <div class="form-group">
+    <!-- <div class="form-group">
       <label>Mobile Number</label>
       <input
         type="text"
@@ -53,7 +53,34 @@
         maxlength="10"
         placeholder="10-digit mobile number"
       />
-    </div>
+    </div> -->
+
+    <!-- Mobile -->
+<div class="form-group">
+  <label>Mobile Number</label>
+
+  <input
+    type="text"
+    name="mobile"
+    [(ngModel)]="mobile"
+    #mobileCtrl="ngModel"
+    required
+    pattern="^[0-9]{10}$"
+    maxlength="10"
+    placeholder="10-digit mobile number"
+    (keypress)="allowOnlyNumbers($event)"
+  />
+
+  <!-- Validation messages -->
+  <div class="error" *ngIf="mobileCtrl.invalid && mobileCtrl.touched">
+    <small *ngIf="mobileCtrl.errors?.['required']">
+      Mobile number is required
+    </small>
+    <small *ngIf="mobileCtrl.errors?.['pattern']">
+      Mobile number must be exactly 10 digits
+    </small>
+  </div>
+</div>
 
     <!-- Actions -->
     <div class="button-group">

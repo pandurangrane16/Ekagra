@@ -163,4 +163,13 @@ console.log(abpPayload,"ABP Payload");
   }
 
   
+  allowOnlyNumbers(event: KeyboardEvent) {
+  const charCode = event.which ? event.which : event.keyCode;
+
+  // Allow only numbers (0–9)
+  if (charCode < 48 || charCode > 57) {
+    event.preventDefault();
+  }
+}
+
 }
