@@ -22,6 +22,7 @@ import { LoaderService } from '../../services/common/loader.service';
 import { withLoader } from '../../services/common/common';
 import { SessionService } from '../../services/common/session.service';
 import { SiteRequestModel } from '../../models/admin/siteresponse.model';
+import { CmBreadcrumbComponent } from "../../common/cm-breadcrumb/cm-breadcrumb.component";
 
 interface Junction {
   value: string;
@@ -29,7 +30,7 @@ interface Junction {
 }
 @Component({
   selector: 'app-atcs',
-  imports: [CmLeafletComponent, NotificationComponent, ZonalComponent, CorridorComponent, FailuresComponent, CycleComponent, MatFormFieldModule, MatSelectModule, MatInputModule, FormsModule, MatButtonModule, MatIconModule, CommonModule, MatDatepickerModule],
+  imports: [CmLeafletComponent, NotificationComponent, ZonalComponent, CorridorComponent, FailuresComponent, CycleComponent, MatFormFieldModule, MatSelectModule, MatInputModule, FormsModule, MatButtonModule, MatIconModule, CommonModule, MatDatepickerModule, CmBreadcrumbComponent],
   templateUrl: './atcs.component.html',
   styleUrl: './atcs.component.css',
   providers: [provideNativeDateAdapter()]
@@ -86,9 +87,6 @@ labelList: any[] = [
 ];
   popupData: { [siteId: string]: any } = {};
   session = inject(SessionService);
-
-
-
 
 
   ngOnInit(): void {

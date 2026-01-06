@@ -1,9 +1,15 @@
-<h2 class="dashboard-title mb-3">ATCS Dashboard</h2>
+<div class="card p-0">
+  <app-cm-breadcrumb [breadcrumbItems]="[{ parts: ['ATCS Dashboard'], link: '/parking' }]"
+       [zoneOptions]="ZoneOptions" [selectedZones]="selectedZones"
+        (zoneSelectionChange)="onActionSelectionChange($event)" (configClear)="clearActions()"
+        >
+    </app-cm-breadcrumb>
 
-<div class="dashboard-container">
-    <div class="row align-items-center mb-3">
+<div class="card-body">
+
+    <!-- <div class="row align-items-center mb-3">-->
         <!-- Zone Dropdown (Left) -->
-        <div class="col-md-6 d-flex justify-content-start">
+       <!-- <div class="col-md-6 d-flex justify-content-start">
             <div class="d-flex align-items-center" *ngIf="isZoneOptionsLoaded">
                 <mat-form-field appearance="outline" class="custom-dropdown no-bottom-space">
                     <mat-label>Select Zone</mat-label>
@@ -18,10 +24,10 @@
                     </mat-select>
                 </mat-form-field>
             </div>
-        </div>
+        </div>-->
 
         <!-- Date Picker (Right) -->
-        <div class="col-md-6 d-flex justify-content-end">
+       <!-- <div class="col-md-6 d-flex justify-content-end">
             <div class="date-picker-wrapper">
                 <mat-form-field appearance="outline" class="custom-date-field no-bottom-space">
                     <mat-label>Enter a date range</mat-label>
@@ -37,7 +43,7 @@
                 </mat-form-field>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <!-- Main Content: Zonal & Map -->
     <div class="row mb-3">
@@ -55,7 +61,7 @@
         <!-- Right Panel: Map -->
         <div class="col-md-9">
             <div class="card h-100">
-                <div class="card-body position-relative">
+                <div class="card-body position-relative p-0">
                     <!-- Added map-boundary class and removed p-0 so there is padding around the map -->
 
                     <div *ngIf="siteList && siteList.length > 0; else noFields" class="h-100 w-100 map-boundary">
@@ -136,4 +142,5 @@
             </div>
         </div>
     </div>
+</div>
 </div>

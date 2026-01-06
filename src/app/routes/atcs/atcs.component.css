@@ -1,30 +1,3 @@
-.card {
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-    border: none;
-    background: #fff;
-    transition: all 0.3s ease;
-}
-
-.card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-.card-body {
-    overflow: hidden;
-    padding: 16px;
-}
-
-.dashboard-title {
-    color: #1c2d7b;
-    font-weight: 800;
-    font-size: 24px;
-    /* Reduced from 32px */
-    letter-spacing: -0.5px;
-    margin-left: 20px;
-    /* Align with dashboard border */
-}
-
 /* Consistent Field Styling */
 /* Consistent Field Styling */
 .custom-dropdown,
