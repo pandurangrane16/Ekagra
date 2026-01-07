@@ -75,23 +75,27 @@ import { provideToastr } from 'ngx-toastr';
 import { provideKeycloakAngular } from './services/common/keycloak.config';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { Globals } from './utils/global';
+import { ConfigService } from './services/common/config.service';
 
 /**
  * 🚀 NON-BLOCKING Keycloak initializer
  */
-export function initializeKeycloak(kc: KeycloakService) {
-  return () => {
-    // 🔐 Init Keycloak (do NOT return this promise)
+export function initializeKeycloak(kc: KeycloakService, config: ConfigService) {
+  return async () => {
+    // Load config first
+    const appConfig = await config.loadConfig();
+
+    // 🔐 Init Keycloak with dynamic config
     kc.init({
       config: {
-        url: 'https://172.19.10.43:8443',   // ⚠ Prefer hostname over IP if possible
-        realm: 'cmsrealm',
-        clientId: 'Ekgara',
+        url: appConfig.keycloak.url,
+        realm: appConfig.keycloak.realm,
+        clientId: appConfig.keycloak.clientId,
       },
       initOptions: {
-        onLoad: 'login-required',
-        checkLoginIframe: false, // 🚫 removes iframe delay
-        pkceMethod: 'S256',
+        onLoad: appConfig.keycloakInitOptions.onLoad as any,
+        checkLoginIframe: appConfig.keycloakInitOptions.checkLoginIframe,
+        pkceMethod: appConfig.keycloakInitOptions.pkceMethod as any,
       },
       enableBearerInterceptor: false,
       bearerExcludedUrls: ['/assets', '/public'],
@@ -120,7 +124,7 @@ export const appConfig: ApplicationConfig = {
     {
       provide: APP_INITIALIZER,
       useFactory: initializeKeycloak,
-      deps: [KeycloakService],
+      deps: [KeycloakService, ConfigService],
       multi: true,
     },
 

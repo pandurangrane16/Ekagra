@@ -1,0 +1,17 @@
+{
+  "keycloak": {
+    "url": "https://172.19.10.43:8443",
+    "realm": "cmsrealm",
+    "clientId": "Ekgara",
+    "accountEndpoint": "/realms/cmsrealm/account"
+  },
+  "backend": {
+    "url": "https://172.19.10.43:8089",
+    "apiBase": "/api/services/app"
+  },
+  "keycloakInitOptions": {
+    "onLoad": "login-required",
+    "checkLoginIframe": false,
+    "pkceMethod": "S256"
+  }
+}

@@ -5,17 +5,26 @@ import { KeycloakService as key } from 'keycloak-angular';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UserprofileModel } from '../../models/admin/userprofile.model';
 import { HttpService } from '../common/http.service';
+import { ConfigService } from './config.service';
+
 @Injectable({
   providedIn: 'root',
 })
 export class KeycloakService {
   private keycloak: Keycloak.KeycloakInstance;
 
-  constructor(private http: HttpClient,private keyService: key,private _httpService: HttpService) {
+  constructor(
+    private http: HttpClient,
+    private keyService: key,
+    private _httpService: HttpService,
+    private config: ConfigService
+  ) {
+    const cfg = this.config.getConfig();
+    console.log('Keycloak config:', cfg);
     this.keycloak = new Keycloak({
-      url: 'https://10.100.43.108:8443/',
-      realm: 'cmsrealm',
-      clientId: 'Ekgara',
+      url: cfg?.keycloak.url || 'https://10.20.1.229:8443/',
+      realm: cfg?.keycloak.realm || 'cmsrealm',
+      clientId: cfg?.keycloak.clientId || 'Ekgara',
     });
   }
 
@@ -102,10 +111,11 @@ export class KeycloakService {
     'Authorization': `Bearer ${token}`
   });
 
-  return this.http.get<any>(
-    'https://172.19.10.43:8443/realms/cmsrealm/account',
-    { headers }
-  );
+  const cfg = this.config.getConfig();
+  const accountUrl = `${cfg?.keycloak.url}${cfg?.keycloak.accountEndpoint}` ||
+    'https://172.19.10.43:8443/realms/cmsrealm/account';
+
+  return this.http.get<any>(accountUrl, { headers });
 }
   updateProfile(payload:UserprofileModel) {
 debugger;
@@ -120,11 +130,11 @@ debugger;
     'Authorization': `Bearer ${token}`
   });
 
-  return this.http.post<any>(
-    'https://172.19.10.43:8443/realms/cmsrealm/account',
-    payload,
-    { headers } 
-  );
+  const cfg = this.config.getConfig();
+  const accountUrl = `${cfg?.keycloak.url}${cfg?.keycloak.accountEndpoint}` ||
+    'https://172.19.10.43:8443/realms/cmsrealm/account';
+
+  return this.http.post<any>(accountUrl, payload, { headers });
   
 }
 

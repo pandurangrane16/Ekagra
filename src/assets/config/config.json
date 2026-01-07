@@ -2,6 +2,7 @@
         "version": "2.0.19",
         "api_url": "https://172.19.10.43:8089/",
         "hls_url": "https://10.100.43.108:7000/",
+        "keyclock_url": "https://10.20.1.229:8443/",
         "ruleConditions": [
             {
                 "key": "Equal",
