@@ -1,4 +1,5 @@
 import { provideKeycloak, createInterceptorCondition, withAutoRefreshToken, AutoRefreshTokenService, UserActivityService, INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG, IncludeBearerTokenCondition } from 'keycloak-angular';
+import { AppConfig } from './config.service';
 
 const localhostCondition = createInterceptorCondition<IncludeBearerTokenCondition>({
   urlPattern: /^(http:\/\/localhost:4200)(\/.*)?$/i
@@ -15,12 +16,12 @@ const localhostCondition = createInterceptorCondition<IncludeBearerTokenConditio
 
 
 
-export const provideKeycloakAngular = () =>
+export const provideKeycloakAngular = (config?: AppConfig) =>
   provideKeycloak({
     config: {
-      url: 'https://172.19.10.43:8443', // Will be overridden by ConfigService in app.config.ts
-      realm: 'cmsrealm',
-      clientId: 'Ekgara',
+      url: config?.keycloak.url || 'https://10.20.129:8443',
+      realm: config?.keycloak.realm || 'cmsrealm',
+      clientId: config?.keycloak.clientId || 'Ekgara',
     },
     initOptions: {
       onLoad: 'check-sso',

@@ -22,7 +22,7 @@ export class KeycloakService {
     const cfg = this.config.getConfig();
     console.log('Keycloak config:', cfg);
     this.keycloak = new Keycloak({
-      url: cfg?.keycloak.url || 'https://10.20.1.229:8443/',
+      url: cfg?.keycloak.url || 'https://172.19.10.43:8443/',
       realm: cfg?.keycloak.realm || 'cmsrealm',
       clientId: cfg?.keycloak.clientId || 'Ekgara',
     });

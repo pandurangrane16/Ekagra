@@ -116,7 +116,15 @@ export function initializeKeycloak(kc: KeycloakService, config: ConfigService) {
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideKeycloakAngular(),
+    // Load config immediately before other initializers
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (config: ConfigService) => () => config.loadConfig(),
+      deps: [ConfigService],
+      multi: true,
+    },
+    
+    provideKeycloakAngular(undefined), // Will use defaults, then overridden by initializeKeycloak
 
     importProvidersFrom(KeycloakAngularModule),
     importProvidersFrom(MatNativeDateModule),
