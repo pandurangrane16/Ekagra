@@ -19,7 +19,7 @@ const localhostCondition = createInterceptorCondition<IncludeBearerTokenConditio
 export const provideKeycloakAngular = (config?: AppConfig) =>
   provideKeycloak({
     config: {
-      url: config?.keycloak.url || 'https://10.20.129:8443',
+      url: config?.keycloak.url || 'https://172.19.10.43:8443',
       realm: config?.keycloak.realm || 'cmsrealm',
       clientId: config?.keycloak.clientId || 'Ekgara',
     },

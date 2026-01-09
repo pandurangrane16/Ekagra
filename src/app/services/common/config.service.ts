@@ -30,7 +30,7 @@ export class ConfigService {
   constructor(private http: HttpClient) {}
 
   /**
-   * Load configuration from assets/config.json
+   * Load configuration from assets/config/config.json
    * Call this early in app initialization (e.g., in main.ts or app.component.ts)
    */
   async loadConfig(): Promise<AppConfig> {
@@ -39,7 +39,7 @@ export class ConfigService {
     }
 
     try {
-      const config = await firstValueFrom(this.http.get<AppConfig>('/assets/config.json'));
+      const config = await firstValueFrom(this.http.get<AppConfig>('/assets/config/config.json'));
       this.config$.next(config);
       this.configLoaded = true;
       console.log('✅ Config loaded:', config);
