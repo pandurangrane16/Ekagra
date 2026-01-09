@@ -2,8 +2,12 @@
   <app-cm-breadcrumb [breadcrumbItems]="[{ parts: ['ATCS Dashboard'], link: '/parking' }]"
        [zoneOptions]="ZoneOptions" [selectedZones]="selectedZones"
         (zoneSelectionChange)="onActionSelectionChange($event)" (configClear)="clearActions()"
-        >
+        [startDate]="startDate" 
+    [endDate]="endDate"
+        (dateChange)="handleDateChange($event, $event.category)">
     </app-cm-breadcrumb>
+        
+   
 
 <div class="card-body">
 

@@ -33,13 +33,13 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-3" *ngIf="showDatePicker">
 
       <mat-form-field class="w-100">
         <mat-label>Enter a date range</mat-label>
         <mat-date-range-input [rangePicker]="picker">
-          <input matStartDate placeholder="Start date" (dateChange)="DateWiseFilter($event,'start')">
-          <input matEndDate placeholder="End date" (dateChange)="DateWiseFilter($event,'end')">
+          <input matStartDate placeholder="Start date" [value]="startDate" (dateChange)="DateWiseFilter($event,'start')">
+          <input matEndDate placeholder="End date"[value]="endDate" (dateChange)="DateWiseFilter($event,'end')">
         </mat-date-range-input>
         <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>

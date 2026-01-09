@@ -20,7 +20,7 @@ export function getErrorMsg(
     if (control.hasError('email')) {
         return `Not a valid ${controlLabel}`;
     }
-debugger;
+
     if (control.hasError('whitespace')) {
         return `${controlLabel} is required`;
     }

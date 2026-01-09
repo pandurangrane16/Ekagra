@@ -348,7 +348,7 @@ ngOnChanges(changes: SimpleChanges): void {
   // 1. If Dates or Zone IDs change, we MUST fetch fresh data from the server
   const apiInputsChanged = changes['fromDate'] || changes['toDate'] || changes['zoneIds'];
   
-  if (apiInputsChanged && this.fromDate && this.toDate && this.zoneIds.length > 0) {
+  if (apiInputsChanged &&this.zoneIds.length > 0) {
     console.log('Fetching fresh cycle data due to date/zone change');
     this.getCycleData(); 
   } 

@@ -50,7 +50,9 @@ public commaSeparatedSiteNames: string = '';
 
 // Zone Props
 ZoneOptions: any[] = [];
+PaOptions: any[] = [];
 selectedZones: any[] = [];
+selectedPa: any[] = [];
  session = inject(SessionService);
  projectId: number = 0;
  selectedZoneIds: number[] = [];
@@ -59,16 +61,14 @@ loaderService = inject(LoaderService);
 constructor(private service: atcsDashboardservice,   private toastr : ToastrService , ) {}
 
 ngOnInit(): void {
-    this.getZoneList();
-    this.GetAudio();
-        const projectCodesStr = this.session._getSessionValue("projectCodes");
+      const projectCodesStr = this.session._getSessionValue("projectCodes");
     if (!projectCodesStr) {
       console.error("⚠️ 'projectCodes' not found in session.");
       return;
     }
 
     const projectCodes = JSON.parse(projectCodesStr);
-    const currentProject = "ATCS"; // change dynamically later if needed
+    const currentProject = "pa"; // change dynamically later if needed
 
     const project = projectCodes.find(
       (p: any) => p.name.toLowerCase() === currentProject.toLowerCase()
@@ -81,7 +81,68 @@ ngOnInit(): void {
 
     const projectId = Number(project.value);
     this.projectId = projectId;
+    this.getZoneList();
+    this.GetPaNames();
+    this.GetAudio();
+    
+    
 }
+
+onHangUp() {
+  debugger;
+
+  
+      // 2. Check if there is at least one site name in the comma-separated string
+  if (!this.commaSeparatedSiteNames || this.commaSeparatedSiteNames.trim() === '') {
+    console.warn("HangUP aborted: No sites/junctions available for HangUP.");
+    this.toastr.error('No active sites found');
+    // You could add a toast notification here: this.notify.warn('No active sites found for the selected zones');
+    return;
+  }
+  else{
+      const audioFile = this.selectedAudio;
+  const paNames = this.commaSeparatedSiteNames;
+
+  console.log(`Starting broadcast: Audio=${audioFile}, Sites=${paNames}`);
+
+  this.service.StopAnnouncementOnPaName(paNames)
+    .pipe(withLoader(this.loaderService))
+    .subscribe({
+next: (res:any) => {
+  console.log('Hangup response received', res);
+
+  // 1. Get only the names of the sites where Status is 'Failed'
+  const failedSites = res.result
+    .filter((item:any) => item.Status === 'Failed')
+    .map((item:any) => item.PaName);
+
+  // 2. If there are any failures, show one single toast
+  if (failedSites.length > 0) {
+    const siteList = failedSites.join(', '); // Creates "pa1, pa2, pa3"
+    
+    this.toastr.error(
+      `Announcement failed for ${siteList}`, 
+      'HangUp Error'
+    );
+  } else {
+    // Optional: Show success if no failures exist
+    this.toastr.success('HangUp started successfully');
+  }
+},
+      error: (err) => {
+        console.error('HangUp failed', err);
+        this.toastr.error('HangUp failed due to a server error.');
+        // Add error notification here
+      }
+    });
+  }
+
+
+  
+
+
+}
+
 
 onBroadcast() {
   debugger;
@@ -96,7 +157,7 @@ if (!this.selectedAudio || this.selectedAudio.trim() === '') {
       // 2. Check if there is at least one site name in the comma-separated string
   if (!this.commaSeparatedSiteNames || this.commaSeparatedSiteNames.trim() === '') {
     console.warn("Broadcast aborted: No sites/junctions available for broadcast.");
-    this.toastr.error('No active sites found for the selected zones.');
+    this.toastr.error('No active sites found.');
     // You could add a toast notification here: this.notify.warn('No active sites found for the selected zones');
     return;
   }
@@ -109,12 +170,30 @@ if (!this.selectedAudio || this.selectedAudio.trim() === '') {
   this.service.startBroadcast(audioFile, paNames)
     .pipe(withLoader(this.loaderService))
     .subscribe({
-      next: (res) => {
-        console.log('Broadcast started successfully', res);
-        // Add success notification here
-      },
+next: (res:any) => {
+  console.log('Broadcast response received', res);
+
+  // 1. Get only the names of the sites where Status is 'Failed'
+  const failedSites = res.result
+    .filter((item:any) => item.Status === 'Failed')
+    .map((item:any) => item.PaName);
+
+  // 2. If there are any failures, show one single toast
+  if (failedSites.length > 0) {
+    const siteList = failedSites.join(', '); // Creates "pa1, pa2, pa3"
+    
+    this.toastr.error(
+      `Announcement failed for ${siteList}`, 
+      'Broadcast Error'
+    );
+  } else {
+    // Optional: Show success if no failures exist
+    this.toastr.success('Broadcast started successfully');
+  }
+},
       error: (err) => {
         console.error('Broadcast failed', err);
+        this.toastr.error('Broadcast failed due to a server error.');
         // Add error notification here
       }
     });
@@ -125,6 +204,33 @@ if (!this.selectedAudio || this.selectedAudio.trim() === '') {
 
 
 }
+
+GetPaNames() {
+
+debugger;
+
+    this.service.GetActiveSitesbyZoneAndProject(undefined, [this.projectId]).pipe(withLoader(this.loaderService)).subscribe((response:any) => {
+        const items = response?.result || [];
+
+        const projectOptions = items.map((item: any) => ({
+            text: (item.siteName || '').trim() || 'Unknown',
+            id: item.id
+        }));
+
+        projectOptions.unshift({
+            text: 'All',
+            id: 0
+        });
+
+        this.PaOptions = projectOptions;
+        
+    }, error => {
+        console.error('Error fetching Zone list', error);
+    });
+}
+
+
+
 
 
 getZoneList() {
@@ -208,6 +314,8 @@ GetAudio() {
 //    }
 
 onZoneSelectionChange(event: any) {
+
+  debugger;
     const selectedValues = event.value || [];
     const allOption = this.ZoneOptions.find((x: any) => x.text.toLowerCase() === 'all');
 
@@ -229,12 +337,38 @@ onZoneSelectionChange(event: any) {
   this.loadJunctions();
 }
 
-// Define a variable at the top of your class to store the string
+onPaSelectionChange(event: any) {
+
+  debugger;
+const selectedValues = event.value || [];
+    const allOption = this.PaOptions.find((x: any) => x.text.toLowerCase() === 'all');
+
+    if (!allOption) return;
+
+    const isAllSelected = selectedValues.some((x: any) => x.id === allOption.id);
+
+    if (isAllSelected) {
+        // Grab everything except the 'All' option itself
+        this.selectedPa = this.PaOptions.filter((x: any) => x.text.toLowerCase() !== 'all');
+    } else {
+        this.selectedPa = selectedValues.filter((x: any) => x.text.toLowerCase() !== 'all');
+    }
+
+  
+    this.commaSeparatedSiteNames = this.selectedPa
+        .map((zone: any) => zone.text)   
+        .filter((name: string) => !!name) 
+        .join(',');
+
+    console.log("Comma Separated Sites:", this.commaSeparatedSiteNames);
+}
+
+
 
 
 loadJunctions(): void {
-  // Pass the dynamic projectId in an array as required by the API
-  this.service.GetActiveSitesbyZoneAndProject(this.selectedZoneIds, [3])
+ 
+  this.service.GetActiveSitesbyZoneAndProject(this.selectedZoneIds, [this.projectId])
     .pipe(withLoader(this.loaderService))
     .subscribe((res: any) => {
       if (res && res.success && res.result) {
@@ -254,6 +388,12 @@ loadJunctions(): void {
 
 clearZones() {
     this.selectedZones = [];
+    this.selectedPa = [];
+    this.selectedZoneIds = [];
+    this.commaSeparatedSiteNames = '';
+    // Clear logic
+    
+
 }
 
 onFileChange(event: Event) {

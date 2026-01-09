@@ -1,0 +1,35 @@
+
+            <form [formGroup]="form">
+                <div id="editForm">
+<!-- 
+                                    <h4 style="margin-top: 10px;">PA Action</h4>
+                               
+
+                    <hr> -->
+
+                    <mat-card-content>
+                        <div class="row d-flex align-items-center gap-2">
+                            <div class="col d-flex align-items-center">
+                                <button mat-flat-button class="btnSubmit mt-4 d-block" (click)="GetAudio()">
+                                    Get Sites
+                                </button>
+                           </div><div class="col-md-5">
+                                <app-cm-select2 *ngIf="isAudioLoaded" [formGroup]="form" [controlName]="'audioId'"
+                                    [settings]="audioSettings" (optionSelected)="onManagerSelected($event)">
+                                </app-cm-select2>
+                            </div><div class="col-md-4">
+                                <app-cm-select2 *ngIf="isJunctionLoaded" [formGroup]="form" [controlName]="'junctionId'"
+                                    [settings]="junctionSettings" (optionSelected)="onManagerSelected($event)">
+                                </app-cm-select2>
+                            </div><div class="col-md-1 d-flex align-items-center">
+                                <button mat-flat-button class="btn-primary mt-4" (click)="SubmitAction()">
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </mat-card-content>
+               
+                </div>
+                 <hr>
+            </form>
+        

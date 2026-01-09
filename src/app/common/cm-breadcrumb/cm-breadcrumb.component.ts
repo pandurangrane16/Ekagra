@@ -27,12 +27,14 @@ export interface BreadcrumbRow {
 })
 export class CmBreadcrumbComponent {
   @Input() rows: BreadcrumbRow[] = [];
-startDate:any;
-endDate:any;
+
 
   // Zone Inputs/Outputs
   @Input() zoneOptions: any[] = [];
+  @Input() showDatePicker: boolean = true;
   @Input() selectedZones: any[] = [];
+  @Input() startDate: Date | null = null;
+  @Input() endDate: Date | null = null;
   @Output() zoneSelectionChange = new EventEmitter<any>();
   @Output() configClear = new EventEmitter<void>();
   @Output() dateChange = new EventEmitter<{value: any, category: string}>();
@@ -40,6 +42,14 @@ endDate:any;
   onZoneChange(event: any) {
     this.zoneSelectionChange.emit(event);
   }
+
+// Keep it simple. Just emit what the picker gives you.
+DateWiseFilter(event: any, category: string) {
+  this.dateChange.emit({
+    value: event.value, // This is the raw Date object from Material
+    category: category
+  });
+}
 
   clearActions() {
       this.configClear.emit();
@@ -59,30 +69,30 @@ endDate:any;
     }
   }
 
-  DateWiseFilter(evtData: any, category: string) {
-  const localDate = new Date(evtData.value);
+//   DateWiseFilter(evtData: any, category: string) {
+//   const localDate = new Date(evtData.value);
 
-  // Convert date to UTC explicitly
-  const utcDate = new Date(
-    localDate.getUTCFullYear(),
-    localDate.getUTCMonth(),
-    localDate.getUTCDate(),
-    localDate.getUTCHours(),
-    localDate.getUTCMinutes(),
-    localDate.getUTCSeconds()
-  );
+//   // Convert date to UTC explicitly
+//   const utcDate = new Date(
+//     localDate.getUTCFullYear(),
+//     localDate.getUTCMonth(),
+//     localDate.getUTCDate(),
+//     localDate.getUTCHours(),
+//     localDate.getUTCMinutes(),
+//     localDate.getUTCSeconds()
+//   );
 
-  // Convert to Unix UTC timestamp in milliseconds (13 digits)
-  const unixUtcMs = utcDate.getTime();  // 💥 No /1000 here
+//   // Convert to Unix UTC timestamp in milliseconds (13 digits)
+//   const unixUtcMs = utcDate.getTime();  // 💥 No /1000 here
 
-  if (category === "start") {
-    this.startDate = unixUtcMs;
-    console.log("Start Date UTC UNIX (ms):", unixUtcMs);
-  } else {
-    this.endDate = unixUtcMs;
-    console.log("End Date UTC UNIX (ms):", unixUtcMs);
-  }
+//   if (category === "start") {
+//     this.startDate = unixUtcMs;
+//     console.log("Start Date UTC UNIX (ms):", unixUtcMs);
+//   } else {
+//     this.endDate = unixUtcMs;
+//     console.log("End Date UTC UNIX (ms):", unixUtcMs);
+//   }
 
-  //this.GetOngoingAnnoucement();
-}
+//   //this.GetOngoingAnnoucement();
+// }
 }

@@ -84,12 +84,32 @@ getFailureData(fromDate?: string, toDate?: string, zoneIds?: number[]): Observab
   return this._httpService._getMethod(url);
 }
 
+StopAnnouncementOnPaName( paNames: string): Observable<any> {
+  debugger;
+  const params: string[] = [];
+
+
+
+  if (paNames) {
+    // Matches "paNames" key from Swagger
+    params.push(`paNames=${encodeURIComponent(paNames)}`);
+  }
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/PAGraph/StopAnnouncementOnPaName${queryString}`;
+
+  // Fix: Pass an empty string "" instead of an empty object {} 
+  // to satisfy the 'string' parameter requirement
+  return this._httpService._postMethod("",url);
+}
+
 startBroadcast(audioFileName: string, paNames: string): Observable<any> {
+  debugger;
   const params: string[] = [];
 
 if (audioFileName) {
     // Removed encodeURIComponent to send the raw string (e.g., "Audio 5")
-    params.push(`AudioFileName=${audioFileName}`);
+    params.push(`AudioFileName=${encodeURIComponent(audioFileName)}`);
   }
 
   if (paNames) {
@@ -102,7 +122,7 @@ if (audioFileName) {
 
   // Fix: Pass an empty string "" instead of an empty object {} 
   // to satisfy the 'string' parameter requirement
-  return this._httpService._postMethod(url, "");
+  return this._httpService._postMethod("",url);
 }
 
 

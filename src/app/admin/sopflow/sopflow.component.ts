@@ -20,6 +20,7 @@ import { EnvSensorFailureComponent } from "../../user/alert/actions/env-sensor-f
 import { EnvSensorPollutionComponent } from "../../user/alert/actions/env-sensor-pollution/env-sensor-pollution.component";
 import { Router } from '@angular/router';
 import { EmailSMSComponent } from '../../user/alert/actions/email-sms/email-sms.component';
+import { AtcsVisualVerificationComponent } from '../../user/alert/actions/atcs-visual-verification/atcs-visual-verification.component';
 
 import { alertservice } from '../../services/admin/alert.service';
 import { ToastrService } from 'ngx-toastr';
@@ -55,7 +56,7 @@ interface Sop {
 @Component({
   selector: 'app-sopflow',
   imports: [MaterialModule,ActionClosedComponent, CommonModule, EmailSMSComponent,ReactiveFormsModule, SmsActionComponent, EmailActionComponent, ApiActionComponent, PaActionComponent, VmsDeviceFailureComponent, VmsEmergencyPlayComponent, AtcsHealthComponent, AtcsCongestionComponent, AtcsLampFailureComponent, AtcsDetectorFailureComponent, ItmsCameraFailureComponent, ItmsLpuFailureComponent,
-    ItmsChallanCollectionComponent,VmsBroadcastingComponent, FlashmodeComponent,EnvSensorFailureComponent, EnvSensorPollutionComponent, IccOperatorAckComponent, AssignSiteEngineerComponent,
+    ItmsChallanCollectionComponent,AtcsVisualVerificationComponent,VmsBroadcastingComponent, FlashmodeComponent,EnvSensorFailureComponent, EnvSensorPollutionComponent, IccOperatorAckComponent, AssignSiteEngineerComponent,
     AddressIssueComponent, TaskCompletionComponent],
   templateUrl: './sopflow.component.html',
   styleUrl: './sopflow.component.css'

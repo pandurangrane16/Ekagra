@@ -33,6 +33,7 @@
             <app-cm-select2 ngSkipHydration *ngIf="isTypeSelected" [formGroup]="form" [controlName]="'selectedUnit'"
                 [settings]="unitSettings" (returnObject)="onUnitSelected($event)">
             </app-cm-select2>
+         
         </div>
     
         <div class="col-md-6" *ngIf="isTypeSelected">
@@ -40,16 +41,20 @@
             <app-cm-input ngSkipHydration [formGroup]="form" [controlName]="'unitValue'"
                 [_inputData]="inputFields.unitValue">
             </app-cm-input>
+                                   <div *ngIf="f['unitValue'].touched && f['unitValue'].errors" class="text-danger mt-1">
+        {{ getErrorMessage('unitValue', 'Unit Value', false, '') }}
+      </div>
         </div>
     </div>
     <hr>
     <div class="row">
         <div class="col-md-12 d-flex gap-2">
-            <button mat-flat-button class="btn-primary ms-auto" (click)="SubmitAction()">
+            <button mat-flat-button class="btn-primary ms-auto" (click)="SubmitAction()" [disabled]="isSubmitting">
+
                 Submit
             </button>
            
-            <button mat-stroked-button (click)="CancelAction()">
+            <button mat-stroked-button (click)="CancelAction()" [disabled]="isSubmitting">
                 Cancel
             </button>
         </div>

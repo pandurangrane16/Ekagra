@@ -516,7 +516,8 @@ const projectId = this.getAtcsProjectId();
 
 
 
-DateWiseFilter(evt: any, type: string) {
+handleDateChange(evt: any, type: string) {
+  debugger;
   if (type === "start") {
     this.startDate = evt.value;
   } else {

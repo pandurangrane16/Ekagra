@@ -9,7 +9,22 @@
     text-transform: none;
     white-space: nowrap;  
 }
+/* Style for the primary submit button when disabled */
+.btn-primary[disabled] {
+    background-color: #cccccc !important; /* Light gray background */
+    color: #666666 !important;            /* Darker gray text */
+    border-color: #999999 !important;
+    cursor: not-allowed !important;       /* Shows the 'stop' icon on hover */
+    opacity: 0.6;                         /* Makes it look faded */
+}
 
+/* Style for the stroked/cancel button when disabled */
+button[mat-stroked-button][disabled] {
+    color: #999999 !important;
+    border-color: #dddddd !important;
+    cursor: not-allowed !important;
+    opacity: 0.6;
+}
 .btnCancel {
     background-color: orangered;
     color: white;

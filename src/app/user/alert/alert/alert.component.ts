@@ -101,9 +101,10 @@ export class AlertComponent implements OnInit {
     formFieldClass: 'w-100',
     appearance: 'fill',
     options: [
-      { name: 'Low', value: '0' },
-      { name: 'Medium', value: '1' },
-      { name: 'High', value: '2' }
+     { name: 'All', value: undefined }, 
+    { name: 'Low', value: '0' },
+    { name: 'Medium', value: '1' },
+    { name: 'High', value: '2' }
     ]
   };
   searchInputSettings = {

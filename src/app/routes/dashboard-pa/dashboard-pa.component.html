@@ -1,8 +1,8 @@
 <div class="card p-0">
-    <app-cm-breadcrumb [breadcrumbItems]="[{ parts: ['PA Dashboard'], link: '/dashboard-pa' }]"
-        [zoneOptions]="ZoneOptions" [selectedZones]="selectedZones"
+   <app-cm-breadcrumb [breadcrumbItems]="[{ parts: ['PA Dashboard'], link: '/dashboard-vms' }]"
+       [zoneOptions]="ZoneOptions" [selectedZones]="selectedZones" [showDatePicker]="false"
         (zoneSelectionChange)="onActionSelectionChange($event)" (configClear)="clearActions()"
-        (dateChange)="DateWiseFilter($event.value, $event.category)">
+        >
     </app-cm-breadcrumb>
     <div class="card-body p-2">
         <!-- Controls handled in breadcrumb -->
@@ -76,8 +76,17 @@
                                 </div>
                             </div>
                             <div class="card-body p-0">
-                                <app-mapview [mapHeight]="mapHeight" class="mb-0"></app-mapview>
+                                 <div *ngIf="siteList && siteList.length > 0; else noFields" class="h-100 w-100 map-boundary">
+                        <app-cm-leaflet *ngIf="isMap" [showMap]="isMap"  [siteData]="siteList" 
+                             [enableDraw]="false" [projectName]="'pa'">
+                        </app-cm-leaflet>
+                    </div>
                             </div>
+                              <ng-template #noFields>
+                        <div class="d-flex align-items-center justify-content-center h-100 text-muted fw-bold">
+                            No fields found
+                        </div>
+                    </ng-template>
                         </div>
 
                         <div class="card" *ngIf="activeComponent === 'b'">

@@ -18,13 +18,24 @@
 
         <div *ngSwitchCase="'PA'">
           <mat-form-field class="w-100">
-            <mat-select placeholder="Select Destination">
+
+             <mat-select placeholder="Select Destination" [(ngModel)]="selectedPa"
+              (selectionChange)="onPaSelectionChange($event)" multiple>
+
+              <mat-option class="clear-option" (click)="clearZones()">
+                Clear Selection
+              </mat-option>
+              <mat-option *ngFor="let option of PaOptions" [value]="option">
+                {{option.text}}
+              </mat-option>
+            </mat-select>
+            <!-- <mat-select placeholder="Select Destination">
 
               <input matInput class="form-control">
 
               <mat-option>dsds </mat-option>
               <mat-option>sdsd </mat-option>
-            </mat-select>
+            </mat-select> -->
           </mat-form-field>
         </div>
 
@@ -140,5 +151,5 @@
 <div class="card-footer p-2">
   <hr class="mt-1">
   <button mat-flat-button class="me-2" color="primary" (click)="onBroadcast()">Broadcast</button>
-  <button mat-flat-button color="warn">Hang Up</button>
+  <button mat-flat-button color="warn" (click)="onHangUp()">Hang Up</button>
 </div>

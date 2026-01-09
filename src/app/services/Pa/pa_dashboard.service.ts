@@ -26,6 +26,33 @@ export class PaDashboardService {
     return this._httpService._getMethod('api/services/app/Alert/GetAlertTransferUserlist?userId='+id);
   }
 
+    GetPaList(zoneIds?: number[], maxResultCount?: number, skipCount?: number): Observable<any> {
+  const params: string[] = [];
+
+
+  if (zoneIds && zoneIds.length > 0) {
+    zoneIds.forEach((id: number) => {
+      params.push(`zoneIds=${encodeURIComponent(id.toString())}`);
+    });
+  }
+    if (skipCount !== null && skipCount !== undefined) {
+      params.push(`skipCount=${skipCount}`);
+    }
+
+      if (maxResultCount !== null && maxResultCount !== undefined) {
+      params.push(`MaxResultCount=${maxResultCount}`);
+    }
+
+  
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  
+
+  const url = `api/services/app/PAGraph/GetPaZoneFilteredDataPaged${queryString}`;
+
+  return this._httpService._getMethod(url);
+}
+
 
     SiteResponse(data:any) {
     return this._httpService._postMethod(data,'api/services/app/ProjectAPI/SiteResponse');
@@ -130,6 +157,25 @@ export class PaDashboardService {
     const url = 'api/services/app/Alert/GetSOPDetailsbyAlert?id='+policyId;
     return this._httpService._getMethod(url);
   }
+  StopAnnouncementOnPaName( paNames: string): Observable<any> {
+  debugger;
+  const params: string[] = [];
+
+
+
+  if (paNames) {
+    // Matches "paNames" key from Swagger
+    params.push(`paNames=${encodeURIComponent(paNames)}`);
+  }
+
+  const queryString = params.length ? '?' + params.join('&') : '';
+  const url = `api/services/app/PAGraph/StopAnnouncementOnPaName${queryString}`;
+
+  // Fix: Pass an empty string "" instead of an empty object {} 
+  // to satisfy the 'string' parameter requirement
+  return this._httpService._postMethod("",url);
+}
+  
 
   getVMSDetailsForBroadcast(data:any) {
     const url = 'api/services/app/ProjectAPI/SiteResponse';

@@ -17,6 +17,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Globals } from '../../../utils/global';
 import { FormArray } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
+import { getErrorMsg } from '../../../utils/utils';
 
 @Component({
   selector: 'app-vms-emergency',
@@ -28,6 +29,7 @@ export class VmsEmergencyComponent implements OnInit {
   loaderService = inject(LoaderService);
   _common = inject(CommonService);
   form: any;
+  isSubmitting: boolean = false;
   dropdown:any;
   isTypeSelected: boolean = false;
   _vmdSelected: any[];
@@ -96,12 +98,17 @@ export class VmsEmergencyComponent implements OnInit {
       selectedVmdAction: [''],
      
       selectedUnit: ['', Validators.required],
-      unitValue: ['', Validators.required]
+      // In your FormBuilder group
+      unitValue: ['', [Validators.required, Validators.pattern("^[0-9]*$")]]
     })
     //this.GetVmdList();
   }
-
-
+ getErrorMessage(_controlName: any, _controlLable: any, _isPattern: boolean = false, _msg: string) {
+    return getErrorMsg(this.form, _controlName, _controlLable, _isPattern, _msg);
+  }
+ get f() {
+    return this.form.controls;
+  }
 
 
   onVMSSelected(evt: any) {
@@ -124,42 +131,68 @@ export class VmsEmergencyComponent implements OnInit {
       reader.onerror = error => reject(error);
     });
   }
-  onFileSelected(evt: any) {
-    this.uploadedFile = evt;
-    const input = evt.target as HTMLInputElement;
+onFileSelected(evt: any) {
+  this.uploadedFile = evt;
+  const input = evt.target as HTMLInputElement;
 
   if (!input.files || input.files.length === 0) {
     return;
   }
 
-  const file = input.files[0];
-  const maxSize = 5 * 1024 * 1024; // 5 MB
+  else{  const file = input.files[0];
 
-  if (file.size > maxSize) {
-    alert('File size must be less than 5 MB');
-    input.value = ''; // reset input
+  // 1. Validate File Type (MIME type)
+  const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+  if (!allowedTypes.includes(file.type)) {
+    this.toast.error('Invalid file type. Please select an image (PNG, JPG, or GIF).');
+    input.value = ''; // Reset the input so the user can re-select
     return;
+  }
+  else{  // 2. Validate File Size
+  const maxSize = 5 * 1024 * 1024; // 5 MB
+  if (file.size > maxSize) {
+    this.toast.error('File size must be less than 5 MB');
+    input.value = ''; // Reset input
+    return;
+    
   }
 
   // File is valid
-  console.log('File accepted:', file);
-  }
+  console.log('File accepted:', file);}}
+
+
+
+
+}
 SubmitAction() {
 
 
   if (this.form.invalid) {
     // Mark all controls as touched to trigger the display of validation errors in the UI
     this.form.markAllAsTouched();
-    this.toast.error("Please fill all required fields.");
+    const unitValueControl = this.form.get('unitValue');
+
+  // 1. Check if the unitValue specifically has a pattern error (text/special chars)
+  if (unitValueControl?.hasError('pattern')) {
+    this.toast.error("Unit Value must contain only numbers (no text or special characters).");
+  }
+  else{
+     this.toast.error("Please fill all required fields.");
+  }
+  
     return; // Exit the function and don't proceed to API calls
   }
   else{
+
+    this.isSubmitting = true;
       // 2. Additional check: Ensure at least one VMD is selected (since it's not in the FB group)
   if (!this._vmdSelected || this._vmdSelected.length === 0) {
     this.toast.error("Please select at least one VMD.");
     return;
   }
   else{
+
+    
       this._common._sessionAPITags().subscribe(res => {
     const rawTag = res.find((x: any) => x.tag == "VMSCommandPublish");
     if (!rawTag) return;
@@ -175,6 +208,7 @@ SubmitAction() {
       const _durSec = isMinutes ? duration * 60 : duration;
 
       let successCount = 0;
+      
       let totalVmds = this._vmdSelected.length;
 
       // Loop through each VMD and call the API individually
@@ -213,10 +247,12 @@ SubmitAction() {
                 }
               } else {
                 this.toast.error(`Failed to update VMD: ${vmsId}`);
+              
               }
             },
             error: (error) => {
               console.error(`Error for VMD ${vmsId}:`, error);
+              
             }
           });
       });

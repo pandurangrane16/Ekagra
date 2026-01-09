@@ -135,7 +135,8 @@ Highcharts: typeof Highcharts = Highcharts;
   };
 
     ngOnChanges(changes: SimpleChanges): void {
-    if ((changes['fromDate'] || changes['toDate']|| changes['zoneIds']) && this.fromDate && this.toDate) {
+      debugger;
+    if ((changes['fromDate'] || changes['toDate']|| changes['zoneIds'])) {
       this.getUnprocessedConnectedCtrlData();
     }}
 

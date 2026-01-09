@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MapviewComponent } from "../dashboard/widgets/mapview/mapview.component";
+import { CmLeafletComponent } from '../../common/cm-leaflet/cm-leaflet.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -24,12 +25,15 @@ import { CmSelectCheckComponent } from '../../common/cm-select-check/cm-select-c
 import{CmBreadcrumbComponent} from '../../common/cm-breadcrumb/cm-breadcrumb.component';
 import { withLatestFrom } from 'rxjs';    
 import { color } from 'highcharts';
+import { CmConfirmationDialogComponent } from '../../common/cm-confirmation-dialog/cm-confirmation-dialog.component';
 import { atcsDashboardservice } from '../../services/atcs/atcsdashboard.service';
 import { FormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { SessionService } from '../../services/common/session.service';
 
 @Component({
   selector: 'app-dashboard-pa',
-  imports: [MatButtonToggleModule,MatDatepickerModule,CmSelectCheckComponent, CommonModule, MatIconModule, MatFormFieldModule, MatSelectModule, MatInputModule, MapviewComponent,MatButtonModule,MatTooltipModule,MatTabsModule,CmTableComponent,CmBreadcrumbComponent, FormsModule],
+  imports: [MatButtonToggleModule,MatDatepickerModule,CmLeafletComponent,CmSelectCheckComponent, CommonModule, MatIconModule, MatFormFieldModule, MatSelectModule, MatInputModule, MapviewComponent,MatButtonModule,MatTooltipModule,MatTabsModule,CmTableComponent,CmBreadcrumbComponent, FormsModule],
   templateUrl: './dashboard-pa.component.html',
   styleUrl: './dashboard-pa.component.css',
     providers: [provideNativeDateAdapter()]
@@ -37,10 +41,14 @@ import { FormsModule } from '@angular/forms';
 export class DashboardPaComponent {
 loaderService = inject(LoaderService);
 mapHeight = '350px';
+session = inject(SessionService);
 onlineCount:any;
 startDate:any;
 endDate:any;
+siteList:any;
 offlineCount:any;
+// endDate: Date = new Date();
+//   startDate: Date = new Date(this.endDate.getTime() - (24 * 60 * 60 * 1000));
 
 
 headerArr: any;
@@ -55,7 +63,7 @@ processedItems: any[] = [];
  totalRecords: any = 0;
  activeComponent: 'a' | 'b' | 'c' = 'a';
  drawerState: 'in' | 'out' = 'out';
-
+isMap: boolean = false;
  // Zone Properties
  isZoneOptionsLoaded: boolean = false;
  ZoneOptions: any[] = [];
@@ -86,7 +94,11 @@ processedItems: any[] = [];
  
   
  }
-DateWiseFilter(evtData: any, category: string) {
+
+
+
+ 
+handleDateChange(evtData: any, category: string) {
   const localDate = new Date(evtData.value);
 
   // Convert date to UTC explicitly
@@ -111,6 +123,35 @@ DateWiseFilter(evtData: any, category: string) {
   }
 
   this.GetOngoingAnnoucement();
+}
+
+onPaginationChanged(event: { pageNo: number; perPage: number }) {
+  if (this.perPage !== event.perPage) {
+    this.perPage = event.perPage;
+    this.pager = 0; 
+  } else {
+    this.pager = event.pageNo;
+  }
+
+  this.GetPaList();
+}
+
+  onPageChange(event:any) {
+    console.log(event);
+  if (event.type === 'pageChange') {
+    this.pager = event.pageNo;
+  this.GetPaList();
+  }
+}
+
+
+onPageRecordsChange(event:any ) {
+  console.log(event);
+  if (event.type === 'perPageChange') {
+    this.perPage = event.perPage;
+    this.pager = 0;
+    this.GetPaList();
+  }
 }
 
 
@@ -156,7 +197,7 @@ paOngoingList: any[] = [
   
 private dialogRef?: MatDialogRef<RightSheetComponent>;
 constructor(
-private dialog: MatDialog,private service:PaDashboardService, private atcsService: atcsDashboardservice
+private dialog: MatDialog,private service:PaDashboardService,private toastr: ToastrService,private atcsService: atcsDashboardservice
     ){}
 
     getZoneList() {
@@ -202,18 +243,26 @@ private dialog: MatDialog,private service:PaDashboardService, private atcsServic
         }
 
         this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
+        this.GetPaList();
+        this.loadpoints();
+        this.fetchPaStatus();
         // Trigger any updates based on zone selection if needed
     }
 
     clearActions() {
         this.selectedZones = [];
         this.selectedZoneIds = [];
+        this.GetPaList();
+        this.loadpoints();
+        this.fetchPaStatus();
         // Clear logic
     }
 
   ngOnInit(): void {
+    this.loadpoints();
     this.getZoneList(); // Load zones
     this.getList();
+    this.GetPaList();
     this.fetchPaStatus();
     this.GetOngoingAnnoucement();
   
@@ -251,32 +300,110 @@ private dialog: MatDialog,private service:PaDashboardService, private atcsServic
           ];
           ;}
 
-        onButtonClicked({ event, data }: { event: any; data: any }) {
+onButtonClicked({ event, data }: { event: any; data: any }) {
   if (event.type === 'view') {
     this.viewDevice(data);
-    console.log(data);
   } else if (event.type === 'delete') {
     this.deleteRow(data);
+  } else if (event.type === 'cancel') {
+    // Call the new cancel method
+    this.cancelAnnouncement(data);
   }
+}
+
+  getAtcsProjectId(): number | null {
+  const projectCodesStr = this.session._getSessionValue("projectCodes");
+  
+  if (!projectCodesStr) {
+    console.warn("⚠️ projectCodes not found in session.");
+    return null;
+  }
+
+  try {
+    const projectCodes = JSON.parse(projectCodesStr);
+    const currentProject = "atcs"; // Set to "atcs"
+
+    const project = projectCodes.find(
+      (p: any) => p.name.toLowerCase() === currentProject.toLowerCase()
+    );
+
+    if (!project) {
+      console.error(`⚠️ Project "${currentProject}" not found in config.`);
+      return null;
+    }
+
+    return Number(project.value);
+  } catch (e) {
+    console.error("Error parsing project codes", e);
+    return null;
+  }
+}
+
+cancelAnnouncement(data: any) {
+
+  debugger;
+  const name = data.name; // This is the 'paname' we mapped earlier
+
+  if (!name || name === '-') {
+    console.error("Invalid PA Name for cancellation");
+    return;
+  }
+
+    const dialogRef = this.dialog.open(CmConfirmationDialogComponent, {
+    width: '400px',
+      position: { top: '20px' },
+  panelClass: 'custom-confirm-dialog',
+    data: {
+      title: 'Confirm Cancellation',
+     message: `Are you sure?<div style="margin-top: 8px;">Annoucement at: <b>${name}</b> will be Cancelled.</div>`,
+
+      type: 'delete',
+      confirmButtonText: 'Confirm',
+      cancelButtonText: 'Cancel'
+    }
+  });
+
+    dialogRef.afterClosed().subscribe(result => {
+    debugger;
+    if (result) {
+     
+      this.service.StopAnnouncementOnPaName(name).pipe(withLoader(this.loaderService)).subscribe({
+       next: (res: any) => {
+  if (res.success && res.result && res.result.length > 0) {
+    // 1. Get the first item from the result array
+    const actionResult = res.result[0]; 
+
+    // 2. Check the Status inside the result object
+    if (actionResult.Status === 'Success') {
+      this.toastr.success(`Announcement for ${actionResult.PaName} stopped successfully.`);
+      this.GetPaList(); // Refresh the list
+    } else {
+      // Handle the "Failed" status case (like your example)
+      console.error('Operation Error:', actionResult.Message);
+      this.toastr.error(actionResult.Message || 'Failed to stop announcement');
+    }
+  } else {
+    // This handles cases where success is false or result is empty
+    console.error('API Error:', res.error);
+    this.toastr.error('An error occurred while communicating with the server.');
+  }
+},
+        error: (err) => {
+          console.error('API error:', err);
+        }
+      });
+    } else {
+      console.log('User cancelled');
+    }
+  });
 
  
 
-}    
-          onPageChange(event:any) {
-    console.log(event);
-  if (event.type === 'pageChange') {
-    this.pager = event.pageNo;
+}
 
-  }
-}
-onPageRecordsChange(event:any ) {
-  console.log(event);
-  if (event.type === 'perPageChange') {
-    this.perPage = event.perPage;
-    this.pager = 0;
-   
-  }
-}
+
+
+
 deleteRow(data: any) {
   const empId = data.employeeId;
   const model = {
@@ -296,6 +423,120 @@ deleteRow(data: any) {
    
 
     }  
+
+  
+
+      GetPaList() {
+
+  // const start = this.startDate ??
+  //   Math.floor(new Date(new Date().setHours(0, 0, 0, 0)).getTime() / 1000);
+
+  // const end = this.endDate ??
+  //   Math.floor(new Date(new Date().setHours(23, 59, 59, 999)).getTime() / 1000);
+
+  // this.MaxResultCount = this.perPage;
+  // this.SkipCount = this.MaxResultCount * this.pager;
+  // this.recordPerPage = this.perPage;
+
+  // const inputs = `${start},${end},,,${this.SkipCount},${this.MaxResultCount}`;
+
+  // const requestBody = {
+  //   projectId: 3,
+  //   type: 1,
+  //   inputs: inputs,
+  //   bodyInputs: "",
+  //   seq: 8
+  // };
+
+         this.MaxResultCount=this.perPage;
+      this.SkipCount=this.MaxResultCount*this.pager;
+      this.recordPerPage=this.perPage;
+ 
+  this.service
+    .GetPaList(this.selectedZoneIds,1000,0)
+    .pipe(withLoader(this.loaderService))
+    .subscribe({
+      next: (response: any) => {
+
+
+let items: any[] = response?.result?.items || [];
+  const totalCount = response?.result?.totalCount || items.length;
+  this.paList = items;
+
+        if (Array.isArray(items)) {
+
+          items.forEach((element: any, index: number) => {
+            element.paname = element.name || '-';
+          element.healthstatus = (element.isReachable === true || element.isReachable === false) 
+                       ? element.isReachable 
+                       : false;
+            element.callstatus = element.Status
+            
+
+            element.button = [
+              { label: 'Cancel', icon: 'cancel', type: 'cancel' }
+            ];
+          });
+
+            this.paList = items;
+
+          // Pagination logic (unchanged)
+          const _length = totalCount / Number(this.recordPerPage);
+
+          if (_length > Math.floor(_length) && Math.floor(_length) !== 0)
+            this.totalRecords = Number(this.recordPerPage) * _length;
+          else if (Math.floor(_length) === 0)
+            this.totalRecords = 10;
+          else
+            this.totalRecords = totalCount;
+
+          this.totalPages = this.totalRecords / this.pager;
+        }
+      },
+
+      error: (error: any) => {
+        console.error('GetOngoingAnnouncement API failed:', error);
+
+        // Reset UI safely
+        this.items = [];
+        this.totalRecords = 0;
+        this.totalPages = 0;
+
+        // Optional: show toast
+        // this.toastr.error('Failed to load ongoing announcements');
+      }
+    });
+}
+
+  loadpoints(): void {
+   
+
+    this.service.GetPaList(this.selectedZoneIds,100000,0).pipe(withLoader(this.loaderService)).subscribe({
+      next: (res: any) => {
+    const rawSites = res?.result?.items || [];
+
+        if (rawSites.length === 0) {
+          this.siteList = [];
+          return;
+        }
+
+        // ✅ Assume all sites use the same mapIcon (from first record)
+       // const mapIconName = rawSites[0].mapIcon;
+        //const iconUrl = basePath + mapIconName;
+
+        this.siteList = rawSites.map((site: any) => ({
+          ...site,
+          //mapIconUrl: iconUrl  // attach full icon URL to every site
+        }));
+
+       this.isMap = true; // map loads only after siteList is ready
+        console.log('Site list with icon:', this.siteList);
+      },
+      error: (err) => {
+        console.error('Error fetching site list:', err);
+      }
+    });
+  }
 
   GetOngoingAnnoucement() {
 
@@ -464,34 +705,26 @@ showComponent(type: 'a' | 'b' | 'c') {
       this.closeDrawer();
     }
   }
-  fetchPaStatus() {
-      const requestBody = {
-    projectId: 3,
-    type: 1,
-    inputs: "all,all,all",
-    bodyInputs: "",
-    seq: 5
-  };
-  this.service.GetSiteResponse(requestBody)
+fetchPaStatus() {
+  // Calling the Paged Filtered Data API instead of GetSiteResponse
+  this.service.GetPaList(this.selectedZoneIds, 1000, 0) // Passing empty array for all zones, 1000 for max results
     .pipe(withLoader(this.loaderService))  
     .subscribe({
       next: (res: any) => {
+        // Now passing the new API response structure
         const counts = this.getOnlineOfflineCount(res);
         this.onlineCount = counts.online;
         this.offlineCount = counts.offline;
       },
       error: (err) => {
-        console.error(err);
+        console.error("Error fetching PA status:", err);
       }
     });
 }
 
- getOnlineOfflineCount(apiResult: any) {
-  const parsed = typeof apiResult.result === 'string'
-    ? JSON.parse(apiResult.result)
-    : apiResult.result;
-
-  const data = parsed.data || [];
+getOnlineOfflineCount(apiResult: any) {
+  // In the new API, the array is located at res.result.items
+  const items = apiResult?.result?.items || [];
 
   const offlineStatuses = [
     'unregistered',
@@ -502,9 +735,16 @@ showComponent(type: 'a' | 'b' | 'c') {
   let offline = 0;
   let online = 0;
 
-  data.forEach((item:any) => {
+  items.forEach((item: any) => {
+    // Normalize the status string for comparison
     const status = (item.Status || '').toLowerCase();
-    offlineStatuses.includes(status) ? offline++ : online++;
+    
+    // Check against the offline list
+    if (offlineStatuses.includes(status)) {
+      offline++;
+    } else {
+      online++;
+    }
   });
 
   return { online, offline };

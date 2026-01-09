@@ -164,7 +164,7 @@ Highcharts: typeof Highcharts = Highcharts;
 }
       ngOnChanges(changes: SimpleChanges): void {
     // This will fire whenever parent updates fromDate or toDate
-    if ((changes['fromDate'] || changes['toDate']|| changes['zoneIds']) && this.fromDate && this.toDate) {
+    if ((changes['fromDate'] || changes['toDate']|| changes['zoneIds'])) {
         this.fetchFailureData();
     }
   }
