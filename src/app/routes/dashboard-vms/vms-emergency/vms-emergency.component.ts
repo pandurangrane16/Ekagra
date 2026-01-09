@@ -184,7 +184,7 @@ SubmitAction() {
   }
   else{
 
-    this.isSubmitting = true;
+    
       // 2. Additional check: Ensure at least one VMD is selected (since it's not in the FB group)
   if (!this._vmdSelected || this._vmdSelected.length === 0) {
     this.toast.error("Please select at least one VMD.");
@@ -192,7 +192,7 @@ SubmitAction() {
   }
   else{
 
-    
+    this.isSubmitting = true;
       this._common._sessionAPITags().subscribe(res => {
     const rawTag = res.find((x: any) => x.tag == "VMSCommandPublish");
     if (!rawTag) return;
