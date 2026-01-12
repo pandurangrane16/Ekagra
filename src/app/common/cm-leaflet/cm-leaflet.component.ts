@@ -356,13 +356,16 @@ debugger;
       // }
 
       // 2. Pass the error flag to the generator
-      const popupHtml = this.generatePopupHtml(siteId, this.popupData, isError);
-      
+      var popupHtml = this.generatePopupHtml(siteId, this.popupData, isError);
+      console.log("popupHtml",popupHtml);
       marker.bindPopup(popupHtml).openPopup();
 
-      marker.on('popupclose', () => {
-        delete this.popupData[siteId];
-      });
+      // marker.on('popupclose', () => {
+      //   console.log('Popup closed for siteId:', siteId);
+      //   debugger;
+      //   delete this.popupData[siteId];
+      // });
+      
     } else if (attempts < maxAttempts) {
       attempts++;
       setTimeout(checkAndBind, 200); 
