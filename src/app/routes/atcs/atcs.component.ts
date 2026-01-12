@@ -346,14 +346,52 @@ getZoneList() {
     });
   }
 
-  onMarkerClicked(siteId: string) {
+//   onMarkerClicked(siteId: string) {
+//   const model: SiteRequestModel = {
+//   projectId: this.projectId,
+//   type: 0,
+//   inputs: siteId,
+//   bodyInputs: null,
+//   seq: 43
+// }
+//   this.service.SiteResponse(model).pipe(withLoader(this.loaderService)).subscribe({
+//     next: (res: any) => {
+//       if (!res?.result) {
+//         console.error("No result found in site response");
+//         return;
+//       }
+
+     
+//       let parsedResult;
+//       try {
+//         parsedResult = JSON.parse(res.result);
+//       } catch (e) {
+//         console.error("Failed to parse result JSON:", e);
+//         return;
+//       }
+
+//       console.log("Fetched site response:", parsedResult);
+
+//       this.popupData = {
+//         [siteId]: parsedResult
+//       };
+//       console.log("Popup data set for siteId", this.popupData);
+//     },
+//     error: (err) => {
+//       console.error("Error fetching site response:", err);
+//     }
+//   });
+// }
+
+onMarkerClicked(siteId: string) {
   const model: SiteRequestModel = {
-  projectId: this.projectId,
-  type: 0,
-  inputs: siteId,
-  bodyInputs: null,
-  seq: 43
-}
+    projectId: this.projectId,
+    type: 0,
+    inputs: siteId,
+    bodyInputs: null,
+    seq: 43
+  };
+
   this.service.SiteResponse(model).pipe(withLoader(this.loaderService)).subscribe({
     next: (res: any) => {
       if (!res?.result) {
@@ -361,7 +399,6 @@ getZoneList() {
         return;
       }
 
-     
       let parsedResult;
       try {
         parsedResult = JSON.parse(res.result);
@@ -370,18 +407,23 @@ getZoneList() {
         return;
       }
 
-      console.log("Fetched site response:", parsedResult);
-
-    
+      // ✅ Instead of replacing, update the object immutably
       this.popupData = {
-        [siteId]: parsedResult
+        ...this.popupData,      // keep previous popups
+        [siteId]: parsedResult  // update/add current popup
       };
+
+      // ✅ Force change detection by creating a new reference
+      this.popupData = { ...this.popupData };
+
+      console.log("Popup data set for siteId", siteId, this.popupData);
     },
     error: (err) => {
       console.error("Error fetching site response:", err);
     }
   });
 }
+
 
 
 
