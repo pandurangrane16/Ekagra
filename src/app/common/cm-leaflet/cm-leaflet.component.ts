@@ -874,11 +874,19 @@ marker.bindTooltip(tooltipHtml, {
   className: 'custom-tooltip' // We will style the container in CSS below
 });
 
+// marker.on('click', () => {
+
+//     const popupHtml = this.generatePaSitePopup(site);
+//     marker.bindPopup(popupHtml).openPopup();
+
+// });
+
 marker.on('click', () => {
+  const siteId = site.name; // PA uses name as ID
 
-    const popupHtml = this.generatePaSitePopup(site);
-    marker.bindPopup(popupHtml).openPopup();
-
+  marker.unbindPopup(); // 🔥 important
+  const popupHtml = this.generatePaSitePopup(site);
+  marker.bindPopup(popupHtml, { autoClose: true, closeOnClick: true }).openPopup();
 });
 
 
