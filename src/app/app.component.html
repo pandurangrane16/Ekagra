@@ -1,31 +1,26 @@
+<!-- app.component.html -->
+
+<!-- ALERTS FLOAT TOP-RIGHT -->
+<app-cm-alert-notify style="position: fixed; top: 1.25rem; right: 1.25rem; z-index: 9999;"></app-cm-alert-notify>
+
+
 <router-outlet *ngIf="!showElement"></router-outlet>
+
 <ng-container *ngIf="appReady">
   <div class="app-container" *ngIf="showElement" [ngClass]="parentClass">
     <div class="position-relative">
-      <app-header (eventChange)="onChange($event)" [event]="event">
-      </app-header>
-
-      <app-sidenav (sidebarToggle)="onSidebarToggle()" [event]="event" (eventChange)="onChange($event)">
-      </app-sidenav>
-
-      <!-- <a
-      class="sidebar-toggle-btn"
-      [ngClass]="{ 'sidebar-collapsed': isSidebarCollapsed }"
-      (click)="onSidebarToggle()"
-    >
-      
-      <img src="assets/img/logo2.png" alt="" *ngIf="isSidebarCollapsed">
-    </a> -->
-
+      <app-header (eventChange)="onChange($event)" [event]="event"></app-header>
+      <app-sidenav (sidebarToggle)="onSidebarToggle()" [event]="event" (eventChange)="onChange($event)"></app-sidenav>
     </div>
 
     <main class="mb-2" [ngClass]="headerService.shift120 ? 'content' : 'content shift120'">
       <app-cm-loader></app-cm-loader>
-
       <router-outlet></router-outlet>
-
     </main>
   </div>
 </ng-container>
+
+<!-- Footer -->
 <div [ngClass]="headerService.shift120 ? 'content' : 'shift120'">
-  <app-footer ></app-footer></div>
+  <app-footer ></app-footer>
+</div>

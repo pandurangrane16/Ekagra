@@ -18,6 +18,8 @@ import { MaterialModule } from './Material.module';
 import { Subscription } from 'rxjs';
 import { SessionService } from './services/common/session.service';
 import { Globals } from './utils/global';
+import { CmAlertNotifyComponent } from './common/cm-alert-notify/cm-alert-notify.component';
+import { AlertService } from './services/common/alert.service';
 
 @Component({
   selector: 'app-root',
@@ -29,6 +31,7 @@ import { Globals } from './utils/global';
     CmLoaderComponent,
     CommonModule,
     RouterModule,
+    CmAlertNotifyComponent
   ],
   providers: [HeaderService, LoaderService, HttpClient],
   templateUrl: './app.component.html',
@@ -74,6 +77,7 @@ export class AppComponent implements OnInit {
     public route: ActivatedRoute,
     public loaderService: LoaderService,
     private signalRService: SignalRService,
+    private alertService: AlertService,
     private snackBar: MatSnackBar,
     //private keycloakService: KeycloakService,
     public router: Router,
@@ -139,7 +143,8 @@ export class AppComponent implements OnInit {
     if(_tags == undefined) {
       //this._session._setSessionValue("APITags",)
     }
-
+    //this.signalRService.startConnection();
+    this.alertService.connect();
   }
 
 }

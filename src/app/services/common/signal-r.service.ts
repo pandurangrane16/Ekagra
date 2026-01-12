@@ -1,32 +1,37 @@
-// signalr.service.ts
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { Subject } from 'rxjs';
+import { AlertService } from './alert.service';
+import { Alert } from '../../utils/alert.model';
 
 @Injectable({ providedIn: 'root' })
 export class SignalRService {
+
   private hubConnection!: signalR.HubConnection;
-  private notificationSubject = new Subject<string>();
-  public notifications$ = this.notificationSubject.asObservable();
+  private isConnected = false;
 
-  constructor() {
-    //this.startConnection();
-  }
+  constructor(private alertService: AlertService) {}
 
-  private startConnection(): void {
+  startConnection() {
+    if (this.isConnected) return;
+
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('https://172.19.32.220:8085/notificationHub')
+      .withUrl('https://localhost:3000/connection', {
+        skipNegotiation: true, // 🔥 VERY IMPORTANT
+        transport: signalR.HttpTransportType.WebSockets
+      })
       .withAutomaticReconnect()
       .build();
 
     this.hubConnection
       .start()
-      .then(() => console.log('✅ SignalR connected'))
-      .catch(err => console.error('❌ SignalR connection error: ', err));
+      .then(() => {
+        this.isConnected = true;
+        console.log('SignalR connected');
+      })
+      .catch(err => console.error('SignalR error:', err));
 
-    this.hubConnection.on('ReceiveNotification', (message: string) => {
-      console.log('📨 Notification received:', message);
-      this.notificationSubject.next(message);
+    this.hubConnection.on('ReceiveAlert', (alert: Alert) => {
+      //this.alertService.show(alert);
     });
   }
 }
