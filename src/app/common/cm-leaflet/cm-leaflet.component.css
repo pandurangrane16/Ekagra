@@ -1,4 +1,4 @@
-/* Fix Leaflet default marker icon path */
+Fix Leaflet default marker icon path
 .leaflet-container {
   height: 100%;
   width: 100%;
@@ -16,3 +16,5 @@
 ::ng-deep .leaflet-tooltip-top.custom-tooltip:before {
   border-top-color: #2c3e50;
 }
+
+
