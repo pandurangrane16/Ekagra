@@ -7,8 +7,6 @@ export interface Alert {
   type: AlertType;
   duration?: number;          // auto close (ms)
   bgColor?: string;           // user-defined background
-  textColor?: string; 
-
-   
+  textColor?: string;   
          // user-defined text color
 }
