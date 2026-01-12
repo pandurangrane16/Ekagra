@@ -1,4 +1,5 @@
-export type AlertType = 'success' | 'error' | 'warning' | 'info';
+export type AlertType = 'success' | 'error' | 'warning'| 'vms'| 'pa' | 'atcs' | 'parking'|'info';
+
 
 export interface Alert {
   id?: number;
@@ -6,5 +7,8 @@ export interface Alert {
   type: AlertType;
   duration?: number;          // auto close (ms)
   bgColor?: string;           // user-defined background
-  textColor?: string;         // user-defined text color
+  textColor?: string; 
+
+   
+         // user-defined text color
 }

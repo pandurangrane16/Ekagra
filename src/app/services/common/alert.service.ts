@@ -4,7 +4,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 export interface Alert {
   id?: number;
   message: string;
-  type: 'success' | 'error' | 'info' | 'warning';
+  type: 'success' | 'error' | 'info' | 'warning'| 'vms'| 'pa' | 'atcs' | 'parking';
   duration?: number;
   bgColor?: string;
   textColor?: string;

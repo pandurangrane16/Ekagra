@@ -42,7 +42,11 @@ export class CmAlertNotifyComponent implements OnInit {
       success: { background: '#16a34a', color: '#fff' },
       error: { background: '#dc2626', color: '#fff' },
       warning: { background: '#f59e0b', color: '#000' },
-      info: { background: '#2563eb', color: '#fff' }
+      info: { background: '#2563eb', color: '#fff' },
+      vms: { background: '#780bf5ff', color: '#000' },
+    parking: { background: '#a51d5dff', color: '#000' },
+     pa: { background: '#431a04ff', color: '#000' },
+    atcs: { background: '#645f56ff', color: '#000' },
     }[alert.type];
   }
 
