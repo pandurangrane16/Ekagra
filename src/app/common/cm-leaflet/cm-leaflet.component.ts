@@ -769,7 +769,133 @@ export class CmLeafletComponent implements OnInit {
 
     // 5️⃣ Plot markers
     if (this.siteData?.length) this.plotSites();
+
+
+      if (this.siteData?.length > 0) {
+       debugger;
+       console.log("received data",this.siteData)
+  if (this.projectName?.toLowerCase() === 'pa') {
+         this.plotSitesForPA(this.siteData);
+     } else {
+         // Default plotting method for all other projects
+         this.plotSites();
+     }
+}
   }
+
+
+  private generatePaSitePopup(site: any): string {
+  const statusColor = site.isReachable ? '#27ae60' : '#e74c3c';
+
+  return `
+    <div style="font-family: 'Segoe UI', Tahoma, sans-serif; padding: 5px; min-width: 220px;">
+      <h3 style="margin: 0 0 10px 0; color: #2c3e50; border-bottom: 2px solid ${statusColor}; padding-bottom: 5px;">
+        ${site.name || 'Unknown Site'}
+      </h3>
+      <table style="width: 100%; font-size: 12px; border-collapse: collapse;">
+        ${this.createPopupRow('Status', site.Status, statusColor, true)}
+        ${this.createPopupRow('Site ID', site.id)}
+        ${this.createPopupRow('SIP Name', site.sipName)}
+        ${this.createPopupRow('Extension', site.extension)}
+        ${this.createPopupRow('Zone', site.zoneNames || 'None')}
+        ${this.createPopupRow('Groups', site.groupNames || 'None')}
+        ${this.createPopupRow('Lat', site.lat)}
+        ${this.createPopupRow('Long', site.lon)}
+        ${this.createPopupRow('Reachable', site.isReachable ? 'Yes' : 'No')}
+      </table>
+    </div>
+  `;
+}
+
+// Helper to keep the code clean
+private createPopupRow(label: string, value: any, color: string = '#2c3e50', isBold: boolean = false): string {
+  return `
+    <tr style="border-bottom: 1px solid #f1f1f1;">
+      <td style="padding: 6px 0; color: #7f8c8d; font-weight: 500;">${label}</td>
+      <td style="padding: 6px 0; text-align: right; color: ${color}; font-weight: ${isBold ? 'bold' : 'normal'};">
+        ${value ?? '-'}
+      </td>
+    </tr>
+  `;
+}
+
+
+  private plotSitesForPA(sites: any[]): void {
+  debugger;
+  if (!this.map || !this.L) return;
+
+  const bounds = this.L.latLngBounds([]);
+  let plottedCount = 0;
+
+  this.sites = sites; 
+
+  for (const site of sites) {
+    const lat = parseFloat(site.lat);
+    const lng = parseFloat(site.lon);
+
+    if (isNaN(lat) || isNaN(lng)) continue;
+
+    const latlng = this.L.latLng(lat, lng);
+    bounds.extend(latlng);
+const placeholderIcon = 'https://maps.google.com/mapfiles/ms/icons/red-dot.png';
+    const icon = this.L.icon({
+      iconUrl: placeholderIcon,
+      iconSize: [30, 30],
+      iconAnchor: [15, 30],
+      popupAnchor: [0, -30],
+      className: 'custom-map-icon'
+    });
+
+    const marker = this.L.marker(latlng, { icon });
+
+    // Store marker reference by siteId so we can bind popup later
+    if (!this.markerMap) this.markerMap = new Map<string, any>();
+    this.markerMap.set(site.name, marker);
+
+// Define a cleaner layout with Site Name as a header and Site ID as sub-text
+const tooltipHtml = `
+  <div style="
+    padding: 4px; 
+    line-height: 1.4; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  ">
+    <div style="font-weight: bold; font-size: 13px; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.2); margin-bottom: 4px; padding-bottom: 2px;">
+      ${site.name}
+    </div>
+
+  </div>
+`;
+
+marker.bindTooltip(tooltipHtml, {
+  direction: 'top',
+  offset: [0, -20],
+  sticky: true,
+  opacity: 0.95,
+  className: 'custom-tooltip' // We will style the container in CSS below
+});
+
+marker.on('click', () => {
+
+    const popupHtml = this.generatePaSitePopup(site);
+    marker.bindPopup(popupHtml).openPopup();
+
+});
+
+
+
+
+    marker.addTo(this.map);
+    plottedCount++;
+  }
+
+  console.log(`✅ Total sites plotted on map: ${plottedCount}`);
+
+  if (bounds.isValid()) {
+    this.map.fitBounds(bounds, { padding: [30, 30] });
+  }
+}
+
+  
 
   private addDrawControl(): void {
     this.drawnItems = new this.L.FeatureGroup();
