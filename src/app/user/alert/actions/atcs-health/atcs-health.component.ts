@@ -56,7 +56,7 @@ export class AtcsHealthComponent implements OnInit {
     }
   }
   vmdTypeSettings = {
-    labelHeader: 'Select VMD(Controller)',
+    labelHeader: 'Select VMD',
     lableClass: 'form-label',
     formFieldClass: 'w-100',
     appearance: 'fill',

@@ -54,8 +54,8 @@ export class VmsEmergencyComponent implements OnInit {
       formFieldClass: "w-100"
     },
     unitValue: {
-      labelHeader: 'Unit Value(Minutes)',
-      placeholder: 'Unit Value',
+      labelHeader: 'Unit Time(Minutes)',
+      placeholder: 'Unit Time',
       appearance: 'outline',
       isDisabled: false,
       color: 'primary',
@@ -63,7 +63,7 @@ export class VmsEmergencyComponent implements OnInit {
     }
   }
   vmdTypeSettings = {
-    labelHeader: 'Select VMD(Controller)',
+    labelHeader: 'Select VMD',
     lableClass: 'form-label',
     formFieldClass: 'w-100',
     placeholder: 'Select VMD',

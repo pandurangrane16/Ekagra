@@ -78,6 +78,7 @@ Highcharts: typeof Highcharts = Highcharts;
 chartOptions: Highcharts.Options = {
   chart: {
     type: 'area',
+    height:'280',
     backgroundColor: 'transparent'
   },
   title: {

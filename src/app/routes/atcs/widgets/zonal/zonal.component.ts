@@ -41,7 +41,11 @@ Highcharts: typeof Highcharts = Highcharts;
     chart: {
       type: 'pie',
       backgroundColor: 'transparent',  // Transparent background
-        
+        margin: [0, 0, 0, 0],
+        spacingTop: 0,
+        spacingBottom: 0,
+        spacingLeft: 0,
+        spacingRight: 0 
     },
     title: {
       text: '',
@@ -180,7 +184,7 @@ Highcharts: typeof Highcharts = Highcharts;
 
     const total = rawData.length;
 
-    const colors = ['#344BFD', '#66CC66', '#53CEE7', '#FFD200', '#FC4F64', '#FF5733', '#C70039', '#900C3F', '#581845', '#1ABC9C', '#2ECC71'];
+    const colors = ['red', 'green', '#53CEE7', '#FFD200', '#FC4F64', '#FF5733', '#C70039', '#900C3F', '#581845', '#1ABC9C', '#2ECC71'];
 
     // Step 2: Format data for chart
     const formattedData = Object.entries(statusCountMap).map(([status, count], index) => ({
@@ -203,7 +207,8 @@ Highcharts: typeof Highcharts = Highcharts;
         ...this.chartOptions,  // keep all existing options
         series: [{
           type: 'pie',
-            innerSize: '50%',
+            size:'100%',
+            innerSize: '70%',
     borderRadius: 0,
           data: [...formattedData]  // new array reference
         }]

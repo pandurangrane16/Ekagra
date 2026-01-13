@@ -314,12 +314,17 @@ const zoneIds = this.zoneIds || [];
   initializeChart(active: number, inactive: number) {
 
       this.legendData = [
-    { name: 'Active', y: active, color: '#05da4cff' },
-    { name: 'Inactive', y: inactive, color: '#98DDFF' }
+    { name: 'Active', y: active, color: '#13be03fa' },
+    { name: 'Inactive', y: inactive, color: '#f70101' }
   ];
     this.chartOptions = {
       chart: {
         type: 'pie',
+         margin: [0, 0, 0, 0],
+        spacingTop: 0,
+        spacingBottom: 0,
+        spacingLeft: 0,
+        spacingRight: 0,
         backgroundColor: 'transparent',
         events: {
           render: function () {
@@ -328,7 +333,7 @@ const zoneIds = this.zoneIds || [];
               (sum, point) => sum + (point.y ?? 0),
               0
             );
-            const text = `Total Device<br><b>${total}</b>`;
+            const text = `Total Devices<br><b>${total}</b>`;
 
             if (chart.customLabel) chart.customLabel.destroy();
 
@@ -397,11 +402,12 @@ const zoneIds = this.zoneIds || [];
       },
       credits: { enabled: false },
       series: [{
-        innerSize: '75%',
+        size:'100%',
+        innerSize: '70%',
         borderRadius: 0,
         data: [
-          { name: 'Active', y: active, color: '#05da4cff' },
-          { name: 'Inactive', y: inactive, color: '#98DDFF' }
+          { name: 'Active', y: active, color: '#13be03fa' },
+          { name: 'Inactive', y: inactive, color: '#f70101' }
         ]
       }] as Highcharts.SeriesOptionsType[]
     };}

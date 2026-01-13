@@ -38,7 +38,7 @@ export class DashboardVMSComponent implements OnInit {
   recordPerPage: number = 10;
   processedItems: any[] = [];
   vmdTypeSettings = {
-    labelHeader: 'Select VMD(Controller)',
+    labelHeader: 'Select VMD',
     lableClass: 'form-label',
     formFieldClass: 'w-100',
     appearance: 'fill',
@@ -300,7 +300,7 @@ export class DashboardVMSComponent implements OnInit {
   buildHeader() {
     this.headArr = [
       { header: 'Location', fieldValue: 'location', position: 1, },
-      { header: 'Action', fieldValue: 'button', position: 2, }
+      { header: 'Preview', fieldValue: 'button', position: 2, }
 
 
     ];
