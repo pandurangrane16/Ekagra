@@ -259,8 +259,9 @@ private dialog: MatDialog,private service:PaDashboardService,private toastr: Toa
     }
 
   ngOnInit(): void {
-    this.loadpoints();
-    this.getZoneList(); // Load zones
+  
+    this.getZoneList(); 
+     this.loadpoints();// Load zones
     this.getList();
     this.GetPaList();
     this.fetchPaStatus();
