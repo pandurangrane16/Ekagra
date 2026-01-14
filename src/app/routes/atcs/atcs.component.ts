@@ -43,7 +43,9 @@ export class AtcsComponent {
   selectedCorridorJunction: string = '';
   isMap: boolean = false;
   islabel: boolean = false;
+  polygonCoordinates:any;
   basepath: any;
+  zoneCordinate2:any;
   id: any;
   allCorridorData: any[] = []; // Stores everything from the API
 corridorData: any[] = [];
@@ -135,6 +137,13 @@ debugger;
 
   }
 
+    onPolygonDrawn(coords: any) {
+  console.log('Received polygon coordinates in parent:', coords);
+   const stringifiedCoords = JSON.stringify(coords); 
+  this.polygonCoordinates = stringifiedCoords; 
+   
+}
+
 // Define this at the top of your class
 selectedZones: any[] = [];
 
@@ -169,6 +178,7 @@ getSelectedZoneIds(): number[] {
 selectedZoneIds: number[] = [];
 
 onActionSelectionChange(event: any) {
+   this.siteList = [];
   const selectedValues = event.value || [];
   const allOption = this.ZoneOptions.find((x: any) => x.text.toLowerCase() === 'all');
 
@@ -182,9 +192,29 @@ onActionSelectionChange(event: any) {
   } else {
     this.selectedZones = selectedValues.filter((x: any) => x.id !== allOption.id);
   }
-
+debugger;
   // 2. UPDATE THE IDS HERE (Not in the template)
   this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
+  const allPolygons: any[] = [];
+  
+  this.selectedZones.forEach(zone => {
+    if (zone.zoneCordinate) {
+      try {
+        // Parse the string (e.g. "[[[lng,lat],...]]")
+        const parsed = JSON.parse(zone.zoneCordinate);
+        // Push the actual polygon array into our master list
+        allPolygons.push(parsed[0]); 
+      } catch (e) {
+        console.error("Invalid coordinates for zone: " + zone.text, e);
+      }
+    }
+  });
+
+  // 2. Convert the master list back to a string format your map method expects
+  // This will look like: [ [[p1],[p2]], [[p1],[p2]] ]
+  this.zoneCordinate2 = JSON.stringify(allPolygons);
+  console.log("zoneCordinate2", this.zoneCordinate2);
+
   this.loadJunctions();
   this.loadCorridorData();
   this.loadpoints();
@@ -200,6 +230,7 @@ clearActions() {
 
 
 loadCorridorData() {
+  debugger;
   // 1. Get the Name string from the dropdown. 
   // Fallback to session if no selection exists.
   const junctionName = this.selectedCorridorJunction;
@@ -222,6 +253,8 @@ loadCorridorData() {
      next: (res: any) => {
         // 2. Store the full list in the master variable
         this.allCorridorData = res?.result || [];
+
+        debugger;
         
         // 3. Filter data for the currently selected junction
         this.filterCorridorByJunction();
@@ -238,6 +271,7 @@ loadCorridorData() {
 
 filterCorridorByJunction() {
   debugger;
+
   if (this.selectedCorridorJunction) {
     // Only show records matching the selected junctionName (e.g., "UCON_12_5301")
     this.corridorData = this.allCorridorData.filter(item => 
@@ -267,8 +301,11 @@ getZoneList() {
      
         const projectOptions = items.map((item: any) => ({
           text: (item.zoneName || '').trim() || 'Unknown',
-          id: item.id
+          id: item.id,
+          zoneCordinate: item.zoneCordinate
         }));
+
+        debugger;
 
   
     // projectOptions.unshift({
@@ -282,6 +319,26 @@ getZoneList() {
     
     // 2. Map the IDs to your array that goes to the Child component
     this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
+
+      const allPolygons: any[] = [];
+  
+  this.selectedZones.forEach(zone => {
+    if (zone.zoneCordinate) {
+      try {
+        // Parse the string (e.g. "[[[lng,lat],...]]")
+        const parsed = JSON.parse(zone.zoneCordinate);
+        // Push the actual polygon array into our master list
+        allPolygons.push(parsed[0]); 
+      } catch (e) {
+        console.error("Invalid coordinates for zone: " + zone.text, e);
+      }
+    }
+  });
+
+  // 2. Convert the master list back to a string format your map method expects
+  // This will look like: [ [[p1],[p2]], [[p1],[p2]] ]
+  this.zoneCordinate2 = JSON.stringify(allPolygons);
+  console.log("zoneCordinate2", this.zoneCordinate2);
     
    
 
@@ -439,6 +496,7 @@ onMarkerClicked(siteId: string) {
 
 
   loadpoints(): void {
+    debugger;
     //const basePath = 'https://172.19.32.51:8089/UploadedFiles/Icons/';
     const basePath = this.basepath
     const projectId = this.getAtcsProjectId();
@@ -468,6 +526,7 @@ onMarkerClicked(siteId: string) {
 
         this.isMap = true; // map loads only after siteList is ready
         console.log('Site list with icon:', this.siteList);
+        debugger;
       },
       error: (err) => {
         console.error('Error fetching site list:', err);

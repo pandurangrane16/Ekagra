@@ -713,6 +713,8 @@
 
 
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { SessionService } from '../../services/common/session.service';
+
 import { Component, Inject, Input, Output, EventEmitter, OnInit, PLATFORM_ID } from '@angular/core';
 
 @Component({
@@ -757,13 +759,15 @@ export class CmLeafletComponent implements OnInit {
     await import('leaflet-draw');
     if (this.useMarkerCluster) await import('leaflet.markercluster');
 
+    
+
     // 2️⃣ Initialize Map
     this.map = this.L.map('map').setView([51.505, -0.09], 13);
     this.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(this.map);
 
     // 3️⃣ Enable drawing if configured
     if (this.enableDraw) this.addDrawControl();
-
+  debugger;
     // 4️⃣ Render existing polygon
     if (this.existingPolygon) this.renderExistingPolygon(this.existingPolygon);
 
@@ -938,18 +942,59 @@ marker.on('click', () => {
     });
   }
 
+  // private renderExistingPolygon(polygonStr: string) {
+  //   try {
+  //     const coords = JSON.parse(polygonStr);
+  //     const latlngs = coords[0].map(([lng, lat]: [number, number]) => this.L.latLng(lat, lng));
+  //     const polygon = this.L.polygon(latlngs, { color: 'blue' }).addTo(this.map);
+  //     this.drawnItems = new this.L.FeatureGroup();
+  //     this.drawnItems.addLayer(polygon);
+  //     this.map.fitBounds(polygon.getBounds());
+  //   } catch (e) {
+  //     console.error('Invalid polygon format:', e);
+  //   }
+  // }
+
   private renderExistingPolygon(polygonStr: string) {
-    try {
-      const coords = JSON.parse(polygonStr);
-      const latlngs = coords[0].map(([lng, lat]: [number, number]) => this.L.latLng(lat, lng));
-      const polygon = this.L.polygon(latlngs, { color: 'blue' }).addTo(this.map);
+  try {
+    // 1. Parse the string into an array of polygons
+    const allPolygonCoords = JSON.parse(polygonStr); 
+
+    // 2. Initialize the FeatureGroup once (before the loop)
+    // This allows all polygons to be part of the same editable group
+    if (!this.drawnItems) {
       this.drawnItems = new this.L.FeatureGroup();
-      this.drawnItems.addLayer(polygon);
-      this.map.fitBounds(polygon.getBounds());
-    } catch (e) {
-      console.error('Invalid polygon format:', e);
+      this.map.addLayer(this.drawnItems);
     }
+
+    // 3. Loop through the array of polygons
+    allPolygonCoords.forEach((singlePolyCoords: any) => {
+      // Check if it's nested (GeoJSON style usually has coords in the first index)
+      const ring = Array.isArray(singlePolyCoords[0][0]) ? singlePolyCoords[0] : singlePolyCoords;
+
+      const latlngs = ring.map(([lng, lat]: [number, number]) => this.L.latLng(lat, lng));
+      
+      const polygon = this.L.polygon(latlngs, { color: 'blue' });
+      
+      // Add each polygon to the map and the FeatureGroup
+      polygon.addTo(this.map);
+      this.drawnItems.addLayer(polygon);
+    });
+
+    // 4. Zoom the map to fit ALL drawn polygons
+    if (this.drawnItems.getLayers().length > 0) {
+      this.map.fitBounds(this.drawnItems.getBounds(), { padding: [20, 20] });
+    }
+
+  } catch (e) {
+    console.error('Invalid polygon format:', e);
   }
+}
+
+
+
+
+
 
   private plotSites(): void {
     this.sites = this.siteData;

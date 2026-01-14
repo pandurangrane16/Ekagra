@@ -70,7 +70,8 @@
 
                     <div *ngIf="siteList && siteList.length > 0; else noFields" class="h-100 w-100 map-boundary">
                         <app-cm-leaflet *ngIf="isMap" [showMap]="isMap" [siteData]="siteList" [labelList]="labelList"
-                            [popupData]="popupData" (markerClicked)="onMarkerClicked($event)" [enableDraw]="false">
+                            [popupData]="popupData" (markerClicked)="onMarkerClicked($event)" 
+                             (polygonDrawn)="onPolygonDrawn($event)"   [existingPolygon]="zoneCordinate2" >
                         </app-cm-leaflet>
                     </div>
 
