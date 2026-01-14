@@ -1,5 +1,6 @@
 .text-right{text-align: right;}
-.clientlogo{width: 180px;}
+.clientlogo{ height: 62px;
+    border: 1px solid #ccc;}
 .CMSlogo{ margin-left: 16px;}
 
 :host(.shift120) footer {margin-left: 170px!important;}
@@ -12,7 +13,7 @@
   margin-left: 0;
 }
 @media only screen and (max-width: 600px) {
-.clientlogo{width: 100px;}
+.clientlogo{height: 42px;}
 .CMSlogo{width: 60px;}
 .copyright{font-size: 8px;}
 
