@@ -30,6 +30,7 @@ import {MatButtonModule} from '@angular/material/button';
   styleUrl: './api-playground.component.css',
   standalone: true
 })
+
 export class ApiPlaygroundComponent implements OnInit {
     state:any;
     isEditMode = false;
@@ -1121,7 +1122,15 @@ this.isProjtypeOptionsLoaded=true;
 // }
 //   });
 // }
+private buildHeaderString(): string {
+  const headersArray =
+    this.form.get('headers')?.value as { headerKey: string; headerValue: string }[];
 
+  return headersArray
+    .filter(h => h.headerKey && h.headerValue)
+    .map(h => `${h.headerKey}:${h.headerValue}`)
+    .join(';');
+}
 onSend() {
 
    console.log(this.form.controls['apiseq'].value )
@@ -1178,7 +1187,7 @@ const payload = {
     RequestURL: formValues.apiUrl,
     HttpMethod: this.form.controls['method'].value?.value,
     RequestParam: "",
-    Header: "",
+    header: this.buildHeaderString(),
     AuthReq: formValues.isrequireauth,
     AuthAPIId: this.form.controls['selectedapi'].value?.value, 
     AuthenticatioType: formValues.authType,
@@ -1199,7 +1208,7 @@ const payload = {
     CreationTime: creationTime,
     CreatorUserId: ""
   };
-
+console.log("payload",payload)
   this.service.Consume(payload).pipe(withLoader(this.loaderService)).subscribe({
     next: (res: any) => {
       let parsedResult;
@@ -1370,6 +1379,11 @@ else{
 const bodyArray = this.form.get('body')?.value;
 const bodyValue = bodyArray?.[0]?.bodyValue || null;
 console.log("body2", bodyValue);
+
+// const headerArray = this.form.get('headers')?.value;
+// const headerValue = headerArray?.[0]?.headerValue || null;
+// console.log("header2", headerValue);
+
 const creationTime = new Date();
 console.log(creationTime);
 
@@ -1393,7 +1407,8 @@ console.log(creationTime);
     requestURL: formValues.apiUrl,
     httpMethod:  this.form.controls['method'].value.value,
     requestParam: null,
-    header: formValues.header,
+    // header: formValues.header,
+    header: this.buildHeaderString(),
     authReq: formValues.isrequireauth,
     authAPIId: this.form.controls['selectedapi'].value?.value, 
     authenticatioType: formValues.authType,
@@ -1627,6 +1642,72 @@ const bodyRequestModels: projapirequestmodel[] = Object.entries(bodyObj).map(
 
 requestModels.push(...bodyRequestModels);
 }
+debugger;
+// const headerArray = this.form.get('headers')?.value;
+// const headerValue = headerArray?.[0]?.headerValue || null;
+// console.log("header2", headerValue);
+
+// const headerArray = this.form.get('headers')?.value as {
+//   headerKey: string;
+//   headerValue: string;
+// }[];
+
+const headerString = this.buildHeaderString();
+
+if (headerString) {
+  const headerRequestModel: projapirequestmodel = {
+    apiId: this.createdId,
+    type: 5,                
+    key: headerString,          
+    inputType: 0,
+    inputSource: null,
+    inputValue: null, 
+    seq: 0,                  
+    isDeleted: false,
+    deleterUserId: 0,
+    deletionTime: creationTime,
+    lastModificationTime: creationTime,
+    lastModifierUserId: 0,
+    creationTime: creationTime,
+    creatorUserId: 0,
+    id: 0
+  };
+
+  requestModels.push(headerRequestModel);
+}
+
+// console.log("headerValue",headerValue)
+// if (headerValue && headerValue.trim() !== '' && headerValue.trim() !== '{}') {
+// const headerValue = this.form.get('headers')?.value?.[0]?.headerValue;
+// const headerObj = JSON.parse(headerValue);
+// console.log("headerObj",headerObj)
+// const headerRequestModels: projapirequestmodel[] = Object.entries(headerObj).map(
+//   ([k, v], index) => {
+//     return {
+//      apiId: this.createdId,
+//   type: 5,
+//   key:k,
+//   inputType: 0,
+//   inputSource: null,
+//   inputValue: v,
+//   seq: index,
+//   isDeleted: false,
+//   deleterUserId: 0,
+//   deletionTime: creationTime,
+//   lastModificationTime: creationTime,
+//   lastModifierUserId: 0,
+//   creationTime: creationTime,
+//   creatorUserId: 0,
+//   id: 0
+//     };
+//   }
+// );
+
+// requestModels.push(...headerRequestModels);
+// }
+
+
+
 
 
 requestModels.push(...finalselect);
