@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -9,7 +9,8 @@ import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { HeaderService } from '../../services/header.service';
 import { MaterialModule } from '../../Material.module';
 import { SessionService } from '../../services/common/session.service';
-
+import { LoaderService } from '../../services/common/loader.service';
+import { KeycloakService } from 'keycloak-angular';
 
 interface MenuItem {
   icon: string;
@@ -39,6 +40,10 @@ interface MenuItem {
   styleUrl: './sidenav.component.css'
 })
 export class SidenavComponent implements OnInit {
+  userInfo: any = null;
+  userName: string = ''
+  online: boolean = true;
+ hideCustomisation = false;
   isSidebarCollapsed = true;
   sessionService = inject(SessionService);
   configData: any;
@@ -61,7 +66,7 @@ export class SidenavComponent implements OnInit {
 
   }
 
-  constructor(public headerService: HeaderService, public routes: Router, private route: ActivatedRoute) {
+  constructor(public headerService: HeaderService, public routes: Router, private route: ActivatedRoute, private cdRef: ChangeDetectorRef,  private loaderService: LoaderService,private keycloakService: KeycloakService,) {
   }
   ngOnInit(): void {
     
@@ -86,15 +91,15 @@ export class SidenavComponent implements OnInit {
         }, {
          icon: './assets/img/VMS.png',
         activeIcon: './assets/img/VMS.png',
-          label: 'VMS',
+          label: 'VMD',
           link: 'vms',
         }, 
-        {
-          icon: './assets/img/TES.png',
-        activeIcon: './assets/img/TES.png',
-          label: 'TES',
-          link: 'tes',
-        }, 
+        // {
+        //   icon: './assets/img/TES.png',
+        // activeIcon: './assets/img/TES.png',
+        //   label: 'TES',
+        //   link: 'tes',
+        // }, 
         {
          icon: './assets/img/PA.png',
         activeIcon: './assets/img/PA.png',
@@ -108,12 +113,12 @@ export class SidenavComponent implements OnInit {
         link: 'camera',
         apiLable: "surveilience"
       },
-      {
-        icon: './assets/img/icon_parking.svg',
-        activeIcon: './assets/img/icon_parking1.svg',
-        label: 'Parking',
-        link: 'parking'
-      },
+      // {
+      //   icon: './assets/img/icon_parking.svg',
+      //   activeIcon: './assets/img/icon_parking1.svg',
+      //   label: 'Parking',
+      //   link: 'parking'
+      // },
       {
         icon: './assets/img/icon_ATCS.svg',
         activeIcon: './assets/img/icon_ATCS1.svg',
@@ -275,6 +280,10 @@ isItemActive(item: any): boolean {
     this.isSidebarCollapsed = !this.isSidebarCollapsed;
     this.toggleLogoMain();
   };
+  onToggleEdit() {
+    this.headerService.toggle();
+    this.cdRef.detectChanges();
+  }
   // toggleLogo(event:Event) {
   //   let showLogo = this.logoShow.emit(event);
   // }
@@ -310,4 +319,36 @@ isItemActive(item: any): boolean {
       this.router.navigateByUrl(absolute);
     }
   }
+
+    async logout() {
+    sessionStorage.removeItem('userInfo');
+    try {
+      console.log('🚪 Logging out user...');
+      this.loaderService.showLoader();
+
+      // Get the Keycloak instance
+      const keycloak = this.keycloakService.getKeycloakInstance();
+
+      // Build logout URL (Keycloak handles session cleanup)
+      const logoutUrl = keycloak.createLogoutUrl({
+        redirectUri: window.location.origin + '/#/dashboard' // redirect back to login after logout
+      });
+
+      console.log('➡️ Redirecting to logout URL:', logoutUrl);
+
+      // Redirect the user
+      window.location.href = logoutUrl;
+
+    } catch (error) {
+      console.error('❌ Logout failed:', error);
+      this.loaderService.hideLoader();
+      this.router.navigate(['/dashboard']);
+    } finally {
+      // Hide loader if redirect doesn’t occur
+      setTimeout(() => this.loaderService.hideLoader(), 1500);
+    }
+  }
+
+    profileRedirect() {
+ this.router.navigate(['/profile']);  }
 }

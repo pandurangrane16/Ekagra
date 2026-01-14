@@ -9,10 +9,12 @@
    background: #fff;
    border-left: 8px solid;
 }
-
+.infoIcon{
+  color: #000;
+}
 /* alert type vms */ 
 .alert-vms{
-  /* background: #66ccff; */
+  background: #afe2fb;
   border-color: #088ed1;
 }
 .alert-vms .infoIcon{
@@ -26,35 +28,35 @@
 }
 /* alert type pa */ 
 .alert-pa{
-  /* background: #a866ff; */
-  border-color: #6e2cc4;
+  background: #b4c2ff;
+  border-color: #1c2d7b;
 }
 .alert-pa .infoIcon{
-  color: #6e2cc4;
+  color: #1c2d7b;
 }
 .alert-pa .close-btn{
-  background: #6e2cc4;
+  background: #1c2d7b;
 }
 .alert-pa .close-btn:hover{
-  background: #48158a;
+  background: #0c1a57;
 }
 /* alert type atcs */ 
 .alert-atcs{
-  /* background: #ffbb76; */
-  border-color: #f39537;
+  background: #ffd2a4;
+  border-color: #ff9933;
 }
 .alert-atcs .infoIcon{
-  color: #f39537;
+  color: #ff9933;
 }
 .alert-atcs .close-btn{
-  background: #f39537;
+  background: #ff9933;
 }
 .alert-atcs .close-btn:hover{
   background: #d6720d;
 }
 /* alert type parking */ 
 .alert-parking{
-  /* background: #85d685; */
+  background: #a5fda5;
   border-color:#539453;
 }
 .alert-parking .infoIcon{
@@ -108,7 +110,7 @@
 
 .alert .msg{
   padding: 0 20px;
-  font-size: 16px;
+  font-size: 14px;
 }
 .alert .close-btn{
   position: absolute;

@@ -788,8 +788,8 @@ export class CmLeafletComponent implements OnInit {
   const statusColor = site.isReachable ? '#27ae60' : '#e74c3c';
 
   return `
-    <div style="font-family: 'Segoe UI', Tahoma, sans-serif; padding: 5px; min-width: 220px;">
-      <h3 style="margin: 0 0 10px 0; color: #2c3e50; border-bottom: 2px solid ${statusColor}; padding-bottom: 5px;">
+    <div style="padding: 5px; min-width: 220px;">
+      <h6 style="margin: 0 0 10px 0; color: #2c3e50; border-bottom: 2px solid ${statusColor}; padding-bottom: 5px; text-transform:capitalize">
         ${site.name || 'Unknown Site'}
       </h3>
       <table style="width: 100%; font-size: 12px; border-collapse: collapse;">
@@ -811,7 +811,7 @@ export class CmLeafletComponent implements OnInit {
 private createPopupRow(label: string, value: any, color: string = '#2c3e50', isBold: boolean = false): string {
   return `
     <tr style="border-bottom: 1px solid #f1f1f1;">
-      <td style="padding: 6px 0; color: #7f8c8d; font-weight: 500;">${label}</td>
+      <td style="padding: 6px 0; color: #7f8c8d; font-weight: 500; text-transform:capitalize">${label}</td>
       <td style="padding: 6px 0; text-align: right; color: ${color}; font-weight: ${isBold ? 'bold' : 'normal'};">
         ${value ?? '-'}
       </td>
@@ -976,7 +976,7 @@ marker.on('click', () => {
 
       marker.bindTooltip(`
         <div class="custom-tooltip">
-          <div class="tooltip-title">${site.siteName ?? site.name}</div>
+          <div class="tooltip-title" style="text-transform:capitalize">${site.siteName ?? site.name}</div>
           <div>ID: ${site.siteId ?? site.name}</div>
         </div>
       `, { direction: 'top', offset: [0, -20], sticky: true, opacity: 0.95 });
@@ -1062,8 +1062,8 @@ marker.on('click', () => {
 
     // Header template used for both success and error states
     const headerHtml = `
-    <div style="text-align: center; font-weight: bold; font-size: 14px; margin-bottom: 8px; color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 5px;">
-      ${siteName}
+    <div style="text-align: center; font-weight: bold; font-size: 14px; margin-bottom: 8px; color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 5px; text-transform: capitalize;">
+      ${siteName} 
     </div>
   `;
 
