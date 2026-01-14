@@ -1,13 +1,15 @@
 <!-- <p>user-profile</p> -->
-<div class="profile-container">
-
-  <h2 class="title">User Profile</h2>
+<div class="card profile-container">
+<div class="card-header">
+  <h2 class="title my-2">User Profile</h2>
+  </div>
   <p class="success" *ngIf="successMsg">{{ successMsg }}</p>
   <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+  <div class="card-body">
   <form (ngSubmit)="saveProfile()" #profileForm="ngForm" novalidate>
-
+<div class="d-flex gap-2">
     <!-- First Name -->
-    <div class="form-group">
+    <div class="form-group w-50">
       <label>First Name</label>
       <input
         type="text"
@@ -19,7 +21,7 @@
     </div>
 
     <!-- Last Name -->
-    <div class="form-group">
+    <div class="form-group w-50">
       <label>Last Name</label>
       <input
         type="text"
@@ -28,7 +30,7 @@
         required
         placeholder="Enter last name"
       />
-    </div>
+    </div></div>
 
     <!-- Email -->
     <div class="form-group">
@@ -96,6 +98,6 @@
   </form>
 
   <!-- Messages -->
-
+</div>
 
 </div>

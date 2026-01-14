@@ -1,6 +1,6 @@
 <div class="card p-0">
-  <app-cm-breadcrumb [breadcrumbItems]="[{ parts: ['VMS Dashboard'], link: '/dashboard-vms' }]"
-       [zoneOptions]="ZoneOptions" [selectedZones]="selectedZones" [showDatePicker]="false"
+  <app-cm-breadcrumb [breadcrumbItems]="[{ parts: ['VMD Dashboard'], link: '/dashboard-vms' }]"
+       [zoneOptions]="ZoneOptions" [selectedZones]="selectedZones" [showDatePicker]="false" [showPicker]="false"
         (zoneSelectionChange)="onActionSelectionChange($event)" (configClear)="clearActions()"
         >
     </app-cm-breadcrumb>
@@ -14,8 +14,8 @@
 <div class="row mb-2 mt-2 d-flex">
   <div class="col-md-3">
     <div class="card">
-      <div class="card-body text-center">
-        <h6>Device Status</h6>
+      <div class="card-body">
+       <div class="d-flex justify-content-between align-items-center"> <h6>Device Status</h6>   <button mat-icon-button appearance="outline"><mat-icon>refresh</mat-icon></button></div>
       <app-device-status [zoneIds]="selectedZoneIds"></app-device-status>
       
 

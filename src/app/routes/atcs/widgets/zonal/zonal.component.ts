@@ -42,7 +42,11 @@ Highcharts: typeof Highcharts = Highcharts;
     chart: {
       type: 'pie',
       backgroundColor: 'transparent',  // Transparent background
-        
+        margin: [0, 0, 0, 0],
+        spacingTop: 0,
+        spacingBottom: 0,
+        spacingLeft: 0,
+        spacingRight: 0 
     },
     title: {
       text: '',
@@ -183,7 +187,7 @@ tooltip: {
 
     const total = rawData.length;
 
-    const colors = ['#344BFD', '#66CC66', '#53CEE7', '#FFD200', '#FC4F64', '#FF5733', '#C70039', '#900C3F', '#581845', '#1ABC9C', '#2ECC71'];
+    const colors = ['red', 'green', '#53CEE7', '#FFD200', '#FC4F64', '#FF5733', '#C70039', '#900C3F', '#581845', '#1ABC9C', '#2ECC71'];
 
 
 
@@ -225,7 +229,8 @@ this.jsonData = { data: [...formattedData] };
         ...this.chartOptions,  // keep all existing options
         series: [{
           type: 'pie',
-            innerSize: '50%',
+            size:'100%',
+            innerSize: '70%',
     borderRadius: 0,
           data: [...formattedData]  // new array reference
         }]as unknown as SeriesOptionsType[]

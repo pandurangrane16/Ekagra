@@ -1,7 +1,7 @@
 <div class="cm-breadcrumb card-header" aria-label="breadcrumb">
 
   <div class="row d-flex align-item-center">
-    <div class="col-md-6 d-flex align-item-center">
+    <div class="col-md-4 d-flex align-item-center">
       <div *ngFor="let row of rows; let i = index" class="breadcrumb-row">
     <!-- <span class="breadcrumb-index">{{ row.index ?? (i + 1) }}.</span> -->
     <ng-container *ngIf="row.parts.length === 1">
@@ -20,6 +20,18 @@
     </ng-container>
   </div>
     </div>
+
+    <div class="col-md-2 d-flex justify-content-end align-items-center" *ngIf="showPicker">
+      <mat-form-field appearance="fill" class="w-100">
+                        <mat-select placeholder="Quick select" [(ngModel)]="selectedValue"
+          >
+        
+          <mat-option value="Today">Today </mat-option>
+          <mat-option value="Yesterday">Yesterday </mat-option>
+          <mat-option value="Last Week">Last Week </mat-option>
+          <mat-option value="Last Month">Last Month </mat-option>
+        </mat-select></mat-form-field>
+                    </div>
     <div class="col-md-3 d-flex align-items-center ms-auto">
       <mat-form-field appearance="fill" class="w-100">
         <mat-select placeholder=" -- Select Zone--" [(ngModel)]="selectedZones" (selectionChange)="onZoneChange($event)"
@@ -36,8 +48,8 @@
     <div class="col-md-3" *ngIf="showDatePicker">
 
       <mat-form-field class="w-100">
-        <mat-label>Enter a date range</mat-label>
-        <mat-date-range-input [rangePicker]="picker">
+        <mat-label >Enter a date range</mat-label>
+        <mat-date-range-input [rangePicker]="picker" class="mt-2">
           <input matStartDate placeholder="Start date" [value]="startDate" (dateChange)="DateWiseFilter($event,'start')">
           <input matEndDate placeholder="End date"[value]="endDate" (dateChange)="DateWiseFilter($event,'end')">
         </mat-date-range-input>

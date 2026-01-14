@@ -32,7 +32,9 @@ export class CmBreadcrumbComponent {
   // Zone Inputs/Outputs
   @Input() zoneOptions: any[] = [];
   @Input() showDatePicker: boolean = true;
+  @Input() showPicker: boolean = true;
   @Input() selectedZones: any[] = [];
+  @Input() selectedValue? :string;
   @Input() startDate: Date | null = null;
   @Input() endDate: Date | null = null;
   @Output() zoneSelectionChange = new EventEmitter<any>();
