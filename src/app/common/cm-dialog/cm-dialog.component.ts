@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 export interface DialogData {
   title?: string;
+  snapTime?: string;
   src: string;
   type: 'info' | 'warning' | 'alert' | 'delete';
   // confirmButtonText?: string;
@@ -26,7 +27,10 @@ export class CmDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<CmDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) {}
+  ) {
+    // This will print the data object to the browser console
+    console.log('Dialog Data Received:', this.data);
+  }
 
   onConfirm(): void {
     this.dialogRef.close(true);
@@ -34,7 +38,11 @@ export class CmDialogComponent {
   
 
   onCancel(): void {
+    debugger;
+        console.log('Dialog Data Received:', this.data);
     this.dialogRef.close(false);
+    
+
   }
 }
 

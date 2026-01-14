@@ -6,6 +6,7 @@ import { LoaderService } from '../../../../services/common/loader.service';
 import { withLoader } from '../../../../services/common/common';
 import { atcsDashboardservice } from '../../../../services/atcs/atcsdashboard.service';
 import { SessionService } from '../../../../services/common/session.service';
+import { SeriesOptionsType } from 'highcharts';
 
 @Component({
     selector: 'app-zonal',
@@ -47,9 +48,11 @@ Highcharts: typeof Highcharts = Highcharts;
       text: '',
       align: 'left'
   },
-  tooltip: {
-    format: '{point.percentage:.0f} %',
-  },
+tooltip: {
+  // {point.count} shows the raw number
+  // {point.y} shows the percentage calculated in your map function
+  format: '<b>{point.name}</b><br/>Percentage: {point.count}%<br/>Count: {point.y}',
+},
  
    legend: {
         enabled:false,
@@ -86,7 +89,7 @@ Highcharts: typeof Highcharts = Highcharts;
               <div style="text-align: center; background-color:#ECEAF8; border-radius:50%;width:32px; height:32px;line-height:32px">
                 
                 <span style="font-size: 10px;">
-                  ${this.y}%
+                  ${this.y}
                 </span>
               </div>
             `;
@@ -182,13 +185,32 @@ Highcharts: typeof Highcharts = Highcharts;
 
     const colors = ['#344BFD', '#66CC66', '#53CEE7', '#FFD200', '#FC4F64', '#FF5733', '#C70039', '#900C3F', '#581845', '#1ABC9C', '#2ECC71'];
 
-    // Step 2: Format data for chart
-    const formattedData = Object.entries(statusCountMap).map(([status, count], index) => ({
-      name: status,
-      y: +(count / total * 100).toFixed(2), // percentage with 2 decimal places
-      color: colors[index % colors.length]
-    }));
-  this.jsonData = { data: [...formattedData] };
+
+
+
+
+const formattedData = Object.entries(statusCountMap).map(([status, count], index) => {
+  // 1. Define specific colors for statuses
+  let pointColor = colors[index % colors.length]; // Default to your array
+  
+  if (status.toLowerCase() === 'connected') {
+    pointColor = '#008000'; // Green
+  } else if (status.toLowerCase() === 'disconnected') {
+    pointColor = '#FF0000'; // Red
+  }
+
+  return {
+    name: status,
+    // Note: I swapped count and y back to their logical roles 
+    // y is the value for the chart slice, count is the raw number
+     count: +(count / total * 100).toFixed(2),                         // <--- Added the raw number here
+  y:count ,
+    color: pointColor,
+    displayLabel: `${status}: ${count} (${(count / total * 100).toFixed(2)}%)`
+  };
+});
+
+this.jsonData = { data: [...formattedData] };
 
 //      this.chartOptions.series = [{
 //        type: 'pie',
@@ -206,8 +228,9 @@ Highcharts: typeof Highcharts = Highcharts;
             innerSize: '50%',
     borderRadius: 0,
           data: [...formattedData]  // new array reference
-        }]
+        }]as unknown as SeriesOptionsType[]
       };
+      
 
 
 

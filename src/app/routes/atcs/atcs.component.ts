@@ -75,15 +75,15 @@ projectId: number = 0;
   isCardExpanded = false;
   siteList: any[] = [];
 labelList: any[] = [
-  { key: 'pt', label: 'Phase Time' },
+ 
   { key: 'sl', label: 'Saturation Level' }, 
   { key: 'm', label: 'Mode' },
-  { key: 'it', label: 'Interval Time' },
+
   { key: 'pn', label: 'Plan Number' },
   { key: 'h', label: 'Health' },
-  { key: 'ct', label: 'Cycle Time' },
+ 
   { key: 'serverTime', label: 'Server Time' },
-  { key: 'id', label: 'Server Id' }
+  { key: 'id', label: 'Site Id' }
 ];
   popupData: { [siteId: string]: any } = {};
   session = inject(SessionService);

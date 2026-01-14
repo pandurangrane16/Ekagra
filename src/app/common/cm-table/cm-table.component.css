@@ -1,6 +1,13 @@
 .table-dark th {
     color: black !important; 
   }
+  .clickable-header {
+  cursor: pointer;
+  user-select: none;
+}
+.clickable-header:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Slight highlight on hover */
+}
 table td {
     text-align: center;
     vertical-align: middle;

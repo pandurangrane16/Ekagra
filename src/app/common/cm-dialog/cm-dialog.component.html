@@ -1,5 +1,9 @@
 <div class="dialog-header" [ngClass]="data.type">
   <span class="dialog-title">{{ data.title || 'Confirm' }}</span>
+  <span *ngIf="data.snapTime" class="me-3" style="font-size: 14px; opacity: 0.9;">
+      {{ data.snapTime }}
+    </span>
+    
   <span class="dialog-icon">
    <mat-icon 
  

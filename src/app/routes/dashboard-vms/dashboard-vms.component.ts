@@ -144,6 +144,9 @@ export class DashboardVMSComponent implements OnInit {
         // 3. Map the VMS data to your table format
         this.userList = vmsItems.map((item: any) => ({
           location: item.vmsDescription,
+          status: item.networkStatus === 1 ? 'Online' : 'Offline',
+          size : `${item.width} x ${item.height}`,
+          snaptime: item.snaptime,
           vmsId: item.vmsId,
           vmsCode: item.vmsCode, // Added this since it's available now
          
@@ -152,6 +155,7 @@ export class DashboardVMSComponent implements OnInit {
         }));
 
         this.totalRecords = this.userList.length;
+        debugger;
         console.log("✅ Loaded VMS list:", this.userList);
     }
         
@@ -299,8 +303,11 @@ export class DashboardVMSComponent implements OnInit {
   }
   buildHeader() {
     this.headArr = [
-      { header: 'Location', fieldValue: 'location', position: 1, },
-      { header: 'Action', fieldValue: 'button', position: 2, }
+      { header: 'Location', fieldValue: 'location', position: 1,sorting: true},
+    
+        { header: 'Status', fieldValue: 'status', position: 2,sorting: true },
+      { header: 'Size', fieldValue: 'size', position: 3, },
+           { header: 'Preview', fieldValue: 'button', position: 4, },
 
 
     ];
@@ -332,6 +339,8 @@ export class DashboardVMSComponent implements OnInit {
       seq: 8
     };
     debugger;
+    
+  
     // ✅ Call GetVMSSnapshot using same payload structure
     this.service
       .PostSiteResponse(requestPayload)
@@ -342,14 +351,15 @@ export class DashboardVMSComponent implements OnInit {
 
           if (result?.snapshot) {
             const imageSrc = 'data:image/jpeg;base64,' + result.snapshot;
-
+            debugger;
             this.dialog.open(CmDialogComponent, {
               width: '600px',
               position: { top: '80px' },
               panelClass: 'custom-dialog',
               data: {
                 title: `${rowData.location}`,
-                src: imageSrc
+                src: imageSrc,
+                snapTime: result.snaptime,
               }
             });
           } else {

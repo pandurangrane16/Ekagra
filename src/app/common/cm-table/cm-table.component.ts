@@ -54,6 +54,27 @@ export class CmTableComponent implements OnInit {
         this.searchText = "";
       }
     }
+// Initialize as empty so no column shows an active arrow on load
+currentSortField: string = ''; 
+sortDirection: boolean = false;
+
+sortData(field: string) {
+  // If clicking the same field, toggle direction. If new field, start with Ascending (true)
+  if (this.currentSortField === field) {
+    this.sortDirection = !this.sortDirection;
+  } else {
+    this.currentSortField = field;
+    this.sortDirection = true; 
+  }
+
+  this.gridArr.sort((a, b) => {
+    const valA = a[field]?.toString().toLowerCase() || '';
+    const valB = b[field]?.toString().toLowerCase() || '';
+    
+    const comparison = valA.localeCompare(valB);
+    return this.sortDirection ? comparison : -comparison;
+  });
+}
     displayActivePage(activePageNumber: number) {
       this.activePage = activePageNumber
     }

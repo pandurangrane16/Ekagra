@@ -6,10 +6,27 @@
       <!-- {{activePage}} -->
       <table class="w-100 table table-bordered table-striped" id="datatableexample">
         <thead class="bg-blue">
-          <tr>
-            <th width="80">Sr No.</th>
-            <th class="f-w-600 f-s-14" *ngFor="let col of headArr">{{ col.header }}</th>
-          </tr>
+        <tr>
+  <th width="80">Sr No.</th>
+<th class="f-w-600 f-s-14" 
+    *ngFor="let col of headArr" 
+    (click)="col.sorting ? sortData(col.fieldValue) : null"
+    [style.cursor]="col.sorting ? 'pointer' : 'default'">
+  
+  <div class="d-flex align-items-center">
+    {{ col.header }}
+
+    <mat-icon *ngIf="col.sorting" 
+              style="font-size: 18px; height: 18px; width: 18px; margin-left: 5px; vertical-align: middle;">
+      @if (currentSortField === col.fieldValue) {
+        {{ sortDirection ? 'expand_less' : 'expand_more' }}
+      } @else {
+        unfold_more
+      }
+    </mat-icon>
+  </div>
+</th>
+</tr>
         </thead>
         <tbody>
           <tr *ngFor="let item of gridArr; let sr = index" (click)="ShowForm(item)" class="text-center">
