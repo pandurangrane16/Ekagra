@@ -1,11 +1,9 @@
 .profile-container {
   max-width: 480px;
   margin: 50px auto;
-  padding: 30px;
   border-radius: 10px;
   background: #ffffff;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  font-family: Arial, sans-serif;
 }
 
 .title {
@@ -23,7 +21,7 @@ label {
   display: block;
   font-size: 14px;
   margin-bottom: 6px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 input {
@@ -52,7 +50,7 @@ button {
   border: none;
   cursor: pointer;
   font-size: 14px;
-  background: #3f51b5;
+  background: var(--primary-color);
   color: #fff;
 }
 
@@ -73,7 +71,10 @@ button:disabled {
 }
 
 .error {
-  color: #d32f2f;
-  margin-top: 15px;
-  text-align: center;
+color: #d32f2f;
+    margin-top: 0;
+    text-align: center;
+    background: #ffd0cd;
+    padding: 5px;
+    border-bottom: 1px solid #f8aaaa;
 }

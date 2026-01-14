@@ -1,4 +1,5 @@
 .sidebar {
+  --mat-menu-container-color:#66ccff!important;
 /* box-shadow: 7px 4px 16px 2px rgba(0, 0, 0, 0.18); */
   background-color: var(--primary-color);
   color: #ecf0f1;
@@ -186,3 +187,27 @@
     overflow: visible!important;
 }
 .mat-mdc-button .mdc-button__label,.mat-button .mdc-button__label{display: flex!important;}
+
+::ng-deep .sidM.mat-mdc-menu-panel {
+--mat-menu-container-color:#66ccff!important;
+ background-color: var(--mat-menu-container-color);
+}
+.logoutMenu:hover{
+  color: red;
+}
+.logoutMenu:hover .mat-icon-no-color{
+ color: red;
+}
+::ng-deep .sidebar .mat-mdc-icon-button img {
+--mdc-icon-button-icon-size: 28px;
+}
+::ng-deep .sidebar .mat-mdc-icon-button.mat-mdc-button-base {
+  --mdc-icon-button-state-layer-size: 40px;
+  padding: 0;
+    border: 1px solid #b1b8d580;
+  }
+  ::ng-deep .sidebar .mat-mdc-icon-button:hover.mat-mdc-button-base{
+     border: 1px solid #ffffff;
+  }
+  .online{width: 9px; height: 9px; background-color: #ff5757; position: absolute; right: -3px;
+    bottom: 6px; border:1px solid #fc7575; }

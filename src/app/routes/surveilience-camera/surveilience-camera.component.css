@@ -1,3 +1,7 @@
+:root{
+  --mat-expansion-header-expanded-state-height
+: 44px;
+}
 .fullscreen {
     z-index: 9999;
     width: 100%;
@@ -117,4 +121,15 @@
 }
 .site-name mat-checkbox {
   margin-right: 8px;
+}
+:host ::ng-deep .mat-expansion-panel-body{padding: 0 0 0 0;}
+
+:host ::ng-deep .mat-expansion-panel-header-title{
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.mat-expansion-panel-header.mat-expanded {
+  --mat-expansion-header-expanded-state-height:44px;
+    height: var(--mat-expansion-header-expanded-state-height);
 }

@@ -1,17 +1,17 @@
-<header class="container-fluid">
+<header class="container-fluid" *ngIf="headerService.showLogo">
   <div class="row d-flex justify-content-between align-item-center">
     <div class="col-6">
 
-      <img src="assets/img/logo2.svg" alt="" class="logo2" (click)="onClick($event)" *ngIf="headerService.showLogo">
+      <img src="assets/img/logo2.svg" alt="" class="logo2 mb-2" (click)="onClick($event)" *ngIf="headerService.showLogo">
     </div>
     <div class="col-6 text-right justify-content-end align-content-end d-flex">
 
 
 
-       <div class="me-3 text-end" *ngIf="userInfo">
+       <!-- <div class="me-3 text-end" *ngIf="userInfo">
         <div class="fw-bold">{{ userInfo.name || userInfo.userName }}</div>
         <small class="text-muted">{{ userInfo.emailAddress }}</small>
-      </div>
+      </div> -->
 
 
 
@@ -25,7 +25,7 @@
       </button>
 
 
-      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu p-0">
+      <!-- <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu p-0">
         <img src="assets/img/user.png" alt="" class="rounded-5"> <span class="online rounded-5" *ngIf="online"></span>
       </button>
       <mat-menu #menu="matMenu">
@@ -42,7 +42,7 @@
           <span>Customize Dashboard</span>
         </button>
 
-      </mat-menu>
+      </mat-menu> -->
     </div>
   </div>
 

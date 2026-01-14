@@ -36,5 +36,30 @@
         </li>
       </ng-container>
     </ul>
+  
+  <hr/>
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu p-0 ms-2">
+        <img src="assets/img/user.png" alt="" class="rounded-5"> <span class="online rounded-5" *ngIf="online"></span>
+      </button>
+      
+      <mat-menu #menu="matMenu" class="sidM">
+         <button mat-menu-item (click)="profileRedirect()">
+          <mat-icon>person</mat-icon>
+          <span>User Profile</span>
+        </button>
+     <button mat-menu-item (click)="logout()" class="logoutMenu">
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+        <button mat-menu-item (click)="onToggleEdit()" *ngIf="hideCustomisation">
+          <mat-icon>design_services</mat-icon>
+          <span>Customize Dashboard</span>
+        </button>
+
+      </mat-menu>
+    <div class="me-3 text-end" *ngIf="userInfo">
+        <div class="fw-bold">{{ userInfo.name || userInfo.userName }}</div>
+        <small class="text-muted">{{ userInfo.emailAddress }}</small>
+      </div>
   </div>
 </div>
