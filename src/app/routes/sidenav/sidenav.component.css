@@ -191,6 +191,8 @@
 ::ng-deep .sidM.mat-mdc-menu-panel {
 --mat-menu-container-color:#66ccff!important;
  background-color: var(--mat-menu-container-color);
+ position: absolute;
+ left: -55px;
 }
 .logoutMenu:hover{
   color: red;

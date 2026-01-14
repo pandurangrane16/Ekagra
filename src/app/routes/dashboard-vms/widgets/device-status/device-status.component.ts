@@ -7,11 +7,12 @@ import { LoaderService } from '../../../../services/common/loader.service';
 import { SessionService } from '../../../../services/common/session.service';
 import { ToastrService } from 'ngx-toastr';
 import { vmsdashboardService } from '../../../../services/dashboard/vmsDashboard.service';
+import { MaterialModule } from '../../../../Material.module';
 
 @Component({
   selector: 'app-device-status',
  
-  imports: [HighchartsChartModule, CommonModule],
+  imports: [HighchartsChartModule, CommonModule,MaterialModule],
   templateUrl: './device-status.component.html',
   styleUrl: './device-status.component.css'
 })

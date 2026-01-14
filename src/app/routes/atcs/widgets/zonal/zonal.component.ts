@@ -6,11 +6,13 @@ import { LoaderService } from '../../../../services/common/loader.service';
 import { withLoader } from '../../../../services/common/common';
 import { atcsDashboardservice } from '../../../../services/atcs/atcsdashboard.service';
 import { SessionService } from '../../../../services/common/session.service';
+import { MaterialModule } from '../../../../Material.module';
 import { SeriesOptionsType } from 'highcharts';
+
 
 @Component({
     selector: 'app-zonal',
-    imports: [HighchartsChartModule, CommonModule],
+    imports: [HighchartsChartModule, CommonModule,MaterialModule],
     templateUrl: './zonal.component.html',
     styleUrl: './zonal.component.css'
 })
