@@ -1,9 +1,11 @@
 <!-- <p>user-profile</p> -->
-<div class="profile-container">
-
-  <h2 class="title">User Profile</h2>
+<div class="card profile-container">
+<div class="card-header">
+  <h2 class="title my-2">User Profile</h2>
+  </div>
   <p class="success" *ngIf="successMsg">{{ successMsg }}</p>
   <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+  <div class="card-body">
   <form (ngSubmit)="saveProfile()" #profileForm="ngForm" novalidate>
 
     <!-- First Name -->
@@ -96,6 +98,6 @@
   </form>
 
   <!-- Messages -->
-
+</div>
 
 </div>
