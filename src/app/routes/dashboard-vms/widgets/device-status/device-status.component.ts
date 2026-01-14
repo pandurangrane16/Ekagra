@@ -312,6 +312,10 @@ const zoneIds = this.zoneIds || [];
       });
   }
 
+  refreshData() {
+  this.getDeviceStatus();
+}
+
   initializeChart(active: number, inactive: number) {
 
       this.legendData = [
