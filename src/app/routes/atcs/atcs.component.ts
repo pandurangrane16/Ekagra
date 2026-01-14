@@ -595,6 +595,7 @@ const projectId = this.getAtcsProjectId();
 
        this.selectedJunction = this.junctions[0].value;
        this.selectedCorridorJunction = this.junctions[0].viewValue;
+       this.filterCorridorByJunction();
         
         console.log('Initial junction selected:', this.selectedJunction);
       } else {
