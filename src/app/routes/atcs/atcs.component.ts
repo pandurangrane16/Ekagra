@@ -588,7 +588,7 @@ const projectId = this.getAtcsProjectId();
   
       if (res?.success && Array.isArray(res.result)) {
         this.junctions = res.result.map((item: any) => ({
-          value: item.siteId.toString(),
+          value: item.siteName,
           viewValue: `${item.siteName} (${item.siteId})`
         }));
 
