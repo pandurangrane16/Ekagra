@@ -974,7 +974,7 @@ marker.on('click', () => {
 
       const latlngs = ring.map(([lng, lat]: [number, number]) => this.L.latLng(lat, lng));
       
-      const polygon = this.L.polygon(latlngs, { color: 'blue' });
+      const polygon = this.L.polygon(latlngs, { color: 'green' });
       
       // Add each polygon to the map and the FeatureGroup
       polygon.addTo(this.map);

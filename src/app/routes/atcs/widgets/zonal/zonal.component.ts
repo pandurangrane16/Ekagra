@@ -249,6 +249,10 @@ this.jsonData = { data: [...formattedData] };
     });
   }
 
+
+  refreshData(){
+      this.getUnprocessedConnectedCtrlData();
+  }
   ngOnInit(): void {
 
      // ✅ Step 1: Get project codes from session

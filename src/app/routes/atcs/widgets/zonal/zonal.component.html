@@ -1,5 +1,6 @@
 <div class="d-flex justify-content-between align-items-center"> <h6>Device Status</h6>  
-         <button mat-icon-button appearance="outline"><mat-icon>refresh</mat-icon></button></div>
+        
+          <button mat-icon-button appearance="outline" (click)="refreshData()"><mat-icon>refresh</mat-icon></button></div>
 <highcharts-chart 
   [Highcharts]="Highcharts"
   [options]="chartOptions"
