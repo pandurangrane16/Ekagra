@@ -132,6 +132,11 @@ export class DashboardVMSComponent implements OnInit {
       if (response?.success && Array.isArray(response.result)) {
 
         if (response.result.length === 0) {
+      // this.userList = [];
+      // this.toaster.error('No VMS data found for the selected zones.');
+      // return;
+
+      this.allData = [];
       this.userList = [];
       this.toaster.error('No VMS data found for the selected zones.');
       return;
@@ -142,7 +147,7 @@ export class DashboardVMSComponent implements OnInit {
         const vmsItems = response.result.filter((item: any) => item.vmsId !== undefined);
 
         // 3. Map the VMS data to your table format
-        this.userList = vmsItems.map((item: any) => ({
+        this.allData = vmsItems.map((item: any) => ({
           location: item.vmsDescription,
           status: item.networkStatus === 1 ? 'Online' : 'Offline',
           size : `${item.width} x ${item.height}`,
@@ -157,6 +162,8 @@ export class DashboardVMSComponent implements OnInit {
         this.totalRecords = this.userList.length;
         debugger;
         console.log("✅ Loaded VMS list:", this.userList);
+        this.handleSearch(); 
+      this.totalRecords = this.allData.length;
     }
         
       
@@ -303,7 +310,7 @@ export class DashboardVMSComponent implements OnInit {
   }
   buildHeader() {
     this.headArr = [
-      { header: 'Location', fieldValue: 'location', position: 1,sorting: true},
+      { header: 'Location', fieldValue: 'location', position: 1,sorting: true,searchRequired: true, searchValue: '',showSearch: false},
     
         { header: 'Status', fieldValue: 'status', position: 2,sorting: true },
       { header: 'Size', fieldValue: 'size', position: 3, },
@@ -313,6 +320,29 @@ export class DashboardVMSComponent implements OnInit {
     ];
     ;
   }
+
+  
+allData = []; // Your original data from API
+tableDataSource = []; // The data actually shown in <table>
+
+handleSearch() {
+  // We filter from 'allData' and save the result into 'userList'
+  this.userList = this.allData.filter(row => {
+    return this.headArr.every((col: any) => {
+      // Skip filtering if search is not active for this column
+      if (!col.searchRequired || !col.searchValue) return true;
+
+      // Extract the value from the row based on the column's fieldValue (e.g., 'location')
+      const cellValue = String(row[col.fieldValue] || '').toLowerCase();
+      const searchTerm = col.searchValue.toLowerCase().trim();
+
+      return cellValue.includes(searchTerm);
+    });
+  });
+
+  // Update total records to reflect the filtered count
+  this.totalRecords = this.userList.length;
+}
 
 
   viewDevice(rowData: any): void {

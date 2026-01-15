@@ -27,7 +27,7 @@
 
     <app-cm-table [headArr]="headArr" [gridArr]="userList" [pagination]="false" [totalRecords]="totalRecords"
       [perPage]="perPage" [totalPages]="totalPages" [collectionSize]="collectionSize" (pager)="onPageChange($event)"
-      (recordPerPage)="onPageRecordsChange($event)" (searchWithId)="onRowClicked($event)"
+      (recordPerPage)="onPageRecordsChange($event)"(searchChanged)="handleSearch()" (searchWithId)="onRowClicked($event)"
       (btnAction)="onButtonClicked($event)">
     </app-cm-table>
 

@@ -41,6 +41,7 @@ export class CmTableComponent implements OnInit {
     @Output() btnAction = new EventEmitter<any>();
     @Output() checked = new EventEmitter<any>();
     @Output() notChecked = new EventEmitter<any>();
+    @Output() searchChanged = new EventEmitter<void>();
   menu1: MatMenuPanel<any>|null;
     constructor(private router: Router) {
   
@@ -91,6 +92,10 @@ sortData(field: string) {
     pageChange(pager: any) {
        this.pager.emit({ type: 'pageChange', pageNo: pager });
     }
+    filterData() {
+  // Simply tell the parent: "Hey, something changed in the search boxes!"
+  this.searchChanged.emit();
+}
   
     onPageChange(pageNo: number) {
       this.activePage= pageNo;

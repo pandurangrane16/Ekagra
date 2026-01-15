@@ -8,7 +8,7 @@
         <thead class="bg-blue">
         <tr>
   <th width="80">Sr No.</th>
-<th class="f-w-600 f-s-14" 
+<!-- <th class="f-w-600 f-s-14" 
     *ngFor="let col of headArr" 
     (click)="col.sorting ? sortData(col.fieldValue) : null"
     [style.cursor]="col.sorting ? 'pointer' : 'default'">
@@ -24,6 +24,41 @@
         unfold_more
       }
     </mat-icon>
+  </div>
+</th> -->
+<th class="f-w-600 f-s-14" *ngFor="let col of headArr" [style.cursor]="col.sorting ? 'pointer' : 'default'">
+  
+  <div class="header-container">
+    <div class="title-row">
+      <div class="d-flex align-items-center" (click)="col.sorting ? sortData(col.fieldValue) : null">
+        <span class="header-text">{{ col.header }}</span>
+        
+        <mat-icon *ngIf="col.sorting" class="sort-icon">
+          @if (currentSortField === col.fieldValue) {
+            {{ sortDirection ? 'expand_less' : 'expand_more' }}
+          } @else {
+            unfold_more
+          }
+        </mat-icon>
+      </div>
+
+      <button mat-icon-button *ngIf="col.searchRequired" 
+              class="search-trigger" 
+              (click)="$event.stopPropagation(); col.showSearch = !col.showSearch">
+        <mat-icon>{{ col.showSearch ? 'close' : 'search' }}</mat-icon>
+      </button>
+    </div>
+
+    <div *ngIf="col.searchRequired && col.showSearch" 
+         class="search-input-container" 
+         (click)="$event.stopPropagation()">
+      <input type="text" 
+             class="custom-search-input"
+             placeholder="Search {{col.header}}..." 
+             [(ngModel)]="col.searchValue" 
+             (keyup)="filterData()"
+             autoFocus>
+    </div>
   </div>
 </th>
 </tr>
