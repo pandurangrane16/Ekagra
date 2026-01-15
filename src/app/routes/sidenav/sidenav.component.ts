@@ -127,6 +127,12 @@ export class SidenavComponent implements OnInit {
       //   link: 'parking'
       // },
       {
+        icon: './assets/img/sensor.png',
+        activeIcon: './assets/img/sensor.png',
+        label: 'Sensor',
+        link: 'sensor'
+      },
+      {
         icon: './assets/img/icon_ATCS.svg',
         activeIcon: './assets/img/icon_ATCS1.svg',
         label: 'ATCS',
