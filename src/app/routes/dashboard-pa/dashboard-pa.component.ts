@@ -56,6 +56,8 @@ headerArr: any;
       pager: number =0;
         MaxResultCount=10;
   SkipCount=0;
+   zoneCordinate2:any;
+   polygonCoordinates:any;
   perPage=10;
   pageNo=0;
 recordPerPage: number = 10;
@@ -200,20 +202,52 @@ constructor(
 private dialog: MatDialog,private service:PaDashboardService,private toastr: ToastrService,private atcsService: atcsDashboardservice
     ){}
 
+        onPolygonDrawn(coords: any) {
+  console.log('Received polygon coordinates in parent:', coords);
+   const stringifiedCoords = JSON.stringify(coords); 
+  this.polygonCoordinates = stringifiedCoords; 
+   
+}
+
     getZoneList() {
+      debugger;
         this.atcsService.GetAllZones().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
             const items = response?.result || [];
 
             const projectOptions = items.map((item: any) => ({
                 text: (item.zoneName || '').trim() || 'Unknown',
-                id: item.id
+                id: item.id,
+                zoneCordinate: item.zoneCordinate
             }));
 
             // 1. Set selectedZones to everything except the "All" option (id: 0)
             this.selectedZones = [...projectOptions];
             
             // 2. Map the IDs to your array that goes to the Child component
-            this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
+               this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
+
+      const allPolygons: any[] = [];
+  
+  this.selectedZones.forEach(zone => {
+    if (zone.zoneCordinate) {
+      try {
+        // Parse the string (e.g. "[[[lng,lat],...]]")
+        const parsed = JSON.parse(zone.zoneCordinate);
+        // Push the actual polygon array into our master list
+        allPolygons.push(parsed[0]); 
+      } catch (e) {
+        console.error("Invalid coordinates for zone: " + zone.text, e);
+      }
+    }
+  });
+
+  debugger;
+
+  // 2. Convert the master list back to a string format your map method expects
+  // This will look like: [ [[p1],[p2]], [[p1],[p2]] ]
+  this.zoneCordinate2 = JSON.stringify(allPolygons);
+  console.log("zoneCordinate2", this.zoneCordinate2);
+            
 
             projectOptions.unshift({
                 text: 'All',
@@ -242,7 +276,27 @@ private dialog: MatDialog,private service:PaDashboardService,private toastr: Toa
             this.selectedZones = selectedValues.filter((x: any) => x.id !== allOption.id);
         }
 
-        this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
+      
+          this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
+  const allPolygons: any[] = [];
+  
+  this.selectedZones.forEach(zone => {
+    if (zone.zoneCordinate) {
+      try {
+        // Parse the string (e.g. "[[[lng,lat],...]]")
+        const parsed = JSON.parse(zone.zoneCordinate);
+        // Push the actual polygon array into our master list
+        allPolygons.push(parsed[0]); 
+      } catch (e) {
+        console.error("Invalid coordinates for zone: " + zone.text, e);
+      }
+    }
+  });
+
+  // 2. Convert the master list back to a string format your map method expects
+  // This will look like: [ [[p1],[p2]], [[p1],[p2]] ]
+  this.zoneCordinate2 = JSON.stringify(allPolygons);
+  console.log("zoneCordinate2", this.zoneCordinate2);
         this.GetPaList();
         this.loadpoints();
         this.fetchPaStatus();

@@ -772,7 +772,7 @@ export class CmLeafletComponent implements OnInit {
     if (this.existingPolygon) this.renderExistingPolygon(this.existingPolygon);
 
     // 5️⃣ Plot markers
-    if (this.siteData?.length) this.plotSites();
+    // if (this.siteData?.length) this.plotSites();
 
 
       if (this.siteData?.length > 0) {
@@ -823,6 +823,41 @@ private createPopupRow(label: string, value: any, color: string = '#2c3e50', isB
   `;
 }
 
+private getStatusIcon(status: string): string {
+  const iconPath = 'assets/img/';
+  const s = status?.toLowerCase().trim();
+
+  // 1. Ongoing Category
+  if (s === 'ongoing') {
+    return `${iconPath}pa_green.png`;
+  }
+
+  // 2. Registered / Online Category (Blue Icon)
+  // Including your new cases: hangup, transferred, hold, etc.
+  const registeredCases = [
+    'registered', 'up', 'ring', 'ringing', 
+    'hangup', 'transferred', 'hold', 'unreachable', 'reachable', 
+    'lagged', 'down', 'rsrvd', 'offhook', 'dialing', 'busy', 
+    'dialing offhook', 'pre-ring'
+  ];
+
+  if (registeredCases.includes(s)) {
+    return `${iconPath}pa_blue.png`;
+  }
+
+  // 3. Unregistered / Offline Category (Grey Icon)
+  const offlineCases = [
+    'unregistered', 'offline', 'device not configured', 'rejected','not configured'
+  ];
+
+  if (offlineCases.includes(s)) {
+    return `${iconPath}pa_grey.png`;
+  }
+
+  // Default fallback
+  return `${iconPath}pa_grey.png`;
+}
+
 
   private plotSitesForPA(sites: any[]): void {
   debugger;
@@ -839,14 +874,16 @@ private createPopupRow(label: string, value: any, color: string = '#2c3e50', isB
 
     if (isNaN(lat) || isNaN(lng)) continue;
 
+  
+
     const latlng = this.L.latLng(lat, lng);
     bounds.extend(latlng);
-const placeholderIcon = 'https://maps.google.com/mapfiles/ms/icons/red-dot.png';
+const placeholderIcon = this.getStatusIcon(site.Status);
     const icon = this.L.icon({
       iconUrl: placeholderIcon,
-      iconSize: [30, 30],
-      iconAnchor: [15, 30],
-      popupAnchor: [0, -30],
+  iconSize: [25, 25],     // Adjusted for typical PA icons
+    iconAnchor: [12, 25],   // Anchor at the bottom center
+    popupAnchor: [0, -25],
       className: 'custom-map-icon'
     });
 
@@ -867,6 +904,10 @@ const tooltipHtml = `
       ${site.name}
     </div>
 
+    <div style="font-size: 11px; color: rgba(255,255,255,0.85); display: flex; align-items: center;">
+      <span style="margin-right: 4px;">Status:</span>
+      <span style="font-weight: 600; color: #fff;">${site.status || site.Status || 'N/A'}</span>
+    </div>
   </div>
 `;
 
@@ -956,6 +997,7 @@ marker.on('click', () => {
   // }
 
   private renderExistingPolygon(polygonStr: string) {
+    debugger;
   try {
     // 1. Parse the string into an array of polygons
     const allPolygonCoords = JSON.parse(polygonStr); 
