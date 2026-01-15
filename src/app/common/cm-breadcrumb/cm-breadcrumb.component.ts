@@ -34,7 +34,7 @@ export class CmBreadcrumbComponent {
   @Input() showDatePicker: boolean = true;
   @Input() showPicker: boolean = true;
   @Input() selectedZones: any[] = [];
-  @Input() selectedValue? :string;
+  @Input() selectedValue? :string = 'Today';
   @Input() startDate: Date | null = null;
   @Input() endDate: Date | null = null;
   @Output() zoneSelectionChange = new EventEmitter<any>();
@@ -56,6 +56,48 @@ DateWiseFilter(event: any, category: string) {
   clearActions() {
       this.configClear.emit();
   }
+
+
+
+onSelectionChange(value: string) {
+  const now = new Date();
+  let startDate: Date;
+  let endDate: Date = new Date(); // Default end date is "now"
+
+  switch (value) {
+    case 'Today':
+      // From 24 hours ago until now
+      startDate = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+      break;
+
+    case 'Yesterday':
+      // From 48 hours ago until 24 hours ago
+      endDate = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+      startDate = new Date(now.getTime() - (48 * 60 * 60 * 1000));
+      break;
+
+    case 'Last Week':
+      // 7 days ago until now
+      startDate = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
+      break;
+
+    case 'Last Month':
+      // 1 month ago until now (using setMonth for accuracy)
+      startDate = new Date();
+      startDate.setMonth(now.getMonth() - 1);
+      break;
+
+    default:
+      startDate = new Date();
+  }
+
+ this.DateWiseFilter({ value: startDate }, 'start');
+  
+  // 2. Update the End Date
+  this.DateWiseFilter({ value: endDate }, 'end');
+}
+
+
 
   @Input('breadcrumbItems')
   set breadcrumbItems(items: BreadcrumbRow[] | undefined) {

@@ -69,7 +69,7 @@
 
                     <div *ngIf="siteList && siteList.length > 0; else noFields" class="h-100 w-100 map-boundary">
                         <app-cm-leaflet *ngIf="isMap" [showMap]="isMap" [siteData]="siteList" [labelList]="labelList"
-                            [popupData]="popupData" (markerClicked)="onMarkerClicked($event)" 
+                            [popupData]="popupData" (markerClicked)="onMarkerClicked($event)"  [enableDraw]="false"
                              (polygonDrawn)="onPolygonDrawn($event)"   [existingPolygon]="zoneCordinate2" >
                         </app-cm-leaflet>
                     </div>
@@ -102,7 +102,7 @@
                         <mat-select placeholder="Select Junction" [(value)]="selectedCorridorJunction"
                             (selectionChange)="onCorridorJunctionChange($event)">
                             @for (junction of junctions; track junction.value) {
-                            <mat-option [value]="junction.value">{{junction.viewValue}}</mat-option>
+                            <mat-option [value]="junction.value">{{junction.value}}</mat-option>
                             }
                         </mat-select>
                     </mat-form-field>
@@ -135,7 +135,7 @@
                         <mat-select placeholder="Select Junction" [(value)]="selectedJunction"
                             (selectionChange)="onJunctionChange($event)">
                             @for (junction of junctions; track junction.value) {
-                            <mat-option [value]="junction.value">{{junction.viewValue}}</mat-option>
+                            <mat-option [value]="junction.value">{{junction.value}}</mat-option>
                             }
                         </mat-select>
                     </mat-form-field>

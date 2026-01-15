@@ -24,7 +24,7 @@
     <div class="col-md-2 d-flex justify-content-end align-items-center" *ngIf="showPicker">
       <mat-form-field appearance="fill" class="w-100">
                         <mat-select placeholder="Quick select" [(ngModel)]="selectedValue"
-          >
+                        (selectionChange)="onSelectionChange($event.value)">
         
           <mat-option value="Today">Today </mat-option>
           <mat-option value="Yesterday">Yesterday </mat-option>

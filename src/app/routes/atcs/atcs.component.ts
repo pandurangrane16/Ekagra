@@ -573,6 +573,7 @@ onMarkerClicked(siteId: string) {
   }
 }
 loadJunctions(): void {
+  debugger;
 const projectId = this.getAtcsProjectId();
 
   // If projectId is null, we shouldn't make the API call
@@ -589,12 +590,14 @@ const projectId = this.getAtcsProjectId();
       if (res?.success && Array.isArray(res.result)) {
         this.junctions = res.result.map((item: any) => ({
           value: item.siteName,
-          viewValue: `${item.siteName} (${item.siteId})`
+          viewValue:item.siteName
         }));
 
 
        this.selectedJunction = this.junctions[0].value;
-       this.selectedCorridorJunction = this.junctions[0].viewValue;
+       this.selectedCorridorJunction = this.junctions[0].value;
+       console.log("Selected Corridor Junction:", this.selectedCorridorJunction);
+       console.log("Selected Junction:", this.selectedJunction);
        this.filterCorridorByJunction();
         
         console.log('Initial junction selected:', this.selectedJunction);
@@ -627,7 +630,7 @@ handleDateChange(evt: any, type: string) {
   }
 
   this.loadCorridorData();
-  this.loadCorridorData();
+ 
 }
 
 }
