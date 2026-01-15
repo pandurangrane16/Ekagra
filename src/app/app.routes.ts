@@ -32,6 +32,7 @@ import { DashboardVMSComponent } from './routes/dashboard-vms/dashboard-vms.comp
 import { DashboardTESComponent } from './routes/dashboard-tes/dashboard-tes.component';
 import { DashboardPaComponent } from './routes/dashboard-pa/dashboard-pa.component';
 import { UserProfileComponent } from './routes/user-profile/user-profile.component';
+import { EnvironmentSensorComponent } from './routes/environment-sensor/environment-sensor.component';
 export const routes: Routes = [
       // { path: "", component: DashboardComponent, },
       { path: "login", component: LoginComponent, },
@@ -52,6 +53,7 @@ export const routes: Routes = [
       { path: 'alerts', component: AlertComponent },
       { path: 'camera', component: SurveilienceCameraComponent },
       //{ path: 'chat', component: ChatPageComponent },
+      { path: 'sensor', component: EnvironmentSensorComponent },
       { path: 'setting', component: SettingPageComponent },
       //{ path: "**", redirectTo: "dashboard" },
       { path: 'projfieldmap', component: ProjectFieldMapComponent },
