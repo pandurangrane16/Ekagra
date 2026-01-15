@@ -113,6 +113,13 @@ export class SidenavComponent implements OnInit {
         link: 'camera',
         apiLable: "surveilience"
       },
+        {
+        icon: './assets/img/icon_surveillance.svg',
+        activeIcon: './assets/img/icon_surveillance1.svg',
+        label: 'environment',
+        link: 'environment',
+        apiLable: "environment"
+      },
       // {
       //   icon: './assets/img/icon_parking.svg',
       //   activeIcon: './assets/img/icon_parking1.svg',

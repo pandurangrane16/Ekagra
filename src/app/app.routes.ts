@@ -12,6 +12,7 @@ import { SettingPageComponent } from './routes/setting-page/setting-page.compone
 import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
 import { ProjectConfigurationComponent } from './admin/project-configuration/project-configuration.component';
 import { UserRoutes } from '../app/user/user.routes';
+import { DashboardEnvironComponent } from './routes/dashboard-environ/dashboard-environ/dashboard-environ.component';
 
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ProjectFieldMapComponent } from './admin/project-field-map/project-field-map.component';
@@ -66,6 +67,7 @@ export const routes: Routes = [
       { path: 'tes', component: DashboardTESComponent},
       { path: 'pa', component: DashboardPaComponent},
       { path: 'cron', component: CmCronComponent },
+      {path:'environment',component:DashboardEnvironComponent},
       {path:'profile',component:UserProfileComponent},
       {
             path: 'admin',
