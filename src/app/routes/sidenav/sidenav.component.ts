@@ -113,13 +113,13 @@ export class SidenavComponent implements OnInit {
         link: 'camera',
         apiLable: "surveilience"
       },
-        {
-        icon: './assets/img/icon_surveillance.svg',
-        activeIcon: './assets/img/icon_surveillance1.svg',
-        label: 'environment',
-        link: 'environment',
-        apiLable: "environment"
-      },
+      //   {
+      //   icon: './assets/img/icon_surveillance.svg',
+      //   activeIcon: './assets/img/icon_surveillance1.svg',
+      //   label: 'environment',
+      //   link: 'environment',
+      //   apiLable: "environment"
+      // },
       // {
       //   icon: './assets/img/icon_parking.svg',
       //   activeIcon: './assets/img/icon_parking1.svg',
@@ -129,7 +129,7 @@ export class SidenavComponent implements OnInit {
       {
         icon: './assets/img/sensor.png',
         activeIcon: './assets/img/sensor.png',
-        label: 'Sensor',
+        label: 'Environment Sensor',
         link: 'sensor'
       },
       {

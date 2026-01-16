@@ -1,0 +1,35 @@
+.table-sticky {
+  height: 100%;
+  overflow: auto;
+}
+
+
+.cdk-header-row, .cdk-footer-row, .cdk-row {
+  min-width: 1920px; /* 24 columns, 80px each */
+}
+.mat-mdc-row .mat-mdc-cell:first-child {
+  border-right: 1px solid #bfbae1;
+  background: rgb(223, 219, 253);
+   justify-content: left;
+}
+.mat-mdc-header-row .mat-mdc-header-cell:first-child {
+  border-right: 1px solid #bfbae1;
+ 
+}
+.mat-mdc-table .mat-mdc-header-cell{
+    background: rgb(223, 219, 253);
+    font-weight: bold;
+    flex-direction: column;
+    justify-content: center;
+}
+.mat-mdc-row .mat-mdc-cell{padding: 8px; 
+  justify-content: center;
+}
+.mat-column-name {
+  flex: 0 0 280px; /* Prevents growing/shrinking and sets base width */
+  width: 280px;
+  min-width: 280px; /* Ensures a minimum width */
+  max-width: 280px; /* Ensures a maximum width */
+}
+
+

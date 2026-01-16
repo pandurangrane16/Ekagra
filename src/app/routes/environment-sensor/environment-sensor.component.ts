@@ -18,6 +18,7 @@ import { SensorService } from '../../services/dashboard/senson.service';
 import { SessionService } from '../../services/common/session.service';
 import { ToastrService } from 'ngx-toastr'; 
 import { CmBreadcrumbComponent } from '../../common/cm-breadcrumb/cm-breadcrumb.component';
+import { Router, RouterModule } from '@angular/router';
 
 interface Junction {
   value: string;
@@ -26,10 +27,11 @@ interface Junction {
 
 @Component({
   selector: 'app-environment-sensor',
-  imports: [NotificationComponent, ZonalComponent, CorridorComponent, FailuresComponent, CycleComponent, MatFormFieldModule, MatSelectModule, MatInputModule, FormsModule, MatButtonModule, MatIconModule, CommonModule, MatDatepickerModule, CmBreadcrumbComponent],
+  imports: [NotificationComponent, ZonalComponent, CorridorComponent, FailuresComponent, CycleComponent, MatFormFieldModule, MatSelectModule, MatInputModule, FormsModule, MatButtonModule, MatIconModule, CommonModule, MatDatepickerModule, CmBreadcrumbComponent,RouterModule],
   templateUrl: './environment-sensor.component.html',
   styleUrl: './environment-sensor.component.css'
 })
+
 export class EnvironmentSensorComponent {
   
 endDate: Date = new Date();
@@ -596,6 +598,12 @@ handleDateChange(evt: any, type: string) {
 
   //this.loadCorridorData();
  
+}
+
+
+constructor(private router: Router) {}
+openDetailedView() {
+  this.router.navigate(['/sensor:id']);
 }
 
 }
