@@ -7,16 +7,17 @@
 
     <button mat-icon-button appearance="outline" (click)="refreshData()"><mat-icon>refresh</mat-icon></button>
 
-    <div class="card-body">
+    <div class="card-body"  *ngIf="isDetailsVisible">
         <div class="row">
-            <div class="col-md-6 mb-2" *ngFor="let item of items; let i = index">
+            {{itemsp|json}}
+            <div class="col-md-6 mb-2" *ngFor="let item of itemsp; let i = index">
                 <div class="card">
                     <div class="card-header d-flex align-items-center py-0 ">
                         <span
                             class="rounded-circle p-2 bg-warning text-white d-flex align-items-center justify-content-center border border2 border-secondary-50"
                             style="width: 42px;"><mat-icon>air</mat-icon></span>
                         <div class="ms-2">
-                            <h6 class="mb-0">{{ item.thing_id }}</h6>
+                            <h6 class="mb-0">{{ item.location }}</h6>
                             <span> 13 Jan 2026, 18:55 </span>
                         </div>
                         <div class="ms-auto text-center">
@@ -25,6 +26,9 @@
                             <small style="top: -5px; position: relative;">{{ item.status }} </small>
                         </div>
                     </div>
+
+
+   
 
                     <div class="cord-body bg-danger bg-opacity-10">
                         <div class="flex-row">
@@ -49,9 +53,9 @@
                         <div class="d-flex justify-content-between align-items-center p-2">
                             <div class="d-flex align-items-center "><mat-icon>workspace_premium</mat-icon> Let the fresh
                                 air in</div>
-                            <button
+                            <!-- <button
                                 class="btn btn-light btn-sm rounded-pill border border-secondary-50 px-3 d-flex align-items-center"><mat-icon>receipt_long</mat-icon>
-                                &nbsp; Detailed View </button>
+                                &nbsp; Detailed View </button> -->
                         </div>
 
                     </div>
