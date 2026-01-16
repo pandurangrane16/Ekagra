@@ -30,7 +30,7 @@ ProjectfieldCreate(_data: any) {
 
 
 
-  GetVmsListDataByZone(zoneIds?: number[]): Observable<any> {
+  GetVmsListDataByZone(zoneIds?: number[],maxResultCount?: number, skipCount?: number): Observable<any> {
   const params: string[] = [];
 
 
@@ -39,6 +39,14 @@ ProjectfieldCreate(_data: any) {
       params.push(`zoneIds=${encodeURIComponent(id.toString())}`);
     });
   }
+
+      if (skipCount !== null && skipCount !== undefined) {
+      params.push(`skipCount=${skipCount}`);
+    }
+
+      if (maxResultCount !== null && maxResultCount !== undefined) {
+      params.push(`MaxResultCount=${maxResultCount}`);
+    }
 
   const queryString = params.length ? '?' + params.join('&') : '';
   

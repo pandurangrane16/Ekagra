@@ -26,6 +26,13 @@ export class DeviceStatusComponent implements OnInit {
   constructor(private renderer: Renderer2,private toastr: ToastrService, private el: ElementRef,private service:vmsdashboardService,private session: SessionService ) {}
   public element: any;
   legendData: any[] = [];
+    totalPages: number = 1;
+  pager: number = 0;
+  MaxResultCount = 10;
+  SkipCount = 0;
+  perPage = 10;
+  pageNo = 0;
+  recordPerPage: number = 10;
   jsonData = {
     "data": [
         { "name": "Active", "y": 66, "color": "#05da4cff"},
@@ -247,6 +254,8 @@ chartOptions?: Highcharts.Options;
 
 getDeviceStatus() {
 
+  debugger;
+
 // debugger;
 
 //  const projectCodesStr = this.session._getSessionValue("projectCodes");
@@ -275,37 +284,40 @@ getDeviceStatus() {
 // };
 debugger;
 const zoneIds = this.zoneIds || [];
+             this.MaxResultCount=this.perPage;
+      this.SkipCount=this.MaxResultCount*this.pager;
+      this.recordPerPage=this.perPage;
     this.service
-      .GetVmsListDataByZone(zoneIds)
+      .GetVmsListDataByZone(zoneIds,this.MaxResultCount,this.SkipCount)
       .pipe(withLoader(this.loaderService))
       .subscribe({
-      next: (response: any) => {
-      // 1. Check if success is true and result exists as an array
-      if (response?.success && Array.isArray(response.result)) {
-        
-        // 2. Find the object that contains 'Connected' property
-        // In your JSON, it's the last element, but .find() is safer
-        const statusData = response.result.find((item: any) => item.hasOwnProperty('Connected'));
+   next: (response: any) => {
+  // 1. UPDATED: Access response.result.items instead of response.result
+  const itemsArray = response?.result?.items;
 
-        if (statusData) {
-          // 3. Extract and parse values (using 0 as fallback)
-          const connected = parseInt(statusData.Connected, 10) || 0;
-          const disconnected = parseInt(statusData.Disconnected, 10) || 0;
-          
-          // 4. Initialize chart with new names
-          this.initializeChart(connected, disconnected); 
-          console.log(`Chart updated: Connected (${connected}), Disconnected (${disconnected})`);
-        } else {
-          console.warn('⚠️ Connection status data not found in result array');
-          this.toastr.error('Connection status data not found in result array');
-          this.initializeChart(0, 0);
-        }
-      } else {
-        console.warn('⚠️ API response unsuccessful or result is not an array');
-        this.toastr.error('API response unsuccessful or result is not an array');
-        this.initializeChart(0, 0);
-      }
-    },
+  // Check if success is true and items is an array
+  if (response?.success && Array.isArray(itemsArray)) {
+    
+    // 2. UPDATED: Search within the itemsArray
+    const statusData = itemsArray.find((item: any) => item.hasOwnProperty('Connected'));
+
+    if (statusData) {
+      // 3. Extract and parse values
+      const connected = parseInt(statusData.Connected, 10) || 0;
+      const disconnected = parseInt(statusData.Disconnected, 10) || 0;
+      
+      // 4. Initialize chart
+      this.initializeChart(connected, disconnected); 
+      console.log(`Chart updated: Connected (${connected}), Disconnected (${disconnected})`);
+    } else {
+      console.warn('⚠️ Connection status data not found in items array');
+      this.initializeChart(0, 0);
+    }
+  } else {
+    console.warn('⚠️ API response unsuccessful or items is not an array');
+    this.initializeChart(0, 0);
+  }
+},
         error: (err) => {
           console.error('❌ Error fetching device status:', err);
         }

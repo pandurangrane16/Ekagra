@@ -262,6 +262,7 @@ private dialog: MatDialog,private service:PaDashboardService,private toastr: Toa
     }
 
     onActionSelectionChange(event: any) {
+      this.isMap = false;
         const selectedValues = event.value || [];
         const allOption = this.ZoneOptions.find((x: any) => x.text.toLowerCase() === 'all');
 

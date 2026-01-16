@@ -122,63 +122,87 @@ export class DashboardVMSComponent implements OnInit {
     // debugger;
     // ✅ Step 3: Call API via service + loader
     const zoneIds = this.selectedZoneIds || [];
+             this.MaxResultCount=this.perPage;
+      this.SkipCount=this.MaxResultCount*this.pager;
+      this.recordPerPage=this.perPage;
     this.service
-      .GetVmsListDataByZone(zoneIds)
+      .GetVmsListDataByZone(zoneIds, this.MaxResultCount, this.SkipCount)
       .pipe(withLoader(this.loaderService))
       .subscribe({
- next: (response: any) => {
+next: (response: any) => {
   debugger;
-      // 1. Check if the response is successful and contains an array
-      if (response?.success && Array.isArray(response.result)) {
 
-        if (response.result.length === 0) {
-      // this.userList = [];
-      // this.toaster.error('No VMS data found for the selected zones.');
-      // return;
+  // 1. Extract raw items and totalCount safely
+  let rawItems: any[] = response?.result?.items || [];
+  // Use the API's totalCount if available, otherwise fall back to array length
+  const apiTotalCount = response?.result?.totalCount !== undefined ? response.result.totalCount : rawItems.length;
 
+  if (response?.success && Array.isArray(rawItems)) {
+    
+    // 2. Filter out the summary object (the one containing {Connected: 0, Disconnected: 4})
+    // We only keep actual VMS devices
+    const filteredItems = rawItems.filter((item: any) => item.vmsId !== undefined);
+
+    if (filteredItems.length === 0) {
       this.allData = [];
       this.userList = [];
-      this.toaster.error('No VMS data found for the selected zones.');
+      this.totalRecords = 0;
+      this.totalPages = 0;
+      this.toaster.error('No VMS data found.');
       return;
     }
-    else{
-        // 2. Filter out the summary object (the one with 'Connected' property)
-        // We only want the items that have a 'vmsId'
-        const vmsItems = response.result.filter((item: any) => item.vmsId !== undefined);
 
-        // 3. Map the VMS data to your table format
-        this.allData = vmsItems.map((item: any) => ({
-          location: item.vmsDescription,
-          status: item.networkStatus === 1 ? 'Online' : 'Offline',
-          size : `${item.width} x ${item.height}`,
-          snaptime: item.snaptime,
-          vmsId: item.vmsId,
-          vmsCode: item.vmsCode, // Added this since it's available now
-         
-          button: [{ label: "View", icon: "visibility", type: "view" }],
-          img: "../assets/img/cam1.jpg"
-        }));
+    // 3. Map the data to your table format
+  (this.allData as any[]) = filteredItems.map((item: any) => ({
+      location: item.vmsDescription || '-',
+      vmsCode: item.vmsCode,
+      vmsId: item.vmsId,
+      // Map networkStatus: 1 for Online, 0 for Offline
+      status: item.networkStatus === 1 ? 'Online' : 'Offline',
+      size: `${item.width} x ${item.height}`,
+      snaptime: item.installationDate,
+      button: [{ label: 'View', icon: 'visibility', type: 'view' }],
+      img: "../assets/img/cam1.jpg"
+    }));
 
-        this.totalRecords = this.userList.length;
-        debugger;
-        console.log("✅ Loaded VMS list:", this.userList);
-        this.handleSearch(); 
-      this.totalRecords = this.allData.length;
+    // 4. Update display list (userList) and search
+   // this.userList = [...this.allData]; 
+    this.handleSearch(); 
+
+    // 5. Pagination Logic
+    // We use the apiTotalCount (which is 4 in your JSON)
+    const _length = apiTotalCount / Number(this.recordPerPage);
+
+    if (_length > Math.floor(_length) && Math.floor(_length) !== 0) {
+      this.totalRecords = Number(this.recordPerPage) * Math.ceil(_length);
+    } else if (Math.floor(_length) === 0 && apiTotalCount > 0) {
+      // If there are records but less than one full page
+      this.totalRecords = apiTotalCount; 
+    } else {
+      this.totalRecords = apiTotalCount;
     }
-        
-      
-      } else {
-        this.userList = [];
-        this.totalRecords = 0;
-        console.warn("⚠️ No VMS data found in API response");
-        this.toaster.error('No VMS data found in API response.');
-      }
-    },
-      error: (err) => {
-      console.error("❌ API Error:", err);
-      this.userList = [];
-      this.toaster.error('Failed to load VMS list. Please try again later.');
-    }
+
+    // Calculate total pages for the pager UI
+    this.totalPages = Math.ceil(this.totalRecords / (this.pager || 10));
+    
+    console.log("✅ Successfully loaded VMS records:", this.totalRecords);
+
+  } else {
+    this.allData = [];
+    this.userList = [];
+    this.totalRecords = 0;
+    this.totalPages = 0;
+    this.toaster.error('Invalid response format from server.');
+  }
+},
+error: (error: any) => {
+  console.error('❌ API failed:', error);
+  this.allData = [];
+  this.userList = [];
+  this.totalRecords = 0;
+  this.totalPages = 0;
+  this.toaster.error('Failed to load data. Please try again.');
+}
       });
   }
 
@@ -276,7 +300,13 @@ export class DashboardVMSComponent implements OnInit {
   }
 
 
-  onRowClicked(evt: any) { }
+    onRowClicked(evt: any) {
+    // table emits the clicked row object or id depending on configuration
+    // normalize to an object and expose id for searchWithId
+    const payload = evt && typeof evt === 'object' ? evt : { id: evt };
+    console.log('Row clicked:', payload);
+    // If you want to trigger a navigation or fetch details by id, do it here.
+  }
 
 
   items: any;
@@ -416,21 +446,25 @@ handleSearch() {
 
 
   }
-  onPageChange(event: any) {
+    onPageChange(event:any) {
     console.log(event);
-    if (event.type === 'pageChange') {
-      this.pager = event.pageNo;
-
-    }
+  if (event.type === 'pageChange') {
+    this.pager = event.pageNo;
+ // this.GetPaList();
   }
-  onPageRecordsChange(event: any) {
-    console.log(event);
-    if (event.type === 'perPageChange') {
-      this.perPage = event.perPage;
-      this.pager = 0;
+}
 
-    }
+
+onPageRecordsChange(event:any ) {
+  console.log(event);
+  if (event.type === 'perPageChange') {
+    this.perPage = event.perPage;
+    this.pager = 0;
+  //  this.GetPaList();
   }
+}
+
+
   deleteRow(data: any) {
     const empId = data.employeeId;
     const model = {

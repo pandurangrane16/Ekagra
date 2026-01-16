@@ -43,9 +43,10 @@ export class AtcsComponent {
   selectedCorridorJunction: string = '';
   isMap: boolean = false;
   islabel: boolean = false;
-  polygonCoordinates:any;
+  
   basepath: any;
   zoneCordinate2:any;
+   polygonCoordinates:any;
   id: any;
   allCorridorData: any[] = []; // Stores everything from the API
 corridorData: any[] = [];

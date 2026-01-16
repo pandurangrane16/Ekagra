@@ -750,6 +750,8 @@ export class CmLeafletComponent implements OnInit {
   constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
 
   async ngOnInit() {
+
+    debugger;
     this.isBrowser = isPlatformBrowser(this.platformId);
     if (!this.isBrowser) return;
 

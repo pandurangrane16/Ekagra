@@ -78,6 +78,7 @@
                             <div class="card-body p-0">
                                  <div *ngIf="siteList && siteList.length > 0; else noFields" class="h-100 w-100 map-boundary">
                         <app-cm-leaflet *ngIf="isMap" [showMap]="isMap"  [siteData]="siteList" 
+                         (polygonDrawn)="onPolygonDrawn($event)"   [existingPolygon]="zoneCordinate2"
                              [enableDraw]="false" [projectName]="'pa'">
                         </app-cm-leaflet>
                     </div>
