@@ -33,6 +33,8 @@ import { DashboardTESComponent } from './routes/dashboard-tes/dashboard-tes.comp
 import { DashboardPaComponent } from './routes/dashboard-pa/dashboard-pa.component';
 import { UserProfileComponent } from './routes/user-profile/user-profile.component';
 import { EnvironmentSensorComponent } from './routes/environment-sensor/environment-sensor.component';
+import { DetailedComponent } from './routes/environment-sensor/detailed/detailed.component';
+import { SensorlistComponent } from './routes/environment-sensor/sensorlist/sensorlist.component';
 export const routes: Routes = [
       // { path: "", component: DashboardComponent, },
       { path: "login", component: LoginComponent, },
@@ -53,7 +55,6 @@ export const routes: Routes = [
       { path: 'alerts', component: AlertComponent },
       { path: 'camera', component: SurveilienceCameraComponent },
       //{ path: 'chat', component: ChatPageComponent },
-      { path: 'sensor', component: EnvironmentSensorComponent },
       { path: 'setting', component: SettingPageComponent },
       //{ path: "**", redirectTo: "dashboard" },
       { path: 'projfieldmap', component: ProjectFieldMapComponent },
@@ -68,7 +69,17 @@ export const routes: Routes = [
       { path: 'tes', component: DashboardTESComponent},
       { path: 'pa', component: DashboardPaComponent},
       { path: 'cron', component: CmCronComponent },
-     
+      { path: 'sensor', component: EnvironmentSensorComponent },
+      { path: 'details', component: DetailedComponent },
+      { path: 'sensorlist', component: SensorlistComponent },
+//      {
+//   path: 'sensor',
+//   component: EnvironmentSensorComponent,
+//   children: [
+//    { path: 'sensor:id', component: DetailedComponent }
+//   ],
+// },
+
       {path:'profile',component:UserProfileComponent},
       {
             path: 'admin',

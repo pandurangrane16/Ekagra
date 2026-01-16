@@ -1,0 +1,32 @@
+
+<div class="card">
+
+
+       <div class="card-header d-flex align-items-center">
+                <span class="rounded-circle p-2 bg-warning text-white d-flex align-items-center justify-content-center border border2 border-secondary-50" style="width: 42px;"><mat-icon>air</mat-icon></span>
+                <div class="ms-2">
+                    <h6 class="mb-0">{{ items[0].location }}</h6>
+                    <span> 13 Jan 2026, 18:55 </span>
+                </div>
+                <div class="ms-auto text-center d-flex align-items-center">
+                     <button mat-icon-button matTooltip="Go Back" aria-label="Back" (click)="goBack()" style="margin-top: -10px; margin-bottom: -10px;">
+  <mat-icon>reply</mat-icon>
+</button>
+                    
+                </div>
+            </div>
+
+    <div class="card-body">
+
+
+
+ <div class="card">
+            <div class="card-body px-4" style="padding-bottom: 30px;">
+               <h6> AQI Scale</h6>
+               <div class="d-flex justify-content-between"><span>PM10 :  136 µg/m³</span><span>PM2.5 :  53 µg/m³</span></div>
+                <app-aqi></app-aqi>
+               
+            </div>
+        </div>
+</div>
+</div>

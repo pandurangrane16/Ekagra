@@ -13,13 +13,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { CmBreadcrumbComponent } from '../../common/cm-breadcrumb/cm-breadcrumb.component';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-environment-sensor',
-  imports: [NotificationComponent, ZonalComponent, CorridorComponent, FailuresComponent, CycleComponent, MatFormFieldModule, MatSelectModule, MatInputModule, FormsModule, MatButtonModule, MatIconModule, CommonModule, MatDatepickerModule, CmBreadcrumbComponent],
+  imports: [NotificationComponent, ZonalComponent, CorridorComponent, FailuresComponent, CycleComponent, MatFormFieldModule, MatSelectModule, MatInputModule, FormsModule, MatButtonModule, MatIconModule, CommonModule, MatDatepickerModule, CmBreadcrumbComponent,RouterModule],
   templateUrl: './environment-sensor.component.html',
   styleUrl: './environment-sensor.component.css'
 })
+
 export class EnvironmentSensorComponent {
 endDate: Date = new Date();
   startDate: Date = new Date(this.endDate.getTime() - (24 * 60 * 60 * 1000));
@@ -338,6 +340,12 @@ handleDateChange(evt: any, type: string) {
 
   //this.loadCorridorData();
  
+}
+
+
+constructor(private router: Router) {}
+openDetailedView() {
+  this.router.navigate(['/sensor:id']);
 }
 
 }
