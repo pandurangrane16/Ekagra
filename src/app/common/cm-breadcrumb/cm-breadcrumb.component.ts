@@ -27,6 +27,7 @@ export interface BreadcrumbRow {
 })
 export class CmBreadcrumbComponent {
   @Input() rows: BreadcrumbRow[] = [];
+  @Input() showRefresh: boolean = false;
 
 
   // Zone Inputs/Outputs
@@ -40,6 +41,12 @@ export class CmBreadcrumbComponent {
   @Output() zoneSelectionChange = new EventEmitter<any>();
   @Output() configClear = new EventEmitter<void>();
   @Output() dateChange = new EventEmitter<{value: any, category: string}>();
+
+  @Output() refresh = new EventEmitter<void>();
+
+onRefreshClick() {
+  this.refresh.emit();
+}
 
   onZoneChange(event: any) {
     this.zoneSelectionChange.emit(event);

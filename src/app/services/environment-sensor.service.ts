@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { OnInit } from '@angular/core';
 import { HttpService } from './common/http.service';
+import { map } from 'rxjs/operators';
 
 
 @Injectable({
@@ -49,6 +50,12 @@ export class EnvironmentSensorService {
 
   Consume(data:any) {
     return this._httpService._postMethod(data,'api/services/app/ProjectAPI/Consume');
+  }
+
+  getKeysDataForConfig(key: string): Observable<any> {
+    return this.http.get('/assets/config/config.json').pipe(
+      map((config: any) => config[key])
+    );
   }
 
 

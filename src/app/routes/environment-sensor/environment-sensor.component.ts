@@ -17,6 +17,7 @@ import { withLoader } from '../../services/common/common';
 import { SensorService } from '../../services/dashboard/senson.service'; 
 import { SessionService } from '../../services/common/session.service';
 import { ToastrService } from 'ngx-toastr'; 
+import { from } from 'rxjs';
 import { CmBreadcrumbComponent } from '../../common/cm-breadcrumb/cm-breadcrumb.component';
 import { Router, RouterModule } from '@angular/router';
 
@@ -39,8 +40,12 @@ endDate: Date = new Date();
   startDate: Date = new Date(this.endDate.getTime() - (24 * 60 * 60 * 1000));
 projectId: number = 0;
 isLoading: boolean = false;
+startUnix:any;
+endUnix:any;
  selectedZoneIds: any[] = [];
  isDetailsVisible: boolean = false;
+ aggregationPeriod:any;
+ session = inject(SessionService);
 
 
 // Mapping of thing_id to location names
@@ -212,7 +217,24 @@ sensorData = {
     { value: 'Junction 2', viewValue: 'Junction 2' },
     { value: 'Junction 3', viewValue: 'Junction 3' },
   ];
+initializeDefaultDates() {
+  const now = new Date();
+  
+  // 1. Set the Date objects (for the UI Calendar pickers)
+  this.endDate = now;
+  this.startDate = new Date(now.getTime() - (24 * 60 * 60 * 1000)); // 24 hours ago
 
+  // 2. Calculate Unix Timestamps (Seconds)
+  const endUnixRaw = Math.floor(this.endDate.getTime() / 1000);
+  const startUnixRaw = Math.floor(this.startDate.getTime() / 1000);
+
+  // 3. Apply the 5:30 offset (19800 seconds) 
+  // ONLY if your backend requires UTC. If backend uses local, skip the subtraction.
+  this.endUnix = endUnixRaw - 19800; 
+  this.startUnix = startUnixRaw - 19800;
+
+  console.log('Initialized 24h range:', this.startUnix, 'to', this.endUnix);
+}
 
 fetchLocationMapping() {
 
@@ -245,13 +267,32 @@ fetchLocationMapping() {
 // Processed items for display
 items: any[] = [];
 itemsp: any[] = [];
-
+noDataFound: boolean = false;
+noDataFound2: boolean = false;
   constructor(
-   private session: SessionService,private toaster: ToastrService,private service: SensorService
+   private toaster: ToastrService,private service: SensorService
 
   ){}
 
 ngOnInit() {
+  this.initializeDefaultDates();
+  debugger;
+
+ // Ensure this is imported at the top
+
+// from(this.service.getKeysDataForConfig('aggregation_period'))
+//   .pipe(withLoader(this.loaderService))
+//   .subscribe(aggregation_period => {
+//     console.log('aggregation_period:', aggregation_period); 
+    
+//     // Store as a number (since config often returns strings)
+//     this.aggregationPeriod = aggregation_period ? Number(aggregation_period) : 3600;
+    
+ 
+// });
+
+
+
   this.getZoneList();
   this.fetchLocationMapping();
  
@@ -287,6 +328,18 @@ refreshData() {
 // }
 
 loadSensorData(thingIds: number[]) {
+  this.isDetailsVisible = false;
+  if (!thingIds || thingIds.length === 0) {
+    this.isLoading = false;
+    this.noDataFound = true; // Show the "No fields exist" message
+    // Clear any old data
+    console.warn("No thing IDs provided. Aborting fetch.");
+    return; 
+  }
+
+  // 2. If IDs exist, proceed with the fetch
+  this.noDataFound = false;
+  this.isLoading = true;
   this.isLoading = true;
 
   const payload = {
@@ -345,18 +398,18 @@ loadSensorData(thingIds: number[]) {
 
 const sensorBody = {
     "data_type": "aggregate",
-    "aggregation_period": 3600,
+    "aggregation_period":86400, // 24 hours in seconds
     "parameters": ["pm2.5", "pm10", "so2", "no2", "o3", "co", "co2", "temp", "humid", "rain", "light", "uvi", "noise", "aqi"],
      "parameter_attributes": ["value", "avg"],
     "things": thingIds, // <--- Dynamic IDs injected here
-    "from_time": 1753253343, 
-    "upto_time": 1753253443
+    "from_time": this.startUnix, 
+    "upto_time": this.endUnix
   };
 
   // Stringify the sensor body into the payload Body
   payload.Body = JSON.stringify(sensorBody);
 
-  this.service.Consume(payload)   .pipe(withLoader(this.loaderService))
+  this.service.Consume(payload).pipe(withLoader(this.loaderService))
       .subscribe({
     next: (response: any) => {
       if (response?.success && response?.result) {
@@ -383,12 +436,26 @@ const sensorBody = {
 
 processSensorData(data: any[]) {
 
+if (!data || data.length === 0) {
+    console.warn("No sensor data received from API.");
+    this.noDataFound2 = true;  // Set the flag we created earlier to show the middle message
+    this.isLoading = false;   // Stop the spinner
+     // Ensure the list is cleared
+    return;                   // Exit the function immediately
+  }
+
+  else{
+
+    this.noDataFound2 = false;
+      // 2. If data exists, reset flags and continue processing
+  this.noDataFound = false;
   this.itemsp = data.map((sensor: any) => {
     const params = sensor.parameter_values || {};
     const aqiValue = params.aqi?.value || 0;
 
     return {
       thing_id: sensor.thing_id,
+      date: new Date(sensor.time * 1000),
       location: this.locationMap[sensor.thing_id] || `Device ${sensor.thing_id}`,
       time: new Date(sensor.time * 1000), // Convert Unix timestamp
       aqi: aqiValue,
@@ -396,15 +463,15 @@ processSensorData(data: any[]) {
       statusClass: this.getAqiClass(aqiValue),
       
       // Map parameters using bracket notation for keys like 'pm2.5'
-      parameters: [
-        { name: 'PM2.5', value: params['pm2.5']?.avg?.toFixed(2) || '0.00', unit: 'µg/m³' },
-        { name: 'PM10', value: params.pm10?.avg?.toFixed(2) || '0.00', unit: 'µg/m³' },
-        { name: 'CO₂', value: params.co2?.avg?.toFixed(0) || '0', unit: 'ppm' },
-        { name: 'SO₂', value: params.so2?.avg?.toFixed(2) || '0.00', unit: 'ppb' },
-        { name: 'NO₂', value: params.no2?.avg?.toFixed(2) || '0.00', unit: 'ppb' },
-        { name: 'O₃', value: params.o3?.avg?.toFixed(2) || '0.00', unit: 'ppb' },
-        { name: 'Temp', value: params.temp?.avg?.toFixed(1) || '0.0', unit: '°C' },
-        { name: 'Humidity', value: params.humid?.avg?.toFixed(1) || '0.0', unit: '%' }
+   parameters: [
+         { name: 'PM2.5', value: sensor.parameter_values['pm2.5']?.avg?.toFixed(2) || 'N/A', unit: 'µg/m³', color: this.getParamColor(sensor.parameter_values['pm2.5']?.avg, 'pm2.5') },
+         { name: 'PM10', value: sensor.parameter_values.pm10?.avg?.toFixed(2) || 'N/A', unit: 'µg/m³', color: this.getParamColor(sensor.parameter_values.pm10?.avg, 'pm10') },
+         { name: 'CO₂', value: sensor.parameter_values.co2?.avg?.toFixed(0) || 'N/A', unit: 'ppm', color: this.getParamColor(sensor.parameter_values.co2?.avg, 'co2') },
+         { name: 'Temp', value: sensor.parameter_values.temp?.avg?.toFixed(1) || 'N/A', unit: '°C', color: this.getParamColor(sensor.parameter_values.temp?.avg, 'temp') },
+         { name: 'Humidity', value: sensor.parameter_values.humid?.avg?.toFixed(1) || 'N/A', unit: '%', color: this.getParamColor(sensor.parameter_values.humid?.avg, 'humid') },
+         { name: 'NO₂', value: sensor.parameter_values.no2?.avg?.toFixed(2) || 'N/A', unit: 'ppb', color: this.getParamColor(sensor.parameter_values.no2?.avg, 'no2') },
+         { name: 'SO₂', value: sensor.parameter_values.so2?.avg?.toFixed(2) || 'N/A', unit: 'ppb', color: this.getParamColor(sensor.parameter_values.so2?.avg, 'so2') },
+         { name: 'O₃', value: sensor.parameter_values.o3?.avg?.toFixed(2) || 'N/A', unit: 'ppb', color: this.getParamColor(sensor.parameter_values.o3?.avg, 'o3') }
       ]
     };
 
@@ -413,6 +480,9 @@ processSensorData(data: any[]) {
     this.isDetailsVisible = true;
     console.log("Data processing complete. Flag is now:", this.isDetailsVisible);
   }, 0);
+  }
+
+
 }
 
 getAqiStatus(aqi: number): string {
@@ -472,7 +542,9 @@ getParamColor(value: number, param: string): string {
 
 
         onActionSelectionChange(event: any) {
-  // this.siteList = [];
+   this.siteList = [];
+   this.itemsp = [];
+    this.selectedZoneIds=[];
   const selectedValues = event.value || [];
   const allOption = this.ZoneOptions.find((x: any) => x.text.toLowerCase() === 'all');
 
@@ -488,7 +560,7 @@ getParamColor(value: number, param: string): string {
   }
 debugger;
   // 2. UPDATE THE IDS HERE (Not in the template)
- // this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
+  this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
   const allPolygons: any[] = [];
   
   this.selectedZones.forEach(zone => {
@@ -517,13 +589,13 @@ debugger;
 // Ensure you also update IDs in your clear function
 clearActions() {
   this.selectedZones = [];
-  // this.selectedZoneIds = [];
-  // this.loadJunctions();
-  // this.loadCorridorData();
+   this.selectedZoneIds = [];
+   this.loadJunctions();
+ 
 }
 
 loadJunctions(): void {
-   this.currentThingIds = [];
+  this.currentThingIds = [];
   debugger;
 
 
@@ -589,21 +661,32 @@ loadJunctions(): void {
         });
     }
 handleDateChange(evt: any, type: string) {
-  debugger;
+  if (!evt.value) return;
+
+  const selectedDate = new Date(evt.value);
+  const unixSeconds = Math.floor(selectedDate.getTime() / 1000);
+  
+
+  const shiftedUnix = unixSeconds - 19800;
+
   if (type === "start") {
-    this.startDate = evt.value;
+    this.startDate = selectedDate; 
+    this.startUnix = shiftedUnix;
   } else {
-    this.endDate = evt.value;
+    this.endDate = selectedDate;
+    this.endUnix = shiftedUnix;
   }
 
-  //this.loadCorridorData();
+  // Reload data if both exist
+  if (this.startUnix && this.endUnix) {
+    this.loadSensorData(this.currentThingIds);
+  }
+}
+
+
  
-}
-
-
-constructor(private router: Router) {}
-openDetailedView() {
-  this.router.navigate(['/sensor:id']);
-}
+// openDetailedView() {
+//   this.router.navigate(['/sensor:id']);
+// }
 
 }

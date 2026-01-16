@@ -1,15 +1,20 @@
-import { Injectable, OnInit } from '@angular/core';
-import { HttpService } from '../common/http.service';
 
 
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { OnInit } from '@angular/core';
+import { HttpService } from '../common/http.service';
+import { map } from 'rxjs/operators';
+
+
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class SensorService {
-  constructor(
-    private _httpService: HttpService) { }
+  constructor(private http: HttpClient,private _httpService: HttpService) {}
 
  jsonurl: string = '/assets/config/config.json';
 
@@ -132,6 +137,12 @@ GetAll(MaxResultCount: number, SkipCount: number,) {
     GetSiteMasterByProjectId(id: number) {
     return this._httpService._getMethod('api/services/app/Site/GetSiteMasterByProjectId?ProjectId='+id);
   }
+
+    // getKeysDataForConfig(key: string): Observable<any> {
+    //   return this.http.get('/assets/config/config.json').pipe(
+    //     map((config: any) => config[key])
+    //   );
+    // }
 
 
 

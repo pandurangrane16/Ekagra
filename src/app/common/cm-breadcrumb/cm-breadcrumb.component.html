@@ -19,6 +19,10 @@
       </span>
     </ng-container>
   </div>
+<button mat-icon-button (click)="onRefreshClick()" *ngIf="showRefresh"
+        class="ms-3"
+        style="transform: translateY(6px);"> <mat-icon style="font-size: 30px; width: 30px; height: 30px;">refresh</mat-icon>
+</button>
     </div>
 
     <div class="col-md-2 d-flex justify-content-end align-items-center" *ngIf="showPicker">

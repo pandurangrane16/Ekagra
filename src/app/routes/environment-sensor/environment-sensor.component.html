@@ -2,14 +2,42 @@
     <app-cm-breadcrumb [breadcrumbItems]="[{ parts: ['Environment Sensor'], link: '/parking' }]"
         [zoneOptions]="ZoneOptions" [selectedZones]="selectedZones"
         (zoneSelectionChange)="onActionSelectionChange($event)" (configClear)="clearActions()" [startDate]="startDate"
-        [endDate]="endDate" (dateChange)="handleDateChange($event, $event.category)">
+        [endDate]="endDate" (dateChange)="handleDateChange($event, $event.category)"
+        (refresh)="refreshData()" [showRefresh]="true">
+
+        
     </app-cm-breadcrumb>
 
-    <button mat-icon-button appearance="outline" (click)="refreshData()"><mat-icon>refresh</mat-icon></button>
+    <!-- <button mat-icon-button appearance="outline" (click)="refreshData()"><mat-icon>refresh</mat-icon></button> -->
+<div  *ngIf="!isLoading && noDataFound" class="data-container">
 
+  <div *ngIf="!isLoading && noDataFound" class="empty-state">
+    <div class="empty-state-content">
+      <i class="fa fa-map-marker-alt"></i> <h3>No fields exist</h3>
+      <p>There is no sites available for the selected zone.</p>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !noDataFound">
+    </div>
+
+</div>
+<div  *ngIf="noDataFound2" class="data-container">
+
+  <div *ngIf="noDataFound2" class="empty-state">
+    <div class="empty-state-content">
+      <i class="fa fa-map-marker-alt"></i> <h3>No sensor data exist</h3>
+      <p>There is no sensor data available for the selected dates.</p>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !noDataFound2">
+    </div>
+
+</div>
     <div class="card-body"  *ngIf="isDetailsVisible">
         <div class="row">
-            {{itemsp|json}}
+    
             <div class="col-md-6 mb-2" *ngFor="let item of itemsp; let i = index">
                 <div class="card">
                     <div class="card-header d-flex align-items-center py-0 ">
@@ -18,13 +46,17 @@
                             style="width: 42px;"><mat-icon>air</mat-icon></span>
                         <div class="ms-2">
                             <h6 class="mb-0">{{ item.location }}</h6>
-                            <span> 13 Jan 2026, 18:55 </span>
+                          <span>{{ item.date | date:'dd/MM/yyyy HH:mm' }}</span>
                         </div>
-                        <div class="ms-auto text-center">
-                            <span>AQI</span>
-                            <h4 class="mb-0 mt-0 text-warning">{{ item.aqi }}</h4>
-                            <small style="top: -5px; position: relative;">{{ item.status }} </small>
-                        </div>
+                      <div class="ms-auto text-center">
+    <span>AQI</span>
+    <h4 class="mb-0 mt-0" [ngClass]="item.statusClass">
+        {{ item.aqi }}
+    </h4>
+    <small style="top: -5px; position: relative;" [ngClass]="item.statusClass">
+        {{ item.status }}
+    </small>
+</div>
                     </div>
 
 

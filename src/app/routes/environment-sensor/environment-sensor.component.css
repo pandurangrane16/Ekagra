@@ -19,6 +19,42 @@
   background-color: white;
 }
 
+.data-container {
+  min-height: 400px; /* Adjust based on your layout */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.empty-state {
+  flex: 1; /* Takes up all available space in the container */
+  display: flex;
+  align-items: center;    /* Vertical center */
+  justify-content: center; /* Horizontal center */
+  text-align: center;
+}
+
+.empty-state-content {
+  padding: 20px;
+}
+
+.empty-state-content i {
+  font-size: 48px;
+  color: #ccc;
+  margin-bottom: 15px;
+}
+
+.empty-state-content h3 {
+  color: #666;
+  font-weight: 500;
+  margin: 0;
+}
+
+.empty-state-content p {
+  color: #999;
+  font-size: 14px;
+}
+
 .bottomBorder {
   border-bottom: 4px solid;
 }

@@ -65,6 +65,7 @@
     }
   ],
   "basePath": "https://172.19.10.43:8089/UploadedFiles/Icons/",
+  "aggregation_period":"86400",
   "projectCodes": [
     {"name" : "atcs","value" : "1"},
     {"name" : "vms","value" : "2"},
@@ -73,7 +74,7 @@
     {"name" : "itms","value" : "18"},
     {"name" : "ivms","value" : "19"},
     {"name" : "ecb","value" : "35"},
-    {"name" : "envrn","value" : "36"},
+    {"name" : "envrn","value" : "46"},
     {"name" : "water scada","value" : "37"}
   ],
   "FooterLine" : "<small>Copyright © 2026 CMS Computers India Private Limited.<br/>All rights reserved. v2.0.19</small>"
