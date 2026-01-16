@@ -329,9 +329,10 @@ error: (error: any) => {
   ) { }
 
   ngOnInit(): void {
+       this.getZoneList();
 
     this.getList();
-    this.getZoneList();
+ 
 
     this.buildHeader();
 
