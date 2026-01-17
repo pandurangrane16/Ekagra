@@ -2,42 +2,59 @@
     <app-cm-breadcrumb [breadcrumbItems]="[{ parts: ['Environment Sensor'], link: '/parking' }]"
         [zoneOptions]="ZoneOptions" [selectedZones]="selectedZones"
         (zoneSelectionChange)="onActionSelectionChange($event)" (configClear)="clearActions()" [startDate]="startDate"
-        [endDate]="endDate" (dateChange)="handleDateChange($event, $event.category)"
-        (refresh)="refreshData()" [showRefresh]="true">
+        [endDate]="endDate" (dateChange)="handleDateChange($event, $event.category)" (refresh)="refreshData()"
+        [showRefresh]="true">
 
-        
+
     </app-cm-breadcrumb>
 
+    <div class="px-3 pt-2">
+        <mat-button-toggle-group value="dashboard" appearance="standard" class="tab-pill-group shadow-none border">
+            <mat-button-toggle value="dashboard" [checked]="true" [routerLink]="['/sensor']"
+                [state]="{ startDate: startDate, endDate: endDate, startUnix: startUnix, endUnix: endUnix }"
+                class="tab-pill-item">
+                Dashboard
+            </mat-button-toggle>
+            <mat-button-toggle value="list" [checked]="false" [routerLink]="['/sensorlist']"
+                [state]="{ startDate: startDate, endDate: endDate, startUnix: startUnix, endUnix: endUnix }"
+                class="tab-pill-item">
+                List View
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+    </div>
+
     <!-- <button mat-icon-button appearance="outline" (click)="refreshData()"><mat-icon>refresh</mat-icon></button> -->
-<div  *ngIf="!isLoading && noDataFound" class="data-container">
+    <div *ngIf="!isLoading && noDataFound" class="data-container">
 
-  <div *ngIf="!isLoading && noDataFound" class="empty-state">
-    <div class="empty-state-content">
-      <i class="fa fa-map-marker-alt"></i> <h3>No fields exist</h3>
-      <p>There is no sites available for the selected zone.</p>
+        <div *ngIf="!isLoading && noDataFound" class="empty-state">
+            <div class="empty-state-content">
+                <i class="fa fa-map-marker-alt"></i>
+                <h3>No fields exist</h3>
+                <p>There is no sites available for the selected zone.</p>
+            </div>
+        </div>
+
+        <div *ngIf="!isLoading && !noDataFound">
+        </div>
+
     </div>
-  </div>
+    <div *ngIf="noDataFound2" class="data-container">
 
-  <div *ngIf="!isLoading && !noDataFound">
+        <div *ngIf="noDataFound2" class="empty-state">
+            <div class="empty-state-content">
+                <i class="fa fa-map-marker-alt"></i>
+                <h3>No sensor data exist</h3>
+                <p>There is no sensor data available for the selected dates.</p>
+            </div>
+        </div>
+
+        <div *ngIf="!isLoading && !noDataFound2">
+        </div>
+
     </div>
-
-</div>
-<div  *ngIf="noDataFound2" class="data-container">
-
-  <div *ngIf="noDataFound2" class="empty-state">
-    <div class="empty-state-content">
-      <i class="fa fa-map-marker-alt"></i> <h3>No sensor data exist</h3>
-      <p>There is no sensor data available for the selected dates.</p>
-    </div>
-  </div>
-
-  <div *ngIf="!isLoading && !noDataFound2">
-    </div>
-
-</div>
-    <div class="card-body"  *ngIf="isDetailsVisible">
+    <div class="card-body" *ngIf="isDetailsVisible">
         <div class="row">
-    
+
             <div class="col-md-6 mb-2" *ngFor="let item of itemsp; let i = index">
                 <div class="card">
                     <div class="card-header d-flex align-items-center py-0 ">
@@ -46,21 +63,21 @@
                             style="width: 42px;"><mat-icon>air</mat-icon></span>
                         <div class="ms-2">
                             <h6 class="mb-0">{{ item.location }}</h6>
-                          <span>{{ item.date | date:'dd/MM/yyyy HH:mm' }}</span>
+                            <span>{{ item.date | date:'dd/MM/yyyy HH:mm' }}</span>
                         </div>
-                      <div class="ms-auto text-center">
-    <span>AQI</span>
-    <h4 class="mb-0 mt-0" [ngClass]="item.statusClass">
-        {{ item.aqi }}
-    </h4>
-    <small style="top: -5px; position: relative;" [ngClass]="item.statusClass">
-        {{ item.status }}
-    </small>
-</div>
+                        <div class="ms-auto text-center">
+                            <span>AQI</span>
+                            <h4 class="mb-0 mt-0" [ngClass]="item.statusClass">
+                                {{ item.aqi }}
+                            </h4>
+                            <small style="top: -5px; position: relative;" [ngClass]="item.statusClass">
+                                {{ item.status }}
+                            </small>
+                        </div>
                     </div>
 
 
-   
+
 
                     <div class="cord-body bg-danger bg-opacity-10">
                         <div class="flex-row">
@@ -85,16 +102,17 @@
                         <div class="d-flex justify-content-between align-items-center p-2">
                             <div class="d-flex align-items-center "><mat-icon>workspace_premium</mat-icon> Let the fresh
                                 air in</div>
-                            <!-- <button
-                                class="btn btn-light btn-sm rounded-pill border border-secondary-50 px-3 d-flex align-items-center"><mat-icon>receipt_long</mat-icon>
-                                &nbsp; Detailed View </button> -->
+                            <button [routerLink]="['/details', item.thing_id]"
+                                [state]="{ name: item.location, aqi: item.aqi, date: item.date, startDate: startUnix, endDate: endUnix }"
+                                class="btn btn-light btn-sm rounded-pill border border-secondary-50 px-3 d-flex align-items-center">
+                                <mat-icon>receipt_long</mat-icon>
+                                &nbsp; Detailed View
+                            </button>
                         </div>
-
                     </div>
                 </div>
             </div>
+
+
         </div>
-
-
     </div>
-</div>

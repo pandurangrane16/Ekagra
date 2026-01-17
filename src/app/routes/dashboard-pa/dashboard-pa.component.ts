@@ -537,16 +537,31 @@ let items: any[] = response?.result?.items || [];
             this.paList = items;
 
           // Pagination logic (unchanged)
-          const _length = totalCount / Number(this.recordPerPage);
+          // const _length = totalCount / Number(this.recordPerPage);
 
-          if (_length > Math.floor(_length) && Math.floor(_length) !== 0)
-            this.totalRecords = Number(this.recordPerPage) * _length;
-          else if (Math.floor(_length) === 0)
-            this.totalRecords = 10;
-          else
-            this.totalRecords = totalCount;
+          // if (_length > Math.floor(_length) && Math.floor(_length) !== 0)
+          //   this.totalRecords = Number(this.recordPerPage) * _length;
+          // else if (Math.floor(_length) === 0)
+          //   this.totalRecords = 10;
+          // else
+          //   this.totalRecords = totalCount;
 
-          this.totalPages = this.totalRecords / this.pager;
+          // this.totalPages = this.totalRecords / this.pager;
+                const _length = totalCount / Number(this.recordPerPage);
+
+    if (_length > Math.floor(_length) && Math.floor(_length) !== 0) {
+      this.totalRecords = Number(this.recordPerPage) * Math.ceil(_length);
+    } else if (Math.floor(_length) === 0 && totalCount > 0) {
+      // If there are records but less than one full page
+      this.totalRecords = totalCount; 
+    } else {
+      this.totalRecords = totalCount;
+    }
+
+    // Calculate total pages for the pager UI
+    debugger;
+    this.totalPages = Math.ceil(this.totalRecords / (this.pager || 10));
+    
         }
       },
 
@@ -726,16 +741,32 @@ if (Array.isArray(items)) {
   });
 
   // 3️⃣ Pagination LIKE your existing logic
-  const _length = totalCount / Number(this.recordPerPage);
+  // const _length = totalCount / Number(this.recordPerPage);
 
-  if (_length > Math.floor(_length) && Math.floor(_length) != 0)
-    this.totalRecords = Number(this.recordPerPage) * (_length);
-  else if (Math.floor(_length) == 0)
-    this.totalRecords = 10;
-  else
-    this.totalRecords = totalCount;
+  // if (_length > Math.floor(_length) && Math.floor(_length) != 0)
+  //   this.totalRecords = Number(this.recordPerPage) * (_length);
+  // else if (Math.floor(_length) == 0)
+  //   this.totalRecords = 10;
+  // else
+  //   this.totalRecords = totalCount;
 
-  this.totalPages = this.totalRecords / this.pager;
+  // this.totalPages = this.totalRecords / this.pager;
+
+      const _length = totalCount / Number(this.recordPerPage);
+
+    if (_length > Math.floor(_length) && Math.floor(_length) !== 0) {
+      this.totalRecords = Number(this.recordPerPage) * Math.ceil(_length);
+    } else if (Math.floor(_length) === 0 && totalCount > 0) {
+      // If there are records but less than one full page
+      this.totalRecords = totalCount; 
+    } else {
+      this.totalRecords = totalCount;
+    }
+
+    // Calculate total pages for the pager UI
+    debugger;
+    this.totalPages = Math.ceil(this.totalRecords / (this.pager || 10));
+    
 }
 
       })

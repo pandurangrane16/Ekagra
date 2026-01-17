@@ -4,32 +4,113 @@
 }
 
 
-.cdk-header-row, .cdk-footer-row, .cdk-row {
-  min-width: 1920px; /* 24 columns, 80px each */
+.cdk-header-row,
+.cdk-footer-row,
+.cdk-row {
+  min-width: 1920px;
+  /* 24 columns, 80px each */
 }
+
 .mat-mdc-row .mat-mdc-cell:first-child {
   border-right: 1px solid #bfbae1;
   background: rgb(223, 219, 253);
-   justify-content: left;
+  justify-content: left;
 }
+
 .mat-mdc-header-row .mat-mdc-header-cell:first-child {
   border-right: 1px solid #bfbae1;
- 
+
 }
-.mat-mdc-table .mat-mdc-header-cell{
-    background: rgb(223, 219, 253);
-    font-weight: bold;
-    flex-direction: column;
-    justify-content: center;
-}
-.mat-mdc-row .mat-mdc-cell{padding: 8px; 
+
+.mat-mdc-table .mat-mdc-header-cell {
+  background: rgb(223, 219, 253);
+  font-weight: bold;
+  flex-direction: column;
   justify-content: center;
 }
-.mat-column-name {
-  flex: 0 0 280px; /* Prevents growing/shrinking and sets base width */
-  width: 280px;
-  min-width: 280px; /* Ensures a minimum width */
-  max-width: 280px; /* Ensures a maximum width */
+
+.mat-mdc-row .mat-mdc-cell {
+  padding: 8px;
+  justify-content: center;
 }
 
+.mat-column-name {
+  flex: 0 0 280px;
+  /* Prevents growing/shrinking and sets base width */
+  width: 280px;
+  min-width: 280px;
+  /* Ensures a minimum width */
+  max-width: 280px;
+  /* Ensures a maximum width */
+}
 
+/* Pill style navigation tabs */
+.tab-pill-group {
+  background-color: #fafafa !important;
+  border-radius: 8px !important;
+  padding: 0 !important;
+  border: 1px solid #e0e0e0 !important;
+  display: inline-flex !important;
+  height: 36px !important;
+  overflow: hidden !important;
+}
+
+.tab-pill-item {
+  border: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  position: relative;
+}
+
+/* Add vertical line between tabs */
+.tab-pill-item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 20%;
+  height: 60%;
+  width: 1px;
+  background-color: #e0e0e0;
+}
+
+::ng-deep .tab-pill-item .mat-mdc-button-toggle-label-content {
+  line-height: 34px !important;
+  padding: 0 16px !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  color: #333 !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+::ng-deep .tab-pill-item.mat-mdc-button-toggle-checked .mdc-button-toggle__button {
+  background-color: transparent !important;
+  /* No blue background */
+}
+
+::ng-deep .tab-pill-item.mat-mdc-button-toggle-checked .mat-mdc-button-toggle-label-content {
+  color: #1a73e8 !important;
+  /* Blue text for active */
+  font-weight: 600 !important;
+  /* Bold for active */
+}
+
+/* Icon style */
+.tab-pill-item mat-icon {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  color: #1a73e8 !important;
+}
+
+/* Hard delete focus rings */
+::ng-deep .tab-pill-item .mat-mdc-button-toggle-focus-overlay,
+::ng-deep .tab-pill-item .mdc-button-toggle__button::before {
+  display: none !important;
+}
+
+.tab-toggle-small mat-icon {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+}

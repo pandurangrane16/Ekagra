@@ -1,46 +1,134 @@
-.progress{--bs-progress-height: 6px; margin-top: 25px;}
-.progress-bar label{color: black;
-    top: 60px;
+.progress {
+    --bs-progress-height: 8px;
+    margin-top: 35px;
+    margin-bottom: 35px;
+    overflow: visible;
+}
+
+.progress-bar {
+    position: relative;
+    overflow: visible;
+}
+
+.progress-bar label {
+    color: #333;
+    top: -25px;
     position: absolute;
-    display: flex;
-    align-self: center;}
-.good{ background-color: #66CC66;}
-.moderate{ background-color: #FFAD5C;}
-.poor{ background-color: #FF9933;}
-.unhealthy{ background-color: #E84F4F;}
-.severe{ background-color: #B33FBA;}
-.hazardous{ background-color: #E84F4F;}
-.good::before,.moderate:before,.poor:before,.unhealthy:before,.severe:before,.hazardous:before{
-    color: black;
-    position: absolute;
-    bottom: 8px;}
-.hazardous:after{
-        color: black;
-        position: absolute;
-        bottom: 8px; right: 20px;}
-.good::before{ content: '0';}
-.moderate::before{ content: '50';}
-.poor::before{ content: '100';}
-.unhealthy::before{ content: '200';}
-.severe::before{ content: '300';}
-.hazardous::before{ content: '400';}
-.hazardous::after{ content: '500+';}
-.good .scale{  border-bottom: 8px solid #66CC66;}
-.moderate .scale{  border-bottom: 8px solid #FFAD5C;}
-.poor .scale{  border-bottom: 8px solid #FF9933;}
-.unhealthy .scale{  border-bottom: 8px solid #E84F4F;}
-.severe .scale{  border-bottom: 8px solid #B33FBA;}
-.hazardous .scale{  border-bottom: 8px solid #E84F4F;}
-.scale{ content: '';
-    width: 0px;
-    height: 0px;
-    border-bottom: 8px solid #103252;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    display: inline-block;
-    vertical-align: middle;
-    margin-right: 5px;
-    position: absolute;
-    bottom: -5px;
+    left: 50%;
     transform: translateX(-50%);
-    left: 50%;}
+    white-space: nowrap;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.good {
+    background-color: #66CC66;
+}
+
+.moderate {
+    background-color: #FFAD5C;
+}
+
+.poor {
+    background-color: #FF9933;
+}
+
+.unhealthy {
+    background-color: #E84F4F;
+}
+
+.severe {
+    background-color: #B33FBA;
+}
+
+.hazardous {
+    background-color: #7E0023;
+}
+
+.good::before,
+.moderate:before,
+.poor:before,
+.unhealthy:before,
+.severe:before,
+.hazardous:before {
+    color: #666;
+    position: absolute;
+    top: 12px;
+    left: 0;
+    font-size: 10px;
+    transform: translateX(-50%);
+}
+
+.hazardous:after {
+    color: #666;
+    position: absolute;
+    top: 12px;
+    right: 0;
+    font-size: 10px;
+    transform: translateX(50%);
+}
+
+.good::before {
+    content: '0';
+}
+
+.moderate::before {
+    content: '50';
+}
+
+.poor::before {
+    content: '100';
+}
+
+.unhealthy::before {
+    content: '200';
+}
+
+.severe::before {
+    content: '300';
+}
+
+.hazardous::before {
+    content: '400';
+}
+
+.hazardous::after {
+    content: '500+';
+}
+
+.good .scale {
+    border-bottom-color: #66CC66;
+}
+
+.moderate .scale {
+    border-bottom-color: #FFAD5C;
+}
+
+.poor .scale {
+    border-bottom-color: #FF9933;
+}
+
+.unhealthy .scale {
+    border-bottom-color: #E84F4F;
+}
+
+.severe .scale {
+    border-bottom-color: #B33FBA;
+}
+
+.hazardous .scale {
+    border-bottom-color: #7E0023;
+}
+
+.scale {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 8px solid #333;
+    display: block;
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+}

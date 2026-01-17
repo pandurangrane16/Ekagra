@@ -70,7 +70,7 @@ export const routes: Routes = [
       { path: 'pa', component: DashboardPaComponent},
       { path: 'cron', component: CmCronComponent },
       { path: 'sensor', component: EnvironmentSensorComponent },
-      { path: 'details', component: DetailedComponent },
+      { path: 'details/:id', component: DetailedComponent },
       { path: 'sensorlist', component: SensorlistComponent },
 //      {
 //   path: 'sensor',

@@ -1,107 +1,124 @@
+<div class="card p-0">
+  <app-cm-breadcrumb [breadcrumbItems]="[{ parts: ['Environment Sensor'], link: '/parking' }]"
+    [zoneOptions]="ZoneOptions" [selectedZones]="selectedZones" (zoneSelectionChange)="onActionSelectionChange($event)"
+    (configClear)="clearActions()" [startDate]="startDate" [endDate]="endDate"
+    (dateChange)="handleDateChange($event, $event.category)" (refresh)="refreshData()" [showRefresh]="true">
+  </app-cm-breadcrumb>
 
-<div class="card">
+  <div class="px-3 pt-2 pb-3">
+    <mat-button-toggle-group value="list" appearance="standard" class="tab-pill-group shadow-none border">
+      <mat-button-toggle value="dashboard" [checked]="false" [routerLink]="['/sensor']"
+        [state]="{ startDate: startDate, endDate: endDate, startUnix: startUnix, endUnix: endUnix }"
+        class="tab-pill-item">
+        Dashboard
+      </mat-button-toggle>
+      <mat-button-toggle value="list" [checked]="true" [routerLink]="['/sensorlist']"
+        [state]="{ startDate: startDate, endDate: endDate, startUnix: startUnix, endUnix: endUnix }"
+        class="tab-pill-item">
+        List View
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
 
+  <div class="card-body table-sticky p-0 position-relative">
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="position-absolute top-50 start-50 translate-middle" style="z-index: 10;">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
 
-       <div class="card-header d-flex align-items-center">
-               <mat-icon>list</mat-icon>
-                <div class="ms-2">
-                    <h6 class="mb-0">Sensor List</h6>
-                   
-                </div>
-                <div class="ms-auto text-center d-flex align-items-center">
-                     <button mat-icon-button matTooltip="Go Back" aria-label="Back" (click)="goBack()" style="margin-top: -10px; margin-bottom: -10px;">
-  <mat-icon>reply</mat-icon>
-</button>
-                    
-                </div>
+    <mat-table [dataSource]="dataSource">
+      <!-- Name Column -->
+      <ng-container matColumnDef="name" [sticky]="true">
+        <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <div class="d-flex align-items-center py-2 cursor-pointer" [routerLink]="['/details', element.thing_id]"
+            [state]="{ name: element.location, aqi: element.aqi, date: element.time, startDate: startUnix, endDate: endUnix }">
+            <span
+              class="rounded-circle p-2 bg-warning text-white d-flex align-items-center justify-content-center border border2 border-secondary-50"
+              style="width: 42px;">
+              <mat-icon>air</mat-icon>
+            </span>
+            <div class="ms-2">
+              <h6 class="mb-0">{{ element.location }}</h6>
+              <small>{{ element.time | date:'MMM d, y, HH:mm' }}</small>
             </div>
-
-    <div class="card-body table-sticky p-0">
-
-
-         <mat-table [dataSource]="dataSource" >
-   
-    <ng-container matColumnDef="name" [sticky]="true">
-      <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-      <mat-cell *matCellDef="let element"> 
-       <div class="d-flex align-items-center py-0 ">
-                <span class="rounded-circle p-2 bg-warning text-white d-flex align-items-center justify-content-center border border2 border-secondary-50" style="width: 42px;"><mat-icon>air</mat-icon></span>
-                <div class="ms-2">
-                    <h6 class="mb-0">{{ element.name }}</h6>
-            <small>Jan 2026, 18:55 </small> 
-                </div>
-               
-            </div> 
+          </div>
         </mat-cell>
-      <mat-footer-cell *matFooterCellDef> Name Footer </mat-footer-cell>
-    </ng-container>
+      </ng-container>
 
-    <ng-container matColumnDef="AQI">
-      <mat-header-cell *matHeaderCellDef> AQI </mat-header-cell>
-      <mat-cell *matCellDef="let element"> <span class="p-1 bg-danger rounded-circle me-2"></span> {{element.AQI}} </mat-cell>
-    
-    </ng-container>
+      <!-- AQI Column -->
+      <ng-container matColumnDef="AQI">
+        <mat-header-cell *matHeaderCellDef> AQI </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <span
+            [class]="'p-1 rounded-circle me-2 ' + (element.statusClass?.replace('text-', 'bg-') || 'bg-secondary')"></span>
+          {{element.aqi}}
+          <span [class]="'ms-1 ' + element.statusClass">({{element.status}})</span>
+        </mat-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="Temperature">
-      <mat-header-cell *matHeaderCellDef> Temperature <div> <small> (DegC) </small></div></mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.Temperature}}  </mat-cell>
-      
-    </ng-container>
+      <!-- Temperature Column -->
+      <ng-container matColumnDef="Temperature">
+        <mat-header-cell *matHeaderCellDef> Temperature <div> <small> (DegC) </small></div></mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.temperature}} </mat-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="Humidity">
-      <mat-header-cell *matHeaderCellDef> Humidity <div><small> (%)</small></div> </mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.Humidity}} </mat-cell>
-      
-    </ng-container>
-    <ng-container matColumnDef="PM25">
-      <mat-header-cell *matHeaderCellDef> PM2.5 <div><small> (µg/m3)</small></div></mat-header-cell>
-      <mat-cell *matCellDef="let element"><span class="p-1 bg-warning rounded-circle me-2"></span> {{element.PM25}} </mat-cell>
-      
-    </ng-container>
-    <ng-container matColumnDef="PM10">
-      <mat-header-cell *matHeaderCellDef> PM10  <div><small>(µg/m3)</small></div></mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.PM25}} </mat-cell>
-      
-    </ng-container>
-    <ng-container matColumnDef="NO2">
-      <mat-header-cell *matHeaderCellDef> NO2 <div><small>(ppb)</small></div></mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.NO2}} </mat-cell>
-      
-    </ng-container>
-    <ng-container matColumnDef="SO2">
-      <mat-header-cell *matHeaderCellDef> SO2  <div><small>(ppb)</small></div></mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.SO2}} </mat-cell>
-      
-    </ng-container>
-    <ng-container matColumnDef="O3">
-      <mat-header-cell *matHeaderCellDef> O3 <div><small>(ppb)</small></div></mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.O3}} </mat-cell>
-      
-    </ng-container>
-    <ng-container matColumnDef="CO">
-      <mat-header-cell *matHeaderCellDef> CO <div><small>(ppm)</small></div></mat-header-cell>
-      <mat-cell *matCellDef="let element"> {{element.CO}} </mat-cell>
-      
-    </ng-container>
+      <!-- Humidity Column -->
+      <ng-container matColumnDef="Humidity">
+        <mat-header-cell *matHeaderCellDef> Humidity <div><small> (%)</small></div> </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.humidity}} </mat-cell>
+      </ng-container>
 
-    <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+      <!-- PM25 Column -->
+      <ng-container matColumnDef="PM25">
+        <mat-header-cell *matHeaderCellDef> PM2.5 <div><small> (µg/m3)</small></div></mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.pm25}} </mat-cell>
+      </ng-container>
 
+      <!-- PM10 Column -->
+      <ng-container matColumnDef="PM10">
+        <mat-header-cell *matHeaderCellDef> PM10 <div><small>(µg/m3)</small></div></mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.pm10}} </mat-cell>
+      </ng-container>
 
-    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      <!-- NO2 Column -->
+      <ng-container matColumnDef="NO2">
+        <mat-header-cell *matHeaderCellDef> NO2 <div><small>(ppb)</small></div></mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.no2}} </mat-cell>
+      </ng-container>
 
+      <!-- SO2 Column -->
+      <ng-container matColumnDef="SO2">
+        <mat-header-cell *matHeaderCellDef> SO2 <div><small>(ppb)</small></div></mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.so2}} </mat-cell>
+      </ng-container>
 
-  </mat-table>
-  
+      <!-- O3 Column -->
+      <ng-container matColumnDef="O3">
+        <mat-header-cell *matHeaderCellDef> O3 <div><small>(ppb)</small></div></mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.o3}} </mat-cell>
+      </ng-container>
+
+      <!-- CO Column -->
+      <ng-container matColumnDef="CO">
+        <mat-header-cell *matHeaderCellDef> CO <div><small>(ppm)</small></div></mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.co}} </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+    <!-- No Data State -->
+    <div *ngIf="!isLoading && dataSource.data.length === 0" class="text-center p-4">
+      <mat-icon style="font-size: 48px; width: 48px; height: 48px; color: #ccc;">info</mat-icon>
+      <p class="text-muted">No sensor data found for the selected criteria.</p>
+    </div>
+  </div>
+
+  <div class="card-footer p-0">
+    <mat-paginator #paginator [length]="dataSource.data.length" [pageSize]="10"
+      [pageSizeOptions]="[5, 10, 20, 50, 100]">
+    </mat-paginator>
+  </div>
 </div>
-
-<div class="card-footer p-0">
-      <mat-paginator 
-         #paginator
-         [length]="dataSource.data.length"
-        [pageSize]="5"
-        [pageSizeOptions]="[5, 10,20, 50, 100]"
-        
-      ></mat-paginator>
-</div>
-</div>
-

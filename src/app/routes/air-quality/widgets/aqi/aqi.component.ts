@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
     selector: 'app-aqi',
@@ -9,6 +9,6 @@ import { Component } from '@angular/core';
 })
 export class AqiComponent {
 
-  scale:number = 150;
+  @Input() scale: number = 0;
 
 }

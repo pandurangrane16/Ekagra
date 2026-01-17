@@ -12,6 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { LoaderService } from '../../services/common/loader.service';
 import { withLoader } from '../../services/common/common';
 import { SensorService } from '../../services/dashboard/senson.service'; 
@@ -28,15 +29,19 @@ interface Junction {
 
 @Component({
   selector: 'app-environment-sensor',
-  imports: [NotificationComponent, ZonalComponent, CorridorComponent, FailuresComponent, CycleComponent, MatFormFieldModule, MatSelectModule, MatInputModule, FormsModule, MatButtonModule, MatIconModule, CommonModule, MatDatepickerModule, CmBreadcrumbComponent,RouterModule],
+  imports: [NotificationComponent, ZonalComponent, CorridorComponent, FailuresComponent, CycleComponent, MatFormFieldModule, MatSelectModule, MatInputModule, FormsModule, MatButtonModule, MatIconModule, CommonModule, MatDatepickerModule, CmBreadcrumbComponent, RouterModule, MatButtonToggleModule],
   templateUrl: './environment-sensor.component.html',
   styleUrl: './environment-sensor.component.css'
 })
 
 export class EnvironmentSensorComponent {
   
-endDate: Date = new Date();
- loaderService = inject(LoaderService);
+  private service = inject(SensorService);
+  private loaderService = inject(LoaderService);
+  private sessionService = inject(SessionService);
+  private toaster = inject(ToastrService);
+
+  endDate: Date = new Date();
   startDate: Date = new Date(this.endDate.getTime() - (24 * 60 * 60 * 1000));
 projectId: number = 0;
 isLoading: boolean = false;
@@ -45,7 +50,6 @@ endUnix:any;
  selectedZoneIds: any[] = [];
  isDetailsVisible: boolean = false;
  aggregationPeriod:any;
- session = inject(SessionService);
 
 
 // Mapping of thing_id to location names
@@ -217,24 +221,31 @@ sensorData = {
     { value: 'Junction 2', viewValue: 'Junction 2' },
     { value: 'Junction 3', viewValue: 'Junction 3' },
   ];
-initializeDefaultDates() {
-  const now = new Date();
-  
-  // 1. Set the Date objects (for the UI Calendar pickers)
-  this.endDate = now;
-  this.startDate = new Date(now.getTime() - (24 * 60 * 60 * 1000)); // 24 hours ago
+  initializeDefaultDates() {
+    const state = window.history.state;
+    
+    // Check if we have dates from history state (Back navigation)
+    if (state && state.startDate && state.endDate) {
+      this.startDate = new Date(state.startDate);
+      this.endDate = new Date(state.endDate);
+      this.startUnix = state.startUnix;
+      this.endUnix = state.endUnix;
+      console.log('Restored range from history state:', this.startUnix, 'to', this.endUnix);
+      return;
+    }
 
-  // 2. Calculate Unix Timestamps (Seconds)
-  const endUnixRaw = Math.floor(this.endDate.getTime() / 1000);
-  const startUnixRaw = Math.floor(this.startDate.getTime() / 1000);
+    // Default logic (24h)
+    const now = new Date();
+    this.endDate = now;
+    this.startDate = new Date(now.getTime() - (24 * 60 * 60 * 1000));
 
-  // 3. Apply the 5:30 offset (19800 seconds) 
-  // ONLY if your backend requires UTC. If backend uses local, skip the subtraction.
-  this.endUnix = endUnixRaw - 19800; 
-  this.startUnix = startUnixRaw - 19800;
+    const endUnixRaw = Math.floor(this.endDate.getTime() / 1000);
+    const startUnixRaw = Math.floor(this.startDate.getTime() / 1000);
 
-  console.log('Initialized 24h range:', this.startUnix, 'to', this.endUnix);
-}
+    this.endUnix = endUnixRaw - 19800;
+    this.startUnix = startUnixRaw - 19800;
+    console.log('Initialized default 24h range:', this.startUnix, 'to', this.endUnix);
+  }
 
 fetchLocationMapping() {
 
@@ -270,7 +281,7 @@ itemsp: any[] = [];
 noDataFound: boolean = false;
 noDataFound2: boolean = false;
   constructor(
-   private toaster: ToastrService,private service: SensorService
+   // private toaster: ToastrService,private service: SensorService // Injections moved to class properties
 
   ){}
 
@@ -485,22 +496,23 @@ if (!data || data.length === 0) {
 
 }
 
-getAqiStatus(aqi: number): string {
-  if (aqi <= 50) return 'Good';
-  if (aqi <= 100) return 'Moderate';
-  if (aqi <= 150) return 'Poor';
-  if (aqi <= 200) return 'Unhealthy';
-  if (aqi <= 300) return 'Very Poor';
-  return 'Hazardous';
-}
+  getAqiStatus(aqi: number): string {
+    if (aqi <= 50) return 'Good';
+    if (aqi <= 100) return 'Moderate';
+    if (aqi <= 200) return 'Poor';
+    if (aqi <= 300) return 'Unhealthy';
+    if (aqi <= 400) return 'Severe';
+    return 'Hazardous';
+  }
 
-getAqiClass(aqi: number): string {
-  if (aqi <= 50) return 'text-success';
-  if (aqi <= 100) return 'text-warning';
-  if (aqi <= 150) return 'text-orange';
-  if (aqi <= 200) return 'text-danger';
-  return 'text-purple';
-}
+  getAqiClass(aqi: number): string {
+    if (aqi <= 50) return 'text-success';
+    if (aqi <= 100) return 'text-warning';
+    if (aqi <= 200) return 'text-orange';
+    if (aqi <= 300) return 'text-danger';
+    if (aqi <= 400) return 'text-purple';
+    return 'text-danger'; // For Hazardous, can use purple or bold red
+  }
 
 getParamColor(value: number, param: string): string {
   if (!value && value !== 0) return 'greenB';
@@ -526,14 +538,14 @@ getParamColor(value: number, param: string): string {
   return 'redB';
 }
 
- ZoneSelectSettings = {
-          labelHeader: 'Select Zone',
-          lableClass: 'form-label',
-           multiple: false,
-          formFieldClass: '', 
-          appearance: 'fill',
-          options: []
-        };
+  ZoneSelectSettings = {
+    labelHeader: 'Select Zone',
+    lableClass: 'form-label',
+    multiple: true,
+    formFieldClass: '',
+    appearance: 'fill',
+    options: [] as any[]
+  };
         isZoneOptionsLoaded: boolean = false;
         ZoneOptions: any[] = [];
         selectedZones: any[] = [];
@@ -541,152 +553,115 @@ getParamColor(value: number, param: string): string {
   currentThingIds: number[] = [];
 
 
-        onActionSelectionChange(event: any) {
-   this.siteList = [];
-   this.itemsp = [];
-    this.selectedZoneIds=[];
-  const selectedValues = event.value || [];
-  const allOption = this.ZoneOptions.find((x: any) => x.text.toLowerCase() === 'all');
+  onActionSelectionChange(event: any) {
+    this.siteList = [];
+    this.itemsp = [];
+    this.selectedZoneIds = [];
+    const selectedValues = event.value || [];
+    const allOption = this.ZoneOptions.find((x: any) => x.text.toLowerCase() === 'all');
 
-  if (!allOption) return;
-
-  const isAllSelected = selectedValues.some((x: any) => x.id === allOption.id);
-
-  if (isAllSelected) {
-    const allExceptAll = this.ZoneOptions.filter((x: any) => x.id !== allOption.id);
-    this.selectedZones = [...allExceptAll];
-  } else {
-    this.selectedZones = selectedValues.filter((x: any) => x.id !== allOption.id);
-  }
-debugger;
-  // 2. UPDATE THE IDS HERE (Not in the template)
-  this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
-  const allPolygons: any[] = [];
-  
-  this.selectedZones.forEach(zone => {
-    if (zone.zoneCordinate) {
-      try {
-        // Parse the string (e.g. "[[[lng,lat],...]]")
-        const parsed = JSON.parse(zone.zoneCordinate);
-        // Push the actual polygon array into our master list
-        allPolygons.push(parsed[0]); 
-      } catch (e) {
-        console.error("Invalid coordinates for zone: " + zone.text, e);
-      }
-    }
-  });
-
-  // 2. Convert the master list back to a string format your map method expects
-  // This will look like: [ [[p1],[p2]], [[p1],[p2]] ]
-//   this.zoneCordinate2 = JSON.stringify(allPolygons);
-//   console.log("zoneCordinate2", this.zoneCordinate2);
-
-   this.loadJunctions();
-//   this.loadCorridorData();
-//   this.loadpoints();
- }
-
-// Ensure you also update IDs in your clear function
-clearActions() {
-  this.selectedZones = [];
-   this.selectedZoneIds = [];
-   this.loadJunctions();
- 
-}
-
-loadJunctions(): void {
-  this.currentThingIds = [];
-  debugger;
-
-
-  // If projectId is null, we shouldn't make the API call
-
-
-  // Pass the dynamic projectId in an array as required by the API
-  this.service.GetActiveSitesbyZoneAndProject(this.selectedZoneIds, [46])
-    .pipe(withLoader(this.loaderService))
-    .subscribe((res: any) => {
-  
-      if (res?.success && Array.isArray(res.result)) {
-        this.junctions = res.result.map((item: any) => ({
-          value: item.siteName,
-          viewValue:item.siteName
-        }));
-
-  this.currentThingIds = res.result
-        .map((item: any) => Number(item.siteId))
-        .filter((id: number) => !isNaN(id));
-
-      // 2. Pass them to the sensor loader
-      this.loadSensorData(this.currentThingIds);
-
-
-      //  this.selectedJunction = this.junctions[0].value;
-      //  this.selectedCorridorJunction = this.junctions[0].value;
-      //  console.log("Selected Corridor Junction:", this.selectedCorridorJunction);
-      //  console.log("Selected Junction:", this.selectedJunction);
-     //  this.filterCorridorByJunction();
-        
-        // console.log('Initial junction selected:', this.selectedJunction);
+    if (allOption) {
+      const isAllSelected = selectedValues.some((x: any) => x.id === allOption.id);
+      if (isAllSelected) {
+        const allExceptAll = this.ZoneOptions.filter((x: any) => x.id !== allOption.id);
+        this.selectedZones = [...allExceptAll];
       } else {
-        this.junctions = [];
+        this.selectedZones = selectedValues.filter((x: any) => x.id !== allOption.id);
       }
-    });
-}
- getZoneList() {
-        this.service.GetAllZones().pipe(withLoader(this.loaderService)).subscribe((response:any) => {
-            const items = response?.result || [];
-
-            const projectOptions = items.map((item: any) => ({
-                text: (item.zoneName || '').trim() || 'Unknown',
-                id: item.id
-            }));
-
-            // 1. Set selectedZones to everything except the "All" option (id: 0)
-            this.selectedZones = [...projectOptions];
-            
-            // 2. Map the IDs to your array that goes to the Child component
-            this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
-
-            projectOptions.unshift({
-                text: 'All',
-                id: 0
-            });
-            this.ZoneSelectSettings.options = projectOptions;
-            this.ZoneOptions=projectOptions
-            this.isZoneOptionsLoaded = true;
-            this.loadJunctions()
-        }, error => {
-            console.error('Error fetching Zone list', error);
-        });
+    } else {
+      this.selectedZones = selectedValues;
     }
-handleDateChange(evt: any, type: string) {
-  if (!evt.value) return;
 
-  const selectedDate = new Date(evt.value);
-  const unixSeconds = Math.floor(selectedDate.getTime() / 1000);
-  
+    this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
 
-  const shiftedUnix = unixSeconds - 19800;
+    // Update history state
+    const currentState = window.history.state || {};
+    window.history.replaceState({
+      ...currentState,
+    }, '');
 
-  if (type === "start") {
-    this.startDate = selectedDate; 
-    this.startUnix = shiftedUnix;
-  } else {
-    this.endDate = selectedDate;
-    this.endUnix = shiftedUnix;
+    this.loadJunctions();
   }
 
-  // Reload data if both exist
-  if (this.startUnix && this.endUnix) {
-    this.loadSensorData(this.currentThingIds);
+  clearActions() {
+    this.selectedZones = [];
+    this.selectedZoneIds = [];
+    this.selectedZoneIds = [];
+    this.loadJunctions();
   }
-}
+
+  loadJunctions(): void {
+    this.currentThingIds = [];
+    this.service.GetActiveSitesbyZoneAndProject(this.selectedZoneIds, [46])
+      .pipe(withLoader(this.loaderService))
+      .subscribe((res: any) => {
+        if (res?.success && Array.isArray(res.result)) {
+          this.junctions = res.result.map((item: any) => ({
+            value: item.siteName,
+            viewValue: item.siteName
+          }));
+          this.currentThingIds = res.result
+            .map((item: any) => Number(item.siteId))
+            .filter((id: number) => !isNaN(id));
+          this.loadSensorData(this.currentThingIds);
+        } else {
+          this.junctions = [];
+        }
+      });
+  }
+
+  getZoneList() {
+    this.service.GetAllZones().pipe(withLoader(this.loaderService)).subscribe((response: any) => {
+      const items = response?.result || [];
+      const projectOptions = items.map((item: any) => ({
+        text: (item.zoneName || '').trim() || 'Unknown',
+        id: item.id
+      }));
+
+      this.ZoneOptions = [...projectOptions];
+      
+      this.ZoneSelectSettings.options = [{ text: 'All', id: 0 }, ...projectOptions];
+      this.isZoneOptionsLoaded = true;
 
 
- 
-// openDetailedView() {
-//   this.router.navigate(['/sensor:id']);
-// }
 
+      if (this.ZoneOptions.length > 0) {
+        this.selectedZones = [...this.ZoneOptions];
+        this.selectedZoneIds = this.selectedZones.map(zone => zone.id);
+        this.loadJunctions();
+      }
+    }, error => {
+      console.error('Error fetching Zone list', error);
+    });
+  }
+
+  handleDateChange(evt: any, type: string) {
+    if (!evt.value) return;
+
+    const selectedDate = new Date(evt.value);
+    const unixSeconds = Math.floor(selectedDate.getTime() / 1000);
+    const finalUnix = unixSeconds - 19800;
+
+    if (type === 'start') {
+      this.startUnix = finalUnix;
+      this.startDate = selectedDate;
+    } else {
+      this.endUnix = finalUnix;
+      this.endDate = selectedDate;
+    }
+
+    // Update history state so "Back" navigation restores these dates
+    const currentState = window.history.state || {};
+    window.history.replaceState({
+      ...currentState,
+      startDate: this.startDate.toISOString(),
+      endDate: this.endDate.toISOString(),
+      startUnix: this.startUnix,
+      endUnix: this.endUnix
+    }, '');
+
+    if (this.startUnix && this.endUnix) {
+      this.loadSensorData(this.currentThingIds);
+    }
+  }
 }

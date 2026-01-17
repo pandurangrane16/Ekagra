@@ -20,17 +20,21 @@
 }
 
 .data-container {
-  min-height: 400px; /* Adjust based on your layout */
+  min-height: 400px;
+  /* Adjust based on your layout */
   position: relative;
   display: flex;
   flex-direction: column;
 }
 
 .empty-state {
-  flex: 1; /* Takes up all available space in the container */
+  flex: 1;
+  /* Takes up all available space in the container */
   display: flex;
-  align-items: center;    /* Vertical center */
-  justify-content: center; /* Horizontal center */
+  align-items: center;
+  /* Vertical center */
+  justify-content: center;
+  /* Horizontal center */
   text-align: center;
 }
 
@@ -93,4 +97,75 @@
   .flex-col {
     flex-basis: 100%;
   }
+}
+
+/* Pill style navigation tabs */
+.tab-pill-group {
+  background-color: #fafafa !important;
+  border-radius: 8px !important;
+  padding: 0 !important;
+  border: 1px solid #e0e0e0 !important;
+  display: inline-flex !important;
+  height: 36px !important;
+  overflow: hidden !important;
+}
+
+.tab-pill-item {
+  border: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  position: relative;
+}
+
+/* Add vertical line between tabs */
+.tab-pill-item:first-child::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 20%;
+  height: 60%;
+  width: 1px;
+  background-color: #e0e0e0;
+}
+
+::ng-deep .tab-pill-item .mat-mdc-button-toggle-label-content {
+  line-height: 34px !important;
+  padding: 0 16px !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  color: #333 !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+::ng-deep .tab-pill-item.mat-mdc-button-toggle-checked .mdc-button-toggle__button {
+  background-color: transparent !important;
+  /* No blue background */
+}
+
+::ng-deep .tab-pill-item.mat-mdc-button-toggle-checked .mat-mdc-button-toggle-label-content {
+  color: #1a73e8 !important;
+  /* Blue text for active */
+  font-weight: 600 !important;
+  /* Bold for active */
+}
+
+/* Icon style */
+.tab-pill-item mat-icon {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  color: #1a73e8 !important;
+}
+
+/* Hard delete focus rings */
+::ng-deep .tab-pill-item .mat-mdc-button-toggle-focus-overlay,
+::ng-deep .tab-pill-item .mdc-button-toggle__button::before {
+  display: none !important;
+}
+
+.tab-toggle-small mat-icon {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
 }
